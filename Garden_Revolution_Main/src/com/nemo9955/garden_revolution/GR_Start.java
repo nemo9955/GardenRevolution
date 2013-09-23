@@ -1,13 +1,19 @@
 package com.nemo9955.garden_revolution;
 
+import aurelienribon.tweenengine.Tween;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
+import com.nemo9955.garden_revolution.utility.tween.FontTween;
+import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 
 public class GR_Start extends Game {
@@ -24,6 +30,9 @@ public class GR_Start extends Game {
 
     @Override
     public void create() {
+
+        Tween.registerAccessor( Sprite.class, new SpriteTween() );
+        Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
         manager = new AssetManager();
         manager.load( "imagini/butoane/test.png", Texture.class );

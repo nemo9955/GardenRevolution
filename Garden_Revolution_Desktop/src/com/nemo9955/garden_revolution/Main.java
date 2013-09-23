@@ -11,8 +11,8 @@ public class Main {
         cfg.useGL20 = true;
       //  cfg.backgroundFPS = -1;
         cfg.resizable = false ;
-        cfg.width = 1280;
-        cfg.height = 720;
+        cfg.width = 800;
+        cfg.height = 600;
 
         new LwjglApplication( new GR_Start(), cfg );
     }
