@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
+import com.nemo9955.garden_revolution.GR_Start;
 
 
 public class Buton implements Disposable {
@@ -21,7 +22,7 @@ public class Buton implements Disposable {
 
     public Buton(String link) {
 
-        Texture loader = new Texture( String.format( "img/buttons/%s.png", link ) );
+        Texture loader = GR_Start.manager.get( String.format( "imagini/butoane/%s.png", link, Texture.class ) );
         loader.setFilter( TextureFilter.Linear, TextureFilter.Linear );
         img = new Sprite( loader );
         loader.dispose();
@@ -43,9 +44,10 @@ public class Buton implements Disposable {
         return false;
     }
 
-    public void setPozi(float x, float y) {
+    public Buton setPozi(float x, float y) {
         zon.setPosition( x, y );
         img.setPosition( x, Gdx.graphics.getHeight() -y );
+        return this;
     }
 
     @Override
