@@ -37,7 +37,7 @@ public class SplashScreen implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
         if ( GR_Start.manager.update() ) {
-            game.makeScreens();
+            game.postLoading();
             game.setScreen( game.meniu );
         }
 

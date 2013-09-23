@@ -22,7 +22,6 @@ public class TestScene implements Screen {
 
     @Override
     public void show() {
-        System.out.println( "test" );
     }
 
     @Override

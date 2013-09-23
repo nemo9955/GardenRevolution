@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
@@ -30,14 +31,23 @@ public class GR_Start extends Game {
         manager.load( "imagini/butoane/meniu.png", Texture.class );
         manager.load( "imagini/butoane/back.png", Texture.class );
 
+        manager.load( "modele/scena.g3db", Model.class );
+
         splash = new SplashScreen( this );
         setScreen( splash );
 
     }
 
-    public void makeScreens() {
+    public void postLoading() {
         gameplay = new Gameplay( this );
         meniu = new Meniu( this );
         test = new TestScene( this );
+
+        gameplay.manageModels();
+    }
+
+    @Override
+    public void dispose() {
+        manager.dispose();
     }
 }

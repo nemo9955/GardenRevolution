@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -18,27 +17,19 @@ import com.nemo9955.garden_revolution.GR_Start;
 
 public class Gameplay implements Screen {
 
-    public GR_Start              game;
+    public GR_Start               game;
 
-    public PerspectiveCamera     cam;
-    public CameraInputController camController;
-    public ModelBatch            modelBatch;
-    public AssetManager          assets;
-    public Array<ModelInstance>  instances = new Array<ModelInstance>();
-    public Lights                lights;
-    public boolean               loading;
+    private PerspectiveCamera     cam;
+    private CameraInputController camController;
+    private ModelBatch            modelBatch;
+    private Array<ModelInstance>  instances = new Array<ModelInstance>();
+    private Lights                lights;
 
-    public Array<ModelInstance>  blocks    = new Array<ModelInstance>();
-    public Array<ModelInstance>  invaders  = new Array<ModelInstance>();
-    public ModelInstance         ship;
-    public ModelInstance         cer;
-    public ModelInstance         cub;
+    private ModelInstance         cer;
 
-    private String               data      = "data";
 
     public Gameplay(GR_Start game) {
         this.game = game;
-
 
         float amb = 0.4f, lum = 0.6f;
 
@@ -57,21 +48,15 @@ public class Gameplay implements Screen {
         camController = new CameraInputController( cam );
         Gdx.input.setInputProcessor( camController );
 
-        assets = new AssetManager();
-        // assets.load( data +"/invaderscene.g3db", Model.class );
-        assets.load( data +"/scena.g3db", Model.class );
-        loading = true;
-
     }
 
     @Override
     public void show() {
-        System.out.println( "play" );
     }
 
-    private void doneLoading() {
+    public void manageModels() {
 
-        Model cuboid = assets.get( data +"/scena.g3db", Model.class );
+        Model cuboid = GR_Start.manager.get( "modele/scena.g3db", Model.class );
         for (int i = 0 ; i <cuboid.nodes.size ; i ++ ) {
             String id = cuboid.nodes.get( i ).id;
 
@@ -93,23 +78,17 @@ public class Gameplay implements Screen {
             instances.add( instance );
 
         }
-
-
-        loading = false;
     }
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
 
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
             game.setScreen( game.meniu );
 
-        if ( loading &&assets.update() )
-            doneLoading();
         camController.update();
-
-        Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
 
 
         modelBatch.begin( cam );
@@ -140,7 +119,6 @@ public class Gameplay implements Screen {
     public void dispose() {
         modelBatch.dispose();
         instances.clear();
-        assets.dispose();
         game.dispose();
     }
 }

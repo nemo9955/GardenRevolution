@@ -26,7 +26,6 @@ public class Meniu implements Screen {
 
     @Override
     public void show() {
-        System.out.println( "meniu apare" );
     }
 
     @Override
@@ -55,7 +54,6 @@ public class Meniu implements Screen {
 
     @Override
     public void hide() {
-        System.out.println( "meniu dispare" );
     }
 
     @Override
