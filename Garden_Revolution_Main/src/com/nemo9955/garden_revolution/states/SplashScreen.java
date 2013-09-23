@@ -3,50 +3,48 @@ package com.nemo9955.garden_revolution.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nemo9955.garden_revolution.GR_Start;
-import com.nemo9955.garden_revolution.utility.Buton;
 
 
-public class Meniu implements Screen {
+public class SplashScreen implements Screen {
 
     public GR_Start     game;
+
     private SpriteBatch batch;
+    private Sprite      fundal;
+    private Texture     loader;
 
-    private Buton       butoane[] = new Buton[2];
 
-    public Meniu(GR_Start game) {
+    public SplashScreen(GR_Start game) {
         this.game = game;
         batch = new SpriteBatch();
 
-        butoane[0] = new Buton( "play" ).setPozi( 50, 100 );
-        butoane[1] = new Buton( "test" ).setPozi( 50, 200 );
-
+        loader = new Texture( "imagini/fundale/splash.png" );
+        loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
+        fundal = new Sprite( loader );
+        fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
     }
 
     @Override
     public void show() {
-        System.out.println( "meniu apare" );
     }
 
     @Override
     public void render(float delta) {
-        
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT  );
+        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
-        if ( butoane[0].isPressed() )
-            game.setScreen( game.test );
+        if ( GR_Start.manager.update() ) {
+            game.makeScreens();
+            game.setScreen( game.meniu );
+        }
 
-        if ( butoane[0].isPressed() )
-            game.setScreen( game.gameplay );
 
         batch.begin();
-
-        for (Buton buton : butoane )
-            buton.render( delta, batch );
-
+        fundal.draw( batch );
         batch.end();
-
     }
 
     @Override
@@ -55,7 +53,6 @@ public class Meniu implements Screen {
 
     @Override
     public void hide() {
-        System.out.println( "meniu dispare" );
     }
 
     @Override
@@ -68,10 +65,8 @@ public class Meniu implements Screen {
 
     @Override
     public void dispose() {
-        game.dispose();
+        loader.dispose();
         batch.dispose();
-        for (Buton buton : butoane )
-            buton.dispose();
     }
 
 }
