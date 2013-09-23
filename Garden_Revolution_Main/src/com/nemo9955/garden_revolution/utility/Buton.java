@@ -19,13 +19,13 @@ public class Buton implements Disposable {
 
     private Sprite             img;
     private Rectangle          zon = new Rectangle();
+    private static Texture            loader;
 
     public Buton(String link) {
 
-        Texture loader = GR_Start.manager.get( String.format( "imagini/butoane/%s.png", link, Texture.class ) );
+        loader = GR_Start.manager.get( String.format( "imagini/butoane/%s.png", link, Texture.class ) );
         loader.setFilter( TextureFilter.Linear, TextureFilter.Linear );
         img = new Sprite( loader );
-        loader.dispose();
 
         zon.setSize( img.getWidth(), img.getHeight() );
     }
@@ -53,6 +53,7 @@ public class Buton implements Disposable {
     @Override
     public void dispose() {
         img.getTexture().dispose();
+        loader.dispose();
     }
 
 }

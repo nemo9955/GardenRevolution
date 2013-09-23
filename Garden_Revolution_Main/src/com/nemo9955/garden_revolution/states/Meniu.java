@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -11,12 +10,12 @@ import com.nemo9955.garden_revolution.utility.Buton;
 
 public class Meniu implements Screen {
 
-    public Game         game;
+    public GR_Start     game;
     private SpriteBatch batch;
 
     private Buton       butoane[] = new Buton[2];
 
-    public Meniu(Game game) {
+    public Meniu(GR_Start game) {
         this.game = game;
         batch = new SpriteBatch();
 
@@ -27,19 +26,21 @@ public class Meniu implements Screen {
 
     @Override
     public void show() {
-        System.out.println("meniu");
+        System.out.println( "meniu apare" );
     }
 
     @Override
     public void render(float delta) {
-      //  Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+      //  Gdx.gl.glClearColor( 0, 0, 0, 0 );
+        Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+
+     //   System.out.println( "meniu rand" );
 
         if ( butoane[0].isPressed() )
-            game.setScreen( GR_Start.test );
+            game.setScreen( game.test );
 
         if ( butoane[0].isPressed() )
-            game.setScreen( GR_Start.gameplay );
+            game.setScreen( game.gameplay );
 
         batch.begin();
 
@@ -56,6 +57,7 @@ public class Meniu implements Screen {
 
     @Override
     public void hide() {
+        System.out.println( "meniu dispare" );
     }
 
     @Override
@@ -70,6 +72,8 @@ public class Meniu implements Screen {
     public void dispose() {
         game.dispose();
         batch.dispose();
+        for (Buton buton : butoane )
+            buton.dispose();
     }
 
 }

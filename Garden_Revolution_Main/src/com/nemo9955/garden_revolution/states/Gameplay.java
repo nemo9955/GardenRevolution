@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -19,7 +18,7 @@ import com.nemo9955.garden_revolution.GR_Start;
 
 public class Gameplay implements Screen {
 
-    public Game                  game;
+    public GR_Start              game;
 
     public PerspectiveCamera     cam;
     public CameraInputController camController;
@@ -37,7 +36,7 @@ public class Gameplay implements Screen {
 
     private String               data      = "data";
 
-    public Gameplay(Game game) {
+    public Gameplay(GR_Start game) {
         this.game = game;
 
 
@@ -103,7 +102,7 @@ public class Gameplay implements Screen {
     public void render(float delta) {
 
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
-            game.setScreen( GR_Start.meniu );
+            game.setScreen( game.meniu );
 
         if ( loading &&assets.update() )
             doneLoading();

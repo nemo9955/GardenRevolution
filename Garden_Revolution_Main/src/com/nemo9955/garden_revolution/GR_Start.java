@@ -17,13 +17,16 @@ public class GR_Start extends Game {
     public static final String TITLU    = "Garden Revolution";
     public static final String VERSIUNE = "alfa 0.01";
 
-    public static Gameplay     gameplay;
-    public static Meniu        meniu;
-    public static TestScene    test;
+    public Gameplay            gameplay;
+    public Meniu               meniu;
+    public TestScene           test;
 
     public static AssetManager manager;
+
+    private boolean            first    = true;
     private SpriteBatch        batch;
     private Sprite             fundal;
+    private Texture            loader;
 
 
     @Override
@@ -31,11 +34,10 @@ public class GR_Start extends Game {
 
         batch = new SpriteBatch();
 
-        Texture loader = new Texture( "imagini/fundale/splash.png" );
+        loader = new Texture( "imagini/fundale/splash.png" );
         loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
         fundal = new Sprite( loader );
-        loader.dispose();
-        fundal.setPosition( Gdx.graphics.getWidth() /2-(fundal.getWidth()/2), Gdx.graphics.getHeight() /2 -(fundal.getHeight()/2 ));
+        fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
 
         manager = new AssetManager();
 
@@ -49,13 +51,20 @@ public class GR_Start extends Game {
 
     @Override
     public void render() {
-        super.render();
-
-        if ( manager.update() ) {
-        }
-        // setScreen( meniu );
+         super.render();
 
         Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+        if ( manager.update() ) {
+            if ( first ) {
+                first = false;
+                gameplay = new Gameplay( this );
+                meniu = new Meniu( this );
+                test = new TestScene( this );
+            setScreen( meniu );
+            }
+
+        }
+
 
 
         batch.begin();
@@ -71,9 +80,6 @@ public class GR_Start extends Game {
     @Override
     public void pause() {
         super.pause();
-        gameplay = new Gameplay( this );
-        meniu = new Meniu( this );
-        test = new TestScene( this );
     }
 
     @Override
@@ -84,6 +90,7 @@ public class GR_Start extends Game {
     @Override
     public void dispose() {
         super.dispose();
+        loader.dispose();
         batch.dispose();
     }
 }

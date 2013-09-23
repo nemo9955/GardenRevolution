@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -11,11 +10,11 @@ import com.nemo9955.garden_revolution.utility.Buton;
 
 public class TestScene implements Screen {
 
-    public Game         game;
+    public GR_Start     game;
     private SpriteBatch batch;
     private Buton       butoane[] = new Buton[1];
 
-    public TestScene(Game game) {
+    public TestScene(GR_Start game) {
         this.game = game;
         batch = new SpriteBatch();
         butoane[0] = new Buton( "back" ).setPozi( 10, 10 );
@@ -23,16 +22,16 @@ public class TestScene implements Screen {
 
     @Override
     public void show() {
-        System.out.println("test");
+        System.out.println( "test" );
     }
 
     @Override
     public void render(float delta) {
-      //  Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-        
+        // Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+
         if ( butoane[0].isPressed() )
-            game.setScreen( GR_Start.meniu );
+            game.setScreen( game.meniu );
 
         batch.begin();
 
