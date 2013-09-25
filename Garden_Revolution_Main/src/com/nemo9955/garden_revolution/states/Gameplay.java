@@ -27,6 +27,7 @@ public class Gameplay implements Screen {
 
     private ModelInstance         cer;
 
+    private float                 timer     = 0;
 
     public Gameplay(GR_Start game) {
         this.game = game;
@@ -90,6 +91,14 @@ public class Gameplay implements Screen {
 
         camController.update();
 
+
+        if ( Gdx.input.isTouched() ) {
+            timer -= delta;
+            if ( timer <=2f )
+                game.setScreen( game.meniu );
+        }
+        else
+            timer = 5f;
 
         modelBatch.begin( cam );
         for (ModelInstance instance : instances )

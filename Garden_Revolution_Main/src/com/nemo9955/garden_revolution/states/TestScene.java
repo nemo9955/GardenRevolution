@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -28,6 +27,8 @@ public class TestScene implements Screen {
     private TweenManager       tweeger;
     private Buton              butoane[] = new Buton[1];
 
+    private float              pozitie   = 0;
+
     public TestScene(GR_Start game) {
         this.game = game;
         tweeger = new TweenManager();
@@ -39,7 +40,7 @@ public class TestScene implements Screen {
         shape.setProjectionMatrix( cam.combined );
         batch.setProjectionMatrix( cam.combined );
         shape.setColor( Color.RED );
-        cam.position.set(  Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 0 );
+        cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         cam.update();
 
         butoane[0] = new Buton( "back" ).setPozi( 100, 100 ).setOrigin( 0, 0 );
@@ -50,6 +51,7 @@ public class TestScene implements Screen {
     @Override
     public void show() {
         Buton.tweeger = tweeger;
+        cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
     }
 
     @Override
@@ -61,30 +63,48 @@ public class TestScene implements Screen {
 
         tweeger.update( delta );
 
-        if ( butoane[0].isPressed() )
+        if ( butoane[0].isPressed() ) {
+            Gdx.input.vibrate( 500 );
             game.setScreen( game.meniu );
+        }
 
         // normal image rendering
         batch.setProjectionMatrix( cam.combined );
         batch.begin();
         for (Buton buton : butoane )
             buton.render( delta, batch );
-        font.draw( batch, "vsdfvgd", 50, 50 );
+
+        font.draw( batch, String.format( "Apasat?  : %s", Gdx.input.isTouched() ), 100, 700 );
+        font.draw( batch, String.format( "Format    : %s", Gdx.input.getNativeOrientation().toString() ), 100, 650 );
+
+        font.draw( batch, String.format( "Roll       : %f", Gdx.input.getRoll() ), 100, 550 );
+        font.draw( batch, String.format( "Pitch      : %f", Gdx.input.getPitch() ), 100, 500 );
+        font.draw( batch, String.format( "Azimuth : %f", Gdx.input.getAzimuth() ), 100, 450 );
+
+
+        font.draw( batch, String.format( "Acc Z : %f", Gdx.input.getAccelerometerZ() ), 100, 350 );
+        font.draw( batch, String.format( "Acc Y : %f", Gdx.input.getAccelerometerY() ), 100, 300 );
+        font.draw( batch, String.format( "Acc X : %f", Gdx.input.getAccelerometerX() ), 100, 250 );
+
         batch.end();
 
         // shape rendering
         shape.setProjectionMatrix( cam.combined );
         shape.begin( ShapeType.Line );
-        shape.line( 0, 0, 90, -100 );
-        shape.line( 0, 0, 110, 50 );
-        shape.line( 0, 0, -100, 100 );
-        shape.line( 0, 0, -100, -60 );
+
         shape.end();
 
-        if ( Gdx.input.isKeyPressed( Input.Keys.W ) )
-            cam.translate( 0, 5 );
+        if ( Gdx.input.isTouched() ){
+            cam.translate( 0, -(pozitie-Gdx.input.getY()) );
+            pozitie = Gdx.input.getY() ;
+        }else{
+            pozitie=Gdx.input.getY();
+        }
+
+          /*  if ( Gdx.input.isKeyPressed( Input.Keys.W ) )
+                cam.translate( 0, 5 );
         if ( Gdx.input.isKeyPressed( Input.Keys.S ) )
-            cam.translate( 0, -5 );
+            cam.translate( 0, -5 );*/
 
     }
 

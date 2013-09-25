@@ -7,7 +7,6 @@ import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quad;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -89,11 +88,13 @@ public class Buton implements Disposable {
         if ( action >=3 )
             doAnimation();
 
-        if ( Gdx.input.isKeyPressed( Input.Keys.F1 ) ) {
-            System.out.println( x +inix +" " + ( y +iniy ) );
-            System.out.println( inix +" " +iniy );
-            System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
-        }
+        /*
+         * if (Gdx.input.isKeyPressed( Input.Keys.F1 ) ) {
+         * System.out.println( x +inix +" " + ( y +iniy ) );
+         * System.out.println( inix +" " +iniy );
+         * System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
+         * }
+         */
 
         img.draw( batch );
     }
