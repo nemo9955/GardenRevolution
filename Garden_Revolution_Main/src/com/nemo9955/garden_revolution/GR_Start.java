@@ -39,6 +39,7 @@ public class GR_Start extends Game {
         manager.load( "imagini/butoane/play.png", Texture.class );
         manager.load( "imagini/butoane/meniu.png", Texture.class );
         manager.load( "imagini/butoane/back.png", Texture.class );
+        manager.load( "fonts/font1.fnt", BitmapFont.class );
 
         manager.load( "modele/scena.g3db", Model.class );
 
@@ -48,9 +49,9 @@ public class GR_Start extends Game {
     }
 
     public void postLoading() {
+        test = new TestScene( this );
         gameplay = new Gameplay( this );
         meniu = new Meniu( this );
-        test = new TestScene( this );
 
         gameplay.manageModels();
     }

@@ -7,12 +7,13 @@ import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quad;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.GR_Start;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
@@ -23,8 +24,13 @@ public class Buton implements Disposable {
     public static TweenManager tweeger;
 
     private Sprite             img;
-    private Rectangle          zon    = new Rectangle();
     private static Texture     loader;
+    private Camera             cam;
+    private boolean            hasCamera = false;
+
+    private final float        width, height;
+    private float              x, y;
+    private float              inix, iniy;
 
     /*
      * action :
@@ -36,8 +42,8 @@ public class Buton implements Disposable {
      * 5 + apasa
      * 6 + acceseaza
      */
-    private byte               action = 0;
-    private static boolean     canAcc = true;
+    private byte               action    = 0;
+    private static boolean     canAcc    = true;
 
     public Buton(String link) {
 
@@ -46,12 +52,21 @@ public class Buton implements Disposable {
         img = new Sprite( loader );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
-        zon.setSize( img.getWidth(), img.getHeight() );
+        x = 0;
+        y = 0;
+
+        width = img.getWidth();
+        height = img.getHeight();
     }
 
     public void render(float delta, SpriteBatch batch) {
+        if ( hasCamera ) {
+            x = inix +cam.position.x -width - ( Gdx.graphics.getWidth() /2 );
+            y = -iniy +cam.position.y + ( height *1.5f );// + Gdx.graphics.getHeight() ;
+        }
 
-        if ( zon.contains( Gdx.input.getX(), Gdx.input.getY() ) ) {
+
+        if ( contains( Gdx.input.getX(), Gdx.input.getY() ) ) {
 
             if ( action ==1 )
                 action = 3;
@@ -73,6 +88,12 @@ public class Buton implements Disposable {
 
         if ( action >=3 )
             doAnimation();
+
+        if ( Gdx.input.isKeyPressed( Input.Keys.F1 ) ) {
+            System.out.println( x +inix +" " + ( y +iniy ) );
+            System.out.println( inix +" " +iniy );
+            System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
+        }
 
         img.draw( batch );
     }
@@ -98,6 +119,10 @@ public class Buton implements Disposable {
         }
     }
 
+    private boolean contains(float pozx, float pozy) {
+        return ( pozx >x +inix &&pozx <x +inix +width &&pozy >y +iniy &&pozy <y +iniy +height );
+    }
+
     public boolean isPressed() {
         if ( canAcc ==false &&action ==6 ) {
             canAcc = true;
@@ -108,8 +133,9 @@ public class Buton implements Disposable {
     }
 
     public Buton setPozi(float x, float y) {
-        zon.setPosition( x, Gdx.graphics.getHeight() -y -zon.getHeight() );
         img.setPosition( x, y );
+        inix = x;
+        iniy = Gdx.graphics.getHeight() -y -height;
         return this;
     }
 
@@ -126,6 +152,11 @@ public class Buton implements Disposable {
         return this;
     }
 
+    public void setCamera(Camera cam) {
+        this.cam = cam;
+        hasCamera = true;
+    }
+
     @Override
     public void dispose() {
         img.getTexture().dispose();
@@ -133,11 +164,11 @@ public class Buton implements Disposable {
     }
 
     public float getHeight() {
-        return zon.getHeight();
+        return height;
     }
 
     public float getWidth() {
-        return zon.getWidth();
+        return width;
     }
 
 }
