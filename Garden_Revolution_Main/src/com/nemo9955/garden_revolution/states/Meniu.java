@@ -42,7 +42,7 @@ public class Meniu implements Screen {
 
         if ( butoane[0].isPressed() )
             game.setScreen( game.gameplay );
-        if ( butoane[0].isPressed() )
+        if ( butoane[1].isPressed() )
             game.setScreen( game.test );
 
         batch.begin();

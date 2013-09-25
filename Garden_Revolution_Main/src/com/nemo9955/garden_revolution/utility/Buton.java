@@ -26,11 +26,18 @@ public class Buton implements Disposable {
     private Rectangle          zon    = new Rectangle();
     private static Texture     loader;
 
-    private static boolean     canAcc = true;
-    private boolean            acces  = false;
+    /*
+     * action :
+     * 0 default
+     * 1 afara
+     * 2 inauntru
+     * 3 + intra
+     * 4 + iesi
+     * 5 + apasa
+     * 6 + acceseaza
+     */
     private byte               action = 0;
-
-    private boolean            temp1 , temp2;
+    private static boolean     canAcc = true;
 
     public Buton(String link) {
 
@@ -53,7 +60,6 @@ public class Buton implements Disposable {
 
             if ( canAcc &&Gdx.input.isButtonPressed( Buttons.LEFT ) ) {
 
-                System.out.println( "apasa butonul" );
                 canAcc = false;
                 action = 5;
             }
@@ -74,18 +80,17 @@ public class Buton implements Disposable {
     private void doAnimation() {
         switch (action) {
             case 3:// intra
-                Tween.to( img, SpriteTween.SIZE, .4f ).target( 1.2f, 1.2f ).ease( Quad.IN ).start( tweeger );
+                Tween.to( img, SpriteTween.SIZE, .2f ).target( 1.15f, 1.1f ).ease( Quad.IN ).start( tweeger );
                 break;
             case 4:// iese
-                Tween.to( img, SpriteTween.SIZE, .4f ).target( 1f, 1f ).ease( Quad.OUT ).start( tweeger );
+                Tween.to( img, SpriteTween.SIZE, .35f ).target( 1f, 1f ).ease( Quad.OUT ).start( tweeger );
                 break;
             case 5:// acces
                 Tween.to( img, SpriteTween.ALPHA, .3f ).target( .6f ).repeatYoyo( 1, 0 ).setCallback( new TweenCallback() {
 
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        System.out.println( "termina animatia" );
-                        acces = true;
+                        action = 6;
                     }
 
                 } ).start( tweeger );
@@ -94,16 +99,9 @@ public class Buton implements Disposable {
     }
 
     public boolean isPressed() {
-        if ( ( canAcc != temp1) || ( acces !=temp2 ) ) {
-            temp1 = canAcc;
-            temp2 = acces;
-            System.out.println( canAcc +" " +acces );
-        }
-        
-        if ( canAcc ==false &&acces ==true ) {
+        if ( canAcc ==false &&action ==6 ) {
             canAcc = true;
-            acces = false;
-            System.out.println( "accesat" );
+            action = 0;
             return true;
         }
         return false;
@@ -112,7 +110,19 @@ public class Buton implements Disposable {
     public Buton setPozi(float x, float y) {
         zon.setPosition( x, Gdx.graphics.getHeight() -y -zon.getHeight() );
         img.setPosition( x, y );
-        // zon.setCenter( img.getX()+(img.getWidth()/2), img.getY()+(img.getHeight()/2) );
+        return this;
+    }
+
+    public Buton setOrigin(float x, float y) {
+        float orX = img.getOriginX();
+        float orY = img.getOriginY();
+
+        if ( x !=-1 )
+            orX = x;
+        if ( y !=-1 )
+            orY = y;
+
+        img.setOrigin( orX, orY );
         return this;
     }
 
@@ -120,6 +130,14 @@ public class Buton implements Disposable {
     public void dispose() {
         img.getTexture().dispose();
         loader.dispose();
+    }
+
+    public float getHeight() {
+        return zon.getHeight();
+    }
+
+    public float getWidth() {
+        return zon.getWidth();
     }
 
 }

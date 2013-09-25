@@ -12,7 +12,7 @@ public class Main {
       //  cfg.backgroundFPS = -1;
         cfg.resizable = false ;
         cfg.width = 800;
-        cfg.height = 600;
+        cfg.height = 450;
 
         new LwjglApplication( new GR_Start(), cfg );
     }
