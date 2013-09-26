@@ -9,7 +9,6 @@ public class Main {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = GR_Start.TITLU +" " +GR_Start.VERSIUNE;
         cfg.useGL20 = true;
-      //  cfg.backgroundFPS = -1;
         cfg.resizable = false ;
         cfg.width = 800;
         cfg.height = 450;
