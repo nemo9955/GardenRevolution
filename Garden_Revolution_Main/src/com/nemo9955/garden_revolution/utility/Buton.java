@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
-import com.nemo9955.garden_revolution.GR_Start;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 
@@ -46,7 +46,7 @@ public class Buton implements Disposable {
 
     public Buton(String link) {
 
-        loader = GR_Start.manager.get( String.format( "imagini/butoane/%s.png", link, Texture.class ) );
+        loader = Garden_Revolution.manager.get( String.format( Garden_Revolution.BUTOANE +"%s.png", link, Texture.class ) );
         loader.setFilter( TextureFilter.Linear, TextureFilter.Linear );
         img = new Sprite( loader );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );

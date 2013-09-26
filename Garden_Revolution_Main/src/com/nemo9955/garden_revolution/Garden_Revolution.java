@@ -3,6 +3,8 @@ package com.nemo9955.garden_revolution;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,17 +18,23 @@ import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 
-public class GR_Start extends Game {
+public class Garden_Revolution extends Game {
 
-    public static final String TITLU    = "Garden Revolution";
-    public static final String VERSIUNE = "alfa 0.08";
+    public static final String     BUTOANE  = "imagini/butoane/";
+    public static final String     FUNDALE  = "imagini/fundale/";
+    public static final String     FONTURI  = "fonts/";
+    public static final String     MODELE   = "modele/";
 
-    public Gameplay            gameplay;
-    public Meniu               meniu;
-    public TestScene           test;
-    public SplashScreen        splash;
+    public static final String     TITLU    = "Garden Revolution";
+    public static final String     VERSIUNE = "alfa 0.08";
 
-    public static AssetManager manager;
+    public Gameplay                gameplay;
+    public Meniu                   meniu;
+    public TestScene               test;
+    public SplashScreen            splash;
+
+    public static AssetManager     manager;
+    public static InputMultiplexer multiplexer;
 
     @Override
     public void create() {
@@ -35,15 +43,16 @@ public class GR_Start extends Game {
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
         Texture.setEnforcePotImages( false );
+        multiplexer = new InputMultiplexer();
 
         manager = new AssetManager();
-        manager.load( "imagini/butoane/test.png", Texture.class );
-        manager.load( "imagini/butoane/play.png", Texture.class );
-        manager.load( "imagini/butoane/meniu.png", Texture.class );
-        manager.load( "imagini/butoane/back.png", Texture.class );
-        manager.load( "fonts/font1.fnt", BitmapFont.class );
+        manager.load( BUTOANE +"test.png", Texture.class );
+        manager.load( BUTOANE +"play.png", Texture.class );
+        manager.load( BUTOANE +"meniu.png", Texture.class );
+        manager.load( BUTOANE +"back.png", Texture.class );
+        manager.load( FONTURI +"font1.fnt", BitmapFont.class );
 
-        manager.load( "modele/scena.g3db", Model.class );
+        manager.load( MODELE +"scena.g3db", Model.class );
 
         splash = new SplashScreen( this );
         setScreen( splash );
@@ -56,6 +65,9 @@ public class GR_Start extends Game {
         meniu = new Meniu( this );
 
         gameplay.manageModels();
+
+        multiplexer.addProcessor( gameplay );
+        Gdx.input.setInputProcessor( multiplexer );
     }
 
     @Override

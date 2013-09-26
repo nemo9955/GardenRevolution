@@ -5,19 +5,19 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.nemo9955.garden_revolution.GR_Start;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 
 public class TestScene implements Screen {
 
-    public GR_Start            game;
+    public Garden_Revolution   game;
     private SpriteBatch        batch;
     private ShapeRenderer      shape;
     private OrthographicCamera cam;
@@ -29,10 +29,10 @@ public class TestScene implements Screen {
 
     private float              pozitie   = 0;
 
-    public TestScene(GR_Start game) {
+    public TestScene(Garden_Revolution game) {
         this.game = game;
         tweeger = new TweenManager();
-        font = GR_Start.manager.get( "fonts/font1.fnt" );
+        font = Garden_Revolution.manager.get( "fonts/font1.fnt" );
 
         batch = new SpriteBatch();
         shape = new ShapeRenderer();
@@ -59,7 +59,7 @@ public class TestScene implements Screen {
 
         cam.update();
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
-        Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT |GL10.GL_DEPTH_BUFFER_BIT );
+        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
 
         tweeger.update( delta );
 
@@ -94,17 +94,20 @@ public class TestScene implements Screen {
 
         shape.end();
 
-        if ( Gdx.input.isTouched() ){
-            cam.translate( 0, -(pozitie-Gdx.input.getY()) );
-            pozitie = Gdx.input.getY() ;
-        }else{
-            pozitie=Gdx.input.getY();
+        if ( Gdx.input.isTouched() ) {
+            cam.translate( 0, - ( pozitie -Gdx.input.getY() ) );
+            pozitie = Gdx.input.getY();
+        }
+        else {
+            pozitie = Gdx.input.getY();
         }
 
-          /*  if ( Gdx.input.isKeyPressed( Input.Keys.W ) )
-                cam.translate( 0, 5 );
-        if ( Gdx.input.isKeyPressed( Input.Keys.S ) )
-            cam.translate( 0, -5 );*/
+        /*
+         * if ( Gdx.input.isKeyPressed( Input.Keys.W ) )
+         * cam.translate( 0, 5 );
+         * if ( Gdx.input.isKeyPressed( Input.Keys.S ) )
+         * cam.translate( 0, -5 );
+         */
 
     }
 

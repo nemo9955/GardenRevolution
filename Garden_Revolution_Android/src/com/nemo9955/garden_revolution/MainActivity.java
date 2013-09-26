@@ -16,7 +16,7 @@ public class MainActivity extends AndroidApplication {
         cfg.useAccelerometer = true;
         cfg.useCompass = false;
 
-        initialize( new GR_Start(), cfg );
+        initialize( new Garden_Revolution(), cfg );
 
     }
 }

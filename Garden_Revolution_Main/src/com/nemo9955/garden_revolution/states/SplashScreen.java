@@ -6,23 +6,23 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.nemo9955.garden_revolution.GR_Start;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 
 
 public class SplashScreen implements Screen {
 
-    public GR_Start     game;
+    public Garden_Revolution game;
 
-    private SpriteBatch batch;
-    private Sprite      fundal;
-    private Texture     loader;
+    private SpriteBatch      batch;
+    private Sprite           fundal;
+    private Texture          loader;
 
 
-    public SplashScreen(GR_Start game) {
+    public SplashScreen(Garden_Revolution game) {
         this.game = game;
         batch = new SpriteBatch();
 
-        loader = new Texture( "imagini/fundale/splash.png" );
+        loader = new Texture( Garden_Revolution.FUNDALE +"splash.png" );
         loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
         fundal = new Sprite( loader );
         fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
@@ -36,7 +36,7 @@ public class SplashScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
-        if ( GR_Start.manager.update() ) {
+        if ( Garden_Revolution.manager.update() ) {
             game.postLoading();
             game.setScreen( game.meniu );
         }

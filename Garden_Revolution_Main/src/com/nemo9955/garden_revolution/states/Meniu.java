@@ -6,26 +6,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.nemo9955.garden_revolution.GR_Start;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 
 public class Meniu implements Screen {
 
-    public GR_Start      game;
-    private SpriteBatch  batch;
-    private TweenManager tweeger;
+    public Garden_Revolution game;
+    private SpriteBatch      batch;
+    private TweenManager     tweeger;
 
-    private Buton        butoane[] = new Buton[2];
+    private Buton            butoane[] = new Buton[2];
 
-    public Meniu(GR_Start game) {
+    public Meniu(Garden_Revolution game) {
         this.game = game;
 
         batch = new SpriteBatch();
         tweeger = new TweenManager();
 
-        butoane[0] = new Buton( "play" ).setPozi( 50, 50 );
-        butoane[1] = new Buton( "test" ).setPozi( 150, 150 );
+        butoane[0] = new Buton( "play" ).setPozi( 150, 150 );
+        butoane[1] = new Buton( "test" ).setPozi( 50, 50 );
 
     }
 
