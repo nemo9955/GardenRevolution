@@ -44,7 +44,7 @@ public class TestScene implements Screen, InputProcessor {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         cam.update();
 
-        butoane[0] = new Buton( "back" ).setPozi( 100, 100 ).setOrigin( 0, 0 );
+        butoane[0] = new Buton( "back" ).setPozi( 100, 100 ).setOrigin( 0, 0.5f );
         for (Buton buton : butoane )
             buton.setCamera( cam );
     }

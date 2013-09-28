@@ -8,9 +8,9 @@ import aurelienribon.tweenengine.equations.Quad;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,7 +24,6 @@ public class Buton implements Disposable {
     public static TweenManager tweeger;
 
     private Sprite             img;
-    private static Texture     loader;
     private Camera             cam;
     private boolean            hasCamera = false;
 
@@ -47,10 +46,7 @@ public class Buton implements Disposable {
     private static boolean     canAcc    = true;
 
     public Buton(String link) {
-
-        loader = Garden_Revolution.manager.get( String.format( Garden_Revolution.BUTOANE +"%s.png", link, Texture.class ) );
-        loader.setFilter( TextureFilter.Linear, TextureFilter.Linear );
-        img = new Sprite( loader );
+        img = new Sprite( (Texture) Garden_Revolution.manager.get( String.format( Garden_Revolution.BUTOANE +"%s.png", link ) ) );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
         zon = new Rectangle();
@@ -90,13 +86,15 @@ public class Buton implements Disposable {
 
     private boolean coordonate(int x, int y) {
 
+        if ( Gdx.input.isKeyPressed( Keys.F1 ) )
+            System.out.println( x +" " + ( -y +scrh ) );
+
         if ( hasCamera ) {
             return ( zon.contains( x +cam.position.x - ( scrw /2 ), -y + ( scrh /2 ) +cam.position.y ) );
         }
         else {
             return ( zon.contains( x, -y +scrh ) );
         }
-
 
     }
 
@@ -125,6 +123,7 @@ public class Buton implements Disposable {
         if ( canAcc ==false &&action ==6 ) {
             canAcc = true;
             action = 0;
+            Tween.set( img, SpriteTween.SIZE ).target( 1f, 1f ).start( tweeger );
             return true;
         }
         return false;
@@ -145,19 +144,24 @@ public class Buton implements Disposable {
         if ( y !=-1 )
             orY = y;
 
+        if ( x >0 &&x <=1 )
+            orX = img.getWidth() *x;
+        if ( y >0 &&y <=1 )
+            orY = img.getHeight() *y;
+
         img.setOrigin( orX, orY );
         return this;
     }
 
-    public void setCamera(Camera cam) {
+    public Buton setCamera(Camera cam) {
         this.cam = cam;
         hasCamera = true;
+        return this;
     }
 
     @Override
     public void dispose() {
         img.getTexture().dispose();
-        loader.dispose();
     }
 
     public float getHeight() {
@@ -166,6 +170,10 @@ public class Buton implements Disposable {
 
     public float getWidth() {
         return zon.getWidth();
+    }
+
+    public Rectangle getZon() {
+        return zon;
     }
 
 }

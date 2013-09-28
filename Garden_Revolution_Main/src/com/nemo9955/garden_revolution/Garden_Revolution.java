@@ -6,7 +6,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -43,24 +45,26 @@ public class Garden_Revolution extends Game {
     @Override
     public void create() {
 
-        Tween.registerAccessor( Sprite.class, new SpriteTween() );
-        Tween.registerAccessor( BitmapFont.class, new FontTween() );
-
-        Texture.setEnforcePotImages( false );
-        multiplexer = new InputMultiplexer();
-        Bullet.init();
-
         manager = new AssetManager();
-        manager.load( BUTOANE +"test.png", Texture.class );
-        manager.load( BUTOANE +"play.png", Texture.class );
-        manager.load( BUTOANE +"meniu.png", Texture.class );
-        manager.load( BUTOANE +"back.png", Texture.class );
-        manager.load( BUTOANE +"exit.png", Texture.class );
+
+        TextureParameter param = new TextureParameter();
+        param.minFilter = TextureFilter.Linear;
+        param.magFilter = TextureFilter.Linear;
+
 
         manager.load( FONTURI +"font1.fnt", BitmapFont.class );
 
-
         manager.load( MODELE +"scena.g3db", Model.class );
+
+        manager.load( BUTOANE +"test.png", Texture.class, param );
+        manager.load( BUTOANE +"play.png", Texture.class, param );
+        manager.load( BUTOANE +"meniu.png", Texture.class, param );
+        manager.load( BUTOANE +"resume.png", Texture.class, param );
+        manager.load( BUTOANE +"back.png", Texture.class, param );
+        manager.load( BUTOANE +"exit.png", Texture.class, param );
+
+        manager.load( ELEMENTE +"optiuni_fundal.png", Texture.class, param );
+        manager.load( ELEMENTE +"optiuni.png", Texture.class, param );
 
         splash = new SplashScreen( this );
         setScreen( splash );
@@ -68,6 +72,16 @@ public class Garden_Revolution extends Game {
     }
 
     public void postLoading() {
+
+
+        Tween.registerAccessor( Sprite.class, new SpriteTween() );
+        Tween.registerAccessor( BitmapFont.class, new FontTween() );
+
+        Texture.setEnforcePotImages( false );
+        multiplexer = new InputMultiplexer();
+        Bullet.init();
+
+
         test = new TestScene( this );
         gameplay = new Gameplay( this );
         meniu = new Meniu( this );

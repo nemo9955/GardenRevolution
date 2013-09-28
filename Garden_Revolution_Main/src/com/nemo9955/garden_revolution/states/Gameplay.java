@@ -1,13 +1,16 @@
 package com.nemo9955.garden_revolution.states;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -17,6 +20,10 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.slidingPanel.OptionPanel;
+import com.nemo9955.garden_revolution.slidingPanel.SlidingPanel;
+import com.nemo9955.garden_revolution.utility.Buton;
+import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Gameplay implements Screen, InputProcessor {
 
@@ -27,26 +34,28 @@ public class Gameplay implements Screen, InputProcessor {
     private Array<ModelInstance> instances    = new Array<ModelInstance>();
     private Lights               lights;
     private ModelInstance        cer;
-    private float                timer        = 0;
-
 
     private float                rotateAngle  = 360f;
     public int                   rotateButton = Buttons.LEFT;
+    private float                startX, startY;
+    private boolean              moveByTouch  = true;
+    private boolean              moveUp       = false, moveDown = false, moveLeft = false, moveRight = false;
     private final Vector3        tmpV1        = new Vector3();
     public Vector3               target       = new Vector3( 0, 15, 0 );
     private float                deltaX       = 0;
     private float                deltaY       = 0;
 
-    private boolean              moveByTouch  = true;
-    private float                startX, startY;
-    private boolean              moveUp       = false, moveDown = false, moveLeft = false, moveRight = false;
-
+    private short                toUpdate     = 0;
+    private SpriteBatch          batch;
+    private TweenManager         tweeger;
+    private SlidingPanel         panels[]     = new SlidingPanel[1];
 
     public Gameplay(Garden_Revolution game) {
         this.game = game;
-
         float amb = 0.4f, lum = 0.6f;
+        tweeger = new TweenManager();
 
+        batch = new SpriteBatch();
         modelBatch = new ModelBatch();
         lights = new Lights();
         lights.ambientLight.set( amb, amb, amb, .5f );
@@ -58,10 +67,49 @@ public class Gameplay implements Screen, InputProcessor {
         cam.far = 300f;
         cam.update();
 
+        panels[0] = new OptionPanel( (byte) 1, 0f );
+
     }
 
     @Override
     public void show() {
+        Buton.tweeger = tweeger;
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
+        tweeger.update( delta );
+
+        if ( toUpdate ==0 )
+            updateGameplay( delta );
+
+        modelBatch.begin( cam );
+        for (ModelInstance instance : instances )
+            modelBatch.render( instance, lights );
+        if ( cer !=null )
+            modelBatch.render( cer );
+        modelBatch.end();
+
+        // if ( toUpdate !=0 )
+        // batch.setProjectionMatrix( SlidingPanel.cam.combined );
+        batch.begin();
+
+        if ( toUpdate ==0 )
+            for (SlidingPanel panel : panels )
+                panel.getMufa().draw( batch );
+
+        if ( toUpdate !=0 )
+            panels[toUpdate -1].render( batch, delta );
+
+        batch.end();
+        if ( SlidingPanel.exitPanel ) {
+            SlidingPanel.exitPanel = false;
+            toUpdate = 0;
+            for (SlidingPanel panelul : panels )
+                Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
+        }
     }
 
     public void manageModels() {
@@ -90,37 +138,14 @@ public class Gameplay implements Screen, InputProcessor {
         }
     }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
-
-        if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
-            game.setScreen( game.meniu );
-
+    private void updateGameplay(float delta) {
         updateCamera();
-
-        if ( Gdx.input.isTouched() ) {
-            timer -= delta;
-            if ( timer <=2f ) {
-                game.setScreen( game.meniu );
-            }
-        }
-        else
-            timer = 5f;
-
-        modelBatch.begin( cam );
-        for (ModelInstance instance : instances )
-            modelBatch.render( instance, lights );
-        if ( cer !=null )
-            modelBatch.render( cer );
-        modelBatch.end();
     }
 
     private void updateCamera() {
-        
-        final float toMove = 0.005f ;
-        
+
+        final float toMove = 0.005f;
+
         if ( moveUp )
             moveCamera( toMove, 0 );
         if ( moveDown )
@@ -131,6 +156,51 @@ public class Gameplay implements Screen, InputProcessor {
             moveCamera( 0, toMove );
 
         cam.update();
+    }
+
+    private void moveCamera(float amontX, float amontY) {
+        tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
+        cam.rotateAround( target, tmpV1.nor(), amontX *rotateAngle );
+        cam.rotateAround( target, Vector3.Y, amontY *-rotateAngle );
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+
+        for (byte i = 0 ; i <panels.length ; i ++ )
+            if ( panels[i].isActivated( screenX, screenY ) ) {
+                toUpdate = (short) ( i +1 );
+
+                for (SlidingPanel panelul : panels )
+                    Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 0f ).start( tweeger );
+                break;
+            }
+
+        if ( moveByTouch ) {
+            startX = screenX;
+            startY = screenY;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        if ( moveByTouch ) {
+            deltaX = ( screenX -startX ) /Gdx.graphics.getWidth();
+            deltaY = ( startY -screenY ) /Gdx.graphics.getHeight();
+            startX = screenX;
+            startY = screenY;
+            moveCamera( deltaY, deltaX );
+        }
+
+        return false;
     }
 
     @Override
@@ -150,13 +220,6 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     @Override
-    public void dispose() {
-        modelBatch.dispose();
-        instances.clear();
-        game.dispose();
-    }
-
-    @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.W:
@@ -171,7 +234,11 @@ public class Gameplay implements Screen, InputProcessor {
             case Keys.A:
                 moveLeft = true;
                 break;
+            case Keys.ESCAPE:
+                game.setScreen( game.meniu );
+                break;
         }
+
         return false;
     }
 
@@ -202,40 +269,6 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if ( moveByTouch ) {
-            startX = screenX;
-            startY = screenY;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-
-        if ( moveByTouch ) {
-            deltaX = ( screenX -startX ) /Gdx.graphics.getWidth();
-            deltaY = ( startY -screenY ) /Gdx.graphics.getHeight();
-            startX = screenX;
-            startY = screenY;
-            moveCamera( deltaY, deltaX );
-        }
-
-        return false;
-    }
-
-    private void moveCamera(float amontX, float amontY) {
-        tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
-        cam.rotateAround( target, tmpV1.nor(), amontX *rotateAngle );
-        cam.rotateAround( target, Vector3.Y, amontY *-rotateAngle );
-    }
-
-    @Override
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
@@ -243,5 +276,13 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    @Override
+    public void dispose() {
+        modelBatch.dispose();
+        instances.clear();
+        game.dispose();
+        batch.dispose();
     }
 }
