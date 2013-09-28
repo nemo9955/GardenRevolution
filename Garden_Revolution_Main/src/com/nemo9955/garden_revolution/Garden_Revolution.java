@@ -24,11 +24,12 @@ public class Garden_Revolution extends Game {
 
     public static final String     BUTOANE  = "imagini/butoane/";
     public static final String     FUNDALE  = "imagini/fundale/";
+    public static final String     ELEMENTE = "imagini/elemente/";
     public static final String     FONTURI  = "fonts/";
     public static final String     MODELE   = "modele/";
 
     public static final String     TITLU    = "Garden Revolution";
-    public static final String     VERSIUNE = "alfa 0.08";
+    public static final String     VERSIUNE = "alfa 0.10";
 
     public Gameplay                gameplay;
     public Meniu                   meniu;

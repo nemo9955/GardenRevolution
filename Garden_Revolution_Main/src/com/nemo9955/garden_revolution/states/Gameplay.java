@@ -2,6 +2,8 @@ package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,17 +24,22 @@ public class Gameplay implements Screen, InputProcessor {
 
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
-    private Array<ModelInstance> instances = new Array<ModelInstance>();
+    private Array<ModelInstance> instances    = new Array<ModelInstance>();
     private Lights               lights;
     private ModelInstance        cer;
+    private float                timer        = 0;
 
-    private float                timer     = 0;
-    private final float          rotSpeed  = 3f;
 
-    private Vector3              lookAt;
-    private final float          raza      = 50;
-    private float                unghi;
-    private float                modAng, modHei;
+    private float                rotateAngle  = 360f;
+    public int                   rotateButton = Buttons.LEFT;
+    private final Vector3        tmpV1        = new Vector3();
+    public Vector3               target       = new Vector3( 0, 15, 0 );
+    private float                deltaX       = 0;
+    private float                deltaY       = 0;
+
+    private boolean              moveByTouch  = true;
+    private float                startX, startY;
+    private boolean              moveUp       = false, moveDown = false, moveLeft = false, moveRight = false;
 
 
     public Gameplay(Garden_Revolution game) {
@@ -45,20 +52,11 @@ public class Gameplay implements Screen, InputProcessor {
         lights.ambientLight.set( amb, amb, amb, .5f );
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 5f ) );
 
-        lookAt = new Vector3();
-        lookAt.y = 50;
-        unghi = 0;
-        modAng = 0;
-        modHei = 0;
-
         cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.position.set( 0f, 15f, 0f );
-        cam.lookAt( 40, 0, 0 );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
-
-        modView( 0, 0 );
 
     }
 
@@ -100,13 +98,7 @@ public class Gameplay implements Screen, InputProcessor {
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
             game.setScreen( game.meniu );
 
-
-        if ( modAng !=0 ||modHei !=0 )
-            modView( modAng, modHei );
-        cam.lookAt( lookAt );
-
-
-        cam.update();
+        updateCamera();
 
         if ( Gdx.input.isTouched() ) {
             timer -= delta;
@@ -123,6 +115,22 @@ public class Gameplay implements Screen, InputProcessor {
         if ( cer !=null )
             modelBatch.render( cer );
         modelBatch.end();
+    }
+
+    private void updateCamera() {
+        
+        final float toMove = 0.005f ;
+        
+        if ( moveUp )
+            moveCamera( toMove, 0 );
+        if ( moveDown )
+            moveCamera( -toMove, 0 );
+        if ( moveLeft )
+            moveCamera( 0, -toMove );
+        if ( moveRight )
+            moveCamera( 0, toMove );
+
+        cam.update();
     }
 
     @Override
@@ -151,98 +159,89 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
-            case Input.Keys.W:
-                modHei = 3;
+            case Keys.W:
+                moveUp = true;
                 break;
-            case Input.Keys.S:
-                modHei = -3;
+            case Keys.S:
+                moveDown = true;
                 break;
-
-            case Input.Keys.A:
-                modAng = -rotSpeed;
+            case Keys.D:
+                moveRight = true;
                 break;
-            case Input.Keys.D:
-                modAng = rotSpeed;
+            case Keys.A:
+                moveLeft = true;
                 break;
         }
-
         return false;
-
     }
 
     @Override
     public boolean keyUp(int keycode) {
 
         switch (keycode) {
-            case Input.Keys.W:
-            case Input.Keys.S:
-                modHei = 0;
+            case Keys.W:
+                moveUp = false;
                 break;
-            case Input.Keys.A:
-            case Input.Keys.D:
-                modAng = 0;
+            case Keys.S:
+                moveDown = false;
+                break;
+            case Keys.D:
+                moveRight = false;
+                break;
+            case Keys.A:
+                moveLeft = false;
                 break;
         }
+
         return false;
-
-    }
-
-    // private Vector3 punct = new Vector3( 0, 15, 0 );
-
-    private void modView(float angle, float height) {
-
-        unghi += angle;
-        if ( unghi >=360 )
-            unghi -= 360;
-        if ( unghi <0 )
-            unghi += 360;
-        
-        lookAt.x = (float) ( raza *Math.cos( Math.toRadians( unghi ) ) );
-        lookAt.z = (float) ( raza *Math.sin( Math.toRadians( unghi ) ) );
-
-        if ( lookAt.y +height >-20 &&lookAt.y +height <50 )
-            lookAt.y += height;
     }
 
     @Override
     public boolean keyTyped(char character) {
-
         return false;
-
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        if ( moveByTouch ) {
+            startX = screenX;
+            startY = screenY;
+        }
         return false;
-
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-
         return false;
-
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        return false;
+        if ( moveByTouch ) {
+            deltaX = ( screenX -startX ) /Gdx.graphics.getWidth();
+            deltaY = ( startY -screenY ) /Gdx.graphics.getHeight();
+            startX = screenX;
+            startY = screenY;
+            moveCamera( deltaY, deltaX );
+        }
 
+        return false;
+    }
+
+    private void moveCamera(float amontX, float amontY) {
+        tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
+        cam.rotateAround( target, tmpV1.nor(), amontX *rotateAngle );
+        cam.rotateAround( target, Vector3.Y, amontY *-rotateAngle );
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
         return false;
-
     }
 
     @Override
     public boolean scrolled(int amount) {
-
         return false;
-
     }
 }
