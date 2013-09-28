@@ -27,12 +27,13 @@ public class Gameplay implements Screen, InputProcessor {
     private ModelInstance        cer;
 
     private float                timer     = 0;
-    private final float          rotSpeed  = 0.05f;
+    private final float          rotSpeed  = 3f;
 
     private Vector3              lookAt;
     private final float          raza      = 50;
     private float                unghi;
     private float                modAng, modHei;
+
 
     public Gameplay(Garden_Revolution game) {
         this.game = game;
@@ -49,7 +50,6 @@ public class Gameplay implements Screen, InputProcessor {
         unghi = 0;
         modAng = 0;
         modHei = 0;
-        modView( 0, 0 );
 
         cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.position.set( 0f, 15f, 0f );
@@ -57,6 +57,8 @@ public class Gameplay implements Screen, InputProcessor {
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
+
+        modView( 0, 0 );
 
     }
 
@@ -98,13 +100,15 @@ public class Gameplay implements Screen, InputProcessor {
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
             game.setScreen( game.meniu );
 
+
         if ( modAng !=0 ||modHei !=0 )
             modView( modAng, modHei );
         cam.lookAt( lookAt );
 
+
         cam.update();
 
-        if ( Gdx.input.isTouched( 1 ) ) {
+        if ( Gdx.input.isTouched() ) {
             timer -= delta;
             if ( timer <=2f ) {
                 game.setScreen( game.meniu );
@@ -155,10 +159,10 @@ public class Gameplay implements Screen, InputProcessor {
                 break;
 
             case Input.Keys.A:
-                modAng = rotSpeed;
+                modAng = -rotSpeed;
                 break;
             case Input.Keys.D:
-                modAng = -rotSpeed;
+                modAng = rotSpeed;
                 break;
         }
 
@@ -183,14 +187,22 @@ public class Gameplay implements Screen, InputProcessor {
 
     }
 
+    private Vector3 punct = new Vector3( 0, 15, 0 );
+
     private void modView(float angle, float height) {
 
         unghi += angle;
         if ( unghi >=360 )
             unghi -= 360;
+        if ( unghi <0 )
+            unghi += 360;
 
-        lookAt.x = (float) ( raza *Math.cos( unghi ) );
-        lookAt.z = (float) ( raza *Math.sin( unghi ) );
+
+        // System.out.println( );
+        cam.rotateAround( punct, new Vector3( 1, 0, 0 ), -angle );
+
+        lookAt.x = (float) ( raza *Math.cos( Math.toRadians( unghi ) ) );
+        lookAt.z = (float) ( raza *Math.sin( Math.toRadians( unghi ) ) );
 
         if ( lookAt.y +height >-20 &&lookAt.y +height <50 )
             lookAt.y += height;

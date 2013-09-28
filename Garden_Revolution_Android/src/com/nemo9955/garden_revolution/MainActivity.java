@@ -14,7 +14,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
         cfg.useAccelerometer = true;
-        cfg.useCompass = false;
+        cfg.useCompass = true;
 
         initialize( new Garden_Revolution(), cfg );
 

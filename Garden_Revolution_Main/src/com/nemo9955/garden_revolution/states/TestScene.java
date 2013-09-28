@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,7 +16,7 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 
-public class TestScene implements Screen {
+public class TestScene implements Screen, InputProcessor {
 
     public Garden_Revolution   game;
     private SpriteBatch        batch;
@@ -64,7 +65,7 @@ public class TestScene implements Screen {
         tweeger.update( delta );
 
         if ( butoane[0].isPressed() ) {
-            Gdx.input.vibrate( 500 );
+            // Gdx.input.vibrate( 500 );
             game.setScreen( game.meniu );
         }
 
@@ -73,6 +74,9 @@ public class TestScene implements Screen {
         batch.begin();
         for (Buton buton : butoane )
             buton.render( delta, batch );
+
+        font.draw( batch, String.format( "Height : %s", Gdx.graphics.getHeight() ), 100, 850 );
+        font.draw( batch, String.format( "Width    : %s", Gdx.graphics.getWidth() ), 100, 800 );
 
         font.draw( batch, String.format( "Apasat?  : %s", Gdx.input.isTouched() ), 100, 700 );
         font.draw( batch, String.format( "Format    : %s", Gdx.input.getNativeOrientation().toString() ), 100, 650 );
@@ -92,23 +96,8 @@ public class TestScene implements Screen {
         shape.setProjectionMatrix( cam.combined );
         shape.begin( ShapeType.Line );
 
+
         shape.end();
-
-        if ( Gdx.input.isTouched() ) {
-            cam.translate( 0, - ( pozitie -Gdx.input.getY() ) );
-            pozitie = Gdx.input.getY();
-        }
-        else {
-            pozitie = Gdx.input.getY();
-        }
-
-        /*
-         * if ( Gdx.input.isKeyPressed( Input.Keys.W ) )
-         * cam.translate( 0, 5 );
-         * if ( Gdx.input.isKeyPressed( Input.Keys.S ) )
-         * cam.translate( 0, -5 );
-         */
-
     }
 
     @Override
@@ -135,5 +124,61 @@ public class TestScene implements Screen {
         shape.dispose();
         for (Buton buton : butoane )
             buton.dispose();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+
+        return false;
+
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+
+        return false;
+
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+
+        return false;
+
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        pozitie = screenY;
+        System.out.println( screenX +" " + ( -screenY +Gdx.graphics.getHeight() ) );
+        System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
+        return false;
+
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        cam.translate( 0, - ( pozitie -screenY ) );
+        pozitie = screenY;
+        return false;
+
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+
     }
 }

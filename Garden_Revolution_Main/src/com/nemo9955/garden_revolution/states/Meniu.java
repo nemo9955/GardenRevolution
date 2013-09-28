@@ -16,7 +16,7 @@ public class Meniu implements Screen {
     private SpriteBatch      batch;
     private TweenManager     tweeger;
 
-    private Buton            butoane[] = new Buton[2];
+    private Buton            butoane[] = new Buton[4];
 
     public Meniu(Garden_Revolution game) {
         this.game = game;
@@ -24,8 +24,10 @@ public class Meniu implements Screen {
         batch = new SpriteBatch();
         tweeger = new TweenManager();
 
-        butoane[0] = new Buton( "play" ).setPozi( 150, 150 );
+        butoane[0] = new Buton( "play" ).setPozi( 150, 230 );
         butoane[1] = new Buton( "test" ).setPozi( 50, 50 );
+        butoane[2] = new Buton( "test" ).setPozi( 200, 50 );
+        butoane[3] = new Buton( "exit" ).setPozi( 200, 140 );
 
     }
 
@@ -43,7 +45,11 @@ public class Meniu implements Screen {
         if ( butoane[0].isPressed() )
             game.setScreen( game.gameplay );
         if ( butoane[1].isPressed() )
+            game.setScreen( game.bullet );
+        if ( butoane[2].isPressed() )
             game.setScreen( game.test );
+        if ( butoane[3].isPressed() )
+            Gdx.app.exit();
 
         batch.begin();
 

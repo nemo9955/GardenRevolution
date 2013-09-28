@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.nemo9955.garden_revolution.states.BulletJocTest;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
@@ -32,6 +34,7 @@ public class Garden_Revolution extends Game {
     public Meniu                   meniu;
     public TestScene               test;
     public SplashScreen            splash;
+    public BulletJocTest           bullet;
 
     public static AssetManager     manager;
     public static InputMultiplexer multiplexer;
@@ -44,13 +47,17 @@ public class Garden_Revolution extends Game {
 
         Texture.setEnforcePotImages( false );
         multiplexer = new InputMultiplexer();
+        Bullet.init();
 
         manager = new AssetManager();
         manager.load( BUTOANE +"test.png", Texture.class );
         manager.load( BUTOANE +"play.png", Texture.class );
         manager.load( BUTOANE +"meniu.png", Texture.class );
         manager.load( BUTOANE +"back.png", Texture.class );
+        manager.load( BUTOANE +"exit.png", Texture.class );
+
         manager.load( FONTURI +"font1.fnt", BitmapFont.class );
+
 
         manager.load( MODELE +"scena.g3db", Model.class );
 
@@ -63,10 +70,12 @@ public class Garden_Revolution extends Game {
         test = new TestScene( this );
         gameplay = new Gameplay( this );
         meniu = new Meniu( this );
+        bullet = new BulletJocTest( this );
 
         gameplay.manageModels();
 
         multiplexer.addProcessor( gameplay );
+        multiplexer.addProcessor( test );
         Gdx.input.setInputProcessor( multiplexer );
     }
 

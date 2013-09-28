@@ -9,5 +9,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Garden_Revolution_Main/libs/tween-engine-api.jar" sourcepath="/Garden_Revolution_Main/libs/tween-engine-api-sources.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="lib" path="D:/lib GDX/Garden Revolution/Garden_Revolution_Main/libs/gdx-bullet.jar" sourcepath="/Garden_Revolution_Main/libs"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

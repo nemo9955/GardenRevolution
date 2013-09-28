@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
@@ -30,6 +31,9 @@ public class Buton implements Disposable {
     private final float        width, height;
     private float              x, y;
     private float              inix, iniy;
+    
+
+    private static int         scw, sch;
 
     /*
      * action :
@@ -56,14 +60,15 @@ public class Buton implements Disposable {
 
         width = img.getWidth();
         height = img.getHeight();
+        scw = Gdx.graphics.getWidth();
+        sch = Gdx.graphics.getHeight();
     }
 
     public void render(float delta, SpriteBatch batch) {
         if ( hasCamera ) {
-            x = inix +cam.position.x -width - ( Gdx.graphics.getWidth() /2 );
-            y = -iniy +cam.position.y + ( height *1.5f );// + Gdx.graphics.getHeight() ;
+            x = inix +cam.position.x -width - ( scw /2 );
+            y = -iniy +cam.position.y + ( height *1.5f );
         }
-
 
         if ( contains( Gdx.input.getX(), Gdx.input.getY() ) ) {
 
@@ -87,14 +92,6 @@ public class Buton implements Disposable {
 
         if ( action >=3 )
             doAnimation();
-
-        /*
-         * if (Gdx.input.isKeyPressed( Input.Keys.F1 ) ) {
-         * System.out.println( x +inix +" " + ( y +iniy ) );
-         * System.out.println( inix +" " +iniy );
-         * System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
-         * }
-         */
 
         img.draw( batch );
     }
@@ -136,7 +133,7 @@ public class Buton implements Disposable {
     public Buton setPozi(float x, float y) {
         img.setPosition( x, y );
         inix = x;
-        iniy = Gdx.graphics.getHeight() -y -height;
+        iniy = sch -y -height;
         return this;
     }
 
