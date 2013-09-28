@@ -187,7 +187,7 @@ public class Gameplay implements Screen, InputProcessor {
 
     }
 
-    private Vector3 punct = new Vector3( 0, 15, 0 );
+    // private Vector3 punct = new Vector3( 0, 15, 0 );
 
     private void modView(float angle, float height) {
 
@@ -196,11 +196,7 @@ public class Gameplay implements Screen, InputProcessor {
             unghi -= 360;
         if ( unghi <0 )
             unghi += 360;
-
-
-        // System.out.println( );
-        cam.rotateAround( punct, new Vector3( 1, 0, 0 ), -angle );
-
+        
         lookAt.x = (float) ( raza *Math.cos( Math.toRadians( unghi ) ) );
         lookAt.z = (float) ( raza *Math.sin( Math.toRadians( unghi ) ) );
 

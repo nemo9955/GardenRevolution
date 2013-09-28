@@ -28,12 +28,10 @@ public class Buton implements Disposable {
     private Camera             cam;
     private boolean            hasCamera = false;
 
-    private final float        width, height;
-    private float              x, y;
-    private float              inix, iniy;
-    
+    private Rectangle          zon;
 
-    private static int         scw, sch;
+
+    private static int         scrw, scrh;
 
     /*
      * action :
@@ -55,22 +53,16 @@ public class Buton implements Disposable {
         img = new Sprite( loader );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
-        x = 0;
-        y = 0;
+        zon = new Rectangle();
+        zon.setSize( img.getWidth(), img.getHeight() );
 
-        width = img.getWidth();
-        height = img.getHeight();
-        scw = Gdx.graphics.getWidth();
-        sch = Gdx.graphics.getHeight();
+        scrw = Gdx.graphics.getWidth();
+        scrh = Gdx.graphics.getHeight();
     }
 
     public void render(float delta, SpriteBatch batch) {
-        if ( hasCamera ) {
-            x = inix +cam.position.x -width - ( scw /2 );
-            y = -iniy +cam.position.y + ( height *1.5f );
-        }
 
-        if ( contains( Gdx.input.getX(), Gdx.input.getY() ) ) {
+        if ( coordonate( Gdx.input.getX(), Gdx.input.getY() ) ) {
 
             if ( action ==1 )
                 action = 3;
@@ -96,6 +88,18 @@ public class Buton implements Disposable {
         img.draw( batch );
     }
 
+    private boolean coordonate(int x, int y) {
+
+        if ( hasCamera ) {
+            return ( zon.contains( x +cam.position.x - ( scrw /2 ), -y + ( scrh /2 ) +cam.position.y ) );
+        }
+        else {
+            return ( zon.contains( x, -y +scrh ) );
+        }
+
+
+    }
+
     private void doAnimation() {
         switch (action) {
             case 3:// intra
@@ -117,10 +121,6 @@ public class Buton implements Disposable {
         }
     }
 
-    private boolean contains(float pozx, float pozy) {
-        return ( pozx >x +inix &&pozx <x +inix +width &&pozy >y +iniy &&pozy <y +iniy +height );
-    }
-
     public boolean isPressed() {
         if ( canAcc ==false &&action ==6 ) {
             canAcc = true;
@@ -132,8 +132,7 @@ public class Buton implements Disposable {
 
     public Buton setPozi(float x, float y) {
         img.setPosition( x, y );
-        inix = x;
-        iniy = sch -y -height;
+        zon.setPosition( x, y );
         return this;
     }
 
@@ -162,11 +161,11 @@ public class Buton implements Disposable {
     }
 
     public float getHeight() {
-        return height;
+        return zon.getHeight();
     }
 
     public float getWidth() {
-        return width;
+        return zon.getWidth();
     }
 
 }

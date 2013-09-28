@@ -150,8 +150,8 @@ public class TestScene implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         pozitie = screenY;
-        System.out.println( screenX +" " + ( -screenY +Gdx.graphics.getHeight() ) );
-        System.out.println( Gdx.input.getX() +" " +Gdx.input.getY() );
+        // System.out.println( ( screenX +cam.position.x - ( Gdx.graphics.getWidth() /2 ) ) +" " + ( -screenY + ( Gdx.graphics.getHeight() /2 ) +cam.position.y ) );
+        // System.out.println( cam.position.x +" " +cam.position.y );
         return false;
 
     }
