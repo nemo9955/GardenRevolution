@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -29,6 +30,7 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 public class Gameplay implements Screen, InputProcessor {
 
 
+    private OrthographicCamera   prev;
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
     private Array<ModelInstance> instances    = new Array<ModelInstance>();
@@ -50,24 +52,27 @@ public class Gameplay implements Screen, InputProcessor {
     private TweenManager         tweeger;
     private SlidingPanel         panels[]     = new SlidingPanel[1];
 
-    private Matrix4              defaultPM;
-
     public Gameplay() {
+        final float scrw = Gdx.graphics.getWidth();
+        final float scrh = Gdx.graphics.getHeight();
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
         batch = new SpriteBatch();
-        defaultPM = batch.getProjectionMatrix();
         modelBatch = new ModelBatch();
         lights = new Lights();
         lights.ambientLight.set( amb, amb, amb, .5f );
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 5f ) );
 
-        cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        cam = new PerspectiveCamera( 67, scrw, scrh );
         cam.position.set( 0f, 15f, 0f );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
+
+        prev = new OrthographicCamera( scrw, scrh );
+        prev.position.set( -scrw /2, -scrh /2, 0 );
+        prev.update();
 
         panels[0] = new OptionPanel( (byte) 1, 0f );
 
@@ -96,23 +101,24 @@ public class Gameplay implements Screen, InputProcessor {
 
         batch.begin();
 
-        batch.setProjectionMatrix( defaultPM );
+        batch.setProjectionMatrix( prev.combined );
         if ( toUpdate ==0 )
             for (SlidingPanel panel : panels )
                 panel.getMufa().draw( batch );
-        if ( toUpdate !=0 )
-            batch.setProjectionMatrix( SlidingPanel.cam.combined );
+        if ( toUpdate !=0 ) {
+            batch.setProjectionMatrix( SlidingPanel.view.combined );
 
-        if ( toUpdate !=0 )
-            panels[toUpdate -1].render( batch, delta );
+            panels[toUpdate -1].renderAsCamera( batch, delta );
+            if ( SlidingPanel.exitPanel ) {
+                SlidingPanel.exitPanel = false;
+                toUpdate = 0;
+                for (SlidingPanel panelul : panels )
+                    Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
+            }
+        }
 
         batch.end();
-        if ( SlidingPanel.exitPanel ) {
-            SlidingPanel.exitPanel = false;
-            toUpdate = 0;
-            for (SlidingPanel panelul : panels )
-                Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
-        }
+
     }
 
     public void manageModels() {

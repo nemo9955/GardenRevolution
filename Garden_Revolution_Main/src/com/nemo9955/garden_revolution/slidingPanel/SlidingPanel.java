@@ -14,7 +14,7 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 public abstract class SlidingPanel implements Disposable {
 
     public static TweenManager       tweeger;
-    public static OrthographicCamera cam;
+    public static OrthographicCamera view;
     public static boolean            exitPanel = false;
 
     protected float                  xpoz, ypoz;
@@ -27,7 +27,7 @@ public abstract class SlidingPanel implements Disposable {
 
         mufa = new Sprite( (Texture) Garden_Revolution.manager.get( Garden_Revolution.ELEMENTE +String.format( "%s.png", link ) ) );
         fundal = new Sprite( (Texture) Garden_Revolution.manager.get( Garden_Revolution.ELEMENTE +String.format( "%s_fundal.png", link ) ) );
-        fundal.setSize( scrw *0.85f, scrh *0.9f );
+        fundal.setSize( scrw *0.85f, scrh *0.85f );
         fundal.setPosition( ( scrw /2 ) - ( fundal.getWidth() /2 ), ( scrh /2 ) - ( fundal.getHeight() /2 ) );
 
         switch (side) {
@@ -50,18 +50,20 @@ public abstract class SlidingPanel implements Disposable {
         }
 
         mufa.setPosition( xpoz, ypoz );
-        cam = new OrthographicCamera( scrw, scrh );
+        view = new OrthographicCamera( scrw, scrh );
+        view.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
+        view.update();
     }
 
-    public abstract void render(SpriteBatch batch, float delta);
+    public abstract void renderStatic(SpriteBatch batch, float delta);
+
+    public abstract void renderAsCamera(SpriteBatch batch, float delta);
 
     public boolean isActivated(float x, float y) {
         return ( mufa.getBoundingRectangle().contains( x, -y +Gdx.graphics.getHeight() ) );
     }
 
-    public void activate() {
-
-    }
+    public abstract void activate();
 
     public void dispose() {
         fundal.getTexture().dispose();
