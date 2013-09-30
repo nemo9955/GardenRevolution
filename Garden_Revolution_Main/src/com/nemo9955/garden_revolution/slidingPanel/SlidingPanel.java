@@ -50,7 +50,7 @@ public abstract class SlidingPanel implements Disposable {
         }
 
         mufa.setPosition( xpoz, ypoz );
-        cam = new OrthographicCamera( scrw *0.7f, scrh *0.8f );
+        cam = new OrthographicCamera( scrw, scrh );
     }
 
     public abstract void render(SpriteBatch batch, float delta);

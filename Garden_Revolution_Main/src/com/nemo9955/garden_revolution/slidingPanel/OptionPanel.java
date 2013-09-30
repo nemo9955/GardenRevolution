@@ -3,12 +3,13 @@ package com.nemo9955.garden_revolution.slidingPanel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 
 public class OptionPanel extends SlidingPanel {
 
-    private Buton butoane[] = new Buton[1];
+    private Buton butoane[] = new Buton[2];
 
     public OptionPanel(byte side, float distance) {
         super( "optiuni", side, distance );
@@ -26,7 +27,7 @@ public class OptionPanel extends SlidingPanel {
         if ( butoane[0].isPressed() )
             exitPanel = true;
         if ( butoane[1].isPressed() )
-            exitPanel = true;
+            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
 
         fundal.draw( batch );
         for (Buton buton : butoane )

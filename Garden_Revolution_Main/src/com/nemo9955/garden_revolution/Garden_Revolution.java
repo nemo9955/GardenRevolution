@@ -24,23 +24,24 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
 
-    public static final String     BUTOANE  = "imagini/butoane/";
-    public static final String     FUNDALE  = "imagini/fundale/";
-    public static final String     ELEMENTE = "imagini/elemente/";
-    public static final String     FONTURI  = "fonts/";
-    public static final String     MODELE   = "modele/";
+    public static final String      BUTOANE  = "imagini/butoane/";
+    public static final String      FUNDALE  = "imagini/fundale/";
+    public static final String      ELEMENTE = "imagini/elemente/";
+    public static final String      FONTURI  = "fonts/";
+    public static final String      MODELE   = "modele/";
 
-    public static final String     TITLU    = "Garden Revolution";
-    public static final String     VERSIUNE = "alfa 0.10";
+    public static final String      TITLU    = "Garden Revolution";
+    public static final String      VERSIUNE = "alfa 0.10";
 
-    public Gameplay                gameplay;
-    public Meniu                   meniu;
-    public TestScene               test;
-    public SplashScreen            splash;
-    public BulletJocTest           bullet;
+    public static Gameplay          gameplay;
+    public static Meniu             meniu;
+    public static TestScene         test;
+    public static SplashScreen      splash;
+    public static BulletJocTest     bullet;
 
-    public static AssetManager     manager;
-    public static InputMultiplexer multiplexer;
+    public static Garden_Revolution game;
+    public static AssetManager      manager;
+    public static InputMultiplexer  multiplexer;
 
     @Override
     public void create() {
@@ -63,6 +64,8 @@ public class Garden_Revolution extends Game {
         manager.load( BUTOANE +"back.png", Texture.class, param );
         manager.load( BUTOANE +"exit.png", Texture.class, param );
 
+        manager.load( FUNDALE +"imagine_test.jpg", Texture.class, param );
+
         manager.load( ELEMENTE +"optiuni_fundal.png", Texture.class, param );
         manager.load( ELEMENTE +"optiuni.png", Texture.class, param );
 
@@ -82,16 +85,18 @@ public class Garden_Revolution extends Game {
         Bullet.init();
 
 
-        test = new TestScene( this );
-        gameplay = new Gameplay( this );
-        meniu = new Meniu( this );
-        bullet = new BulletJocTest( this );
+        test = new TestScene();
+        gameplay = new Gameplay();
+        meniu = new Meniu();
+        bullet = new BulletJocTest();
 
         gameplay.manageModels();
 
         multiplexer.addProcessor( gameplay );
         multiplexer.addProcessor( test );
         Gdx.input.setInputProcessor( multiplexer );
+
+        game = this;
     }
 
     @Override

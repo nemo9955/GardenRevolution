@@ -18,7 +18,6 @@ import com.nemo9955.garden_revolution.utility.Buton;
 
 public class TestScene implements Screen, InputProcessor {
 
-    public Garden_Revolution   game;
     private SpriteBatch        batch;
     private ShapeRenderer      shape;
     private OrthographicCamera cam;
@@ -30,8 +29,7 @@ public class TestScene implements Screen, InputProcessor {
 
     private float              pozitie   = 0;
 
-    public TestScene(Garden_Revolution game) {
-        this.game = game;
+    public TestScene() {
         tweeger = new TweenManager();
         font = Garden_Revolution.manager.get( "fonts/font1.fnt" );
 
@@ -66,7 +64,7 @@ public class TestScene implements Screen, InputProcessor {
 
         if ( butoane[0].isPressed() ) {
             // Gdx.input.vibrate( 500 );
-            game.setScreen( game.meniu );
+            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
         }
 
         // normal image rendering
@@ -120,7 +118,6 @@ public class TestScene implements Screen, InputProcessor {
     public void dispose() {
         batch.dispose();
         font.dispose();
-        game.dispose();
         shape.dispose();
         for (Buton buton : butoane )
             buton.dispose();

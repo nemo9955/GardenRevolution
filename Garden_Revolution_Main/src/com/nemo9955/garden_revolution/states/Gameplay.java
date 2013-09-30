@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -27,7 +28,6 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Gameplay implements Screen, InputProcessor {
 
-    public Garden_Revolution     game;
 
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
@@ -50,12 +50,14 @@ public class Gameplay implements Screen, InputProcessor {
     private TweenManager         tweeger;
     private SlidingPanel         panels[]     = new SlidingPanel[1];
 
-    public Gameplay(Garden_Revolution game) {
-        this.game = game;
+    private Matrix4              defaultPM;
+
+    public Gameplay() {
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
         batch = new SpriteBatch();
+        defaultPM = batch.getProjectionMatrix();
         modelBatch = new ModelBatch();
         lights = new Lights();
         lights.ambientLight.set( amb, amb, amb, .5f );
@@ -92,13 +94,14 @@ public class Gameplay implements Screen, InputProcessor {
             modelBatch.render( cer );
         modelBatch.end();
 
-        // if ( toUpdate !=0 )
-        // batch.setProjectionMatrix( SlidingPanel.cam.combined );
         batch.begin();
 
+        batch.setProjectionMatrix( defaultPM );
         if ( toUpdate ==0 )
             for (SlidingPanel panel : panels )
                 panel.getMufa().draw( batch );
+        if ( toUpdate !=0 )
+            batch.setProjectionMatrix( SlidingPanel.cam.combined );
 
         if ( toUpdate !=0 )
             panels[toUpdate -1].render( batch, delta );
@@ -235,7 +238,7 @@ public class Gameplay implements Screen, InputProcessor {
                 moveLeft = true;
                 break;
             case Keys.ESCAPE:
-                game.setScreen( game.meniu );
+                Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
                 break;
         }
 
@@ -282,7 +285,6 @@ public class Gameplay implements Screen, InputProcessor {
     public void dispose() {
         modelBatch.dispose();
         instances.clear();
-        game.dispose();
         batch.dispose();
     }
 }

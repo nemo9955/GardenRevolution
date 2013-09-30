@@ -12,14 +12,12 @@ import com.nemo9955.garden_revolution.utility.Buton;
 
 public class Meniu implements Screen {
 
-    public Garden_Revolution game;
-    private SpriteBatch      batch;
-    private TweenManager     tweeger;
+    private SpriteBatch  batch;
+    private TweenManager tweeger;
 
-    private Buton            butoane[] = new Buton[4];
+    private Buton        butoane[] = new Buton[4];
 
-    public Meniu(Garden_Revolution game) {
-        this.game = game;
+    public Meniu() {
 
         batch = new SpriteBatch();
         tweeger = new TweenManager();
@@ -43,11 +41,11 @@ public class Meniu implements Screen {
         tweeger.update( delta );
 
         if ( butoane[0].isPressed() )
-            game.setScreen( game.gameplay );
+            Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
         if ( butoane[1].isPressed() )
-            game.setScreen( game.bullet );
+            Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
         if ( butoane[2].isPressed() )
-            game.setScreen( game.test );
+            Garden_Revolution.game.setScreen( Garden_Revolution.test );
         if ( butoane[3].isPressed() )
             Gdx.app.exit();
 
@@ -78,7 +76,6 @@ public class Meniu implements Screen {
 
     @Override
     public void dispose() {
-        game.dispose();
         batch.dispose();
         for (Buton buton : butoane )
             buton.dispose();

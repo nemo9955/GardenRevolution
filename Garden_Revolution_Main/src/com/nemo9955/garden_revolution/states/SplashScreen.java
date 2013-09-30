@@ -48,7 +48,7 @@ public class SplashScreen implements Screen {
 
         if ( Garden_Revolution.manager.update() ) {
             game.postLoading();
-            game.setScreen( game.meniu );
+            game.setScreen( Garden_Revolution.meniu );
         }
 
 
