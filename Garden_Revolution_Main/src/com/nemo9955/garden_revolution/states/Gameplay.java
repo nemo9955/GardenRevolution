@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -36,6 +35,7 @@ public class Gameplay implements Screen, InputProcessor {
     private Array<ModelInstance> instances    = new Array<ModelInstance>();
     private Lights               lights;
     private ModelInstance        cer;
+    private final int            scrw, scrh;
 
     private float                rotateAngle  = 360f;
     public int                   rotateButton = Buttons.LEFT;
@@ -53,8 +53,8 @@ public class Gameplay implements Screen, InputProcessor {
     private SlidingPanel         panels[]     = new SlidingPanel[1];
 
     public Gameplay() {
-        final float scrw = Gdx.graphics.getWidth();
-        final float scrh = Gdx.graphics.getHeight();
+        scrw = Gdx.graphics.getWidth();
+        scrh = Gdx.graphics.getHeight();
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
@@ -71,7 +71,7 @@ public class Gameplay implements Screen, InputProcessor {
         cam.update();
 
         prev = new OrthographicCamera( scrw, scrh );
-        prev.position.set( -scrw /2, -scrh /2, 0 );
+        prev.position.set( scrw /2, scrh /2, 0 );
         prev.update();
 
         panels[0] = new OptionPanel( (byte) 1, 0f );
@@ -81,11 +81,15 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public void show() {
         Buton.tweeger = tweeger;
+        toUpdate = 0;
+        for (SlidingPanel panelul : panels )
+            Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 1f ).target( 1f ).start( tweeger );
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+
+        Gdx.gl.glViewport( 0, 0, scrw, scrh );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
         tweeger.update( delta );
 
@@ -100,20 +104,25 @@ public class Gameplay implements Screen, InputProcessor {
         modelBatch.end();
 
         batch.begin();
-
         batch.setProjectionMatrix( prev.combined );
-        if ( toUpdate ==0 )
-            for (SlidingPanel panel : panels )
-                panel.getMufa().draw( batch );
+
+        for (SlidingPanel panel : panels )
+            panel.mufa.render( delta, batch );
+
         if ( toUpdate !=0 ) {
+
+            for (SlidingPanel panel : panels )
+                panel.renderStatic( batch, delta );
+
             batch.setProjectionMatrix( SlidingPanel.view.combined );
+            Gdx.gl.glViewport( 0, 0, scrw, scrh );
 
             panels[toUpdate -1].renderAsCamera( batch, delta );
             if ( SlidingPanel.exitPanel ) {
                 SlidingPanel.exitPanel = false;
                 toUpdate = 0;
                 for (SlidingPanel panelul : panels )
-                    Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
+                    Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
             }
         }
 
@@ -178,11 +187,11 @@ public class Gameplay implements Screen, InputProcessor {
 
 
         for (byte i = 0 ; i <panels.length ; i ++ )
-            if ( panels[i].isActivated( screenX, screenY ) ) {
+            if ( panels[i].mufa.isPressed() ) {
                 toUpdate = (short) ( i +1 );
-
+                System.out.println("activat panou optiuni");
                 for (SlidingPanel panelul : panels )
-                    Tween.to( panelul.getMufa(), SpriteTween.ALPHA, 0.6f ).target( 0f ).start( tweeger );
+                    Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 0.6f ).target( 0f ).start( tweeger );
                 break;
             }
 
@@ -202,8 +211,8 @@ public class Gameplay implements Screen, InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
         if ( moveByTouch ) {
-            deltaX = ( screenX -startX ) /Gdx.graphics.getWidth();
-            deltaY = ( startY -screenY ) /Gdx.graphics.getHeight();
+            deltaX = ( screenX -startX ) /scrw;
+            deltaY = ( startY -screenY ) /scrh;
             startX = screenX;
             startY = screenY;
             moveCamera( deltaY, deltaX );

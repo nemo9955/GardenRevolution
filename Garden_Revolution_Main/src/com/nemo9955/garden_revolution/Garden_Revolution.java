@@ -63,11 +63,11 @@ public class Garden_Revolution extends Game {
         manager.load( BUTOANE +"resume.png", Texture.class, param );
         manager.load( BUTOANE +"back.png", Texture.class, param );
         manager.load( BUTOANE +"exit.png", Texture.class, param );
+        manager.load( BUTOANE +"IGoptiuni.png", Texture.class, param );
 
         manager.load( FUNDALE +"imagine_test.jpg", Texture.class, param );
 
         manager.load( ELEMENTE +"optiuni_fundal.png", Texture.class, param );
-        manager.load( ELEMENTE +"optiuni.png", Texture.class, param );
 
         splash = new SplashScreen( this );
         setScreen( splash );

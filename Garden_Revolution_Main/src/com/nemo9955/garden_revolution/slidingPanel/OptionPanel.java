@@ -1,7 +1,5 @@
 package com.nemo9955.garden_revolution.slidingPanel;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,9 +24,6 @@ public class OptionPanel extends SlidingPanel {
 
     @Override
     public void renderStatic(SpriteBatch batch, float delta) {
-        if ( Gdx.input.isKeyPressed( Keys.F1 ) ) {
-            System.out.println( butoane[0].getZon().x +" " +butoane[0].getZon().y );
-        }
 
         if ( butoane[0].isPressed() )
             exitPanel = true;
@@ -45,7 +40,7 @@ public class OptionPanel extends SlidingPanel {
         for (Buton buton : butoane )
             buton.render( delta, batch );
 
-      //  view.zoom = 1.2f;
+        // view.zoom = 1.2f;
     }
 
     @Override
@@ -53,11 +48,6 @@ public class OptionPanel extends SlidingPanel {
         super.dispose();
         for (Buton buton : butoane )
             buton.dispose();
-    }
-
-    @Override
-    public void activate() {
-
     }
 
 }

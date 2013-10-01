@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
@@ -23,13 +22,9 @@ public class Buton implements Disposable {
 
     public static TweenManager tweeger;
 
-    private Sprite             img;
+    public Sprite              img;
     private Camera             cam;
     private boolean            hasCamera = false;
-
-    private Rectangle          zon;
-
-
     private static int         scrw, scrh;
 
     /*
@@ -49,9 +44,6 @@ public class Buton implements Disposable {
         img = new Sprite( (Texture) Garden_Revolution.manager.get( String.format( Garden_Revolution.BUTOANE +"%s.png", link ) ) );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
-        zon = new Rectangle();
-        zon.setSize( img.getWidth(), img.getHeight() );
-
         scrw = Gdx.graphics.getWidth();
         scrh = Gdx.graphics.getHeight();
     }
@@ -65,8 +57,7 @@ public class Buton implements Disposable {
             else
                 action = 2;
 
-            if ( canAcc &&Gdx.input.isButtonPressed( Buttons.LEFT ) ) {
-
+            if ( canAcc &&Gdx.input.isTouched() ) {
                 canAcc = false;
                 action = 5;
             }
@@ -85,16 +76,10 @@ public class Buton implements Disposable {
     }
 
     private boolean coordonate(int x, int y) {
-
-        if ( Gdx.input.isKeyPressed( Keys.F1 ) )
-            System.out.println( x +" " + ( -y +scrh ) );
-
-        if ( hasCamera ) {
-            return ( zon.contains( x +cam.position.x - ( scrw /2 ), -y + ( scrh /2 ) +cam.position.y ) );
-        }
-        else {
-            return ( zon.contains( x, -y +scrh ) );
-        }
+        if ( hasCamera )
+            return ( img.getBoundingRectangle().contains( x +cam.position.x - ( scrw /2 ), -y + ( scrh /2 ) +cam.position.y ) );
+        else
+            return ( img.getBoundingRectangle().contains( x, -y +scrh ) );
 
     }
 
@@ -131,7 +116,6 @@ public class Buton implements Disposable {
 
     public Buton setPozi(float x, float y) {
         img.setPosition( x, y );
-        zon.setPosition( x, y );
         return this;
     }
 
@@ -162,18 +146,6 @@ public class Buton implements Disposable {
     @Override
     public void dispose() {
         img.getTexture().dispose();
-    }
-
-    public float getHeight() {
-        return zon.getHeight();
-    }
-
-    public float getWidth() {
-        return zon.getWidth();
-    }
-
-    public Rectangle getZon() {
-        return zon;
     }
 
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.utility.Buton;
 
 
 public abstract class SlidingPanel implements Disposable {
@@ -19,13 +20,13 @@ public abstract class SlidingPanel implements Disposable {
 
     protected float                  xpoz, ypoz;
     protected Sprite                 fundal;
-    protected Sprite                 mufa;
+    public Buton                     mufa;
 
     public SlidingPanel(String link, byte side, float distance) {
         final float scrw = Gdx.graphics.getWidth();
         final float scrh = Gdx.graphics.getHeight();
 
-        mufa = new Sprite( (Texture) Garden_Revolution.manager.get( Garden_Revolution.ELEMENTE +String.format( "%s.png", link ) ) );
+        mufa = new Buton( "IG" +link );
         fundal = new Sprite( (Texture) Garden_Revolution.manager.get( Garden_Revolution.ELEMENTE +String.format( "%s_fundal.png", link ) ) );
         fundal.setSize( scrw *0.85f, scrh *0.85f );
         fundal.setPosition( ( scrw /2 ) - ( fundal.getWidth() /2 ), ( scrh /2 ) - ( fundal.getHeight() /2 ) );
@@ -34,22 +35,26 @@ public abstract class SlidingPanel implements Disposable {
             case 0:
                 xpoz = 0;
                 ypoz = scrh *distance;
+                mufa.setOrigin( 0, 0.5f );
                 break;
             case 1:
-                ypoz = scrh -mufa.getHeight();
+                ypoz = scrh -mufa.img.getHeight();
                 xpoz = scrw *distance;
+                mufa.setOrigin( 0.5f, 1 );
                 break;
             case 2:
-                xpoz = scrw -mufa.getWidth();
+                xpoz = scrw -mufa.img.getWidth();
                 ypoz = scrh *distance;
+                mufa.setOrigin( 1, 0.5f );
                 break;
             case 3:
                 ypoz = 0;
                 xpoz = scrw *distance;
+                mufa.setOrigin( 0.5f, 0 );
                 break;
         }
 
-        mufa.setPosition( xpoz, ypoz );
+        mufa.setPozi( xpoz, ypoz );
         view = new OrthographicCamera( scrw, scrh );
         view.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         view.update();
@@ -59,18 +64,8 @@ public abstract class SlidingPanel implements Disposable {
 
     public abstract void renderAsCamera(SpriteBatch batch, float delta);
 
-    public boolean isActivated(float x, float y) {
-        return ( mufa.getBoundingRectangle().contains( x, -y +Gdx.graphics.getHeight() ) );
-    }
-
-    public abstract void activate();
-
     public void dispose() {
         fundal.getTexture().dispose();
-        mufa.getTexture().dispose();
-    }
-
-    public Sprite getMufa() {
-        return mufa;
+        mufa.dispose();
     }
 }
