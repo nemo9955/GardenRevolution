@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -8,10 +7,14 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -19,17 +22,21 @@ import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.slidingPanel.OptionPanel;
-import com.nemo9955.garden_revolution.slidingPanel.SlidingPanel;
 import com.nemo9955.garden_revolution.utility.Buton;
-import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Gameplay implements Screen, InputProcessor {
 
 
-    private OrthographicCamera   prev;
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
     private Array<ModelInstance> instances    = new Array<ModelInstance>();
@@ -48,9 +55,9 @@ public class Gameplay implements Screen, InputProcessor {
     private float                deltaY       = 0;
 
     private short                toUpdate     = 0;
-    private SpriteBatch          batch;
     private TweenManager         tweeger;
-    private SlidingPanel         panels[]     = new SlidingPanel[1];
+    private Stage                stage;
+    private Skin                 skin;
 
     public Gameplay() {
         scrw = Gdx.graphics.getWidth();
@@ -58,7 +65,6 @@ public class Gameplay implements Screen, InputProcessor {
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
-        batch = new SpriteBatch();
         modelBatch = new ModelBatch();
         lights = new Lights();
         lights.ambientLight.set( amb, amb, amb, .5f );
@@ -70,20 +76,72 @@ public class Gameplay implements Screen, InputProcessor {
         cam.far = 300f;
         cam.update();
 
-        prev = new OrthographicCamera( scrw, scrh );
-        prev.position.set( scrw /2, scrh /2, 0 );
-        prev.update();
+        makeStage();
 
-        panels[0] = new OptionPanel( (byte) 1, 0f );
+    }
 
+    private void makeStage() {
+        stage = new Stage();
+        Garden_Revolution.multiplexer.addProcessor( stage );
+
+
+        // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
+        // recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
+        skin = new Skin();
+
+        // Generate a 1x1 white texture and store it in the skin named "white".
+        Pixmap pixmap = new Pixmap( 1, 1, Format.RGBA8888 );
+        pixmap.setColor( Color.WHITE );
+        pixmap.fill();
+        skin.add( "white", new Texture( pixmap ) );
+        skin.add( "buton_up", new NinePatch( new Texture( "imagini/butoane/buton_up.png" ), 18, 19, 18, 19 ), NinePatch.class );
+        skin.add( "buton_down", new NinePatch( new Texture( "imagini/butoane/buton_down.png" ), 18, 19, 18, 19 ), NinePatch.class );
+
+        // Store the default libgdx font under the name "default".
+        BitmapFont font = new BitmapFont();
+        font.scale( 3 );
+        skin.add( "default", font );
+
+        // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+        TextButtonStyle textButtonStyle = new TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable( "buton_up" );
+        textButtonStyle.over = skin.newDrawable( "buton_down" );
+        textButtonStyle.checked = skin.newDrawable( "white", Color.BLUE );
+        textButtonStyle.down = skin.newDrawable( "white", Color.LIGHT_GRAY );
+        textButtonStyle.font = skin.getFont( "default" );
+        skin.add( "default", textButtonStyle );
+
+        // Create a table that fills the screen. Everything else will go inside this table.
+        Table table = new Table();
+        table.debug();
+        table.setFillParent( true );
+        stage.addActor( table );
+
+        // Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
+        final TextButton button = new TextButton( "Click me babe!", skin );
+        table.add( button );
+
+        // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
+        // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
+        // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
+        // revert the checked state.
+        button.addListener( new ChangeListener() {
+
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println( "Clicked! Is checked: " +button.isChecked() );
+                button.setText( "Good job!" );
+            }
+        } );
+
+        // Add an image actor. Have to set the size, else it would be the size of the drawable (which is the 1x1 texture).
+        table.add( new Image( skin.newDrawable( "white", Color.RED ) ) ).size( 64 );
     }
 
     @Override
     public void show() {
+
         Buton.tweeger = tweeger;
         toUpdate = 0;
-        for (SlidingPanel panelul : panels )
-            Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 1f ).target( 1f ).start( tweeger );
     }
 
     @Override
@@ -103,30 +161,9 @@ public class Gameplay implements Screen, InputProcessor {
             modelBatch.render( cer );
         modelBatch.end();
 
-        batch.begin();
-        batch.setProjectionMatrix( prev.combined );
-
-        for (SlidingPanel panel : panels )
-            panel.mufa.render( delta, batch );
-
-        if ( toUpdate !=0 ) {
-
-            for (SlidingPanel panel : panels )
-                panel.renderStatic( batch, delta );
-
-            batch.setProjectionMatrix( SlidingPanel.view.combined );
-            Gdx.gl.glViewport( 0, 0, scrw, scrh );
-
-            panels[toUpdate -1].renderAsCamera( batch, delta );
-            if ( SlidingPanel.exitPanel ) {
-                SlidingPanel.exitPanel = false;
-                toUpdate = 0;
-                for (SlidingPanel panelul : panels )
-                    Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 0.6f ).target( 1f ).start( tweeger );
-            }
-        }
-
-        batch.end();
+        stage.act();
+        stage.draw();
+        Table.drawDebug( stage );
 
     }
 
@@ -145,6 +182,7 @@ public class Gameplay implements Screen, InputProcessor {
             node.rotation.idt();
 
             instance.calculateTransforms();
+            // System.out.println(node.id);FIXME
 
             if ( id.equals( "cer" ) ) {
                 cer = instance;
@@ -184,16 +222,6 @@ public class Gameplay implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-
-        for (byte i = 0 ; i <panels.length ; i ++ )
-            if ( panels[i].mufa.isPressed() ) {
-                toUpdate = (short) ( i +1 );
-                System.out.println("activat panou optiuni");
-                for (SlidingPanel panelul : panels )
-                    Tween.to( panelul.mufa.img, SpriteTween.ALPHA, 0.6f ).target( 0f ).start( tweeger );
-                break;
-            }
 
         if ( moveByTouch ) {
             startX = screenX;
@@ -300,6 +328,7 @@ public class Gameplay implements Screen, InputProcessor {
     public void dispose() {
         modelBatch.dispose();
         instances.clear();
-        batch.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 }

@@ -31,7 +31,7 @@ public class Garden_Revolution extends Game {
     public static final String      MODELE   = "modele/";
 
     public static final String      TITLU    = "Garden Revolution";
-    public static final String      VERSIUNE = "alfa 0.10";
+    public static final String      VERSIUNE = "alfa 0.13";
 
     public static Gameplay          gameplay;
     public static Meniu             meniu;
@@ -64,6 +64,8 @@ public class Garden_Revolution extends Game {
         manager.load( BUTOANE +"back.png", Texture.class, param );
         manager.load( BUTOANE +"exit.png", Texture.class, param );
         manager.load( BUTOANE +"IGoptiuni.png", Texture.class, param );
+        manager.load( BUTOANE +"buton_down.png", Texture.class, param );
+        manager.load( BUTOANE +"buton_up.png", Texture.class, param );
 
         manager.load( FUNDALE +"imagine_test.jpg", Texture.class, param );
 
@@ -92,8 +94,8 @@ public class Garden_Revolution extends Game {
 
         gameplay.manageModels();
 
-        multiplexer.addProcessor( gameplay );
         multiplexer.addProcessor( test );
+        multiplexer.addProcessor( gameplay );
         Gdx.input.setInputProcessor( multiplexer );
 
         game = this;
