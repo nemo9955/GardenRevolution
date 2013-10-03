@@ -11,24 +11,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.nemo9955.garden_revolution.states.BulletJocTest;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
+import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 
 public class Garden_Revolution extends Game {
-
-    public static final String      BUTOANE  = "imagini/butoane/";
-    public static final String      FUNDALE  = "imagini/fundale/";
-    public static final String      ELEMENTE = "imagini/elemente/";
-    public static final String      FONTURI  = "fonts/";
-    public static final String      MODELE   = "modele/";
 
     public static final String      TITLU    = "Garden Revolution";
     public static final String      VERSIUNE = "alfa 0.13";
@@ -52,24 +46,9 @@ public class Garden_Revolution extends Game {
         param.minFilter = TextureFilter.Linear;
         param.magFilter = TextureFilter.Linear;
 
-
-        manager.load( FONTURI +"font1.fnt", BitmapFont.class );
-
-        manager.load( MODELE +"scena.g3db", Model.class );
-
-        manager.load( BUTOANE +"test.png", Texture.class, param );
-        manager.load( BUTOANE +"play.png", Texture.class, param );
-        manager.load( BUTOANE +"meniu.png", Texture.class, param );
-        manager.load( BUTOANE +"resume.png", Texture.class, param );
-        manager.load( BUTOANE +"back.png", Texture.class, param );
-        manager.load( BUTOANE +"exit.png", Texture.class, param );
-        manager.load( BUTOANE +"IGoptiuni.png", Texture.class, param );
-        manager.load( BUTOANE +"buton_down.png", Texture.class, param );
-        manager.load( BUTOANE +"buton_up.png", Texture.class, param );
-
-        manager.load( FUNDALE +"imagine_test.jpg", Texture.class, param );
-
-        manager.load( ELEMENTE +"optiuni_fundal.png", Texture.class, param );
+        for (Assets aset : Assets.values() ) {
+            manager.load( aset.path(), aset.type() );
+        }
 
         splash = new SplashScreen( this );
         setScreen( splash );

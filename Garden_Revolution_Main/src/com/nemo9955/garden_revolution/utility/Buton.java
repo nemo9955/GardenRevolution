@@ -39,7 +39,7 @@ public class Buton implements Disposable {
     private static boolean     canAcc    = true;
 
     public Buton(String link) {
-        img = new Sprite( (Texture) Garden_Revolution.manager.get( String.format( Garden_Revolution.BUTOANE +"%s.png", link ) ) );
+        img = new Sprite( (Texture) Garden_Revolution.manager.get( String.format( Assets.LOC.BUTON.getLink() +"%s.png", link ) ) );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
         scrw = Gdx.graphics.getWidth();

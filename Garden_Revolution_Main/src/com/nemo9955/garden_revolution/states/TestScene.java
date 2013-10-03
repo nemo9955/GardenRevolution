@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 
@@ -31,7 +32,7 @@ public class TestScene implements Screen, InputProcessor {
 
     public TestScene() {
         tweeger = new TweenManager();
-        font = Garden_Revolution.manager.get( "fonts/font1.fnt" );
+        font = Garden_Revolution.manager.get( Assets.FONT1.path() );
 
         batch = new SpriteBatch();
         shape = new ShapeRenderer();

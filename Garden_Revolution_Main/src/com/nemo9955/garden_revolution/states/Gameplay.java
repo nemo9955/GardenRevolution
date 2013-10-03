@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Buton;
 
 public class Gameplay implements Screen, InputProcessor {
@@ -129,7 +130,7 @@ public class Gameplay implements Screen, InputProcessor {
 
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println( "Clicked! Is checked: " +button.isChecked() );
-                button.setText( "Good job!" );
+                // button.setText( "Good job!" );
             }
         } );
 
@@ -169,7 +170,7 @@ public class Gameplay implements Screen, InputProcessor {
 
     public void manageModels() {
 
-        Model cuboid = Garden_Revolution.manager.get( Garden_Revolution.MODELE +"scena.g3db", Model.class );
+        Model cuboid = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
         for (int i = 0 ; i <cuboid.nodes.size ; i ++ ) {
             String id = cuboid.nodes.get( i ).id;
 
