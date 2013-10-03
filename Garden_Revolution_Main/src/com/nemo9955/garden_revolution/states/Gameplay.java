@@ -23,8 +23,11 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -77,7 +80,6 @@ public class Gameplay implements Screen, InputProcessor {
         cam.far = 300f;
         cam.update();
 
-        makeStage();
 
     }
 
@@ -85,9 +87,6 @@ public class Gameplay implements Screen, InputProcessor {
         stage = new Stage();
         Garden_Revolution.multiplexer.addProcessor( stage );
 
-
-        // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
-        // recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
         skin = new Skin();
 
         // Generate a 1x1 white texture and store it in the skin named "white".
@@ -97,50 +96,68 @@ public class Gameplay implements Screen, InputProcessor {
         skin.add( "white", new Texture( pixmap ) );
         skin.add( "buton_up", new NinePatch( new Texture( "imagini/butoane/buton_up.png" ), 18, 19, 18, 19 ), NinePatch.class );
         skin.add( "buton_down", new NinePatch( new Texture( "imagini/butoane/buton_down.png" ), 18, 19, 18, 19 ), NinePatch.class );
+        skin.add( "IGoptiuni", (Texture) Garden_Revolution.manager.get( Assets.IGOPTIUNI.path() ) );
 
-        // Store the default libgdx font under the name "default".
         BitmapFont font = new BitmapFont();
-        font.scale( 3 );
+        font.scale( 2 );
         skin.add( "default", font );
 
-        // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+        ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
+        imageButtonStyle.imageUp = skin.newDrawable( "IGoptiuni" );
+        imageButtonStyle.pressedOffsetX = 2;
+        imageButtonStyle.pressedOffsetY = -2;
+        skin.add( "default", imageButtonStyle );
+
         TextButtonStyle textButtonStyle = new TextButtonStyle();
         textButtonStyle.up = skin.newDrawable( "buton_up" );
         textButtonStyle.over = skin.newDrawable( "buton_down" );
-        textButtonStyle.checked = skin.newDrawable( "white", Color.BLUE );
+        // textButtonStyle.checked = skin.newDrawable( "white", Color.BLUE );
         textButtonStyle.down = skin.newDrawable( "white", Color.LIGHT_GRAY );
         textButtonStyle.font = skin.getFont( "default" );
         skin.add( "default", textButtonStyle );
 
-        // Create a table that fills the screen. Everything else will go inside this table.
-        Table table = new Table();
-        table.debug();
-        table.setFillParent( true );
-        stage.addActor( table );
+        final Table hud = new Table();
+        hud.debug();
+        hud.setFillParent( true );
+        stage.addActor( hud );
 
-        // Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
-        final TextButton button = new TextButton( "Click me babe!", skin );
-        table.add( button );
+        final ImageButton optBut = new ImageButton( skin );
+        hud.add( optBut ).expand().top().left();
 
-        // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
-        // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
-        // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
-        // revert the checked state.
-        button.addListener( new ChangeListener() {
+        final Board optBoard = new Board();
+        final ScrollPane optiuniIG = new ScrollPane( optBoard );
+        optiuniIG.setWidget( optBoard );
+        optiuniIG.setVisible( false );
+
+        optBut.addListener( new ChangeListener() {
 
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println( "Clicked! Is checked: " +button.isChecked() );
-                // button.setText( "Good job!" );
+                if ( optBut.isPressed() ) {
+                    hud.setVisible( false );
+                    optiuniIG.setVisible( true );
+                }
             }
         } );
 
-        // Add an image actor. Have to set the size, else it would be the size of the drawable (which is the 1x1 texture).
-        table.add( new Image( skin.newDrawable( "white", Color.RED ) ) ).size( 64 );
+        TextButton back = new TextButton( "Back", skin );
+        back.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                hud.setVisible( true );
+                optiuniIG.setVisible( false );
+            }
+        } );
+
+        optBoard.addActor( back );
+
+        stage.addActor( optiuniIG );
     }
 
     @Override
     public void show() {
 
+        makeStage();
         Buton.tweeger = tweeger;
         toUpdate = 0;
     }
@@ -331,5 +348,22 @@ public class Gameplay implements Screen, InputProcessor {
         instances.clear();
         stage.dispose();
         skin.dispose();
+    }
+
+    public static class Board extends Group {
+
+        public void pack() {
+            float width = Float.NEGATIVE_INFINITY, height = Float.NEGATIVE_INFINITY, childXandWidth, childYandHeight;
+            for (Actor child : getChildren() ) {
+                if ( ( childXandWidth = child.getX() +child.getWidth() ) >width )
+                    width = childXandWidth;
+
+                if ( ( childYandHeight = child.getY() +child.getHeight() ) >height )
+                    height = childYandHeight;
+            }
+
+            setSize( width, height );
+        }
+
     }
 }

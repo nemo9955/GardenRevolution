@@ -25,7 +25,7 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 public class Garden_Revolution extends Game {
 
     public static final String      TITLU    = "Garden Revolution";
-    public static final String      VERSIUNE = "alfa 0.13";
+    public static final String      VERSIUNE = "alfa 0.15";
 
     public static Gameplay          gameplay;
     public static Meniu             meniu;
@@ -47,7 +47,10 @@ public class Garden_Revolution extends Game {
         param.magFilter = TextureFilter.Linear;
 
         for (Assets aset : Assets.values() ) {
-            manager.load( aset.path(), aset.type() );
+            if ( aset.type() ==Texture.class )
+                manager.load( aset.path(), Texture.class, param );
+            else
+                manager.load( aset.path(), aset.type() );
         }
 
         splash = new SplashScreen( this );
