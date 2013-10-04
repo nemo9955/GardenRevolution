@@ -7,7 +7,7 @@ buton_down
   rotate: false
   xy: 1, 1
   size: 60, 60
-  split: 29, 30, 29, 30
+  split: 14, 15, 11, 11
   orig: 60, 60
   offset: 0, 0
   index: -1
@@ -15,7 +15,7 @@ buton_over
   rotate: false
   xy: 64, 1
   size: 60, 60
-  split: 28, 31, 29, 30
+  split: 14, 16, 13, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
@@ -23,26 +23,26 @@ buton_up
   rotate: false
   xy: 127, 1
   size: 60, 60
-  split: 29, 30, 29, 30
+  split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-element
+element1
   rotate: false
   xy: 190, 1
   size: 60, 60
-  split: 28, 31, 31, 28
+  split: 12, 14, 14, 16
   orig: 60, 60
   offset: 0, 0
-  index: 1
-element
+  index: -1
+element2
   rotate: false
   xy: 253, 1
   size: 60, 60
-  split: 29, 30, 30, 29
+  split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
-  index: 2
+  index: -1
 IGoptiuni
   rotate: false
   xy: 316, 21
@@ -50,31 +50,31 @@ IGoptiuni
   orig: 39, 40
   offset: 0, 0
   index: -1
-pix
+pix100
   rotate: false
   xy: 358, 60
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
-  index: 100
-pix
+  index: -1
+pix30
   rotate: false
   xy: 358, 56
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
-  index: 30
-pix
+  index: -1
+pix50
   rotate: false
   xy: 358, 52
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
-  index: 50
-pix
+  index: -1
+pix80
   rotate: false
   xy: 358, 48
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
-  index: 80
+  index: -1

@@ -82,6 +82,8 @@ public class Gameplay implements Screen, InputProcessor {
 
         skin = new Skin( Gdx.files.internal( Assets.LOC.ELEMENT.getLink() +"mainJSkins.json" ), (TextureAtlas) Garden_Revolution.manager.get( Assets.ELEMENTS_PACK.path() ) );
 
+        // tot ce tine de Head Up Display
+
         final Table hud = new Table();
         hud.debug();
         hud.setFillParent( true );
@@ -90,10 +92,13 @@ public class Gameplay implements Screen, InputProcessor {
         final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
         hud.add( optBut ).expand().top().left();
 
-        final Board optBoard = new Board();
-        final ScrollPane optiuniIG = new ScrollPane( optBoard );
-        optiuniIG.setWidget( optBoard );
+        // tot ce tine de optiuni
+        Board optFill = new Board();
+
+        final ScrollPane optiuniIG = new ScrollPane( optFill, skin );
+        optiuniIG.setWidget( optFill );
         optiuniIG.setVisible( false );
+        optiuniIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
 
         optBut.addListener( new ChangeListener() {
 
@@ -101,23 +106,28 @@ public class Gameplay implements Screen, InputProcessor {
                 if ( optBut.isPressed() ) {
                     hud.setVisible( false );
                     optiuniIG.setVisible( true );
+                    toUpdate = 1;
                 }
             }
         } );
 
-        TextButton back = new TextButton( "Back", skin );
+        final TextButton back = new TextButton( "Back", skin, "demon" );
+        back.setPosition( 0, 0 );
+        optFill.addActor( back );
+
+
         back.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 hud.setVisible( true );
-
+                toUpdate = 0;
                 optiuniIG.setVisible( false );
             }
         } );
 
-        optBoard.addActor( back );
 
+        optFill.pack();
         stage.addActor( optiuniIG );
     }
 
@@ -208,7 +218,7 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if ( moveByTouch ) {
+        if ( moveByTouch &&toUpdate ==0 ) {
             startX = screenX;
             startY = screenY;
         }
@@ -223,12 +233,13 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if ( moveByTouch ) {
+        if ( moveByTouch &&toUpdate ==0 ) {
             deltaX = ( screenX -startX ) /scrw;
             deltaY = ( startY -screenY ) /scrh;
             startX = screenX;
             startY = screenY;
             moveCamera( deltaY, deltaX );
+            return true;
         }
 
         return false;
