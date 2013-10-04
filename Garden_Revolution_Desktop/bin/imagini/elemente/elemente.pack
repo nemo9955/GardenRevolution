@@ -1,0 +1,80 @@
+
+elemente.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+buton_down
+  rotate: false
+  xy: 1, 1
+  size: 60, 60
+  split: 29, 30, 29, 30
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+buton_over
+  rotate: false
+  xy: 64, 1
+  size: 60, 60
+  split: 28, 31, 29, 30
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+buton_up
+  rotate: false
+  xy: 127, 1
+  size: 60, 60
+  split: 29, 30, 29, 30
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+element
+  rotate: false
+  xy: 190, 1
+  size: 60, 60
+  split: 28, 31, 31, 28
+  orig: 60, 60
+  offset: 0, 0
+  index: 1
+element
+  rotate: false
+  xy: 253, 1
+  size: 60, 60
+  split: 29, 30, 30, 29
+  orig: 60, 60
+  offset: 0, 0
+  index: 2
+IGoptiuni
+  rotate: false
+  xy: 316, 21
+  size: 39, 40
+  orig: 39, 40
+  offset: 0, 0
+  index: -1
+pix
+  rotate: false
+  xy: 358, 60
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: 100
+pix
+  rotate: false
+  xy: 358, 56
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: 30
+pix
+  rotate: false
+  xy: 358, 52
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: 50
+pix
+  rotate: false
+  xy: 358, 48
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: 80

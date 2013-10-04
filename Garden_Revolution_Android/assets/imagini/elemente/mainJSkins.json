@@ -1,0 +1,38 @@
+{
+	com.badlogic.gdx.graphics.Color: {
+	        white: { r: 1, g: 1, b: 1, a: 1 },
+	        black: { r: 0, g: 0, b: 0, a: 1 },
+	        gray:  { r: 0.3, g: 0.3, b: 0.3, a: 1 },
+	        red:   { r: 1, g: 0, b: 0, a: 1 },
+	        green: { r: 0, g: 1, b: 0, a: 1 },
+	        blue:  { r: 0, g: 0, b: 1, a: 1 }
+	 },
+	
+	 com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	        demonized_32: { file: fonts/demonized_32.fnt }, 
+	        demonized_64: { file: fonts/demonized_64.fnt }, 
+	        arial_32:     { file: fonts/arial_32.fnt }, 
+	        arial_64:     { file: fonts/arial_64.fnt }
+	},
+	
+	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	        default:   { font: arial_32, fontColor: white },
+	        big:       { font: arial_64, fontColor: white },
+	        demon:     { font: demonized_32, fontColor: white },
+	        bigdemon:  { font: demonized_64, fontColor: white }
+	},
+	
+	 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	        default: { up: buton_up, down: buton_down, over:buton_over , font: arial_32, pressedOffsetX: 1, pressedOffsetY: -1 },
+	        big:     { up: buton_up, down: buton_down, over:buton_over , font: arial_64, pressedOffsetX: 1, pressedOffsetY: -1 },
+	},
+	
+	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle:{
+		default:{ imageUp: buton_up , imageDown: buton_down , imageOver: buton_over  },
+		IGoptiuni:{ imageUp: IGoptiuni , pressedOffsetX: 2 , pressedOffsetY: -2}
+	},
+	
+	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	        default: { font: arial_32, fontColorUnselected: white, fontColorSelected: black}
+	}
+}

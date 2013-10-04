@@ -47,10 +47,15 @@ public class Garden_Revolution extends Game {
         param.magFilter = TextureFilter.Linear;
 
         for (Assets aset : Assets.values() ) {
-            if ( aset.type() ==Texture.class )
-                manager.load( aset.path(), Texture.class, param );
-            else
-                manager.load( aset.path(), aset.type() );
+            try {
+                if ( aset.type() ==Texture.class )
+                    manager.load( aset.path(), Texture.class, param );
+                else
+                    manager.load( aset.path(), aset.type() );
+            }
+            catch (Exception e) {
+                System.out.println( "problema la incarcarea assetului : " +aset.name() );
+            }
         }
 
         splash = new SplashScreen( this );

@@ -7,14 +7,9 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -26,12 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -87,41 +80,14 @@ public class Gameplay implements Screen, InputProcessor {
         stage = new Stage();
         Garden_Revolution.multiplexer.addProcessor( stage );
 
-        skin = new Skin();
-
-        // Generate a 1x1 white texture and store it in the skin named "white".
-        Pixmap pixmap = new Pixmap( 1, 1, Format.RGBA8888 );
-        pixmap.setColor( Color.WHITE );
-        pixmap.fill();
-        skin.add( "white", new Texture( pixmap ) );
-        skin.add( "buton_up", new NinePatch( new Texture( "imagini/butoane/buton_up.png" ), 18, 19, 18, 19 ), NinePatch.class );
-        skin.add( "buton_down", new NinePatch( new Texture( "imagini/butoane/buton_down.png" ), 18, 19, 18, 19 ), NinePatch.class );
-        skin.add( "IGoptiuni", (Texture) Garden_Revolution.manager.get( Assets.IGOPTIUNI.path() ) );
-
-        BitmapFont font = new BitmapFont();
-        font.scale( 2 );
-        skin.add( "default", font );
-
-        ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
-        imageButtonStyle.imageUp = skin.newDrawable( "IGoptiuni" );
-        imageButtonStyle.pressedOffsetX = 2;
-        imageButtonStyle.pressedOffsetY = -2;
-        skin.add( "default", imageButtonStyle );
-
-        TextButtonStyle textButtonStyle = new TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable( "buton_up" );
-        textButtonStyle.over = skin.newDrawable( "buton_down" );
-        // textButtonStyle.checked = skin.newDrawable( "white", Color.BLUE );
-        textButtonStyle.down = skin.newDrawable( "white", Color.LIGHT_GRAY );
-        textButtonStyle.font = skin.getFont( "default" );
-        skin.add( "default", textButtonStyle );
+        skin = new Skin( Gdx.files.internal( Assets.LOC.ELEMENT.getLink() +"mainJSkins.json" ), (TextureAtlas) Garden_Revolution.manager.get( Assets.ELEMENTS_PACK.path() ) );
 
         final Table hud = new Table();
         hud.debug();
         hud.setFillParent( true );
         stage.addActor( hud );
 
-        final ImageButton optBut = new ImageButton( skin );
+        final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
         hud.add( optBut ).expand().top().left();
 
         final Board optBoard = new Board();
@@ -145,6 +111,7 @@ public class Gameplay implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 hud.setVisible( true );
+
                 optiuniIG.setVisible( false );
             }
         } );

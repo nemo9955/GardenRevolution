@@ -2,14 +2,18 @@ package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 
 public enum Assets {
 
-    FONT1(LOC.FONT, "font1.fnt"),
+    ARIAL32(LOC.FONT, "arial_32.fnt"), //
+    ARIAL64(LOC.FONT, "arial_64.fnt"), //
+    DEMON32(LOC.FONT, "demonized_32.fnt"), //
+    DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
-    SCENA(LOC.MODEL, "scena.g3db"),
+    SCENA(LOC.MODEL, "scena.g3db"), //
 
     TEST(LOC.BUTON, "test.png"), //
     PLAY(LOC.BUTON, "play.png"), //
@@ -17,15 +21,11 @@ public enum Assets {
     RESUME(LOC.BUTON, "resume.png"), //
     BACK(LOC.BUTON, "back.png"), //
     EXIT(LOC.BUTON, "exit.png"), //
-    IGOPTIUNI(LOC.BUTON, "IGoptiuni.png"), //
-    BUT_DOWN_1(LOC.BUTON, "buton_down.png"), //
-    BUT_UP_1(LOC.BUTON, "buton_up.png"), //
 
-    IMGTEST1(LOC.FUNDAL, "imagine_test.jpg"), //
     LOADING_BAR(LOC.FUNDAL, "loading_bar.png"), //
     LOADING_BG(LOC.FUNDAL, "loading_fundal.png"), //
 
-    OPTIUNI_BG(LOC.ELEMENT, "optiuni_fundal.png");//
+    ELEMENTS_PACK(LOC.ELEMENT, "elemente.pack", TextureAtlas.class);//
 
 
     private String   path;

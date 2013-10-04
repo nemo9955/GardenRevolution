@@ -32,7 +32,7 @@ public class TestScene implements Screen, InputProcessor {
 
     public TestScene() {
         tweeger = new TweenManager();
-        font = Garden_Revolution.manager.get( Assets.FONT1.path() );
+        font = Garden_Revolution.manager.get( Assets.ARIAL32.path() );
 
         batch = new SpriteBatch();
         shape = new ShapeRenderer();

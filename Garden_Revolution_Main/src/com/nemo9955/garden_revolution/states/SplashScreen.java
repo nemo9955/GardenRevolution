@@ -28,15 +28,15 @@ public class SplashScreen implements Screen {
         this.game = game;
         batch = new SpriteBatch();
 
-        bara = new Texture(Assets.LOADING_BAR.path());
+        bara = new Texture( Assets.LOADING_BAR.path() );
         bara.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
 
-        loader = new Texture(Assets.LOADING_BG.path() );
+        loader = new Texture( Assets.LOADING_BG.path() );
         loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
         fundal = new Sprite( loader );
         fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
 
-        font = new BitmapFont( Gdx.files.internal( "fonts/font1.fnt" ) );
+        font = new BitmapFont( Gdx.files.internal( "fonts/arial_32.fnt" ) );
     }
 
     @Override
@@ -51,14 +51,12 @@ public class SplashScreen implements Screen {
             game.postLoading();
             game.setScreen( Garden_Revolution.meniu );
         }
-
+        font.setScale( 0.8f );
 
         batch.begin();
         fundal.draw( batch );
         batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), Garden_Revolution.manager.getProgress() *bara.getWidth(), bara.getHeight() );
-        // batch.draw( bara, 100, 100, bara.getWidth(), bara.getHeight(), 0, 0, Garden_Revolution.manager.getProgress()*bara.getWidth() , bara.getHeight() );
-        font.setScale( 0.8f );
-        font.draw( batch, String.format( "%d%% Completed", (int) ( Garden_Revolution.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -80, Gdx.graphics.getHeight() /2 +7 );
+        font.draw( batch, String.format( "%d%% Completed", (int) ( Garden_Revolution.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -80, Gdx.graphics.getHeight() /2 +18 );
         batch.end();
     }
 
