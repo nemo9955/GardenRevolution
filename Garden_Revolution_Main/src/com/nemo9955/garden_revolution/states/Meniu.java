@@ -28,7 +28,6 @@ public class Meniu implements Screen {
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage();
-        Garden_Revolution.multiplexer.addProcessor( stage );
 
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );
@@ -76,6 +75,7 @@ public class Meniu implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor( stage );
     }
 
     @Override

@@ -5,6 +5,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -73,12 +74,13 @@ public class Gameplay implements Screen, InputProcessor {
         cam.far = 300f;
         cam.update();
 
+        makeStage();
+
 
     }
 
     private void makeStage() {
         stage = new Stage();
-        Garden_Revolution.multiplexer.addProcessor( stage );
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         final Table hud = new Table();
@@ -96,7 +98,7 @@ public class Gameplay implements Screen, InputProcessor {
         pauseIG.addAction( Actions.alpha( 0 ) );
         pauseIG.setBackground( "pix30" );
         pauseIG.setFillParent( true );
-        //pauseIG.debug();
+        // pauseIG.debug();
         pauseIG.add( "PAUSE", "big-green" ).padBottom( stage.getHeight() *0.1f );
         pauseIG.row();
         pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
@@ -142,7 +144,7 @@ public class Gameplay implements Screen, InputProcessor {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( backBut.isPressed() ) {
                     optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     toUpdate = 0;
                 }
             }
@@ -154,10 +156,11 @@ public class Gameplay implements Screen, InputProcessor {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( resumeBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     toUpdate = 0;
                 }
                 if ( meniuBut.isPressed() ) {
+                    hud.setVisible( true );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ), Actions.run( new Runnable() {
 
                         @Override
@@ -194,10 +197,8 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public void show() {
 
-        makeStage();
 
-        Garden_Revolution.multiplexer.addProcessor( this );
-
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         toUpdate = 0;
     }
 

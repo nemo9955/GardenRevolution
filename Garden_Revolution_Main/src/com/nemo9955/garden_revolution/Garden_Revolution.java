@@ -3,8 +3,6 @@ package com.nemo9955.garden_revolution;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
@@ -35,13 +33,12 @@ public class Garden_Revolution extends Game {
 
     public static Garden_Revolution game;
     public static AssetManager      manager;
-    public static InputMultiplexer  multiplexer;
 
     @Override
     public void create() {
 
         manager = new AssetManager();
-        
+
         Texture.setEnforcePotImages( false );
 
         TextureParameter param = new TextureParameter();
@@ -72,7 +69,6 @@ public class Garden_Revolution extends Game {
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
         Texture.setEnforcePotImages( false );
-        multiplexer = new InputMultiplexer();
         Bullet.init();
 
 
@@ -82,9 +78,6 @@ public class Garden_Revolution extends Game {
         bullet = new BulletJocTest();
 
         gameplay.manageModels();
-
-        multiplexer.addProcessor( test );
-        Gdx.input.setInputProcessor( multiplexer );
 
         game = this;
     }
