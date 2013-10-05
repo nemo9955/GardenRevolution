@@ -14,6 +14,8 @@ public enum Assets {
     DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
     SCENA(LOC.MODEL, "scena.g3db"), //
+    
+    ELEMENTS_PACK(LOC.ELEMENT, "elemente.pack", TextureAtlas.class),//
 
     TEST(LOC.BUTON, "test.png"), //
     PLAY(LOC.BUTON, "play.png"), //
@@ -23,9 +25,8 @@ public enum Assets {
     EXIT(LOC.BUTON, "exit.png"), //
 
     LOADING_BAR(LOC.FUNDAL, "loading_bar.png"), //
-    LOADING_BG(LOC.FUNDAL, "loading_fundal.png"), //
+    LOADING_BG(LOC.FUNDAL, "loading_fundal.png"); //
 
-    ELEMENTS_PACK(LOC.ELEMENT, "elemente.pack", TextureAtlas.class);//
 
 
     private String   path;

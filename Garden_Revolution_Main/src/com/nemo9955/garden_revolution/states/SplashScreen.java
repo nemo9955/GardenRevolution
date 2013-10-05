@@ -47,16 +47,16 @@ public class SplashScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
-        //if ( Garden_Revolution.manager.getProgress() <0.8f )
-            if ( Garden_Revolution.manager.update() ) {
-                game.postLoading();
-                game.setScreen( Garden_Revolution.meniu );
-            }
+        // if ( Garden_Revolution.manager.getProgress() <0.8f )
+        if ( Garden_Revolution.manager.update() ) {
+            game.postLoading();
+            game.setScreen( Garden_Revolution.meniu );
+        }
         font.setScale( 0.8f );
 
         batch.begin();
         fundal.draw( batch );
-        batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), Garden_Revolution.manager.getProgress() *bara.getWidth(), bara.getHeight()+5 );
+        batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), Garden_Revolution.manager.getProgress() *bara.getWidth(), bara.getHeight() +5 );
         font.draw( batch, String.format( "%d%% Completed", (int) ( Garden_Revolution.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -95, Gdx.graphics.getHeight() /2 +12 );
         batch.end();
     }

@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -83,6 +84,7 @@ public class Gameplay implements Screen, InputProcessor {
 
         skin = new Skin( Gdx.files.internal( Assets.LOC.ELEMENT.getLink() +"mainJSkins.json" ), (TextureAtlas) Garden_Revolution.manager.get( Assets.ELEMENTS_PACK.path() ) );
         final Table hud = new Table();
+
         final Touchpad mover = new Touchpad( 5, skin );
 
         final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
@@ -91,19 +93,16 @@ public class Gameplay implements Screen, InputProcessor {
         Board optFill = new Board();
         final ScrollPane optIG = new ScrollPane( optFill, skin );
 
+        optIG.addAction( Actions.alpha( 0 ) );
         optIG.setWidget( optFill );
         optIG.setVisible( false );
         optIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
 
-        hud.debug();
+        // hud.debug();
         hud.setFillParent( true );
         hud.add( optBut ).expand().top().left();
         hud.row();
-        hud.row();
-        hud.add( mover ).expand().bottom().left();
-        hud.add().expand();
-        hud.add().expand();
-        hud.add().expand();
+        hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
 
         backBut.setPosition( 50, 50 );
         optFill.addActor( backBut );
@@ -113,11 +112,10 @@ public class Gameplay implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( optBut.isPressed() ) {
-                    hud.setVisible( false );
-                    optIG.setVisible( true );
+                    hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    optIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     toUpdate = 1;
                 }
-
             }
         };
 
@@ -126,14 +124,13 @@ public class Gameplay implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( backBut.isPressed() ) {
-                    hud.setVisible( true );
+                    optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    hud.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     toUpdate = 0;
-                    optIG.setVisible( false );
                 }
             }
         };
 
-        // TODO mover.
         mover.addListener( new ChangeListener() {
 
             @Override
@@ -220,7 +217,6 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     private void moveCamera(float amontX, float amontY) {
-        System.out.println( amontX +" " +amontY );
         tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
         cam.rotateAround( target, tmpV1.nor(), amontY );
         cam.rotateAround( target, Vector3.Y, -amontX );

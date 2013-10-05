@@ -41,6 +41,8 @@ public class Garden_Revolution extends Game {
     public void create() {
 
         manager = new AssetManager();
+        
+        Texture.setEnforcePotImages( false );
 
         TextureParameter param = new TextureParameter();
         param.minFilter = TextureFilter.Linear;

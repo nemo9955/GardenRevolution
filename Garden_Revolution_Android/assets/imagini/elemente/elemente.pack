@@ -5,14 +5,14 @@ filter: Linear,Linear
 repeat: none
 mover-bg
   rotate: false
-  xy: 1, 23
+  xy: 1, 32
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 buton_down
   rotate: false
-  xy: 104, 63
+  xy: 104, 72
   size: 60, 60
   split: 14, 15, 11, 11
   orig: 60, 60
@@ -20,7 +20,7 @@ buton_down
   index: -1
 buton_over
   rotate: false
-  xy: 167, 63
+  xy: 167, 72
   size: 60, 60
   split: 14, 16, 13, 16
   orig: 60, 60
@@ -28,7 +28,7 @@ buton_over
   index: -1
 buton_up
   rotate: false
-  xy: 230, 63
+  xy: 230, 72
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
@@ -36,7 +36,7 @@ buton_up
   index: -1
 element1
   rotate: false
-  xy: 104, 1
+  xy: 104, 10
   size: 60, 60
   split: 12, 14, 14, 16
   orig: 60, 60
@@ -44,7 +44,7 @@ element1
   index: -1
 element2
   rotate: false
-  xy: 167, 1
+  xy: 167, 10
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
@@ -52,42 +52,42 @@ element2
   index: -1
 IGoptiuni
   rotate: false
-  xy: 230, 21
+  xy: 230, 30
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
   index: -1
 mover-knob
   rotate: false
-  xy: 272, 37
-  size: 24, 24
-  orig: 24, 24
+  xy: 1, 4
+  size: 26, 26
+  orig: 26, 26
   offset: 0, 0
   index: -1
 pix100
   rotate: false
-  xy: 1, 20
+  xy: 293, 131
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix30
   rotate: false
-  xy: 230, 18
+  xy: 230, 27
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix50
   rotate: false
-  xy: 293, 122
+  xy: 272, 69
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix80
   rotate: false
-  xy: 272, 34
+  xy: 1, 1
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
