@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -31,35 +30,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 public class Gameplay implements Screen, InputProcessor {
 
 
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
-    private Array<ModelInstance> instances    = new Array<ModelInstance>();
+    private Array<ModelInstance> instances = new Array<ModelInstance>();
     private Lights               lights;
     private ModelInstance        cer;
-    private final int            scrw, scrh;
+    private final int            scrw      = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
 
-    public int                   rotateButton = Buttons.LEFT;
     private float                startX, startY;
-    private boolean              moveByTouch  = true;
-    private float                movex        = 0, movey = 0;
-    private final Vector3        tmpV1        = new Vector3();
-    public Vector3               target       = new Vector3( 0, 15, 0 );
-    private float                deltaX       = 0;
-    private float                deltaY       = 0;
+    private float                movex     = 0, movey = 0;
+    private final Vector3        tmpV1     = new Vector3();
+    private Vector3              target    = new Vector3( 0, 15, 0 );
+    private float                deltaX    = 0;
+    private float                deltaY    = 0;
 
-    private short                toUpdate     = 0;
+    private short                toUpdate  = 0;
     private TweenManager         tweeger;
     private Stage                stage;
-    private Skin                 skin;
+    private Skin                 skin      = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad       mover     = new Touchpad( 5, skin );
 
 
     public Gameplay() {
-        scrw = Gdx.graphics.getWidth();
-        scrh = Gdx.graphics.getHeight();
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
@@ -79,20 +76,21 @@ public class Gameplay implements Screen, InputProcessor {
 
     }
 
+
     private void makeStage() {
         stage = new Stage();
 
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        final Table hud = new Table();
-        final Touchpad mover = new Touchpad( 5, skin );
         final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final TextButton backBut = new TextButton( "Back", skin, "demon" );
         final TextButton resumeBut = new TextButton( "Resume play", skin );
         final TextButton meniuBut = new TextButton( "Main menu", skin );
-        Board optFill = new Board();
+
+        final Board optFill = new Board();
+        final Table hud = new Table();
         final ScrollPane optIG = new ScrollPane( optFill, skin );
         final Table pauseIG = new Table( skin );
+
 
         pauseIG.setVisible( false );
         pauseIG.addAction( Actions.alpha( 0 ) );
@@ -119,7 +117,6 @@ public class Gameplay implements Screen, InputProcessor {
         hud.add( pauseBut ).expand().top().right();
         hud.row();
         hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
-
 
         ChangeListener hudButons = new ChangeListener() {
 
@@ -172,25 +169,31 @@ public class Gameplay implements Screen, InputProcessor {
             }
         };
 
-        mover.addListener( new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                movex = mover.getKnobPercentX() *2;
-                movey = mover.getKnobPercentY() /3;
-            }
-        } );
+        resetAfterOptions();
 
         meniuBut.addListener( pauseButons );
         resumeBut.addListener( pauseButons );
         pauseBut.addListener( hudButons );
         optBut.addListener( hudButons );
         backBut.addListener( optButons );
-
         optFill.pack();
         stage.addActor( hud );
         stage.addActor( optIG );
         stage.addActor( pauseIG );
+    }
+
+    public void resetAfterOptions() {
+        // mover.getListeners().;
+
+        mover.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                movex = mover.getKnobPercentX() *Mod.modCamSpeedX;
+                movey = mover.getKnobPercentY() *Mod.modCamSpeedY;
+            }
+        } );
+
     }
 
 
@@ -206,6 +209,7 @@ public class Gameplay implements Screen, InputProcessor {
     public void render(float delta) {
 
         Gdx.gl.glViewport( 0, 0, scrw, scrh );
+        Gdx.gl.glClearColor( .4f, .4f, .4f, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
         tweeger.update( delta );
 
@@ -240,7 +244,7 @@ public class Gameplay implements Screen, InputProcessor {
             node.rotation.idt();
 
             instance.calculateTransforms();
-            // System.out.println(node.id);FIXME
+            // System.out.println(node.id);//FIXME
 
             if ( id.equals( "cer" ) ) {
                 cer = instance;
@@ -267,7 +271,7 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if ( moveByTouch &&toUpdate ==0 ) {
+        if ( Mod.moveByTouch &&toUpdate ==0 ) {
             startX = screenX;
             startY = screenY;
         }
@@ -282,7 +286,7 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if ( moveByTouch &&toUpdate ==0 ) {
+        if ( Mod.moveByTouch &&toUpdate ==0 ) {
             deltaX = ( screenX -startX ) /5;
             deltaY = ( startY -screenY ) /10;
             startX = screenX;
@@ -372,7 +376,6 @@ public class Gameplay implements Screen, InputProcessor {
         stage.dispose();
         skin.dispose();
     }
-
 
     public static class Board extends Group {
 
