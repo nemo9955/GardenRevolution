@@ -5,33 +5,77 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.Buton;
+import com.nemo9955.garden_revolution.utility.Assets;
 
 
 public class Meniu implements Screen {
 
-    private SpriteBatch  batch;
     private TweenManager tweeger;
+    private Stage        stage;
+    private Skin         skin;
 
-    private Buton        butoane[] = new Buton[4];
 
     public Meniu() {
 
-        batch = new SpriteBatch();
         tweeger = new TweenManager();
 
-        butoane[0] = new Buton( "play" ).setPozi( 150, 230 );
-        butoane[1] = new Buton( "test" ).setPozi( 50, 50 );
-        butoane[2] = new Buton( "test" ).setPozi( 200, 50 );
-        butoane[3] = new Buton( "exit" ).setPozi( 200, 140 );
+        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        stage = new Stage();
+        Garden_Revolution.multiplexer.addProcessor( stage );
 
+        final ImageButton start = new ImageButton( skin, "start" );
+        final ImageButton exit = new ImageButton( skin, "exit" );
+        final ImageButton test1 = new ImageButton( skin, "test" );
+        final ImageButton test2 = new ImageButton( skin, "test" );
+        final ImageButton optiuni = new ImageButton( skin );
+        final Table tab = new Table();
+        tab.setFillParent( true );
+
+        ChangeListener asc = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( start.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                // if(optiuni.isPressed())
+                // Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                if ( test1.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
+                if ( test2.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.test );
+                if ( exit.isPressed() )
+                    Gdx.app.exit();
+            }
+        };
+
+        start.addListener( asc );
+        exit.addListener( asc );
+        test1.addListener( asc );
+        test2.addListener( asc );
+        exit.addListener( asc );
+
+        tab.defaults().pad( 20 );
+        tab.add( start ).colspan( 2 );
+        tab.row();
+        tab.add( optiuni ).colspan( 2 );
+        tab.row();
+        tab.add( test1 ).expandX().right();
+        tab.add( test2 ).expandX().left();
+        tab.row();
+        tab.add( exit ).colspan( 2 );
+
+        stage.addActor( tab );
     }
 
     @Override
     public void show() {
-        Buton.tweeger = tweeger;
     }
 
     @Override
@@ -41,21 +85,19 @@ public class Meniu implements Screen {
 
         tweeger.update( delta );
 
-        if ( butoane[0].isPressed() )
-            Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
-        if ( butoane[1].isPressed() )
-            Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
-        if ( butoane[2].isPressed() )
-            Garden_Revolution.game.setScreen( Garden_Revolution.test );
-        if ( butoane[3].isPressed() )
-            Gdx.app.exit();
+        /*
+         * if ( butoane[0].isPressed() )
+         * Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+         * if ( butoane[1].isPressed() )
+         * Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
+         * if ( butoane[2].isPressed() )
+         * Garden_Revolution.game.setScreen( Garden_Revolution.test );
+         * if ( butoane[3].isPressed() )
+         * Gdx.app.exit();
+         */
 
-        batch.begin();
-
-        for (Buton buton : butoane )
-            buton.render( delta, batch );
-
-        batch.end();
+        stage.act();
+        stage.draw();
 
     }
 
@@ -77,9 +119,8 @@ public class Meniu implements Screen {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        for (Buton buton : butoane )
-            buton.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 
 }

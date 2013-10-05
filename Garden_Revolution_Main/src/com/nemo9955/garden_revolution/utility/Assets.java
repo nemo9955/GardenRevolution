@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public enum Assets {
@@ -15,14 +16,8 @@ public enum Assets {
 
     SCENA(LOC.MODEL, "scena.g3db"), //
     
-    ELEMENTS_PACK(LOC.ELEMENT, "elemente.pack", TextureAtlas.class),//
-
-    TEST(LOC.BUTON, "test.png"), //
-    PLAY(LOC.BUTON, "play.png"), //
-    MENIU(LOC.BUTON, "meniu.png"), //
-    RESUME(LOC.BUTON, "resume.png"), //
-    BACK(LOC.BUTON, "back.png"), //
-    EXIT(LOC.BUTON, "exit.png"), //
+    ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class),//
+    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class),//
 
     LOADING_BAR(LOC.FUNDAL, "loading_bar.png"), //
     LOADING_BG(LOC.FUNDAL, "loading_fundal.png"); //
@@ -52,7 +47,6 @@ public enum Assets {
     }
 
     public enum LOC {
-        BUTON("imagini/butoane/", Texture.class), //
         FUNDAL("imagini/fundale/", Texture.class), //
         ELEMENT("imagini/elemente/", Texture.class), //
         FONT("fonts/", BitmapFont.class), //

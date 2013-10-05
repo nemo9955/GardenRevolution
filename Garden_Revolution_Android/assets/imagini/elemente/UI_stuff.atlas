@@ -1,0 +1,136 @@
+
+UI_stuff.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+mover-bg
+  rotate: false
+  xy: 1, 160
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+back
+  rotate: false
+  xy: 1, 108
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+exit
+  rotate: false
+  xy: 103, 210
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+meniu
+  rotate: false
+  xy: 1, 56
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+play
+  rotate: false
+  xy: 103, 158
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+test
+  rotate: false
+  xy: 1, 4
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+buton_down
+  rotate: false
+  xy: 205, 200
+  size: 60, 60
+  split: 14, 15, 11, 11
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+buton_over
+  rotate: false
+  xy: 103, 96
+  size: 60, 60
+  split: 14, 16, 13, 16
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+buton_up
+  rotate: false
+  xy: 103, 34
+  size: 60, 60
+  split: 14, 16, 14, 16
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+element1
+  rotate: false
+  xy: 205, 138
+  size: 60, 60
+  split: 12, 14, 14, 16
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+element2
+  rotate: false
+  xy: 165, 76
+  size: 60, 60
+  split: 14, 16, 14, 16
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+IGoptiuni
+  rotate: false
+  xy: 227, 96
+  size: 39, 40
+  orig: 39, 40
+  offset: 0, 0
+  index: -1
+IGpause
+  rotate: false
+  xy: 227, 54
+  size: 39, 40
+  orig: 39, 40
+  offset: 0, 0
+  index: -1
+mover-knob
+  rotate: false
+  xy: 103, 6
+  size: 26, 26
+  orig: 26, 26
+  offset: 0, 0
+  index: -1
+pix100
+  rotate: false
+  xy: 1, 1
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix30
+  rotate: false
+  xy: 165, 155
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix50
+  rotate: false
+  xy: 165, 73
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix80
+  rotate: false
+  xy: 131, 31
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1

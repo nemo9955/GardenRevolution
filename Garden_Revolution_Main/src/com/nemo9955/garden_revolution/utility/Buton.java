@@ -1,29 +1,20 @@
 package com.nemo9955.garden_revolution.utility;
 
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Quad;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 
 public class Buton implements Disposable {
 
-    public static TweenManager tweeger;
-
-    public Sprite              img;
-    private Camera             cam;
-    private boolean            hasCamera = false;
-    private static int         scrw, scrh;
+    public Sprite          img;
+    private Camera         cam;
+    private boolean        hasCamera = false;
+    private static int     scrw, scrh;
 
     /*
      * action :
@@ -35,11 +26,11 @@ public class Buton implements Disposable {
      * 5 + apasa
      * 6 + acceseaza
      */
-    private byte               action    = 0;
-    private static boolean     canAcc    = true;
+    private byte           action    = 0;
+    private static boolean canAcc    = true;
 
     public Buton(String link) {
-        img = new Sprite( (Texture) Garden_Revolution.manager.get( String.format( Assets.LOC.BUTON.getLink() +"%s.png", link ) ) );
+        img = ( (TextureAtlas) Garden_Revolution.manager.get( Assets.ELEMENTS_PACK.path() ) ).createSprite( link  );
         img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
 
         scrw = Gdx.graphics.getWidth();
@@ -67,9 +58,6 @@ public class Buton implements Disposable {
                 action = 1;
         }
 
-        if ( action >=3 )
-            doAnimation();
-
         img.draw( batch );
     }
 
@@ -81,32 +69,11 @@ public class Buton implements Disposable {
 
     }
 
-    private void doAnimation() {
-        switch (action) {
-            case 3:// intra
-                Tween.to( img, SpriteTween.SIZE, .2f ).target( 1.15f, 1.1f ).ease( Quad.IN ).start( tweeger );
-                break;
-            case 4:// iese
-                Tween.to( img, SpriteTween.SIZE, .35f ).target( 1f, 1f ).ease( Quad.OUT ).start( tweeger );
-                break;
-            case 5:// acces
-                Tween.to( img, SpriteTween.ALPHA, .3f ).target( .6f ).repeatYoyo( 1, 0 ).setCallback( new TweenCallback() {
-
-                    @Override
-                    public void onEvent(int type, BaseTween<?> source) {
-                        action = 6;
-                    }
-
-                } ).start( tweeger );
-                break;
-        }
-    }
 
     public boolean isPressed() {
-        if ( canAcc ==false &&action ==6 ) {
+        if ( canAcc ==false &&action ==5 ) {
             canAcc = true;
             action = 0;
-            Tween.set( img, SpriteTween.SIZE ).target( 1f, 1f ).start( tweeger );
             return true;
         }
         return false;

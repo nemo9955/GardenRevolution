@@ -1,7 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import aurelienribon.tweenengine.TweenManager;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -25,13 +23,11 @@ public class TestScene implements Screen, InputProcessor {
 
     private BitmapFont         font;
 
-    private TweenManager       tweeger;
     private Buton              butoane[] = new Buton[1];
 
     private float              pozitie   = 0;
 
     public TestScene() {
-        tweeger = new TweenManager();
         font = Garden_Revolution.manager.get( Assets.ARIAL32.path() );
 
         batch = new SpriteBatch();
@@ -50,7 +46,6 @@ public class TestScene implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        Buton.tweeger = tweeger;
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
     }
 
@@ -61,7 +56,6 @@ public class TestScene implements Screen, InputProcessor {
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
 
-        tweeger.update( delta );
 
         if ( butoane[0].isPressed() ) {
             // Gdx.input.vibrate( 500 );
