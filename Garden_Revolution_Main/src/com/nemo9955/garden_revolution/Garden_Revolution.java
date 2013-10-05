@@ -82,7 +82,6 @@ public class Garden_Revolution extends Game {
         gameplay.manageModels();
 
         multiplexer.addProcessor( test );
-        multiplexer.addProcessor( gameplay );
         Gdx.input.setInputProcessor( multiplexer );
 
         game = this;

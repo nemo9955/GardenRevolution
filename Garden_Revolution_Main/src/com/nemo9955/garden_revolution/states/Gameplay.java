@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -41,11 +42,10 @@ public class Gameplay implements Screen, InputProcessor {
     private ModelInstance        cer;
     private final int            scrw, scrh;
 
-    private float                rotateAngle  = 360f;
     public int                   rotateButton = Buttons.LEFT;
     private float                startX, startY;
     private boolean              moveByTouch  = true;
-    private boolean              moveUp       = false, moveDown = false, moveLeft = false, moveRight = false;
+    private float                movex        = 0, movey = 0;
     private final Vector3        tmpV1        = new Vector3();
     public Vector3               target       = new Vector3( 0, 15, 0 );
     private float                deltaX       = 0;
@@ -55,6 +55,7 @@ public class Gameplay implements Screen, InputProcessor {
     private TweenManager         tweeger;
     private Stage                stage;
     private Skin                 skin;
+
 
     public Gameplay() {
         scrw = Gdx.graphics.getWidth();
@@ -81,60 +82,84 @@ public class Gameplay implements Screen, InputProcessor {
         Garden_Revolution.multiplexer.addProcessor( stage );
 
         skin = new Skin( Gdx.files.internal( Assets.LOC.ELEMENT.getLink() +"mainJSkins.json" ), (TextureAtlas) Garden_Revolution.manager.get( Assets.ELEMENTS_PACK.path() ) );
-
-        // tot ce tine de Head Up Display
-
         final Table hud = new Table();
-        hud.debug();
-        hud.setFillParent( true );
-        stage.addActor( hud );
+        final Touchpad mover = new Touchpad( 5, skin );
 
         final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
-        hud.add( optBut ).expand().top().left();
+        final TextButton backBut = new TextButton( "Back", skin, "demon" );
 
-        // tot ce tine de optiuni
         Board optFill = new Board();
+        final ScrollPane optIG = new ScrollPane( optFill, skin );
 
-        final ScrollPane optiuniIG = new ScrollPane( optFill, skin );
-        optiuniIG.setWidget( optFill );
-        optiuniIG.setVisible( false );
-        optiuniIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
+        optIG.setWidget( optFill );
+        optIG.setVisible( false );
+        optIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
 
-        optBut.addListener( new ChangeListener() {
+        hud.debug();
+        hud.setFillParent( true );
+        hud.add( optBut ).expand().top().left();
+        hud.row();
+        hud.row();
+        hud.add( mover ).expand().bottom().left();
+        hud.add().expand();
+        hud.add().expand();
+        hud.add().expand();
 
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( optBut.isPressed() ) {
-                    hud.setVisible( false );
-                    optiuniIG.setVisible( true );
-                    toUpdate = 1;
-                }
-            }
-        } );
+        backBut.setPosition( 50, 50 );
+        optFill.addActor( backBut );
 
-        final TextButton back = new TextButton( "Back", skin, "demon" );
-        back.setPosition( 0, 0 );
-        optFill.addActor( back );
-
-
-        back.addListener( new ChangeListener() {
+        ChangeListener hudButons = new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                hud.setVisible( true );
-                toUpdate = 0;
-                optiuniIG.setVisible( false );
+                if ( optBut.isPressed() ) {
+                    hud.setVisible( false );
+                    optIG.setVisible( true );
+                    toUpdate = 1;
+                }
+
+            }
+        };
+
+        ChangeListener optButons = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( backBut.isPressed() ) {
+                    hud.setVisible( true );
+                    toUpdate = 0;
+                    optIG.setVisible( false );
+                }
+            }
+        };
+
+        // TODO mover.
+        mover.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                movex = mover.getKnobPercentX() *2;
+                movey = mover.getKnobPercentY() /3;
             }
         } );
 
 
+        backBut.addListener( optButons );
+        optBut.addListener( hudButons );
+
         optFill.pack();
-        stage.addActor( optiuniIG );
+        stage.addActor( hud );
+        stage.addActor( optIG );
     }
+
 
     @Override
     public void show() {
 
         makeStage();
+
+        Garden_Revolution.multiplexer.addProcessor( this );
+
         Buton.tweeger = tweeger;
         toUpdate = 0;
     }
@@ -190,29 +215,16 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     private void updateGameplay(float delta) {
-        updateCamera();
-    }
-
-    private void updateCamera() {
-
-        final float toMove = 0.005f;
-
-        if ( moveUp )
-            moveCamera( toMove, 0 );
-        if ( moveDown )
-            moveCamera( -toMove, 0 );
-        if ( moveLeft )
-            moveCamera( 0, -toMove );
-        if ( moveRight )
-            moveCamera( 0, toMove );
-
-        cam.update();
+        if ( movex !=0 ||movey !=0 )
+            moveCamera( movex, movey );
     }
 
     private void moveCamera(float amontX, float amontY) {
+        System.out.println( amontX +" " +amontY );
         tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
-        cam.rotateAround( target, tmpV1.nor(), amontX *rotateAngle );
-        cam.rotateAround( target, Vector3.Y, amontY *-rotateAngle );
+        cam.rotateAround( target, tmpV1.nor(), amontY );
+        cam.rotateAround( target, Vector3.Y, -amontX );
+        cam.update();
     }
 
     @Override
@@ -234,11 +246,11 @@ public class Gameplay implements Screen, InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
         if ( moveByTouch &&toUpdate ==0 ) {
-            deltaX = ( screenX -startX ) /scrw;
-            deltaY = ( startY -screenY ) /scrh;
+            deltaX = ( screenX -startX ) /5;
+            deltaY = ( startY -screenY ) /10;
             startX = screenX;
             startY = screenY;
-            moveCamera( deltaY, deltaX );
+            moveCamera( deltaX, deltaY );
             return true;
         }
 
@@ -258,23 +270,19 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     @Override
-    public void hide() {
-    }
-
-    @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.W:
-                moveUp = true;
+                movey = 1.5f;
                 break;
             case Keys.S:
-                moveDown = true;
+                movey = -1.5f;
                 break;
             case Keys.D:
-                moveRight = true;
+                movex = 1.5f;
                 break;
             case Keys.A:
-                moveLeft = true;
+                movex = -1.5f;
                 break;
             case Keys.ESCAPE:
                 Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
@@ -289,16 +297,12 @@ public class Gameplay implements Screen, InputProcessor {
 
         switch (keycode) {
             case Keys.W:
-                moveUp = false;
-                break;
             case Keys.S:
-                moveDown = false;
+                movey = 0;
                 break;
             case Keys.D:
-                moveRight = false;
-                break;
             case Keys.A:
-                moveLeft = false;
+                movex = 0;
                 break;
         }
 
@@ -321,12 +325,17 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     @Override
+    public void hide() {
+    }
+
+    @Override
     public void dispose() {
         modelBatch.dispose();
         instances.clear();
         stage.dispose();
         skin.dispose();
     }
+
 
     public static class Board extends Group {
 

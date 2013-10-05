@@ -3,9 +3,16 @@ elemente.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+mover-bg
+  rotate: false
+  xy: 1, 23
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
 buton_down
   rotate: false
-  xy: 1, 1
+  xy: 104, 63
   size: 60, 60
   split: 14, 15, 11, 11
   orig: 60, 60
@@ -13,7 +20,7 @@ buton_down
   index: -1
 buton_over
   rotate: false
-  xy: 64, 1
+  xy: 167, 63
   size: 60, 60
   split: 14, 16, 13, 16
   orig: 60, 60
@@ -21,7 +28,7 @@ buton_over
   index: -1
 buton_up
   rotate: false
-  xy: 127, 1
+  xy: 230, 63
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
@@ -29,7 +36,7 @@ buton_up
   index: -1
 element1
   rotate: false
-  xy: 190, 1
+  xy: 104, 1
   size: 60, 60
   split: 12, 14, 14, 16
   orig: 60, 60
@@ -37,7 +44,7 @@ element1
   index: -1
 element2
   rotate: false
-  xy: 253, 1
+  xy: 167, 1
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
@@ -45,35 +52,42 @@ element2
   index: -1
 IGoptiuni
   rotate: false
-  xy: 316, 21
+  xy: 230, 21
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
   index: -1
+mover-knob
+  rotate: false
+  xy: 272, 37
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
 pix100
   rotate: false
-  xy: 358, 60
+  xy: 1, 20
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix30
   rotate: false
-  xy: 358, 56
+  xy: 230, 18
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix50
   rotate: false
-  xy: 358, 52
+  xy: 293, 122
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix80
   rotate: false
-  xy: 358, 48
+  xy: 272, 34
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
