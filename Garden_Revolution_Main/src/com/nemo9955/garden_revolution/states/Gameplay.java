@@ -45,7 +45,7 @@ public class Gameplay implements Screen, InputProcessor {
     private float                startX, startY;
     private float                movex     = 0, movey = 0;
     private final Vector3        tmpV1     = new Vector3();
-    private Vector3              target    = new Vector3( 0, 15, 0 );
+    private Vector3              target    = new Vector3( 0, 10, 0 );
     private float                deltaX    = 0;
     private float                deltaY    = 0;
 
@@ -66,7 +66,7 @@ public class Gameplay implements Screen, InputProcessor {
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 5f ) );
 
         cam = new PerspectiveCamera( 67, scrw, scrh );
-        cam.position.set( 0f, 15f, 0f );
+        cam.position.set( target );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
@@ -209,7 +209,7 @@ public class Gameplay implements Screen, InputProcessor {
     public void render(float delta) {
 
         Gdx.gl.glViewport( 0, 0, scrw, scrh );
-        Gdx.gl.glClearColor( .4f, .4f, .4f, 1 );
+        Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
         tweeger.update( delta );
 
@@ -244,7 +244,7 @@ public class Gameplay implements Screen, InputProcessor {
             node.rotation.idt();
 
             instance.calculateTransforms();
-            // System.out.println(node.id);//FIXME
+            System.out.println( node.id );// FIXME
 
             if ( id.equals( "cer" ) ) {
                 cer = instance;
