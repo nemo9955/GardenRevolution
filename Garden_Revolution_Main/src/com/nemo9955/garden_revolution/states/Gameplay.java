@@ -1,5 +1,7 @@
 package com.nemo9955.garden_revolution.states;
 
+import java.util.Random;
+
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -7,14 +9,19 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -38,9 +45,8 @@ public class Gameplay implements Screen, InputProcessor {
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
     private Array<ModelInstance> instances = new Array<ModelInstance>();
-    private Lights               lights;
-    private ModelInstance        cer;
-    private final int            scrw      = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private Lights               lights    = new Lights();
+    private Array<ModelInstance> nori      = new Array<ModelInstance>();
 
     private float                startX, startY;
     private float                movex     = 0, movey = 0;
@@ -50,6 +56,7 @@ public class Gameplay implements Screen, InputProcessor {
     private float                deltaY    = 0;
 
     private short                toUpdate  = 0;
+    private final int            scrw      = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
     private TweenManager         tweeger;
     private Stage                stage;
     private Skin                 skin      = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
@@ -61,9 +68,9 @@ public class Gameplay implements Screen, InputProcessor {
         tweeger = new TweenManager();
 
         modelBatch = new ModelBatch();
-        lights = new Lights();
+
         lights.ambientLight.set( amb, amb, amb, .5f );
-        lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 5f ) );
+        lights.add( new DirectionalLight().set( lum, lum, lum, 0f, 15f, 0f ) );
 
         cam = new PerspectiveCamera( 67, scrw, scrh );
         cam.position.set( target );
@@ -76,6 +83,24 @@ public class Gameplay implements Screen, InputProcessor {
 
     }
 
+    private void makeNori() {
+        nori.clear();
+        ModelBuilder build = new ModelBuilder();
+        Random zar = new Random();
+        ModelInstance nor;
+
+        int norx, norz;
+
+        for (int i = 0 ; i <1 ; i ++ ) {
+            norx = zar.nextInt( 1000 ) -500;
+            norz = zar.nextInt( 1000 ) -500;
+            for (int j = 1 ; j <=15 ; j ++ ) {
+                nor = new ModelInstance( build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.CYAN ) ), Usage.Position |Usage.Normal ) );
+                nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
+                nori.add( nor );
+            }
+        }
+    }
 
     private void makeStage() {
         stage = new Stage();
@@ -189,8 +214,8 @@ public class Gameplay implements Screen, InputProcessor {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                movex = mover.getKnobPercentX() *Mod.modCamSpeedX;
-                movey = mover.getKnobPercentY() *Mod.modCamSpeedY;
+                movex = Mod.invertPadX *mover.getKnobPercentX() *Mod.modCamSpeedX;
+                movey = Mod.invertPadY *mover.getKnobPercentY() *Mod.modCamSpeedY;
             }
         } );
 
@@ -199,8 +224,7 @@ public class Gameplay implements Screen, InputProcessor {
 
     @Override
     public void show() {
-
-
+        makeNori();
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         toUpdate = 0;
     }
@@ -219,8 +243,8 @@ public class Gameplay implements Screen, InputProcessor {
         modelBatch.begin( cam );
         for (ModelInstance instance : instances )
             modelBatch.render( instance, lights );
-        if ( cer !=null )
-            modelBatch.render( cer );
+        for (ModelInstance instance : nori )
+            modelBatch.render( instance );
         modelBatch.end();
 
         stage.act();
@@ -236,20 +260,16 @@ public class Gameplay implements Screen, InputProcessor {
             String id = cuboid.nodes.get( i ).id;
 
             ModelInstance instance = new ModelInstance( cuboid, id );
-            Node node = instance.getNode( id );
 
+            Node node = instance.getNode( id );
             instance.transform.set( node.globalTransform );
             node.translation.set( 0, 0, 0 );
             node.scale.set( 1, 1, 1 );
             node.rotation.idt();
 
-            instance.calculateTransforms();
-         //   System.out.println( node.id );
 
-            if ( id.equals( "cer" ) ) {
-                cer = instance;
-                continue;
-            }
+            instance.calculateTransforms();
+            // System.out.println( node.id );
 
             instances.add( instance );
 
@@ -264,7 +284,7 @@ public class Gameplay implements Screen, InputProcessor {
     private void moveCamera(float amontX, float amontY) {
         tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
         cam.rotateAround( target, tmpV1.nor(), amontY );
-        cam.rotateAround( target, Vector3.Y, -amontX );
+        cam.rotateAround( target, Vector3.Y, amontX );
         cam.update();
     }
 
@@ -287,11 +307,11 @@ public class Gameplay implements Screen, InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
         if ( Mod.moveByTouch &&toUpdate ==0 ) {
-            deltaX = ( screenX -startX ) /5;
-            deltaY = ( startY -screenY ) /10;
+            deltaX = ( screenX -startX ) /10 *Mod.modCamSpeedX;
+            deltaY = ( startY -screenY ) /7 *Mod.modCamSpeedY;
             startX = screenX;
             startY = screenY;
-            moveCamera( deltaX, deltaY );
+            moveCamera( deltaX *Mod.invertDragX, deltaY *Mod.invertDragY );
             return true;
         }
 
@@ -382,7 +402,7 @@ public class Gameplay implements Screen, InputProcessor {
      * https://bitbucket.org/dermetfan/somelibgdxtests/src/28080ff7dd7bd6d000ec8ba7f9514e177bb03e17/SomeLibgdxTests/src/net/dermetfan/someLibgdxTests/screens/TabsLeftTest.java?at=default
      * 
      * @author dermetfan
-     *
+     * 
      */
     public static class Board extends Group {
 

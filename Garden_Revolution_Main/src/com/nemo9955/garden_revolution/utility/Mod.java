@@ -9,5 +9,11 @@ public class Mod {
     public static float   modCamSpeedX = 2f;
     public static float   modCamSpeedY = 0.7f;
 
+    public static byte    invertPadX   = -1;
+    public static byte    invertPadY   = 1;
+
+    public static byte    invertDragX  = -1;
+    public static byte    invertDragY  = 1;
+
 
 }
