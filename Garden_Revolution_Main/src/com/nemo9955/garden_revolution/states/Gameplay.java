@@ -244,7 +244,7 @@ public class Gameplay implements Screen, InputProcessor {
             node.rotation.idt();
 
             instance.calculateTransforms();
-            System.out.println( node.id );// FIXME
+         //   System.out.println( node.id );
 
             if ( id.equals( "cer" ) ) {
                 cer = instance;
@@ -367,6 +367,7 @@ public class Gameplay implements Screen, InputProcessor {
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor( null );
     }
 
     @Override
@@ -377,6 +378,12 @@ public class Gameplay implements Screen, InputProcessor {
         skin.dispose();
     }
 
+    /**
+     * https://bitbucket.org/dermetfan/somelibgdxtests/src/28080ff7dd7bd6d000ec8ba7f9514e177bb03e17/SomeLibgdxTests/src/net/dermetfan/someLibgdxTests/screens/TabsLeftTest.java?at=default
+     * 
+     * @author dermetfan
+     *
+     */
     public static class Board extends Group {
 
         public void pack() {

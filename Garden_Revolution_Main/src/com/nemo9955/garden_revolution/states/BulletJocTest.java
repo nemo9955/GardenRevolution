@@ -205,10 +205,25 @@ public class BulletJocTest extends BulletTest implements Screen {
     }
 
     @Override
+    public boolean longPress(float x, float y) {
+
+        Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+        return false;
+    }
+
+    @Override
     public void show() {
+        Gdx.input.setInputProcessor( this );
     }
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor( null );
     }
 }

@@ -47,6 +47,7 @@ public class TestScene implements Screen, InputProcessor {
     @Override
     public void show() {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
+        Gdx.input.setInputProcessor( this );
     }
 
     @Override
@@ -99,6 +100,7 @@ public class TestScene implements Screen, InputProcessor {
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor( null );
     }
 
     @Override
