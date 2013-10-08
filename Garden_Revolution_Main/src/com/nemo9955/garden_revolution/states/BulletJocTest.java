@@ -148,10 +148,7 @@ public class BulletJocTest extends BulletTest implements Screen {
                 }
             }
         }
-
-
     }
-
 
     @Override
     public void render(float delta) {
