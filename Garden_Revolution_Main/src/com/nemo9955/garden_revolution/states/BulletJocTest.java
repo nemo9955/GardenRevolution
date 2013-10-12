@@ -37,10 +37,10 @@ import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 
 /** @author xoppa */
-public class BulletJocTest extends BulletTest implements Screen {
+public class BulletJocTest implements Screen {
 
     // MotionState syncs the transform (position, rotation) between bullet and the model instance.
-    public static class MotionState extends btMotionState {
+    private class MotionState extends btMotionState {
 
         public Matrix4 transform;
 
@@ -67,7 +67,7 @@ public class BulletJocTest extends BulletTest implements Screen {
     private btCollisionDispatcher              dispatcher;
     private btBroadphaseInterface              broadphase;
     private btConstraintSolver                 solver;
-    private btDynamicsWorld                    collisionWorld;
+    private btDynamicsWorld                    world;
     private Vector3                            gravity      = new Vector3( 0, -9.81f, 0 );
     private Vector3                            tempVector   = new Vector3();
 
@@ -77,11 +77,11 @@ public class BulletJocTest extends BulletTest implements Screen {
     private Array<btRigidBodyConstructionInfo> bodyInfos    = new Array<btRigidBodyConstructionInfo>();
     private Array<btCollisionShape>            shapes       = new Array<btCollisionShape>();
     private Array<btRigidBody>                 bodies       = new Array<btRigidBody>();
+    private PerspectiveCamera                  camera;
 
     public BulletJocTest() {
 
 
-        instructions = "Swipe for next test";
         // Set up the camera
         final float width = Gdx.graphics.getWidth();
         final float height = Gdx.graphics.getHeight();
@@ -107,8 +107,8 @@ public class BulletJocTest extends BulletTest implements Screen {
         dispatcher = new btCollisionDispatcher( collisionConfiguration );
         broadphase = new btDbvtBroadphase();
         solver = new btSequentialImpulseConstraintSolver();
-        collisionWorld = new btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
-        collisionWorld.setGravity( gravity );
+        world = new btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+        world.setGravity( gravity );
 
         // Create the shapes and body construction infos
         btCollisionShape groundShape = new btBoxShape( tempVector.set( 20, 0, 20 ) );
@@ -129,7 +129,7 @@ public class BulletJocTest extends BulletTest implements Screen {
         btRigidBody groundBody = new btRigidBody( groundInfo );
         groundBody.setMotionState( groundMotionState );
         bodies.add( groundBody );
-        collisionWorld.addRigidBody( groundBody );
+        world.addRigidBody( groundBody );
 
         // Create the spheres
         for (float x = -10f ; x <=10f ; x += 2f ) {
@@ -144,7 +144,7 @@ public class BulletJocTest extends BulletTest implements Screen {
                     btRigidBody sphereBody = new btRigidBody( sphereInfo );
                     sphereBody.setMotionState( sphereMotionState );
                     bodies.add( sphereBody );
-                    collisionWorld.addRigidBody( sphereBody );
+                    world.addRigidBody( sphereBody );
                 }
             }
         }
@@ -155,27 +155,42 @@ public class BulletJocTest extends BulletTest implements Screen {
         Gdx.gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
 
+        if ( Gdx.input.isTouched( 1 ) )
+            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
             Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+        world.stepSimulation( delta, 5 );
 
-        fpsCounter.put( Gdx.graphics.getFramesPerSecond() );
-
-        performanceCounter.tick();
-        performanceCounter.start();
-        ( (btDynamicsWorld) collisionWorld ).stepSimulation( Gdx.graphics.getDeltaTime(), 5 );
-        performanceCounter.stop();
 
         modelBatch.begin( camera );
         modelBatch.render( instances, lights );
         modelBatch.end();
 
-        performance.setLength( 0 );
-        performance.append( "FPS: " ).append( fpsCounter.value ).append( ", Bullet: " ).append( (int) ( performanceCounter.load.value *100f ) ).append( "%" );
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
     }
 
     @Override
     public void dispose() {
-        collisionWorld.dispose();
+        world.dispose();
         solver.dispose();
         broadphase.dispose();
         dispatcher.dispose();
@@ -199,28 +214,5 @@ public class BulletJocTest extends BulletTest implements Screen {
         for (Model model : models )
             model.dispose();
         models.clear();
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-
-        Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
-        return false;
-    }
-
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor( this );
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor( null );
     }
 }
