@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
@@ -27,57 +28,35 @@ import com.badlogic.gdx.physics.bullet.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btMotionState;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.btSphereShape;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 
 /** @author xoppa */
 public class BulletJocTest implements Screen {
 
-    // MotionState syncs the transform (position, rotation) between bullet and the model instance.
-    private class MotionState extends btMotionState {
+    private ModelBatch               modelBatch;
+    private Lights                   lights       = new Lights( 0.2f, 0.2f, 0.2f ).add( new DirectionalLight().set( 0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f ) );
+    private ModelBuilder             modelBuilder = new ModelBuilder();
+    private PerspectiveCamera        camera;
 
-        public Matrix4 transform;
+    private btCollisionConfiguration collisionCfg;
+    private btCollisionDispatcher    dispatcher;
+    private btBroadphaseInterface    broadphase;
+    private btConstraintSolver       solver;
+    private btDiscreteDynamicsWorld  world;
 
-        public MotionState(final Matrix4 transform) {
-            this.transform = transform;
-        }
+    private Vector3                  gravity      = new Vector3( 0, -9.81f, 0 );
+    private Vector3                  tempVector   = new Vector3();
 
-        @Override
-        public void getWorldTransform(Matrix4 worldTrans) {
-            worldTrans.set( transform );
-        }
+    private Array<ModelInstance>     instances    = new Array<ModelInstance>();
 
-        @Override
-        public void setWorldTransform(Matrix4 worldTrans) {
-            transform.set( worldTrans );
-        }
-    }
-
-    private ModelBatch                         modelBatch;
-    private Lights                             lights       = new Lights( 0.2f, 0.2f, 0.2f ).add( new DirectionalLight().set( 0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f ) );
-    private ModelBuilder                       modelBuilder = new ModelBuilder();
-
-    private btCollisionConfiguration           collisionConfiguration;
-    private btCollisionDispatcher              dispatcher;
-    private btBroadphaseInterface              broadphase;
-    private btConstraintSolver                 solver;
-    private btDynamicsWorld                    world;
-    private Vector3                            gravity      = new Vector3( 0, -9.81f, 0 );
-    private Vector3                            tempVector   = new Vector3();
-
-    private Array<Model>                       models       = new Array<Model>();
-    private Array<ModelInstance>               instances    = new Array<ModelInstance>();
-    private Array<MotionState>                 motionStates = new Array<MotionState>();
-    private Array<btRigidBodyConstructionInfo> bodyInfos    = new Array<btRigidBodyConstructionInfo>();
-    private Array<btCollisionShape>            shapes       = new Array<btCollisionShape>();
-    private Array<btRigidBody>                 bodies       = new Array<btRigidBody>();
-    private PerspectiveCamera                  camera;
+    private Array<Disposable>        dispose      = new Array<Disposable>();
 
     public BulletJocTest() {
 
@@ -85,10 +64,8 @@ public class BulletJocTest implements Screen {
         // Set up the camera
         final float width = Gdx.graphics.getWidth();
         final float height = Gdx.graphics.getHeight();
-        if ( width >height )
-            camera = new PerspectiveCamera( 67f, 3f *width /height, 3f );
-        else
-            camera = new PerspectiveCamera( 67f, 3f, 3f *height /width );
+
+        camera = new PerspectiveCamera( 67, width, height );
         camera.position.set( 10f, 10f, 10f );
         camera.lookAt( 0, 0, 0 );
         camera.update();
@@ -98,37 +75,40 @@ public class BulletJocTest implements Screen {
 
         // Create some basic models
         final Model groundModel = modelBuilder.createRect( 20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, new Material( ColorAttribute.createDiffuse( Color.BLUE ), ColorAttribute.createSpecular( Color.WHITE ), FloatAttribute.createShininess( 16f ) ), Usage.Position |Usage.Normal );
-        models.add( groundModel );
+        dispose.add( groundModel );
         final Model sphereModel = modelBuilder.createSphere( 1f, 1f, 1f, 10, 10, new Material( ColorAttribute.createDiffuse( Color.RED ), ColorAttribute.createSpecular( Color.WHITE ), FloatAttribute.createShininess( 64f ) ), Usage.Position |Usage.Normal );
-        models.add( sphereModel );
+        dispose.add( sphereModel );
 
         // Create the bullet world
-        collisionConfiguration = new btDefaultCollisionConfiguration();
-        dispatcher = new btCollisionDispatcher( collisionConfiguration );
+        collisionCfg = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher( collisionCfg );
         broadphase = new btDbvtBroadphase();
         solver = new btSequentialImpulseConstraintSolver();
-        world = new btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+        world = new btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionCfg );
+
         world.setGravity( gravity );
 
         // Create the shapes and body construction infos
         btCollisionShape groundShape = new btBoxShape( tempVector.set( 20, 0, 20 ) );
-        shapes.add( groundShape );
+        dispose.add( groundShape );
         btRigidBodyConstructionInfo groundInfo = new btRigidBodyConstructionInfo( 0f, null, groundShape, Vector3.Zero );
-        bodyInfos.add( groundInfo );
+        dispose.add( groundInfo );
+
         btCollisionShape sphereShape = new btSphereShape( 0.5f );
-        shapes.add( sphereShape );
-        sphereShape.calculateLocalInertia( 1f, tempVector );
+        dispose.add( sphereShape );
+        sphereShape.calculateLocalInertia( 1f, Vector3.Zero );
         btRigidBodyConstructionInfo sphereInfo = new btRigidBodyConstructionInfo( 1f, null, sphereShape, tempVector );
-        bodyInfos.add( sphereInfo );
+        dispose.add( sphereInfo );
+
 
         // Create the ground
         ModelInstance ground = new ModelInstance( groundModel );
         instances.add( ground );
         MotionState groundMotionState = new MotionState( ground.transform );
-        motionStates.add( groundMotionState );
+        dispose.add( groundMotionState );
         btRigidBody groundBody = new btRigidBody( groundInfo );
         groundBody.setMotionState( groundMotionState );
-        bodies.add( groundBody );
+        dispose.add( groundBody );
         world.addRigidBody( groundBody );
 
         // Create the spheres
@@ -137,13 +117,13 @@ public class BulletJocTest implements Screen {
                 for (float z = 0f ; z <=0f ; z += 2f ) {
                     ModelInstance sphere = new ModelInstance( sphereModel );
                     instances.add( sphere );
-                    // sphere.transform.trn( x +0.1f *MathUtils.random(), y +0.1f *MathUtils.random(), z +0.1f *MathUtils.random() );
-                    sphere.transform.trn( x, y, z );
+                    sphere.transform.trn( x +0.1f *MathUtils.random(), y +0.1f *MathUtils.random(), z +0.1f *MathUtils.random() );
+                    // sphere.transform.trn( x, y, z );
                     MotionState sphereMotionState = new MotionState( sphere.transform );
-                    motionStates.add( sphereMotionState );
+                    dispose.add( sphereMotionState );
                     btRigidBody sphereBody = new btRigidBody( sphereInfo );
                     sphereBody.setMotionState( sphereMotionState );
-                    bodies.add( sphereBody );
+                    dispose.add( sphereBody );
                     world.addRigidBody( sphereBody );
                 }
             }
@@ -159,6 +139,7 @@ public class BulletJocTest implements Screen {
             Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
         if ( Gdx.input.isKeyPressed( Input.Keys.ESCAPE ) )
             Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+
         world.stepSimulation( delta, 5 );
 
 
@@ -194,25 +175,34 @@ public class BulletJocTest implements Screen {
         solver.dispose();
         broadphase.dispose();
         dispatcher.dispose();
-        collisionConfiguration.dispose();
-
-        for (btRigidBody body : bodies )
-            body.dispose();
-        bodies.clear();
-        for (MotionState motionState : motionStates )
-            motionState.dispose();
-        motionStates.clear();
-        for (btCollisionShape shape : shapes )
-            shape.dispose();
-        shapes.clear();
-        for (btRigidBodyConstructionInfo info : bodyInfos )
-            info.dispose();
-        bodyInfos.clear();
+        collisionCfg.dispose();
 
         modelBatch.dispose();
         instances.clear();
-        for (Model model : models )
-            model.dispose();
-        models.clear();
+
+        for (Disposable body : dispose )
+            body.dispose();
+        dispose.clear();
+    }
+
+
+    // MotionState syncs the transform (position, rotation) between bullet and the model instance.
+    private class MotionState extends btMotionState {
+
+        public Matrix4 transform;
+
+        public MotionState(final Matrix4 transform) {
+            this.transform = transform;
+        }
+
+        @Override
+        public void getWorldTransform(Matrix4 worldTrans) {
+            worldTrans.set( transform );
+        }
+
+        @Override
+        public void setWorldTransform(Matrix4 worldTrans) {
+            transform.set( worldTrans );
+        }
     }
 }

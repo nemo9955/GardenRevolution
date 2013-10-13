@@ -36,6 +36,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.Entitate;
+import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Mod;
 
@@ -44,23 +46,24 @@ public class Gameplay implements Screen, InputProcessor {
 
     private PerspectiveCamera    cam;
     private ModelBatch           modelBatch;
-    private Array<ModelInstance> instances = new Array<ModelInstance>();
-    private Lights               lights    = new Lights();
-    private Array<ModelInstance> nori      = new Array<ModelInstance>();
+    private Lights               lights   = new Lights();
+    private Array<ModelInstance> nori     = new Array<ModelInstance>();
 
     private float                startX, startY;
-    private float                movex     = 0, movey = 0;
-    private final Vector3        tmpV1     = new Vector3();
-    private Vector3              target    = new Vector3( 0, 10, 0 );
-    private float                deltaX    = 0;
-    private float                deltaY    = 0;
+    private float                movex    = 0, movey = 0;
+    private final Vector3        tmpV1    = new Vector3();
+    private Vector3              target   = new Vector3( 0, 10, 0 );
+    private float                deltaX   = 0;
+    private float                deltaY   = 0;
 
-    private short                toUpdate  = 0;
-    private final int            scrw      = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private short                toUpdate = 0;
+    private final int            scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
     private TweenManager         tweeger;
     private Stage                stage;
-    private Skin                 skin      = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-    private final Touchpad       mover     = new Touchpad( 5, skin );
+    private Skin                 skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad       mover    = new Touchpad( 5, skin );
+
+    private World                world;
 
 
     public Gameplay() {
@@ -68,6 +71,8 @@ public class Gameplay implements Screen, InputProcessor {
         tweeger = new TweenManager();
 
         modelBatch = new ModelBatch();
+
+        world = new World();
 
         lights.ambientLight.set( amb, amb, amb, .5f );
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, 15f, 0f ) );
@@ -241,8 +246,7 @@ public class Gameplay implements Screen, InputProcessor {
             updateGameplay( delta );
 
         modelBatch.begin( cam );
-        for (ModelInstance instance : instances )
-            modelBatch.render( instance, lights );
+        world.render( modelBatch, lights );
         for (ModelInstance instance : nori )
             modelBatch.render( instance );
         modelBatch.end();
@@ -254,8 +258,8 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     public void manageModels() {
-
         Model cuboid = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
+
         for (int i = 0 ; i <cuboid.nodes.size ; i ++ ) {
             String id = cuboid.nodes.get( i ).id;
 
@@ -267,11 +271,11 @@ public class Gameplay implements Screen, InputProcessor {
             node.scale.set( 1, 1, 1 );
             node.rotation.idt();
 
-
             instance.calculateTransforms();
-            // System.out.println( node.id );
+            System.out.println( node.id );
 
-            instances.add( instance );
+
+            world.add( new Entitate( instance, null ) );
 
         }
     }
@@ -279,6 +283,7 @@ public class Gameplay implements Screen, InputProcessor {
     private void updateGameplay(float delta) {
         if ( movex !=0 ||movey !=0 )
             moveCamera( movex, movey );
+        world.update( delta );
     }
 
     private void moveCamera(float amontX, float amontY) {
@@ -393,9 +398,9 @@ public class Gameplay implements Screen, InputProcessor {
     @Override
     public void dispose() {
         modelBatch.dispose();
-        instances.clear();
         stage.dispose();
         skin.dispose();
+        world.dispose();
     }
 
     /**
