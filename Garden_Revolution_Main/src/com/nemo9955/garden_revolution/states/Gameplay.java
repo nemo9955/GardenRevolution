@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -36,25 +37,27 @@ import com.nemo9955.garden_revolution.utility.Mod;
 public class Gameplay implements Screen, InputProcessor {
 
 
-    private PerspectiveCamera cam;
-    private ModelBatch        modelBatch;
-    private Lights            lights   = new Lights();
+    private PerspectiveCamera   cam;
+    private ModelBatch          modelBatch;
+    private Lights              lights   = new Lights();
 
-    private float             startX, startY;
-    private float             movex    = 0, movey = 0;
-    private final Vector3     tmpV1    = new Vector3();
-    private Vector3           target   = new Vector3( 0, 12, 0 );
-    private float             deltaX   = 0;
-    private float             deltaY   = 0;
+    private float               startX, startY;
+    private float               movex    = 0, movey = 0;
+    private final Vector3       tmpV1    = new Vector3();
+    private Vector3             target   = new Vector3( 0, 12, 0 );
+    private float               deltaX   = 0;
+    private float               deltaY   = 0;
 
-    private short             toUpdate = 0;
-    private final int         scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private TweenManager      tweeger;
-    private Stage             stage;
-    private Skin              skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-    private final Touchpad    mover    = new Touchpad( 5, skin );
+    private short               toUpdate = 0;
+    private final int           scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private TweenManager        tweeger;
+    private Stage               stage;
+    private Skin                skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad      mover    = new Touchpad( 5, skin );
 
-    private World             world;
+    private World               world;
+    private ModelInstance       knight;
+    private AnimationController controller;
 
 
     public Gameplay() {
@@ -216,8 +219,11 @@ public class Gameplay implements Screen, InputProcessor {
         if ( toUpdate ==0 )
             updateGameplay( delta );
 
+        controller.update( delta );
+        
         modelBatch.begin( cam );
         world.render( modelBatch, lights );
+        modelBatch.render( knight );
         modelBatch.end();
 
         stage.act();
@@ -255,6 +261,12 @@ public class Gameplay implements Screen, InputProcessor {
 
 
         }
+
+        knight = new ModelInstance( (Model) Garden_Revolution.manager.get( Assets.KNIGHT.path(), Assets.KNIGHT.type() ), 0, 1, -50 );
+
+        controller = new AnimationController( knight );
+        controller.setAnimation( "Sneak", -1, null );
+
     }
 
     private void updateGameplay(float delta) {

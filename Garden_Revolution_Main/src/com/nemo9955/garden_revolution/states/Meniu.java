@@ -32,7 +32,7 @@ public class Meniu implements Screen {
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );
         final ImageButton test1 = new ImageButton( skin, "test" );
-        final ImageButton test2 = new ImageButton( skin, "test" );
+      //  final ImageButton test2 = new ImageButton( skin, "test" );
         final ImageButton optiuni = new ImageButton( skin );
         final Table tab = new Table();
         tab.setFillParent( true );
@@ -55,7 +55,7 @@ public class Meniu implements Screen {
         start.addListener( asc );
         exit.addListener( asc );
         test1.addListener( asc );
-        test2.addListener( asc );
+      //  test2.addListener( asc );
         exit.addListener( asc );
 
         tab.defaults().pad( 20 );
@@ -63,8 +63,8 @@ public class Meniu implements Screen {
         tab.row();
         tab.add( optiuni ).colspan( 2 );
         tab.row();
-        tab.add( test1 ).expandX().right();
-        tab.add( test2 ).expandX().left();
+        tab.add( test1 ).expandX();
+   //     tab.add( test2 ).expandX().left();
         tab.row();
         tab.add( exit ).colspan( 2 );
 

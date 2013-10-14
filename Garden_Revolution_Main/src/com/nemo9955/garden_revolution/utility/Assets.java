@@ -15,13 +15,13 @@ public enum Assets {
     DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
     SCENA(LOC.MODEL, "scena.g3db"), //
-    
-    ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class),//
-    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class),//
+    KNIGHT(LOC.MODEL, "knight.g3db"), //
+
+    ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //
+    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class), //
 
     LOADING_BAR(LOC.FUNDAL, "loading_bar.png"), //
     LOADING_BG(LOC.FUNDAL, "loading_fundal.png"); //
-
 
 
     private String   path;
