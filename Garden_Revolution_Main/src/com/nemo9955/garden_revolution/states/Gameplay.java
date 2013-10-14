@@ -36,8 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.Entitate;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Mod;
 
@@ -52,7 +50,7 @@ public class Gameplay implements Screen, InputProcessor {
     private float                startX, startY;
     private float                movex    = 0, movey = 0;
     private final Vector3        tmpV1    = new Vector3();
-    private Vector3              target   = new Vector3( 0, 10, 0 );
+    private Vector3              target   = new Vector3( 0, 12, 0 );
     private float                deltaX   = 0;
     private float                deltaY   = 0;
 
@@ -63,16 +61,12 @@ public class Gameplay implements Screen, InputProcessor {
     private Skin                 skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
     private final Touchpad       mover    = new Touchpad( 5, skin );
 
-    private World                world;
-
 
     public Gameplay() {
         float amb = 0.4f, lum = 0.6f;
         tweeger = new TweenManager();
 
         modelBatch = new ModelBatch();
-
-        world = new World();
 
         lights.ambientLight.set( amb, amb, amb, .5f );
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, 15f, 0f ) );
@@ -85,6 +79,7 @@ public class Gameplay implements Screen, InputProcessor {
 
         makeStage();
 
+        makeNori();
 
     }
 
@@ -96,9 +91,9 @@ public class Gameplay implements Screen, InputProcessor {
 
         int norx, norz;
 
-        for (int i = 0 ; i <1 ; i ++ ) {
-            norx = zar.nextInt( 1000 ) -500;
-            norz = zar.nextInt( 1000 ) -500;
+        for (int i = 0 ; i <200 ; i ++ ) {
+            norx = zar.nextInt( 500 ) -250;
+            norz = zar.nextInt( 500 ) -250;
             for (int j = 1 ; j <=15 ; j ++ ) {
                 nor = new ModelInstance( build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.CYAN ) ), Usage.Position |Usage.Normal ) );
                 nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
@@ -229,7 +224,6 @@ public class Gameplay implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        makeNori();
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         toUpdate = 0;
     }
@@ -246,7 +240,6 @@ public class Gameplay implements Screen, InputProcessor {
             updateGameplay( delta );
 
         modelBatch.begin( cam );
-        world.render( modelBatch, lights );
         for (ModelInstance instance : nori )
             modelBatch.render( instance );
         modelBatch.end();
@@ -258,12 +251,14 @@ public class Gameplay implements Screen, InputProcessor {
     }
 
     public void manageModels() {
-        Model cuboid = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
+        Model scena = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
 
-        for (int i = 0 ; i <cuboid.nodes.size ; i ++ ) {
-            String id = cuboid.nodes.get( i ).id;
+        // world.add( new Entitate( new ModelInstance( cuboid , new Vector3(0,-5,0)), null ) );
 
-            ModelInstance instance = new ModelInstance( cuboid, id );
+        for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
+            String id = scena.nodes.get( i ).id;
+
+            ModelInstance instance = new ModelInstance( scena, id );
 
             Node node = instance.getNode( id );
             instance.transform.set( node.globalTransform );
@@ -274,8 +269,16 @@ public class Gameplay implements Screen, InputProcessor {
             instance.calculateTransforms();
             System.out.println( node.id );
 
+            if ( node.id.equals( "turn" ) ) {
+                System.out.println( node.translation.x +" " +node.translation.y +" " +node.translation.z );
+                continue;
+            }
 
-            world.add( new Entitate( instance, null ) );
+            if ( node.id.equals( "pamant" ) ) {
+                System.out.println( node.translation.x +" " +node.translation.y +" " +node.translation.z );
+                continue;
+            }
+
 
         }
     }
@@ -283,7 +286,6 @@ public class Gameplay implements Screen, InputProcessor {
     private void updateGameplay(float delta) {
         if ( movex !=0 ||movey !=0 )
             moveCamera( movex, movey );
-        world.update( delta );
     }
 
     private void moveCamera(float amontX, float amontY) {
@@ -400,7 +402,6 @@ public class Gameplay implements Screen, InputProcessor {
         modelBatch.dispose();
         stage.dispose();
         skin.dispose();
-        world.dispose();
     }
 
     /**

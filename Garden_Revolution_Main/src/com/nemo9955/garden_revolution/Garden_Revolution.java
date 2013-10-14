@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.bullet.Bullet;
-import com.nemo9955.garden_revolution.states.BulletJocTest;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
@@ -29,7 +27,6 @@ public class Garden_Revolution extends Game {
     public static Meniu             meniu;
     public static TestScene         test;
     public static SplashScreen      splash;
-    public static BulletJocTest     bullet;
 
     public static Garden_Revolution game;
     public static AssetManager      manager;
@@ -69,13 +66,10 @@ public class Garden_Revolution extends Game {
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
         Texture.setEnforcePotImages( false );
-        Bullet.init();
-
 
         test = new TestScene();
         gameplay = new Gameplay();
         meniu = new Meniu();
-        bullet = new BulletJocTest();
 
         gameplay.manageModels();
 

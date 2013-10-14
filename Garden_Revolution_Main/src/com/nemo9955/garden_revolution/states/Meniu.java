@@ -46,8 +46,6 @@ public class Meniu implements Screen {
                 // if(optiuni.isPressed())
                 // Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
                 if ( test1.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
-                if ( test2.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.test );
                 if ( exit.isPressed() )
                     Gdx.app.exit();
