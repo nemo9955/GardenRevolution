@@ -21,7 +21,7 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 public class Garden_Revolution extends Game {
 
     public static final String      TITLU    = "Garden Revolution";
-    public static final String      VERSIUNE = "alfa 0.23";
+    public static final String      VERSIUNE = "alfa 0.26";
 
     public static Gameplay          gameplay;
     public static Meniu             meniu;

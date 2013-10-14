@@ -1,7 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import java.util.Random;
-
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -9,19 +7,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -34,32 +27,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.Entitate;
+import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Mod;
 
 public class Gameplay implements Screen, InputProcessor {
 
 
-    private PerspectiveCamera    cam;
-    private ModelBatch           modelBatch;
-    private Lights               lights   = new Lights();
-    private Array<ModelInstance> nori     = new Array<ModelInstance>();
+    private PerspectiveCamera cam;
+    private ModelBatch        modelBatch;
+    private Lights            lights   = new Lights();
 
-    private float                startX, startY;
-    private float                movex    = 0, movey = 0;
-    private final Vector3        tmpV1    = new Vector3();
-    private Vector3              target   = new Vector3( 0, 12, 0 );
-    private float                deltaX   = 0;
-    private float                deltaY   = 0;
+    private float             startX, startY;
+    private float             movex    = 0, movey = 0;
+    private final Vector3     tmpV1    = new Vector3();
+    private Vector3           target   = new Vector3( 0, 12, 0 );
+    private float             deltaX   = 0;
+    private float             deltaY   = 0;
 
-    private short                toUpdate = 0;
-    private final int            scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private TweenManager         tweeger;
-    private Stage                stage;
-    private Skin                 skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-    private final Touchpad       mover    = new Touchpad( 5, skin );
+    private short             toUpdate = 0;
+    private final int         scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private TweenManager      tweeger;
+    private Stage             stage;
+    private Skin              skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad    mover    = new Touchpad( 5, skin );
+
+    private World             world;
 
 
     public Gameplay() {
@@ -79,28 +74,10 @@ public class Gameplay implements Screen, InputProcessor {
 
         makeStage();
 
-        makeNori();
+        world = new World();
 
     }
 
-    private void makeNori() {
-        nori.clear();
-        ModelBuilder build = new ModelBuilder();
-        Random zar = new Random();
-        ModelInstance nor;
-
-        int norx, norz;
-
-        for (int i = 0 ; i <200 ; i ++ ) {
-            norx = zar.nextInt( 500 ) -250;
-            norz = zar.nextInt( 500 ) -250;
-            for (int j = 1 ; j <=15 ; j ++ ) {
-                nor = new ModelInstance( build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.CYAN ) ), Usage.Position |Usage.Normal ) );
-                nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
-                nori.add( nor );
-            }
-        }
-    }
 
     private void makeStage() {
         stage = new Stage();
@@ -240,8 +217,7 @@ public class Gameplay implements Screen, InputProcessor {
             updateGameplay( delta );
 
         modelBatch.begin( cam );
-        for (ModelInstance instance : nori )
-            modelBatch.render( instance );
+        world.render( modelBatch, lights );
         modelBatch.end();
 
         stage.act();
@@ -252,8 +228,6 @@ public class Gameplay implements Screen, InputProcessor {
 
     public void manageModels() {
         Model scena = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
-
-        // world.add( new Entitate( new ModelInstance( cuboid , new Vector3(0,-5,0)), null ) );
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
@@ -270,12 +244,12 @@ public class Gameplay implements Screen, InputProcessor {
             System.out.println( node.id );
 
             if ( node.id.equals( "turn" ) ) {
-                System.out.println( node.translation.x +" " +node.translation.y +" " +node.translation.z );
+                world.add( new Entitate( instance ) );
                 continue;
             }
 
             if ( node.id.equals( "pamant" ) ) {
-                System.out.println( node.translation.x +" " +node.translation.y +" " +node.translation.z );
+                world.add( new Entitate( instance ) );
                 continue;
             }
 
@@ -286,6 +260,7 @@ public class Gameplay implements Screen, InputProcessor {
     private void updateGameplay(float delta) {
         if ( movex !=0 ||movey !=0 )
             moveCamera( movex, movey );
+        world.update( delta );
     }
 
     private void moveCamera(float amontX, float amontY) {
