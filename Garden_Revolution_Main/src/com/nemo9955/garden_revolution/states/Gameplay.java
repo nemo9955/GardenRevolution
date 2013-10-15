@@ -9,13 +9,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -29,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.Entitate;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Mod;
@@ -37,27 +32,25 @@ import com.nemo9955.garden_revolution.utility.Mod;
 public class Gameplay implements Screen, InputProcessor {
 
 
-    private PerspectiveCamera   cam;
-    private ModelBatch          modelBatch;
-    private Lights              lights   = new Lights();
+    private PerspectiveCamera cam;
+    private ModelBatch        modelBatch;
+    private Lights            lights   = new Lights();
 
-    private float               startX, startY;
-    private float               movex    = 0, movey = 0;
-    private final Vector3       tmpV1    = new Vector3();
-    private Vector3             target   = new Vector3( 0, 12, 0 );
-    private float               deltaX   = 0;
-    private float               deltaY   = 0;
+    private float             startX, startY;
+    private float             movex    = 0, movey = 0;
+    private final Vector3     tmpV1    = new Vector3();
+    private Vector3           target   = new Vector3( 0, 12, 0 );
+    private float             deltaX   = 0;
+    private float             deltaY   = 0;
 
-    private short               toUpdate = 0;
-    private final int           scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private TweenManager        tweeger;
-    private Stage               stage;
-    private Skin                skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-    private final Touchpad      mover    = new Touchpad( 5, skin );
+    private short             toUpdate = 0;
+    private final int         scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private TweenManager      tweeger;
+    private Stage             stage;
+    private Skin              skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad    mover    = new Touchpad( 5, skin );
 
-    private World               world;
-    private ModelInstance       knight;
-    private AnimationController controller;
+    private World             world;
 
 
     public Gameplay() {
@@ -77,7 +70,6 @@ public class Gameplay implements Screen, InputProcessor {
 
         makeStage();
 
-        world = new World();
 
     }
 
@@ -206,6 +198,7 @@ public class Gameplay implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         toUpdate = 0;
+        world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
     }
 
     @Override
@@ -219,11 +212,8 @@ public class Gameplay implements Screen, InputProcessor {
         if ( toUpdate ==0 )
             updateGameplay( delta );
 
-        controller.update( delta );
-        
         modelBatch.begin( cam );
         world.render( modelBatch, lights );
-        modelBatch.render( knight );
         modelBatch.end();
 
         stage.act();
@@ -232,42 +222,6 @@ public class Gameplay implements Screen, InputProcessor {
 
     }
 
-    public void manageModels() {
-        Model scena = (Model) Garden_Revolution.manager.get( Assets.SCENA.path(), Assets.SCENA.type() );
-
-        for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
-            String id = scena.nodes.get( i ).id;
-
-            ModelInstance instance = new ModelInstance( scena, id );
-
-            Node node = instance.getNode( id );
-            instance.transform.set( node.globalTransform );
-            node.translation.set( 0, 0, 0 );
-            node.scale.set( 1, 1, 1 );
-            node.rotation.idt();
-
-            instance.calculateTransforms();
-            System.out.println( node.id );
-
-            if ( node.id.equals( "turn" ) ) {
-                world.add( new Entitate( instance ) );
-                continue;
-            }
-
-            if ( node.id.equals( "pamant" ) ) {
-                world.add( new Entitate( instance ) );
-                continue;
-            }
-
-
-        }
-
-        knight = new ModelInstance( (Model) Garden_Revolution.manager.get( Assets.KNIGHT.path(), Assets.KNIGHT.type() ), 0, 1, -50 );
-
-        controller = new AnimationController( knight );
-        controller.setAnimation( "Sneak", -1, null );
-
-    }
 
     private void updateGameplay(float delta) {
         if ( movex !=0 ||movey !=0 )
@@ -389,6 +343,7 @@ public class Gameplay implements Screen, InputProcessor {
         modelBatch.dispose();
         stage.dispose();
         skin.dispose();
+        world.dispose();
     }
 
     /**

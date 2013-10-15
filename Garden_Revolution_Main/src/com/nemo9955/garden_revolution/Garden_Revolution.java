@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
@@ -71,9 +72,21 @@ public class Garden_Revolution extends Game {
         gameplay = new Gameplay();
         meniu = new Meniu();
 
-        gameplay.manageModels();
-
         game = this;
+    }
+
+    public static Model getModel(Assets model) {
+        if ( model.type().equals( Model.class ) )
+            return (Model) manager.get( model.path(), model.type() );
+        System.out.println( model.name() +" nu este Model" );
+        return null;
+    }
+
+    public static Texture getTexture(Assets texture) {
+        if ( texture.type().equals( Texture.class ) )
+            return (Texture) manager.get( texture.path(), texture.type() );
+        System.out.println( texture.name() +" nu este Texture" );
+        return null;
     }
 
     @Override
