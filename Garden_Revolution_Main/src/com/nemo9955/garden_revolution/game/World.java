@@ -2,6 +2,8 @@ package com.nemo9955.garden_revolution.game;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -20,17 +22,14 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance> nori  = new Array<ModelInstance>();
-
-    public Array<ModelInstance>  draw;
+    private Array<ModelInstance> nori  = new Array<ModelInstance>( 110 );
 
     public Array<Entitate>       foe   = new Array<Entitate>();
     public Array<Entitate>       ally  = new Array<Entitate>();
     public Array<Entitate>       shot  = new Array<Entitate>();
-    public Array<Entitate>       mediu = new Array<Entitate>();
+    public Array<ModelInstance>  mediu = new Array<ModelInstance>();
 
     public World(Model scena) {
-        draw = new Array<ModelInstance>( false, 20 );// FIXME
         makeNori();
         populateWorld( scena );
     }
@@ -42,21 +41,30 @@ public class World implements Disposable {
             e.update( delta );
         for (Entitate e : shot )
             e.update( delta );
+
+        if ( Gdx.input.isKeyPressed( Keys.F5 ) ||Gdx.input.isTouched( 0 ) )
+            ( (Vietate) foe.first() ).animation.animate( "Walk", -1, null, 0.5f );
+        if ( Gdx.input.isKeyPressed( Keys.F6 ) ||Gdx.input.isTouched( 1 ) )
+            ( (Vietate) foe.first() ).animation.animate( "Sneak", -1, null, 1 );
+        if ( Gdx.input.isKeyPressed( Keys.F7 ) ||Gdx.input.isTouched( 2 ) )
+            ( (Vietate) foe.first() ).animation.animate( "Damaged", -1, null, 0.5f );
+        if ( Gdx.input.isKeyPressed( Keys.F8 ) ||Gdx.input.isTouched( 3 ) )
+            ( (Vietate) foe.first() ).animation.animate( "Idle", -1, null, 0.5f );
+
     }
 
     public void render(ModelBatch modelBatch, Lights light) {
         for (ModelInstance nor : nori )
             modelBatch.render( nor );
-        for (ModelInstance e : draw )
+        for (ModelInstance e : foe )
+            modelBatch.render( e, light );
+        for (ModelInstance e : ally )
+            modelBatch.render( e, light );
+        for (ModelInstance e : shot )
+            modelBatch.render( e );
+        for (ModelInstance e : mediu )
             modelBatch.render( e, light );
     }
-
-    // public Entitate add(Entitate ent) {
-    //
-    // draw.add( ent );
-    //
-    // return ent;
-    // }
 
     private void makeNori() {
         nori.clear();
@@ -66,10 +74,10 @@ public class World implements Disposable {
 
         int norx, norz;
 
-        for (int i = 0 ; i <200 ; i ++ ) {
-            norx = zar.nextInt( 500 ) -250;
-            norz = zar.nextInt( 500 ) -250;
-            for (int j = 1 ; j <=15 ; j ++ ) {
+        for (int i = 0 ; i <20 ; i ++ ) {
+            norx = zar.nextInt( 200 ) -100;
+            norz = zar.nextInt( 200 ) -100;
+            for (int j = 1 ; j <=5 ; j ++ ) {
                 nor = new ModelInstance( build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.CYAN ) ), Usage.Position |Usage.Normal ) );
                 nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
                 nori.add( nor );
@@ -96,44 +104,46 @@ public class World implements Disposable {
                 continue;
             }
         }
-        Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, -1, -20 );
-
+        Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, 10, -20 );
         knight.animation.setAnimation( "Sneak", -1, null );
         addFoe( knight );
 
     }
 
     private Entitate addFoe(Entitate ent) {
-        draw.add( ent );
         foe.add( ent );
         return ent;
     }
 
     @SuppressWarnings("unused")
     private Entitate addAlly(Entitate ent) {
-        draw.add( ent );
         ally.add( ent );
         return ent;
     }
 
     @SuppressWarnings("unused")
     private Entitate addShot(Entitate ent) {
-        draw.add( ent );
         shot.add( ent );
         return ent;
     }
 
     private void addMediu(ModelInstance med) {
-        draw.add( med );
+        mediu.add( med );
     }
 
 
     @Override
     public void dispose() {
-        for (ModelInstance e : draw )
+
+        for (ModelInstance e : foe )
+            e.model.dispose();
+        for (ModelInstance e : ally )
+            e.model.dispose();
+        for (ModelInstance e : shot )
+            e.model.dispose();
+        for (ModelInstance e : mediu )
             e.model.dispose();
 
-        draw.clear();
         foe.clear();
         ally.clear();
         shot.clear();
