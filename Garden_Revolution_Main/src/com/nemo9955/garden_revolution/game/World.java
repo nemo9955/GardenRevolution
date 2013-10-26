@@ -33,20 +33,26 @@ public class World implements Disposable {
     }
 
     public void update(float delta) {
-        for (Entitate e : foe ) {
-            e.update( delta );
-            if ( e.dead )
-                foe.removeValue( e, false );
+        for (Entitate fo : foe ) {
+            fo.update( delta );
+            if ( fo.dead )
+                foe.removeValue( fo, false );
         }
-        for (Entitate e : ally ) {
-            e.update( delta );
-            if ( e.dead )
-                ally.removeValue( e, false );
+        for (Entitate al : ally ) {
+            al.update( delta );
+            if ( al.dead )
+                ally.removeValue( al, false );
         }
-        for (Entitate e : shot ) {
-            e.update( delta );
-            if ( e.dead )
-                shot.removeValue( e, false );
+        for (Entitate sh : shot ) {
+            sh.update( delta );
+            if ( sh.dead )
+                shot.removeValue( sh, false );
+            for (Entitate fo : foe ) {
+                if ( fo.box.intersects( sh.box ) ) {
+                    fo.damage( sh );
+                    sh.dead = true;
+                }
+            }
         }
 
     }

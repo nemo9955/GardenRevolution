@@ -19,6 +19,7 @@ public class Knight extends Vietate {
 
         animation.setAnimation( "Sneak", -1, null );
         transform.scl( 0.5f );
+        box.set( box.min.add( box.getDimensions().scl( 0.5f ).scl( 0.5f )  ), box.max.sub( box.getDimensions().scl( 0.5f ).scl( 0.5f )  ) ); 
     }
 
     @Override
