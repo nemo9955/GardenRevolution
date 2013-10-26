@@ -49,4 +49,13 @@ public class Entitate extends ModelInstance {
         transform.trn( move );
     }
 
+    public void rotate(float x, float y, float z) {
+        if ( x !=0 )
+            transform.rotate( 1, 0, 0, x );
+        if ( y !=0 )
+            transform.rotate( 0, 1, 0, y );
+        if ( z !=0 )
+            transform.rotate( 0, 0, 1, z );
+    }
+
 }

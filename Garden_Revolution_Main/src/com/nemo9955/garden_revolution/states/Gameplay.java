@@ -76,7 +76,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         makeStage();
 
         gestures.setLongPressSeconds( 1.5f );
-        
+
     }
 
 
@@ -384,9 +384,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public boolean tap(float x, float y, int count, int button) {
 
         Ray ray = cam.getPickRay( x, y );
-
         world.addShot( new Shot( ray.origin, ray.direction ) );
-        System.out.println( "tap" );
 
         return false;
     }

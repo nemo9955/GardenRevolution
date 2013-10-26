@@ -2,8 +2,6 @@ package com.nemo9955.garden_revolution.game;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -16,8 +14,7 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 
 public class World implements Disposable {
@@ -51,20 +48,6 @@ public class World implements Disposable {
             if ( e.dead )
                 shot.removeValue( e, false );
         }
-
-        if ( Gdx.input.isKeyPressed( Keys.F5 ) ||Gdx.input.isTouched( 0 ) )
-            ( (Vietate) foe.first() ).animation.animate( "Walk", -1, null, 0.5f );
-        if ( Gdx.input.isKeyPressed( Keys.F6 ) ||Gdx.input.isTouched( 1 ) )
-            ( (Vietate) foe.first() ).animation.animate( "Sneak", -1, null, 1 );
-        if ( Gdx.input.isKeyPressed( Keys.F7 ) ||Gdx.input.isTouched( 2 ) )
-            ( (Vietate) foe.first() ).animation.animate( "Damaged", -1, null, 0.5f );
-        if ( Gdx.input.isKeyPressed( Keys.F8 ) ||Gdx.input.isTouched( 3 ) )
-            ( (Vietate) foe.first() ).animation.animate( "Idle", -1, null, 0.5f );
-
-        if ( Gdx.input.isKeyPressed( Keys.UP ) )
-            foe.first().move( 0, 0, 0.05f );
-        if ( Gdx.input.isKeyPressed( Keys.DOWN ) )
-            foe.first().move( 0, 0, -0.05f );
 
     }
 
@@ -123,10 +106,7 @@ public class World implements Disposable {
             // }
         }
 
-        Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, 1, -5 );
-        knight.animation.setAnimation( "Sneak", -1, null );
-        knight.transform.scl( 0.1f );
-        addFoe( knight );
+        addFoe( new Knight( -5, 5, 5 ) );
 
         Model model;
         ModelBuilder modelBuilder = new ModelBuilder();
