@@ -108,11 +108,6 @@ public class World implements Disposable {
 
         addFoe( new Knight( -5, 5, 5 ) );
 
-        Model model;
-        ModelBuilder modelBuilder = new ModelBuilder();
-        model = modelBuilder.createBox( 1f, 1f, 1f, new Material( ColorAttribute.createDiffuse( Color.GREEN ) ), Usage.Position |Usage.Normal );
-        addAlly( new Entitate( model, 8, 5, 5 ) );
-
     }
 
     public Entitate addFoe(Entitate ent) {

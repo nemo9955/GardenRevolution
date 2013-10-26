@@ -16,8 +16,7 @@ public class Shot extends Entitate {
 
     public Shot(Vector3 position, Vector3 direction) {
         super( new ModelBuilder().createSphere( 1f, 1f, 1f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal ), position );
-        this.direction = direction;
-      //  System.out.println( direction );
+        this.direction = direction.cpy();
         life = 3f;
     }
 
