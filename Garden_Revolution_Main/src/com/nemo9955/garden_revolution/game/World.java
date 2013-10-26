@@ -51,19 +51,25 @@ public class World implements Disposable {
         if ( Gdx.input.isKeyPressed( Keys.F8 ) ||Gdx.input.isTouched( 3 ) )
             ( (Vietate) foe.first() ).animation.animate( "Idle", -1, null, 0.5f );
 
+        if ( Gdx.input.isKeyPressed( Keys.UP ) )
+            foe.first().move( 0, 0, 0.05f );
+        if ( Gdx.input.isKeyPressed( Keys.DOWN ) )
+            foe.first().move( 0, 0, -0.05f );
+
     }
 
     public void render(ModelBatch modelBatch, Lights light) {
         for (ModelInstance nor : nori )
             modelBatch.render( nor );
-        for (ModelInstance e : foe )
-            modelBatch.render( e, light );
-        for (ModelInstance e : ally )
-            modelBatch.render( e, light );
-        for (ModelInstance e : shot )
-            modelBatch.render( e );
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
+
+        for (Entitate e : foe )
+            e.render( modelBatch, light );
+        for (Entitate e : ally )
+            e.render( modelBatch, light );
+        for (Entitate e : shot )
+            e.render( modelBatch );
     }
 
     private void makeNori() {
@@ -104,8 +110,10 @@ public class World implements Disposable {
                 continue;
             }
         }
-        Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, 10, -20 );
+
+        Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, 1, -5 );
         knight.animation.setAnimation( "Sneak", -1, null );
+        knight.transform.scl( 0.1f );
         addFoe( knight );
 
     }
