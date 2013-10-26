@@ -12,7 +12,11 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,11 +29,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.Shot;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Mod;
 
-public class Gameplay implements Screen, InputProcessor {
+public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private PerspectiveCamera cam;
@@ -50,8 +55,8 @@ public class Gameplay implements Screen, InputProcessor {
     private Skin              skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
     private final Touchpad    mover    = new Touchpad( 5, skin );
 
-    private World             world;
-
+    public World              world;
+    private GestureDetector   gestures = new GestureDetector( this );
 
     public Gameplay() {
         float amb = 0.4f, lum = 0.6f;
@@ -70,7 +75,8 @@ public class Gameplay implements Screen, InputProcessor {
 
         makeStage();
 
-
+        gestures.setLongPressSeconds( 1.5f );
+        
     }
 
 
@@ -196,7 +202,7 @@ public class Gameplay implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
         world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
     }
@@ -367,5 +373,51 @@ public class Gameplay implements Screen, InputProcessor {
             setSize( width, height );
         }
 
+    }
+
+    @Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+
+        Ray ray = cam.getPickRay( x, y );
+
+        world.addShot( new Shot( ray.origin, ray.direction ) );
+        System.out.println( "tap" );
+
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
     }
 }

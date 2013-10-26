@@ -29,18 +29,28 @@ public class World implements Disposable {
     public Array<Entitate>       shot  = new Array<Entitate>();
     public Array<ModelInstance>  mediu = new Array<ModelInstance>();
 
+
     public World(Model scena) {
         makeNori();
         populateWorld( scena );
     }
 
     public void update(float delta) {
-        for (Entitate e : foe )
+        for (Entitate e : foe ) {
             e.update( delta );
-        for (Entitate e : ally )
+            if ( e.dead )
+                foe.removeValue( e, false );
+        }
+        for (Entitate e : ally ) {
             e.update( delta );
-        for (Entitate e : shot )
+            if ( e.dead )
+                ally.removeValue( e, false );
+        }
+        for (Entitate e : shot ) {
             e.update( delta );
+            if ( e.dead )
+                shot.removeValue( e, false );
+        }
 
         if ( Gdx.input.isKeyPressed( Keys.F5 ) ||Gdx.input.isTouched( 0 ) )
             ( (Vietate) foe.first() ).animation.animate( "Walk", -1, null, 0.5f );
@@ -105,10 +115,12 @@ public class World implements Disposable {
 
             System.out.println( node.id );
 
-            if ( node.id.equals( "turn" ) ||node.id.equals( "pamant" ) ) {
-                addMediu( instance );
-                continue;
-            }
+            addMediu( instance );
+            // if ( node.id.equals( "NurbsPath" ) ) {
+            // for (Node nod : instance.nodes) {
+            // System.out.println( nod.translation );
+            // }
+            // }
         }
 
         Vietate knight = new Vietate( Garden_Revolution.getModel( Assets.KNIGHT ), 0, 1, -5 );
@@ -116,21 +128,24 @@ public class World implements Disposable {
         knight.transform.scl( 0.1f );
         addFoe( knight );
 
+        Model model;
+        ModelBuilder modelBuilder = new ModelBuilder();
+        model = modelBuilder.createBox( 1f, 1f, 1f, new Material( ColorAttribute.createDiffuse( Color.GREEN ) ), Usage.Position |Usage.Normal );
+        addAlly( new Entitate( model, 8, 5, 5 ) );
+
     }
 
-    private Entitate addFoe(Entitate ent) {
+    public Entitate addFoe(Entitate ent) {
         foe.add( ent );
         return ent;
     }
 
-    @SuppressWarnings("unused")
-    private Entitate addAlly(Entitate ent) {
+    public Entitate addAlly(Entitate ent) {
         ally.add( ent );
         return ent;
     }
 
-    @SuppressWarnings("unused")
-    private Entitate addShot(Entitate ent) {
+    public Entitate addShot(Entitate ent) {
         shot.add( ent );
         return ent;
     }
@@ -138,7 +153,6 @@ public class World implements Disposable {
     private void addMediu(ModelInstance med) {
         mediu.add( med );
     }
-
 
     @Override
     public void dispose() {

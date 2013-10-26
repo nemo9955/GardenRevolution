@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Entitate extends ModelInstance {
 
+    public boolean dead = false;
+
     public Entitate(Model model, Vector3 position) {
         this( model, position.x, position.y, position.z );
     }
@@ -41,6 +43,10 @@ public class Entitate extends ModelInstance {
 
     public void move(float x, float y, float z) {
         transform.trn( x, y, z );
+    }
+
+    public void move(Vector3 move) {
+        transform.trn( move );
     }
 
 }
