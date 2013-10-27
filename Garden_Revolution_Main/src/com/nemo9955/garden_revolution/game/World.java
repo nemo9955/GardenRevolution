@@ -181,7 +181,7 @@ public class World implements Disposable {
             // }
         }
 
-        addFoe( new Knight( -5, 5, 5 ) );
+        addFoe( new Knight( 5, 5, 5 ) );
 
     }
 

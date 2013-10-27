@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game.entitati;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Vietate;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -19,7 +20,7 @@ public class Knight extends Vietate {
 
         animation.setAnimation( "Sneak", -1, null );
         transform.scl( 0.5f );
-        box.set( box.min.add( box.getDimensions().scl( 0.5f ).scl( 0.5f )  ), box.max.sub( box.getDimensions().scl( 0.5f ).scl( 0.5f )  ) ); 
+        box.set( new Vector3( x-2, y-6, z-2 ), new Vector3( x+2, y+2, z+2 ) );
     }
 
     @Override
