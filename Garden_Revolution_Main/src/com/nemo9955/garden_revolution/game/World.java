@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -22,17 +24,33 @@ import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance> nori  = new Array<ModelInstance>( 110 );
+    private Array<ModelInstance> nori  = new Array<ModelInstance>();
+    public Array<ModelInstance>  mediu = new Array<ModelInstance>();
 
     public Array<Entitate>       foe   = new Array<Entitate>();
     public Array<Entitate>       ally  = new Array<Entitate>();
     public Array<Entitate>       shot  = new Array<Entitate>();
-    public Array<ModelInstance>  mediu = new Array<ModelInstance>();
 
+    private Vector3              pct[] = new Vector3[7];
+    private Path<Vector3>        path;
 
     public World(Model scena) {
         makeNori();
         populateWorld( scena );
+
+        pct[0] = new Vector3( 10, 5, 10 );
+        pct[1] = new Vector3( 10, 5, 10 );
+        pct[2] = new Vector3( 10, 5, -10 );
+        pct[3] = new Vector3( -8, 5, -8 );
+        pct[4] = new Vector3( 0, 5, 10 );
+        pct[5] = new Vector3( 0, 5, 0 );
+        pct[6] = new Vector3( 0, 5, 0 );
+
+
+        Model sfera = new ModelBuilder().createSphere( 0.2f, 0.2f, 0.2f, 5, 5, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
+        for (byte i = 1 ; i <pct.length-1 ; i ++ )
+            addMediu( new ModelInstance( sfera, pct[i] ) );
+        path = new CatmullRomSpline<Vector3>( pct, false );
     }
 
     public void update(float delta) {
@@ -74,9 +92,9 @@ public class World implements Disposable {
             e.render( modelBatch );
     }
 
+    Vector3 tmp = new Vector3();
 
     public void renderLines(ImmediateModeRenderer20 renderer) {
-
         Vector3 corn[] = new Vector3[8];
 
         for (Entitate e : foe ) {
@@ -86,7 +104,7 @@ public class World implements Disposable {
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
             renderer.color( 1, 0, 0, 1 );
-            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
 
         for (Entitate e : ally ) {
@@ -96,7 +114,7 @@ public class World implements Disposable {
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
             renderer.color( 0, 0, 1, 1 );
-            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
 
         for (Entitate e : shot ) {
@@ -106,8 +124,18 @@ public class World implements Disposable {
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
             renderer.color( 0, 1, 1, 1 );
-            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
+
+        float val = 0;
+        while ( val <=1f ) {
+            renderer.color( 0f, 0f, 0f, 1f );
+            path.valueAt( /* out: */tmp, val );
+            renderer.vertex( tmp.x, tmp.y, tmp.z );
+            val += 1f /200f;
+        }
+
+
     }
 
 

@@ -202,10 +202,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
                 movey = -1.5f;
                 break;
             case Keys.D:
-                movex = 1.5f;
+                movex = -1.5f;
                 break;
             case Keys.A:
-                movex = -1.5f;
+                movex = 1.5f;
                 break;
             case Keys.ESCAPE:
                 Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
