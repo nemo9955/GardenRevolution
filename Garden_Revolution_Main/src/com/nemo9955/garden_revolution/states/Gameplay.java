@@ -62,7 +62,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     private short                   toUpdate = 0;
     private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private TweenManager            tweeger;
     private Stage                   stage;
     private Skin                    skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
     private final Touchpad          mover    = new Touchpad( 5, skin );
@@ -72,6 +71,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @SuppressWarnings("unused")
     private CameraInputController   camco;
     private ImmediateModeRenderer20 renderer;
+    public static TweenManager      tweeger;
 
 
     public Gameplay() {

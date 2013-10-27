@@ -11,8 +11,9 @@ import com.nemo9955.garden_revolution.utility.CustomBox;
 
 public class Entitate extends ModelInstance {
 
-    public boolean      dead = false;
-    protected CustomBox box  = new CustomBox();
+    public boolean      dead  = false;
+    protected CustomBox box   = new CustomBox();
+    public float        angle = 0;
 
     public Entitate(Model model, Vector3 position) {
         this( model, position.x, position.y, position.z );
@@ -29,6 +30,10 @@ public class Entitate extends ModelInstance {
     // constructorul principal
     public Entitate(Model model, float x, float y, float z) {
         super( model, x, y, z );
+        setBox( x, y, z );
+    }
+
+    private void setBox(float x, float y, float z) {
         calculateBoundingBox( box );
         box.setPosition( x, y, z );
     }
@@ -62,10 +67,18 @@ public class Entitate extends ModelInstance {
     public void rotate(float x, float y, float z) {
         if ( x !=0 )
             transform.rotate( 1, 0, 0, x );
-        if ( y !=0 )
+        if ( y !=0 ) {
             transform.rotate( 0, 1, 0, y );
+            angle += y;
+        }
         if ( z !=0 )
             transform.rotate( 0, 0, 1, z );
+
+
+        if ( angle >=360 )
+            angle -= 360;
+        if ( angle <0 )
+            angle += 360;
     }
 
     public void damage(Entitate e) {
