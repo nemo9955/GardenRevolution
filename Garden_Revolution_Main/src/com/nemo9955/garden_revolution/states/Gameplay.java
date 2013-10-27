@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
@@ -46,30 +48,31 @@ import com.nemo9955.garden_revolution.utility.Mod;
 public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
-    private PerspectiveCamera     cam;
-    private ModelBatch            modelBatch;
-    private Lights                lights   = new Lights();
+    private PerspectiveCamera       cam;
+    private ModelBatch              modelBatch;
+    private Lights                  lights   = new Lights();
+    private Shader                  shader;
 
-    private float                 startX, startY;
-    private float                 movex    = 0, movey = 0;
-    private final Vector3         tmpV1    = new Vector3();
-    private Vector3               target   = new Vector3( 0, 12, 0 );
-    private float                 deltaX   = 0;
-    private float                 deltaY   = 0;
+    private float                   startX, startY;
+    private float                   movex    = 0, movey = 0;
+    private final Vector3           tmpV1    = new Vector3();
+    private Vector3                 target   = new Vector3( 0, 12, 0 );
+    private float                   deltaX   = 0;
+    private float                   deltaY   = 0;
 
-    private short                 toUpdate = 0;
-    private final int             scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private TweenManager          tweeger;
-    private Stage                 stage;
-    private Skin                  skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-    private final Touchpad        mover    = new Touchpad( 5, skin );
+    private short                   toUpdate = 0;
+    private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private TweenManager            tweeger;
+    private Stage                   stage;
+    private Skin                    skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Touchpad          mover    = new Touchpad( 5, skin );
 
-    public World                  world;
-    private GestureDetector       gestures = new GestureDetector( this );
+    public World                    world;
+    private GestureDetector         gestures = new GestureDetector( this );
     @SuppressWarnings("unused")
-    private CameraInputController camco;
+    private CameraInputController   camco;
+    private ImmediateModeRenderer20 renderer;
 
-    private Shader                shader;
 
     public Gameplay() {
         float amb = 0.4f, lum = 0.3f;
@@ -86,13 +89,16 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         cam.far = 300f;
         cam.update();
 
-        camco = new CameraInputController( cam );
         makeStage();
+
+        camco = new CameraInputController( cam );
 
         shader = new CustShader();
         shader.init();
 
         gestures.setLongPressSeconds( 1f );
+
+        renderer = new ImmediateModeRenderer20( true, true, 0 );
 
     }
 
@@ -117,8 +123,12 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             updateGameplay( delta );
 
         modelBatch.begin( cam );
-        world.render( modelBatch, lights , shader );
+        world.render( modelBatch, lights, shader );
         modelBatch.end();
+
+        renderer.begin( cam.combined, GL10.GL_LINE_STRIP );
+        world.renderLines( renderer );
+        renderer.end();
 
         stage.act();
         stage.draw();
@@ -248,6 +258,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         stage.dispose();
         skin.dispose();
         world.dispose();
+        renderer.dispose();
     }
 
     /**

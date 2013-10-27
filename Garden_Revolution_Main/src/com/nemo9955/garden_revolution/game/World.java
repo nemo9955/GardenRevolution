@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.entitati.Knight;
@@ -71,6 +73,43 @@ public class World implements Disposable {
         for (Entitate e : shot )
             e.render( modelBatch );
     }
+
+
+    public void renderLines(ImmediateModeRenderer20 renderer) {
+
+        Vector3 corn[] = new Vector3[8];
+
+        for (Entitate e : foe ) {
+            corn = e.box.getCorners();
+            for (Vector3 crn : corn ) {
+                renderer.color( 1, 0, 0, 1 );
+                renderer.vertex( crn.x, crn.y, crn.z );
+            }
+            renderer.color( 1, 0, 0, 1 );
+            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+        }
+
+        for (Entitate e : ally ) {
+            corn = e.box.getCorners();
+            for (Vector3 crn : corn ) {
+                renderer.color( 0, 0, 1, 1 );
+                renderer.vertex( crn.x, crn.y, crn.z );
+            }
+            renderer.color( 0, 0, 1, 1 );
+            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+        }
+
+        for (Entitate e : shot ) {
+            corn = e.box.getCorners();
+            for (Vector3 crn : corn ) {
+                renderer.color( 0, 1, 1, 1 );
+                renderer.vertex( crn.x, crn.y, crn.z );
+            }
+            renderer.color( 0, 1, 1, 1 );
+            renderer.vertex( corn[0].x, corn[0].y, corn[0].z );
+        }
+    }
+
 
     private void makeNori() {
         nori.clear();
