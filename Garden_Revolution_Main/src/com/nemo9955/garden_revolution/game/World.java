@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -57,14 +58,14 @@ public class World implements Disposable {
 
     }
 
-    public void render(ModelBatch modelBatch, Lights light) {
+    public void render(ModelBatch modelBatch, Lights light, Shader shader) {
         for (ModelInstance nor : nori )
-            modelBatch.render( nor );
+            modelBatch.render( nor, shader );
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
         for (Entitate e : foe )
-            e.render( modelBatch, light );
+            e.render( modelBatch );
         for (Entitate e : ally )
             e.render( modelBatch, light );
         for (Entitate e : shot )
@@ -75,6 +76,7 @@ public class World implements Disposable {
         nori.clear();
         ModelBuilder build = new ModelBuilder();
         Random zar = new Random();
+        Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         ModelInstance nor;
 
         int norx, norz;
@@ -83,7 +85,7 @@ public class World implements Disposable {
             norx = zar.nextInt( 200 ) -100;
             norz = zar.nextInt( 200 ) -100;
             for (int j = 1 ; j <=5 ; j ++ ) {
-                nor = new ModelInstance( build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.CYAN ) ), Usage.Position |Usage.Normal ) );
+                nor = new ModelInstance( sfera );
                 nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
                 nori.add( nor );
             }

@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.utility.CustomBox;
@@ -42,6 +43,10 @@ public class Entitate extends ModelInstance {
 
     public void render(ModelBatch modelBatch, Lights light) {
         modelBatch.render( this, light );
+    }
+
+    public void render(ModelBatch modelBatch, Shader shader) {
+        modelBatch.render( this, shader );
     }
 
 

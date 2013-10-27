@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
@@ -39,6 +40,7 @@ import com.nemo9955.garden_revolution.game.Shot;
 import com.nemo9955.garden_revolution.game.Vietate;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
 
 public class Gameplay implements Screen, InputProcessor, GestureListener {
@@ -64,7 +66,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     public World                  world;
     private GestureDetector       gestures = new GestureDetector( this );
+    @SuppressWarnings("unused")
     private CameraInputController camco;
+
+    private Shader                shader;
 
     public Gameplay() {
         float amb = 0.4f, lum = 0.3f;
@@ -84,6 +89,8 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         camco = new CameraInputController( cam );
         makeStage();
 
+        shader = new CustShader();
+        shader.init();
 
         gestures.setLongPressSeconds( 1f );
 
@@ -92,7 +99,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public void show() {
-//        Gdx.input.setInputProcessor( new InputMultiplexer( stage, camco, this, gestures ) );
+        // Gdx.input.setInputProcessor( new InputMultiplexer( stage, camco, this, gestures ) );
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
         world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
@@ -110,7 +117,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             updateGameplay( delta );
 
         modelBatch.begin( cam );
-        world.render( modelBatch, lights );
+        world.render( modelBatch, lights , shader );
         modelBatch.end();
 
         stage.act();
