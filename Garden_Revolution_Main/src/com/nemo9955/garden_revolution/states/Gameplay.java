@@ -7,19 +7,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -39,8 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Shot;
-import com.nemo9955.garden_revolution.game.Vietate;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.entitati.Rosie;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
@@ -105,8 +100,8 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public void show() {
-        // Gdx.input.setInputProcessor( new InputMultiplexer( stage, camco, this, gestures ) );
-        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
+         Gdx.input.setInputProcessor( new InputMultiplexer( stage, camco, this, gestures ) );
+      //  Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
         world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
     }
@@ -426,7 +421,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = new Vector3( ray.getEndPoint( new Vector3(), distance ) );
-            world.addFoe( new Vietate( new ModelBuilder().createBox( 1f, 2f, 1f, new Material( ColorAttribute.createDiffuse( Color.BLUE ) ), Usage.Position |Usage.Normal ), poz.x, poz.y +1, poz.z ) );
+            world.addFoe( new Rosie( world.path, poz.x, poz.y +1, poz.z ) );
             gestures.invalidateTapSquare();
         }
         return false;

@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.CatmullRomSpline;
-import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -24,36 +23,39 @@ import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance> nori  = new Array<ModelInstance>();
-    public Array<ModelInstance>  mediu = new Array<ModelInstance>();
+    private Array<ModelInstance>      nori  = new Array<ModelInstance>();
+    public Array<ModelInstance>       mediu = new Array<ModelInstance>();
 
-    public Array<Entitate>       foe   = new Array<Entitate>();
-    public Array<Entitate>       ally  = new Array<Entitate>();
-    public Array<Entitate>       shot  = new Array<Entitate>();
+    public Array<Entitate>            foe   = new Array<Entitate>();
+    public Array<Entitate>            ally  = new Array<Entitate>();
+    public Array<Entitate>            shot  = new Array<Entitate>();
 
-    private Vector3              pct[] = new Vector3[7];
-    private Path<Vector3>        path;
+    public CatmullRomSpline<Vector3> path;
 
     public World(Model scena) {
         makeNori();
-        populateWorld( scena );
 
-        pct[0] = new Vector3( 10, 5, 10 );
-        pct[1] = new Vector3( 10, 5, 10 );
-        pct[2] = new Vector3( 10, 5, -10 );
-        pct[3] = new Vector3( -8, 5, -8 );
-        pct[4] = new Vector3( 0, 5, 10 );
-        pct[5] = new Vector3( 0, 5, 0 );
-        pct[6] = new Vector3( 0, 5, 0 );
-
+        Vector3 pct[] = new Vector3[7];
+        pct[0] = new Vector3( 10, 1, 10 );
+        pct[1] = new Vector3( 10, 1, 10 );
+        pct[2] = new Vector3( 10, 1, -10 );
+        pct[3] = new Vector3( -8, 1, -8 );
+        pct[4] = new Vector3( 0, 1, 10 );
+        pct[5] = new Vector3( 0, 1, 0 );
+        pct[6] = new Vector3( 0, 1, 0 );
 
         Model sfera = new ModelBuilder().createSphere( 0.2f, 0.2f, 0.2f, 5, 5, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        for (byte i = 1 ; i <pct.length-1 ; i ++ )
+        for (byte i = 1 ; i <pct.length -1 ; i ++ ) {
             addMediu( new ModelInstance( sfera, pct[i] ) );
+        }
+        // System.out.println( dist );
         path = new CatmullRomSpline<Vector3>( pct, false );
+        
+        populateWorld( scena );
     }
 
     public void update(float delta) {
+
         for (Entitate fo : foe ) {
             fo.update( delta );
             if ( fo.dead )
@@ -132,7 +134,7 @@ public class World implements Disposable {
             renderer.color( 0f, 0f, 0f, 1f );
             path.valueAt( /* out: */tmp, val );
             renderer.vertex( tmp.x, tmp.y, tmp.z );
-            val += 1f /200f;
+            val += 1f /100f;
         }
 
 
@@ -174,14 +176,9 @@ public class World implements Disposable {
             System.out.println( node.id );
 
             addMediu( instance );
-            // if ( node.id.equals( "NurbsPath" ) ) {
-            // for (Node nod : instance.nodes) {
-            // System.out.println( nod.translation );
-            // }
-            // }
         }
 
-        addFoe( new Knight( 5, 5, 5 ) );
+        addFoe( new Knight( path, 15, 0, 9 ) );
 
     }
 

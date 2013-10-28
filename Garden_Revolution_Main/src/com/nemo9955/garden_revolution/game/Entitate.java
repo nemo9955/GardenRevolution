@@ -5,35 +5,30 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.utility.CustomBox;
 
 
-public class Entitate extends ModelInstance {
+public abstract class Entitate extends ModelInstance {
 
     public boolean      dead  = false;
     protected CustomBox box   = new CustomBox();
     public float        angle = 0;
+    public Vector3      poz;
 
     public Entitate(Model model, Vector3 position) {
         this( model, position.x, position.y, position.z );
     }
 
-    public Entitate(Model model) {
-        this( model, 0, 0, 0 );
-    }
-
-    public Entitate(ModelInstance copyFrom) {
-        this( copyFrom.model, copyFrom.transform.getTranslation( Vector3.Zero ) );
-    }
-
     // constructorul principal
     public Entitate(Model model, float x, float y, float z) {
         super( model, x, y, z );
+        poz = new Vector3( x, y, z );
         setBox( x, y, z );
     }
 
-    private void setBox(float x, float y, float z) {
+    protected void setBox(float x, float y, float z) {
         calculateBoundingBox( box );
         box.setPosition( x, y, z );
     }
@@ -59,9 +54,14 @@ public class Entitate extends ModelInstance {
         move( move.x, move.y, move.z );
     }
 
+    public void walk(float dist) {
+        move( (float) Math.sin( angle *MathUtils.degRad ) *dist, 0, (float) Math.cos( angle *MathUtils.degRad ) *dist );
+    }
+
     public void move(float x, float y, float z) {
         transform.trn( x, y, z );
         box.setPosition( x, y, z );
+        poz.add( x, y, z );
     }
 
     public void rotate(float x, float y, float z) {
