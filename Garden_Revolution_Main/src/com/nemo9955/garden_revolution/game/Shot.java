@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -15,7 +16,7 @@ public class Shot extends Entitate {
     private float         life;
 
     public Shot(Vector3 position, Vector3 direction) {
-        super( new ModelBuilder().createSphere( 0.5f, 0.5f,0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal ), position );
+        super( position );
         this.direction = direction.cpy();
         life = 3f;
     }
@@ -28,6 +29,13 @@ public class Shot extends Entitate {
         if ( life <=0 ) {
             dead = true;
         }
+    }
+
+    @Override
+    protected Model getModel() {
+
+        return new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
+
     }
 
 }

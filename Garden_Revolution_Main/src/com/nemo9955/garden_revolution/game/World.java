@@ -23,12 +23,12 @@ import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance>      nori  = new Array<ModelInstance>();
-    public Array<ModelInstance>       mediu = new Array<ModelInstance>();
+    private Array<ModelInstance>     nori  = new Array<ModelInstance>();
+    public Array<ModelInstance>      mediu = new Array<ModelInstance>();
 
-    public Array<Entitate>            foe   = new Array<Entitate>();
-    public Array<Entitate>            ally  = new Array<Entitate>();
-    public Array<Entitate>            shot  = new Array<Entitate>();
+    public Array<Entitate>           foe   = new Array<Entitate>();
+    public Array<Entitate>           ally  = new Array<Entitate>();
+    public Array<Entitate>           shot  = new Array<Entitate>();
 
     public CatmullRomSpline<Vector3> path;
 
@@ -50,7 +50,7 @@ public class World implements Disposable {
         }
         // System.out.println( dist );
         path = new CatmullRomSpline<Vector3>( pct, false );
-        
+
         populateWorld( scena );
     }
 
@@ -204,12 +204,12 @@ public class World implements Disposable {
     @Override
     public void dispose() {
 
-        for (ModelInstance e : foe )
-            e.model.dispose();
-        for (ModelInstance e : ally )
-            e.model.dispose();
-        for (ModelInstance e : shot )
-            e.model.dispose();
+        for (Entitate e : foe )
+            e.dispose();
+        for (Entitate e : ally )
+            e.dispose();
+        for (Entitate e : shot )
+            e.dispose();
         for (ModelInstance e : mediu )
             e.model.dispose();
 

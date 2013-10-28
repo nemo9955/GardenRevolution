@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -11,10 +12,15 @@ public class Knight extends Vietate {
 
 
     public Knight(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
-        super( Garden_Revolution.getModel( Assets.KNIGHT ), drum, x, y, z );
+        super( drum, x, y, z );
         speed = 10;
         animation.setAnimation( "Sneak", -1, null );
-        transform.scl( 0.5f );
+        model.transform.scl( 0.5f );
+    }
+
+    @Override
+    protected Model getModel() {
+        return Garden_Revolution.getModel( Assets.KNIGHT );
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
@@ -18,10 +17,10 @@ public abstract class Vietate extends Entitate {
     public static final float        STEP  = 1f /50f;
     public Vector3                   flag;
 
-    public Vietate(Model model, CatmullRomSpline<Vector3> drum, float x, float y, float z) {
-        super( model, x, y, z );
+    public Vietate(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
+        super( x, y, z );
         poz.set( x, y, z );
-        animation = new AnimationController( this );
+        animation = new AnimationController( this.model );
         this.drum = drum;
 
         percent = Float.MIN_VALUE;
