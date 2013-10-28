@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -44,29 +43,26 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private PerspectiveCamera       cam;
-    private ModelBatch              modelBatch;
     private Lights                  lights   = new Lights();
     private Shader                  shader;
+    private ModelBatch              modelBatch;
+    private ImmediateModeRenderer20 renderer;
 
     private float                   startX, startY;
     private float                   movex    = 0, movey = 0;
-    private final Vector3           tmpV1    = new Vector3();
-    private Vector3                 target   = new Vector3( 0, 12, 0 );
     private float                   deltaX   = 0;
     private float                   deltaY   = 0;
 
+    private Vector3                 dolly    = new Vector3();
     private short                   toUpdate = 0;
     private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private Stage                   stage;
     private Skin                    skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private Stage                   stage;
     private final Touchpad          mover    = new Touchpad( 5, skin );
+    private GestureDetector         gestures = new GestureDetector( this );
+    public static TweenManager      tweeger;
 
     public World                    world;
-    private GestureDetector         gestures = new GestureDetector( this );
-    @SuppressWarnings("unused")
-    private CameraInputController   camco;
-    private ImmediateModeRenderer20 renderer;
-    public static TweenManager      tweeger;
 
 
     public Gameplay() {
@@ -79,14 +75,13 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 0f ) );
 
         cam = new PerspectiveCamera( 67, scrw, scrh );
-        cam.position.set( target );
+        cam.position.set( 0, 12, 0 );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
 
         makeStage();
 
-        camco = new CameraInputController( cam );
 
         shader = new CustShader();
         shader.init();
@@ -100,8 +95,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public void show() {
-         Gdx.input.setInputProcessor( new InputMultiplexer( stage, camco, this, gestures ) );
-      //  Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
         world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
     }
@@ -133,15 +127,20 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private void updateGameplay(float delta) {
-        if ( movex !=0 ||movey !=0 )
+        if ( movex !=0 ||movey !=0 || !dolly.isZero() )
             moveCamera( movex, movey );
         world.update( delta );
     }
 
+    private final Vector3 tmpV1 = new Vector3();
+
     private void moveCamera(float amontX, float amontY) {
         tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
-        cam.rotateAround( target, tmpV1.nor(), amontY );
-        cam.rotateAround( target, Vector3.Y, amontX );
+        cam.rotateAround( cam.position, tmpV1.nor(), amontY );
+        cam.rotateAround( cam.position, Vector3.Y, amontX );
+
+        cam.translate( dolly );
+
         cam.update();
     }
 
@@ -202,6 +201,24 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             case Keys.A:
                 movex = 1.5f;
                 break;
+            case Keys.NUMPAD_8:
+                dolly.x = 0.3f;
+                break;
+            case Keys.NUMPAD_2:
+                dolly.x = -0.3f;
+                break;
+            case Keys.NUMPAD_4:
+                dolly.z = -0.3f;
+                break;
+            case Keys.NUMPAD_6:
+                dolly.z = 0.3f;
+                break;
+            case Keys.NUMPAD_9:
+                dolly.y = 0.3f;
+                break;
+            case Keys.NUMPAD_3:
+                dolly.y = -0.3f;
+                break;
             case Keys.ESCAPE:
                 Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
                 break;
@@ -221,6 +238,18 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             case Keys.D:
             case Keys.A:
                 movex = 0;
+                break;
+            case Keys.NUMPAD_6:
+            case Keys.NUMPAD_4:
+                dolly.z = 0;
+                break;
+            case Keys.NUMPAD_8:
+            case Keys.NUMPAD_2:
+                dolly.x = 0;
+                break;
+            case Keys.NUMPAD_9:
+            case Keys.NUMPAD_3:
+                dolly.y = 0;
                 break;
         }
 

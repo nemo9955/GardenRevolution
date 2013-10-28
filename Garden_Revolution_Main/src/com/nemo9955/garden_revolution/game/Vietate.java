@@ -20,7 +20,7 @@ public abstract class Vietate extends Entitate {
     public Vietate(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
         super( x, y, z );
         poz.set( x, y, z );
-        animation = new AnimationController( this.model );
+        animation = new AnimationController( model );
         this.drum = drum;
 
         percent = Float.MIN_VALUE;
