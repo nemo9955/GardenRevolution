@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 public abstract class Vietate extends Entitate {
 
     public AnimationController       animation;
-    public float                     speed = 2;
+    public float                     speed = 9;
     public CatmullRomSpline<Vector3> drum;
     public float                     percent;
 
@@ -28,8 +28,6 @@ public abstract class Vietate extends Entitate {
         percent = 0;
 
         lookAt( drum.valueAt( flag, percent +STEP ) );
-        // System.out.println( "pozi : " +poz );
-        // System.out.println( "flag : " +flag );
     }
 
     @Override
@@ -46,12 +44,12 @@ public abstract class Vietate extends Entitate {
         move( dir );
         if ( flag.epsilonEquals( poz, 0.5f ) ) {
             percent += STEP;
-            if(percent>=1){
-                //TODO cand ajunge la capatul drumului
+            if ( percent >=1 ) {
+                // TODO cand ajunge la capatul drumului
+                speed = 0;
             }
             drum.valueAt( flag, percent +STEP );
             lookAt( drum.valueAt( flag, percent +STEP ) );
-            System.out.println("Flag !  " +percent );
         }
     }
 

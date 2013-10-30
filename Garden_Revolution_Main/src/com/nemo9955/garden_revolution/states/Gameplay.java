@@ -453,9 +453,9 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = new Vector3( ray.getEndPoint( new Vector3(), distance ) );
             if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.addFoe( new Knight( world.path, poz.x, poz.y , poz.z ) );
+                world.addFoe( new Knight( world.closestPath( poz ), poz.x, poz.y, poz.z ) );
             else
-                world.addFoe( new Rosie( world.path, poz.x, poz.y , poz.z ) );
+                world.addFoe( new Rosie( world.closestPath( poz ), poz.x, poz.y, poz.z ) );
             gestures.invalidateTapSquare();
         }
         return false;

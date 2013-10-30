@@ -23,33 +23,48 @@ import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance>     nori  = new Array<ModelInstance>();
-    public Array<ModelInstance>      mediu = new Array<ModelInstance>();
+    private Array<ModelInstance>            nori  = new Array<ModelInstance>();
+    public Array<ModelInstance>             mediu = new Array<ModelInstance>();
 
-    public Array<Entitate>           foe   = new Array<Entitate>();
-    public Array<Entitate>           ally  = new Array<Entitate>();
-    public Array<Entitate>           shot  = new Array<Entitate>();
+    public Array<Entitate>                  foe   = new Array<Entitate>();
+    public Array<Entitate>                  ally  = new Array<Entitate>();
+    public Array<Entitate>                  shot  = new Array<Entitate>();
 
-    public CatmullRomSpline<Vector3> path;
+    public Array<CatmullRomSpline<Vector3>> path;
 
     public World(Model scena) {
         makeNori();
 
-        Vector3 pct[] = new Vector3[7];
-        pct[0] = new Vector3( 10, 1, 10 );
-        pct[1] = new Vector3( 10, 1, 10 );
-        pct[2] = new Vector3( 10, 1, -10 );
-        pct[3] = new Vector3( -8, 1, -8 );
-        pct[4] = new Vector3( 0, 1, 10 );
-        pct[5] = new Vector3( -10, 1, 10 );
-        pct[6] = new Vector3( -10, 1, 10 );
+        path = new Array<CatmullRomSpline<Vector3>>( 2 );
+
+        Vector3 pct1[] = new Vector3[7];
+        pct1[0] = new Vector3( 10, 1, 10 );
+        pct1[1] = new Vector3( 10, 1, 10 );
+        pct1[2] = new Vector3( 10, 1, -10 );
+        pct1[3] = new Vector3( -8, 1, -8 );
+        pct1[4] = new Vector3( 0, 1, 10 );
+        pct1[5] = new Vector3( -10, 1, 10 );
+        pct1[6] = new Vector3( -10, 1, 10 );
+
+
+        Vector3 pct2[] = new Vector3[6];
+        pct2[0] = new Vector3( -15, 0, -15 );
+        pct2[1] = new Vector3( -15, 0, -15 );
+        pct2[2] = new Vector3( -15, 0, 15 );
+        pct2[3] = new Vector3( 15, 0, 15 );
+        pct2[4] = new Vector3( 15, 0, -15 );
+        pct2[5] = new Vector3( 15, 0, -15 );
 
         Model sfera = new ModelBuilder().createSphere( 0.2f, 0.2f, 0.2f, 5, 5, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        for (byte i = 1 ; i <pct.length -1 ; i ++ ) {
-            addMediu( new ModelInstance( sfera, pct[i] ) );
-        }
-        // System.out.println( dist );
-        path = new CatmullRomSpline<Vector3>( pct, false );
+        for (byte i = 1 ; i <pct1.length -1 ; i ++ )
+            addMediu( new ModelInstance( sfera, pct1[i] ) );
+
+        for (byte j = 1 ; j <pct2.length -1 ; j ++ )
+            addMediu( new ModelInstance( sfera, pct2[j] ) );
+
+
+        path.add( new CatmullRomSpline<Vector3>( pct1, false ) );
+        path.add( new CatmullRomSpline<Vector3>( pct2, false ) );
 
         populateWorld( scena );
     }
@@ -131,8 +146,15 @@ public class World implements Disposable {
 
         float val = 0;
         while ( val <=1f ) {
-            renderer.color( 0f, 0f, 0f, 1f );
-            path.valueAt( /* out: */tmp, val );
+            path.get( 0 ).valueAt( tmp, val );
+            renderer.color( 0.5f, 0f, 0f, 1f );
+            renderer.vertex( tmp.x, tmp.y, tmp.z );
+            val += 1f /100f;
+        }
+        val = 0;
+        while ( val <=1f ) {
+            path.get( 1 ).valueAt( tmp, val );
+            renderer.color( 0f, 0f, 0.5f, 1f );
             renderer.vertex( tmp.x, tmp.y, tmp.z );
             val += 1f /100f;
         }
@@ -178,8 +200,24 @@ public class World implements Disposable {
             addMediu( instance );
         }
 
-        addFoe( new Knight( path, -9, 1, 17 ) );
+        addFoe( new Knight( closestPath( new Vector3( -9, 1, 17 ) ), -9, 1, 17 ) );
 
+    }
+
+    public CatmullRomSpline<Vector3> closestPath(Vector3 loc) {
+        CatmullRomSpline<Vector3> close = null;
+        float dist = Float.MAX_VALUE;
+
+        for (int i = 0 ; i <path.size ; i ++ ) {
+            path.get( i ).valueAt( tmp, path.get( i ).approximate( loc ) );
+            System.out.println( i +"  distanta : " +loc.dst2( tmp ) );
+            if ( loc.dst2( tmp ) <dist ) {
+                dist = loc.dst2( tmp );
+                close = path.get( i );
+            }
+        }
+        System.out.println();
+        return close;
     }
 
     public Entitate addFoe(Entitate ent) {
