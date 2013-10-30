@@ -41,8 +41,8 @@ public class World implements Disposable {
         pct[2] = new Vector3( 10, 1, -10 );
         pct[3] = new Vector3( -8, 1, -8 );
         pct[4] = new Vector3( 0, 1, 10 );
-        pct[5] = new Vector3( 0, 1, 0 );
-        pct[6] = new Vector3( 0, 1, 0 );
+        pct[5] = new Vector3( -10, 1, 10 );
+        pct[6] = new Vector3( -10, 1, 10 );
 
         Model sfera = new ModelBuilder().createSphere( 0.2f, 0.2f, 0.2f, 5, 5, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         for (byte i = 1 ; i <pct.length -1 ; i ++ ) {
@@ -178,7 +178,7 @@ public class World implements Disposable {
             addMediu( instance );
         }
 
-        addFoe( new Knight( path, 15, 0, 9 ) );
+        addFoe( new Knight( path, -9, 1, 17 ) );
 
     }
 

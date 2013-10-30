@@ -10,24 +10,26 @@ import com.badlogic.gdx.math.Vector3;
 public abstract class Vietate extends Entitate {
 
     public AnimationController       animation;
-    public float                     speed = 9;
+    public float                     speed = 2;
     public CatmullRomSpline<Vector3> drum;
     public float                     percent;
 
     public static final float        STEP  = 1f /50f;
     public Vector3                   flag;
+    public Vector3                   dir;
 
     public Vietate(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
         super( x, y, z );
-        poz.set( x, y, z );
         animation = new AnimationController( model );
+        flag = new Vector3();
+        dir = new Vector3();
         this.drum = drum;
 
-        percent = Float.MIN_VALUE;
+        percent = 0;
 
-        flag = new Vector3();
         lookAt( drum.valueAt( flag, percent +STEP ) );
-        System.out.println( "directie : " +flag.sub( poz ).nor().scl( 1f /speed ) );
+        // System.out.println( "pozi : " +poz );
+        // System.out.println( "flag : " +flag );
     }
 
     @Override
@@ -40,13 +42,16 @@ public abstract class Vietate extends Entitate {
 
 
     protected void movement(float delta) {
-        // walk( speed *delta );
-        move( flag.sub( poz ).nor().scl( 1f /speed ) );
+        dir.set( flag.x -poz.x, flag.y -poz.y, flag.z -poz.z ).nor().scl( speed *delta );
+        move( dir );
         if ( flag.epsilonEquals( poz, 0.5f ) ) {
             percent += STEP;
+            if(percent>=1){
+                //TODO cand ajunge la capatul drumului
+            }
             drum.valueAt( flag, percent +STEP );
             lookAt( drum.valueAt( flag, percent +STEP ) );
-            System.out.println( flag +" adevarat " +percent );
+            System.out.println("Flag !  " +percent );
         }
     }
 
@@ -56,6 +61,5 @@ public abstract class Vietate extends Entitate {
             ung += 360;
         ung -= 180;
         rotate( 0, angle -ung, 0 );
-        System.out.println( ung +"    rap: " +percent +"         " +look );
     }
 }

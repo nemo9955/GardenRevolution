@@ -1,5 +1,7 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
@@ -41,24 +43,25 @@ public class Knight extends Vietate {
         // if ( Gdx.input.isKeyPressed( Keys.F8 ) ||Gdx.input.isTouched( 3 ) )
         // animation.animate( "Idle", -1, null, 0.5f );
 
-        // final float rot = 65f;
-        // final float spd = 7f;
-        // if ( Gdx.input.isKeyPressed( Keys.UP ) ) {
-        // walk( spd *delta );
-        // animation.animate( "Sneak", -1, null, 0.1f );
-        // }
-        // else if ( Gdx.input.isKeyPressed( Keys.DOWN ) ) {
-        // walk( -spd *delta );
-        // animation.animate( "Sneak", -1, null, 0.1f );
-        // }
-        // else
-        // animation.animate( "Idle", -1, null, 0.5f );
-        // if ( Gdx.input.isKeyPressed( Keys.LEFT ) ) {
-        // rotate( 0, rot *delta, 0 );
-        // }
-        // if ( Gdx.input.isKeyPressed( Keys.RIGHT ) ) {
-        // rotate( 0, -rot *delta, 0 );
-        // }
+        final float rot = 65f;
+        final float spd = 7f;
+        if ( Gdx.input.isKeyPressed( Keys.UP ) ) {
+            walk( spd *delta );
+            animation.animate( "Sneak", -1, null, 0.1f );
+        }
+        else if ( Gdx.input.isKeyPressed( Keys.DOWN ) ) {
+            walk( -spd *delta );
+            animation.animate( "Sneak", -1, null, 0.1f );
+        }
+        else
+            animation.animate( "Idle", -1, null, 0.5f );
+
+        if ( Gdx.input.isKeyPressed( Keys.LEFT ) ) {
+            rotate( 0, rot *delta, 0 );
+        }
+        if ( Gdx.input.isKeyPressed( Keys.RIGHT ) ) {
+            rotate( 0, -rot *delta, 0 );
+        }
 
 
     }

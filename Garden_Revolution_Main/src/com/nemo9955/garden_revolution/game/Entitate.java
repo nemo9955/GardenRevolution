@@ -35,7 +35,7 @@ public abstract class Entitate implements Disposable {
 
     protected void setBox(float x, float y, float z) {
         model.calculateBoundingBox( box );
-        box.setPosition( x, y, z );
+        box.addPoz( x, y, z );
     }
 
     public void update(float delta) {
@@ -65,7 +65,7 @@ public abstract class Entitate implements Disposable {
 
     public void move(float x, float y, float z) {
         model.transform.trn( x, y, z );
-        box.setPosition( x, y, z );
+        box.addPoz( x, y, z );
         poz.add( x, y, z );
     }
 

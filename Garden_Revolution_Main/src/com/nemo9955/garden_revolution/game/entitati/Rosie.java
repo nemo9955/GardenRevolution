@@ -19,7 +19,7 @@ public class Rosie extends Vietate {
 
     @Override
     protected Model getModel() {
-        return new ModelBuilder().createBox( 1f, 2f, 1f, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
+        return new ModelBuilder().createBox( 0.5f, 3f, 0.5f, new Material( ColorAttribute.createDiffuse( Color.PINK ) ), Usage.Position |Usage.Normal );
     }
 
 }

@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Shot;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.entitati.Knight;
 import com.nemo9955.garden_revolution.game.entitati.Rosie;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
@@ -127,7 +129,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private void updateGameplay(float delta) {
-        if ( movex !=0 ||movey !=0 || !dolly.isZero() )
+        if ( movex !=0 ||movey !=0 ||!dolly.isZero() )
             moveCamera( movex, movey );
         world.update( delta );
     }
@@ -450,7 +452,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = new Vector3( ray.getEndPoint( new Vector3(), distance ) );
-            world.addFoe( new Rosie( world.path, poz.x, poz.y +1, poz.z ) );
+            if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
+                world.addFoe( new Knight( world.path, poz.x, poz.y , poz.z ) );
+            else
+                world.addFoe( new Rosie( world.path, poz.x, poz.y , poz.z ) );
             gestures.invalidateTapSquare();
         }
         return false;
