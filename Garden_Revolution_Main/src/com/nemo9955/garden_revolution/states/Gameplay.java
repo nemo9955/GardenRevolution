@@ -99,7 +99,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
-        world = new World( Garden_Revolution.getModel( Assets.SCENA ) );
+        world = new World( Garden_Revolution.getModel( Assets.SCENA ), cam );
     }
 
     @Override

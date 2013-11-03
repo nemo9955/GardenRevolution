@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 
 public class World implements Disposable {
@@ -35,44 +35,17 @@ public class World implements Disposable {
 
     public Array<Path<Vector3>>  paths;
 
-    public World(Model scena) {
-        makeNori();
+    private PerspectiveCamera    cam;
+    private Vector3[]            camPoz;
+
+    public World(Model scena, PerspectiveCamera cam) {
+        this.cam = cam;
 
         point1 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
         point2 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.BLUE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
 
-
-        paths = new Array<Path<Vector3>>( 2 );
-
-        Vector3 pct1[] = new Vector3[7];
-        pct1[0] = new Vector3( 10, 1, 10 );
-        pct1[1] = new Vector3( 10, 1, 10 );
-        pct1[2] = new Vector3( 10, 1, -10 );
-        pct1[3] = new Vector3( -8, 1, -8 );
-        pct1[4] = new Vector3( 0, 1, 10 );
-        pct1[5] = new Vector3( -10, 1, 10 );
-        pct1[6] = new Vector3( -10, 1, 10 );
-
-
-        Vector3 pct2[] = new Vector3[6];
-        pct2[0] = new Vector3( -15, 0, -15 );
-        pct2[1] = new Vector3( -15, 0, -15 );
-        pct2[2] = new Vector3( -15, 0, 15 );
-        pct2[3] = new Vector3( 15, 0, 15 );
-        pct2[4] = new Vector3( 15, 0, -15 );
-        pct2[5] = new Vector3( 15, 0, -15 );
-
-        Model sfera = new ModelBuilder().createSphere( 0.2f, 0.2f, 0.2f, 5, 5, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        for (byte i = 1 ; i <pct1.length -1 ; i ++ )
-            addMediu( new ModelInstance( sfera, pct1[i] ) );
-
-        for (byte j = 1 ; j <pct2.length -1 ; j ++ )
-            addMediu( new ModelInstance( sfera, pct2[j] ) );
-
-        paths.add( new CatmullRomSpline<Vector3>( pct1, false ) );
-        paths.add( new CatmullRomSpline<Vector3>( pct2, false ) );
-
         populateWorld( scena );
+        makeNori();
     }
 
     public void update(float delta) {
@@ -117,7 +90,7 @@ public class World implements Disposable {
         modelBatch.render( point2 );
     }
 
-    Vector3 tmp = new Vector3();
+    private Vector3 tmp = new Vector3();
 
     public void renderLines(ImmediateModeRenderer20 renderer) {
         Vector3 corn[] = new Vector3[8];
@@ -191,6 +164,12 @@ public class World implements Disposable {
     }
 
     private void populateWorld(Model scena) {
+        int cams = 0;
+        int perPath[] = new int[5];
+        int numPaths = 0;
+        Array<Vector3[]> cp;
+
+        String[] sect;
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
@@ -202,12 +181,69 @@ public class World implements Disposable {
             node.rotation.idt();
             instance.calculateTransforms();
 
-            System.out.println( node.id );
+            // System.out.println( id );
 
-            addMediu( instance );
+            if ( id.startsWith( "cam" ) )
+                cams ++;
+            else if ( id.startsWith( "path" ) ) {
+                sect = id.split( "_" );
+                perPath[Integer.parseInt( sect[1] ) -1] ++;
+                if ( Integer.parseInt( sect[1] ) >numPaths )
+                    numPaths = Integer.parseInt( sect[1] );
+            }
+            else
+                addMediu( instance );
+
         }
 
-        addFoe( new Knight( closestPath( new Vector3( -9, 1, 17 ) ), -9, 1, 17 ) );
+        paths = new Array<Path<Vector3>>();
+        camPoz = new Vector3[cams];
+        cp = new Array<Vector3[]>();
+        for (int k = 0 ; k <numPaths ; k ++ ) {
+            cp.insert( k, new Vector3[perPath[k] +2] );
+            System.out.println( ( k +1 ) +" " + ( perPath[k] +2 ) );
+        }
+        System.out.println();
+
+        for (int k = 0 ; k <numPaths ; k ++ )
+            // System.out.println( ( k +1 ) +"  " +cp.get( k ).length );
+
+            for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
+                String id = scena.nodes.get( i ).id;
+
+                if ( id.startsWith( "cam" ) ) {
+                    sect = id.split( "_" );
+                    camPoz[Integer.parseInt( sect[1] ) -1] = scena.nodes.get( i ).translation;
+                }
+                else if ( id.startsWith( "path" ) ) {
+                    sect = id.split( "_" );
+                    // System.out.println( id +" " +Integer.parseInt( sect[1] ) +" " +Integer.parseInt( sect[2] ) );
+                    cp.get( Integer.parseInt( sect[1] ) -1 )[Integer.parseInt( sect[2] )] = scena.nodes.get( i ).translation;
+                }
+
+            }
+
+        for (int k = 0 ; k <numPaths ; k ++ ) {
+            cp.get( k )[0] = cp.get( k )[1];
+            cp.get( k )[perPath[k] +1] = cp.get( k )[perPath[k]];
+        }
+
+        for (int k = 0 ; k <numPaths ; k ++ )
+            for (int j = 0 ; j <perPath[k] +2 ; j ++ )
+                System.out.println( k +" " +j +" " +cp.get( k )[j] );
+        System.out.println();
+
+        for (int k = 0 ; k <numPaths ; k ++ ) {
+            paths.add( new CatmullRomSpline<Vector3>( cp.get( k ), false ) );
+        }
+        System.out.println();
+
+        for (int k = 0 ; k <numPaths ; k ++ )
+            for (int j = 0 ; j < ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints.length ; j ++ )
+                System.out.println( ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints[j] );
+
+        cam.position.set( camPoz[2] );
+        cam.update();
 
     }
 
@@ -221,9 +257,9 @@ public class World implements Disposable {
             path.valueAt( tmp, rap );
 
             // used to visualise the point in the world
-            // if ( ( (CatmullRomSpline<Vector3>) path ).spanCount ==4 )
+            // if ( ( (CatmullRomSpline<Vector3>) path ).controlPoints.length ==12 )
             // point1.transform.setToTranslation( tmp );
-            // if ( ( (CatmullRomSpline<Vector3>) path ).spanCount ==3 )
+            // else
             // point2.transform.setToTranslation( tmp );
 
             if ( location.dst2( tmp ) <dist ) {
