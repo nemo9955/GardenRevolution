@@ -1,7 +1,5 @@
 package com.nemo9955.garden_revolution.game;
 
-import java.util.Random;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -15,6 +13,8 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -23,19 +23,26 @@ import com.nemo9955.garden_revolution.game.entitati.Knight;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance>            nori  = new Array<ModelInstance>();
-    public Array<ModelInstance>             mediu = new Array<ModelInstance>();
+    private Array<ModelInstance> nori  = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>  mediu = new Array<ModelInstance>( false, 10 );
 
-    public Array<Entitate>                  foe   = new Array<Entitate>();
-    public Array<Entitate>                  ally  = new Array<Entitate>();
-    public Array<Entitate>                  shot  = new Array<Entitate>();
+    public Array<Entitate>       foe   = new Array<Entitate>( false, 10 );
+    public Array<Entitate>       ally  = new Array<Entitate>( false, 10 );
+    public Array<Entitate>       shot  = new Array<Entitate>( false, 10 );
 
-    public Array<CatmullRomSpline<Vector3>> path;
+    public ModelInstance         point1;
+    public ModelInstance         point2;
+
+    public Array<Path<Vector3>>  paths;
 
     public World(Model scena) {
         makeNori();
 
-        path = new Array<CatmullRomSpline<Vector3>>( 2 );
+        point1 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
+        point2 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.BLUE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
+
+
+        paths = new Array<Path<Vector3>>( 2 );
 
         Vector3 pct1[] = new Vector3[7];
         pct1[0] = new Vector3( 10, 1, 10 );
@@ -62,9 +69,8 @@ public class World implements Disposable {
         for (byte j = 1 ; j <pct2.length -1 ; j ++ )
             addMediu( new ModelInstance( sfera, pct2[j] ) );
 
-
-        path.add( new CatmullRomSpline<Vector3>( pct1, false ) );
-        path.add( new CatmullRomSpline<Vector3>( pct2, false ) );
+        paths.add( new CatmullRomSpline<Vector3>( pct1, false ) );
+        paths.add( new CatmullRomSpline<Vector3>( pct2, false ) );
 
         populateWorld( scena );
     }
@@ -107,6 +113,8 @@ public class World implements Disposable {
             e.render( modelBatch, light );
         for (Entitate e : shot )
             e.render( modelBatch );
+        modelBatch.render( point1 );
+        modelBatch.render( point2 );
     }
 
     Vector3 tmp = new Vector3();
@@ -146,14 +154,14 @@ public class World implements Disposable {
 
         float val = 0;
         while ( val <=1f ) {
-            path.get( 0 ).valueAt( tmp, val );
+            paths.get( 0 ).valueAt( tmp, val );
             renderer.color( 0.5f, 0f, 0f, 1f );
             renderer.vertex( tmp.x, tmp.y, tmp.z );
             val += 1f /100f;
         }
         val = 0;
         while ( val <=1f ) {
-            path.get( 1 ).valueAt( tmp, val );
+            paths.get( 1 ).valueAt( tmp, val );
             renderer.color( 0f, 0f, 0.5f, 1f );
             renderer.vertex( tmp.x, tmp.y, tmp.z );
             val += 1f /100f;
@@ -166,18 +174,17 @@ public class World implements Disposable {
     private void makeNori() {
         nori.clear();
         ModelBuilder build = new ModelBuilder();
-        Random zar = new Random();
         Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         ModelInstance nor;
 
         int norx, norz;
 
         for (int i = 0 ; i <20 ; i ++ ) {
-            norx = zar.nextInt( 200 ) -100;
-            norz = zar.nextInt( 200 ) -100;
+            norx = MathUtils.random( -100, 100 );
+            norz = MathUtils.random( -100, 100 );
             for (int j = 1 ; j <=5 ; j ++ ) {
                 nor = new ModelInstance( sfera );
-                nor.transform.translate( norx +zar.nextFloat() *7, 30, norz +zar.nextFloat() *7 );
+                nor.transform.translate( norx +MathUtils.random( 0f, 7f ), 50, norz +MathUtils.random( 0f, 7f ) );
                 nori.add( nor );
             }
         }
@@ -204,20 +211,40 @@ public class World implements Disposable {
 
     }
 
-    public CatmullRomSpline<Vector3> closestPath(Vector3 loc) {
-        CatmullRomSpline<Vector3> close = null;
+    public Path<Vector3> closestPath(final Vector3 location) {// FIXME
+        Path<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
+        float rap = 0;
 
-        for (int i = 0 ; i <path.size ; i ++ ) {
-            path.get( i ).valueAt( tmp, path.get( i ).approximate( loc ) );
-            System.out.println( i +"  distanta : " +loc.dst2( tmp ) );
-            if ( loc.dst2( tmp ) <dist ) {
-                dist = loc.dst2( tmp );
-                close = path.get( i );
+        for (Path<Vector3> path : paths ) {
+            rap = path.locate( location );
+            path.valueAt( tmp, rap );
+
+            // used to visualise the point in the world
+            // if ( ( (CatmullRomSpline<Vector3>) path ).spanCount ==4 )
+            // point1.transform.setToTranslation( tmp );
+            // if ( ( (CatmullRomSpline<Vector3>) path ).spanCount ==3 )
+            // point2.transform.setToTranslation( tmp );
+
+            if ( location.dst2( tmp ) <dist ) {
+                dist = location.dst2( tmp );
+                closest = path;
             }
+
+            // to see the specific numbers
+            System.out.println( "value on path: " +rap +"  location: " +location +"  distance:" +dist +" point on path: " +tmp );
+
         }
         System.out.println();
-        return close;
+        return closest;
+    }
+
+    @SuppressWarnings("unused")
+    private static float xzDistance2(Vector3 loc1, Vector3 loc2) {
+        float a = loc1.x -loc2.x;
+        float b = loc1.z -loc2.z;
+
+        return ( a *a +b *b );
     }
 
     public Entitate addFoe(Entitate ent) {
@@ -250,11 +277,14 @@ public class World implements Disposable {
             e.dispose();
         for (ModelInstance e : mediu )
             e.model.dispose();
+        for (ModelInstance e : nori )
+            e.model.dispose();
 
         foe.clear();
         ally.clear();
         shot.clear();
         mediu.clear();
+        nori.clear();
 
     }
 

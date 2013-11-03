@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game.entitati;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Vietate;
@@ -13,7 +13,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public class Knight extends Vietate {
 
 
-    public Knight(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
+    public Knight(Path<Vector3> drum, float x, float y, float z) {
         super( drum, x, y, z );
         speed = 10;
         animation.setAnimation( "Sneak", -1, null );

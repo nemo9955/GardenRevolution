@@ -448,10 +448,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @Override
     public boolean longPress(float x, float y) {
 
-        if ( Math.abs( Gdx.input.getX() -x ) <15 &&Math.abs( Gdx.input.getY() -y ) <15 ) {
+        if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
-            Vector3 poz = new Vector3( ray.getEndPoint( new Vector3(), distance ) );
+            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
             if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 world.addFoe( new Knight( world.closestPath( poz ), poz.x, poz.y, poz.z ) );
             else

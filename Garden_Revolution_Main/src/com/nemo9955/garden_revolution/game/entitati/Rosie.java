@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.Vietate;
 
 
 public class Rosie extends Vietate {
 
-    public Rosie(CatmullRomSpline<Vector3> drum, float x, float y, float z) {
-        super( drum, x, y, z );
+    public Rosie(Path<Vector3> path, float x, float y, float z) {
+        super( path, x, y, z );
     } 
 
     @Override
