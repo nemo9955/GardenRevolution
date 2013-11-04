@@ -52,7 +52,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     private Vector3                 dolly    = new Vector3();
     public short                    toUpdate = 0;
     private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private final Vector3           tmpV1    = new Vector3();
+    private final Vector3           tmp      = new Vector3();
     private Stage                   stage;
     private Skin                    skin;
     private GestureDetector         gestures = new GestureDetector( this );
@@ -128,9 +128,13 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private void moveCamera(float amontX, float amontY) {
-        tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
-        cam.rotateAround( cam.position, tmpV1.nor(), amontY );
-        cam.rotateAround( cam.position, Vector3.Y, amontX );
+
+        cam.direction.rotate( cam.up, amontX );
+
+        if ( ( amontY >0 &&cam.direction.y <0.3f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
+            tmp.set( cam.direction ).crs( cam.up ).nor();
+            cam.direction.rotate( tmp, amontY );
+        }
 
         cam.translate( dolly );
 

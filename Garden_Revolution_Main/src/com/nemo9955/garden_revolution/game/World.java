@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -248,8 +250,18 @@ public class World implements Disposable {
 
     public void setCamera(int nr) {
         if ( nr >=0 &&nr <camPoz.length ) {
+
+            Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+            float distance = -ray.origin.y /ray.direction.y;
+            Vector3 look = ray.getEndPoint( new Vector3(), distance );
+
             cam.position.set( camPoz[nr] );
+
+            // cam.lookAt( target )
+
             curentCam = nr;
+
+
         }
         cam.update();
     }
@@ -268,31 +280,16 @@ public class World implements Disposable {
         setCamera( curentCam );
     }
 
-    public Path<Vector3> closestPath(final Vector3 location) {// FIXME
+    public Path<Vector3> closestPath(final Vector3 location) {
         Path<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
-        float rap = 0;
-
         for (Path<Vector3> path : paths ) {
-            rap = path.locate( location );
-            path.valueAt( tmp, rap );
-
-            // used to visualise the point in the world
-            // if ( ( (CatmullRomSpline<Vector3>) path ).controlPoints.length ==12 )
-            // point1.transform.setToTranslation( tmp );
-            // else
-            // point2.transform.setToTranslation( tmp );
-
+            tmp = ( (CatmullRomSpline<Vector3>) path ).controlPoints[0].cpy();
             if ( location.dst2( tmp ) <dist ) {
                 dist = location.dst2( tmp );
                 closest = path;
             }
-
-            // to see the specific numbers
-            System.out.println( "value on path: " +rap +"  location: " +location +"  distance:" +dist +" point on path: " +tmp );
-
         }
-        System.out.println();
         return closest;
     }
 
