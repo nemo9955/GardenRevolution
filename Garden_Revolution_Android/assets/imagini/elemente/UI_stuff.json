@@ -39,6 +39,8 @@
 		exit:   { imageUp: exit , pressedOffsetX: -2 , pressedOffsetY: -2},
 		optiuni:{ imageUp: buton_up , pressedOffsetX: -2 , pressedOffsetY: -2},
 		exit:   { imageUp: exit , pressedOffsetX: -2 , pressedOffsetY: -2},
+		camRight:   { imageUp: arrows-right-1 , pressedOffsetX: 2 ,},
+		camLeft:   { imageUp: arrows-left-1 , pressedOffsetX: -2 ,},
 		
 	},
 	

@@ -21,17 +21,9 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Shot;
 import com.nemo9955.garden_revolution.game.World;
@@ -40,6 +32,7 @@ import com.nemo9955.garden_revolution.game.entitati.Rosie;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
+import com.nemo9955.garden_revolution.utility.StageUtils;
 
 public class Gameplay implements Screen, InputProcessor, GestureListener {
 
@@ -51,21 +44,21 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     private ImmediateModeRenderer20 renderer;
 
     private float                   startX, startY;
-    private float                   movex    = 0, movey = 0;
+    public float                    movex    = 0;
+    public float                    movey    = 0;
     private float                   deltaX   = 0;
     private float                   deltaY   = 0;
 
     private Vector3                 dolly    = new Vector3();
-    private short                   toUpdate = 0;
+    public short                    toUpdate = 0;
     private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private Skin                    skin     = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+    private final Vector3           tmpV1    = new Vector3();
     private Stage                   stage;
-    private final Touchpad          mover    = new Touchpad( 5, skin );
+    private Skin                    skin;
     private GestureDetector         gestures = new GestureDetector( this );
-    public static TweenManager      tweeger;
+    private TweenManager            tweeger;
 
     public World                    world;
-
 
     public Gameplay() {
         float amb = 0.4f, lum = 0.3f;
@@ -82,8 +75,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         cam.far = 300f;
         cam.update();
 
-        makeStage();
-
+        stage = StageUtils.makeGamePlayStage( stage, skin, this );
 
         shader = new CustShader();
         shader.init();
@@ -123,7 +115,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
         stage.act();
         stage.draw();
-        Table.drawDebug( stage );
+        Table.drawDebug( stage );// TODO scapa de asta
 
     }
 
@@ -134,7 +126,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         world.update( delta );
     }
 
-    private final Vector3 tmpV1 = new Vector3();
 
     private void moveCamera(float amontX, float amontY) {
         tmpV1.set( cam.direction ).crs( cam.up ).y = 0f;
@@ -174,18 +165,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         }
 
         return false;
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
     }
 
     @Override
@@ -274,164 +253,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     }
 
     @Override
-    public void hide() {
-        Gdx.input.setInputProcessor( null );
-    }
-
-    @Override
-    public void dispose() {
-        modelBatch.dispose();
-        stage.dispose();
-        skin.dispose();
-        world.dispose();
-        renderer.dispose();
-    }
-
-    /**
-     * https://bitbucket.org/dermetfan/somelibgdxtests/src/28080ff7dd7bd6d000ec8ba7f9514e177bb03e17/SomeLibgdxTests/src/net/dermetfan/someLibgdxTests/screens/TabsLeftTest.java?at=default
-     * 
-     * @author dermetfan
-     * 
-     */
-    public static class Board extends Group {
-
-        public void pack() {
-            float width = Float.NEGATIVE_INFINITY, height = Float.NEGATIVE_INFINITY, childXandWidth, childYandHeight;
-            for (Actor child : getChildren() ) {
-                if ( ( childXandWidth = child.getX() +child.getWidth() ) >width )
-                    width = childXandWidth;
-
-                if ( ( childYandHeight = child.getY() +child.getHeight() ) >height )
-                    height = childYandHeight;
-            }
-
-            setSize( width, height );
-        }
-
-    }
-
-    private void makeStage() {
-        stage = new Stage();
-
-        final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
-        final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
-        final TextButton backBut = new TextButton( "Back", skin, "demon" );
-        final TextButton resumeBut = new TextButton( "Resume play", skin );
-        final TextButton meniuBut = new TextButton( "Main menu", skin );
-
-        final Board optFill = new Board();
-        final Table hud = new Table();
-        final ScrollPane optIG = new ScrollPane( optFill, skin );
-        final Table pauseIG = new Table( skin );
-
-
-        pauseIG.setVisible( false );
-        pauseIG.addAction( Actions.alpha( 0 ) );
-        pauseIG.setBackground( "pix30" );
-        pauseIG.setFillParent( true );
-        // pauseIG.debug();
-        pauseIG.add( "PAUSE", "big-green" ).padBottom( stage.getHeight() *0.1f );
-        pauseIG.row();
-        pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
-        pauseIG.row();
-        pauseIG.add( meniuBut );
-
-
-        optIG.addAction( Actions.alpha( 0 ) );
-        optIG.setWidget( optFill );
-        optIG.setVisible( false );
-        optIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
-        backBut.setPosition( 50, 50 );
-        optFill.addActor( backBut );
-
-        // hud.debug();
-        hud.setFillParent( true );
-        hud.add( optBut ).expand().top().left();
-        hud.add( pauseBut ).expand().top().right();
-        hud.row();
-        hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
-
-        ChangeListener hudButons = new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( optBut.isPressed() ) {
-                    hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    optIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    toUpdate = 1;
-                }
-                if ( pauseBut.isPressed() ) {
-                    hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    pauseIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    toUpdate = 1;
-                }
-            }
-        };
-
-        ChangeListener optButons = new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( backBut.isPressed() ) {
-                    optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    toUpdate = 0;
-                }
-            }
-        };
-
-        ChangeListener pauseButons = new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( resumeBut.isPressed() ) {
-                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    toUpdate = 0;
-                }
-                if ( meniuBut.isPressed() ) {
-                    hud.setVisible( true );
-                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ), Actions.run( new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
-                        }
-                    } ) ) );
-                }
-            }
-        };
-
-        resetAfterOptions();
-
-        meniuBut.addListener( pauseButons );
-        resumeBut.addListener( pauseButons );
-        pauseBut.addListener( hudButons );
-        optBut.addListener( hudButons );
-        backBut.addListener( optButons );
-        optFill.pack();
-        stage.addActor( hud );
-        stage.addActor( optIG );
-        stage.addActor( pauseIG );
-    }
-
-
-    public void resetAfterOptions() {
-        // mover.getListeners().;
-
-        mover.addListener( new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                movex = Mod.invertPadX *mover.getKnobPercentX() *Mod.modCamSpeedX;
-                movey = Mod.invertPadY *mover.getKnobPercentY() *Mod.modCamSpeedY;
-            }
-        } );
-
-    }
-
-
-    @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
     }
@@ -463,6 +284,12 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
+        if ( Math.abs( velocityX ) >5 ) {
+            if ( velocityX >0 )
+                world.nextCamera();
+            if ( velocityX <0 )
+                world.prevCamera();
+        }
         return false;
     }
 
@@ -484,5 +311,36 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
+    }
+
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+
+    @Override
+    public void pause() {
+    }
+
+
+    @Override
+    public void resume() {
+    }
+
+
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor( null );
+    }
+
+
+    @Override
+    public void dispose() {
+        modelBatch.dispose();
+        stage.dispose();
+        world.dispose();
+        skin.dispose();
+        renderer.dispose();
     }
 }

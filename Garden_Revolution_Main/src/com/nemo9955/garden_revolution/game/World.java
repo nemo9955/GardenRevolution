@@ -23,12 +23,12 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance> nori  = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>  mediu = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance> nori      = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>  mediu     = new Array<ModelInstance>( false, 10 );
 
-    public Array<Entitate>       foe   = new Array<Entitate>( false, 10 );
-    public Array<Entitate>       ally  = new Array<Entitate>( false, 10 );
-    public Array<Entitate>       shot  = new Array<Entitate>( false, 10 );
+    public Array<Entitate>       foe       = new Array<Entitate>( false, 10 );
+    public Array<Entitate>       ally      = new Array<Entitate>( false, 10 );
+    public Array<Entitate>       shot      = new Array<Entitate>( false, 10 );
 
     public ModelInstance         point1;
     public ModelInstance         point2;
@@ -37,6 +37,7 @@ public class World implements Disposable {
 
     private PerspectiveCamera    cam;
     private Vector3[]            camPoz;
+    public int                   curentCam = 0;
 
     public World(Model scena, PerspectiveCamera cam) {
         this.cam = cam;
@@ -201,50 +202,70 @@ public class World implements Disposable {
         cp = new Array<Vector3[]>();
         for (int k = 0 ; k <numPaths ; k ++ ) {
             cp.insert( k, new Vector3[perPath[k] +2] );
-            System.out.println( ( k +1 ) +" " + ( perPath[k] +2 ) );
+            // System.out.println( ( k +1 ) +" " + ( perPath[k] +2 ) );
         }
-        System.out.println();
+        // System.out.println();
 
-        for (int k = 0 ; k <numPaths ; k ++ )
-            // System.out.println( ( k +1 ) +"  " +cp.get( k ).length );
+        // for (int k = 0 ; k <numPaths ; k ++ )
+        // System.out.println( ( k +1 ) +"  " +cp.get( k ).length );
 
-            for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
-                String id = scena.nodes.get( i ).id;
+        for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
+            String id = scena.nodes.get( i ).id;
 
-                if ( id.startsWith( "cam" ) ) {
-                    sect = id.split( "_" );
-                    camPoz[Integer.parseInt( sect[1] ) -1] = scena.nodes.get( i ).translation;
-                }
-                else if ( id.startsWith( "path" ) ) {
-                    sect = id.split( "_" );
-                    // System.out.println( id +" " +Integer.parseInt( sect[1] ) +" " +Integer.parseInt( sect[2] ) );
-                    cp.get( Integer.parseInt( sect[1] ) -1 )[Integer.parseInt( sect[2] )] = scena.nodes.get( i ).translation;
-                }
-
+            if ( id.startsWith( "cam" ) ) {
+                sect = id.split( "_" );
+                camPoz[Integer.parseInt( sect[1] ) -1] = scena.nodes.get( i ).translation;
             }
+            else if ( id.startsWith( "path" ) ) {
+                sect = id.split( "_" );
+                // System.out.println( id +" " +Integer.parseInt( sect[1] ) +" " +Integer.parseInt( sect[2] ) );
+                cp.get( Integer.parseInt( sect[1] ) -1 )[Integer.parseInt( sect[2] )] = scena.nodes.get( i ).translation;
+            }
+
+        }
 
         for (int k = 0 ; k <numPaths ; k ++ ) {
             cp.get( k )[0] = cp.get( k )[1];
             cp.get( k )[perPath[k] +1] = cp.get( k )[perPath[k]];
         }
 
-        for (int k = 0 ; k <numPaths ; k ++ )
-            for (int j = 0 ; j <perPath[k] +2 ; j ++ )
-                System.out.println( k +" " +j +" " +cp.get( k )[j] );
-        System.out.println();
+        // for (int k = 0 ; k <numPaths ; k ++ )
+        // for (int j = 0 ; j <perPath[k] +2 ; j ++ )
+        // System.out.println( k +" " +j +" " +cp.get( k )[j] );
+        // System.out.println();
 
         for (int k = 0 ; k <numPaths ; k ++ ) {
             paths.add( new CatmullRomSpline<Vector3>( cp.get( k ), false ) );
         }
-        System.out.println();
+        // System.out.println();
 
         for (int k = 0 ; k <numPaths ; k ++ )
             for (int j = 0 ; j < ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints.length ; j ++ )
-                System.out.println( ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints[j] );
+                // System.out.println( ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints[j] );
+                setCamera( 0 );
 
-        cam.position.set( camPoz[2] );
+    }
+
+    public void setCamera(int nr) {
+        if ( nr >=0 &&nr <camPoz.length ) {
+            cam.position.set( camPoz[nr] );
+            curentCam = nr;
+        }
         cam.update();
+    }
 
+    public void nextCamera() {
+        curentCam ++;
+        if ( curentCam ==camPoz.length )
+            curentCam = 0;
+        setCamera( curentCam );
+    }
+
+    public void prevCamera() {
+        curentCam --;
+        if ( curentCam ==0 )
+            curentCam = camPoz.length;
+        setCamera( curentCam );
     }
 
     public Path<Vector3> closestPath(final Vector3 location) {// FIXME

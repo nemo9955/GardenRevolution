@@ -77,24 +77,38 @@ element1
   orig: 60, 60
   offset: 0, 0
   index: -1
+arrows-left-1
+  rotate: false
+  xy: 165, 86
+  size: 20, 70
+  orig: 20, 70
+  offset: 0, 0
+  index: -1
 element2
   rotate: false
-  xy: 165, 76
+  xy: 187, 76
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+arrows-right-1
+  rotate: false
+  xy: 165, 14
+  size: 20, 70
+  orig: 20, 70
+  offset: 0, 0
+  index: -1
 IGoptiuni
   rotate: false
-  xy: 227, 96
+  xy: 187, 34
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
   index: -1
 IGpause
   rotate: false
-  xy: 227, 54
+  xy: 228, 34
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
@@ -115,21 +129,21 @@ pix100
   index: -1
 pix30
   rotate: false
-  xy: 165, 155
+  xy: 187, 155
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix50
   rotate: false
-  xy: 165, 73
+  xy: 187, 31
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix80
   rotate: false
-  xy: 131, 31
+  xy: 267, 259
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
