@@ -288,12 +288,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
-        if ( Math.abs( velocityX ) >5 ) {
-            if ( velocityX >0 )
-                world.nextCamera();
-            if ( velocityX <0 )
-                world.prevCamera();
-        }
         return false;
     }
 

@@ -248,35 +248,35 @@ public class World implements Disposable {
 
     }
 
-    public void setCamera(int nr) {
-        if ( nr >=0 &&nr <camPoz.length ) {
+    public void setCamera(int nr) {// FIXME point at
 
-            Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-            float distance = -ray.origin.y /ray.direction.y;
-            Vector3 look = ray.getEndPoint( new Vector3(), distance );
+        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        float distance = -ray.origin.y /ray.direction.y;
+        Vector3 look = ray.getEndPoint( new Vector3(), distance );
+        Vector3 tr = cam.direction.cpy();
 
-            cam.position.set( camPoz[nr] );
+        cam.position.set( camPoz[nr] );
 
-            // cam.lookAt( target )
+        cam.lookAt( look );
 
-            curentCam = nr;
+        cam.direction.y = tr.y;
 
+        curentCam = nr;
 
-        }
         cam.update();
     }
 
     public void nextCamera() {
         curentCam ++;
-        if ( curentCam ==camPoz.length )
+        if ( curentCam >=camPoz.length )
             curentCam = 0;
         setCamera( curentCam );
     }
 
     public void prevCamera() {
         curentCam --;
-        if ( curentCam ==0 )
-            curentCam = camPoz.length;
+        if ( curentCam <0 )
+            curentCam = camPoz.length -1;
         setCamera( curentCam );
     }
 
@@ -291,14 +291,6 @@ public class World implements Disposable {
             }
         }
         return closest;
-    }
-
-    @SuppressWarnings("unused")
-    private static float xzDistance2(Vector3 loc1, Vector3 loc2) {
-        float a = loc1.x -loc2.x;
-        float b = loc1.z -loc2.z;
-
-        return ( a *a +b *b );
     }
 
     public Entitate addFoe(Entitate ent) {
