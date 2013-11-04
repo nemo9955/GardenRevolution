@@ -80,7 +80,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         shader = new CustShader();
         shader.init();
 
-        gestures.setLongPressSeconds( 1f );
+        gestures.setLongPressSeconds( 0.5f );
 
         renderer = new ImmediateModeRenderer20( true, true, 0 );
 

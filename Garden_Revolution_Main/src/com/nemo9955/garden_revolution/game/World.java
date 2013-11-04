@@ -32,9 +32,6 @@ public class World implements Disposable {
     public Array<Entitate>       ally      = new Array<Entitate>( false, 10 );
     public Array<Entitate>       shot      = new Array<Entitate>( false, 10 );
 
-    public ModelInstance         point1;
-    public ModelInstance         point2;
-
     public Array<Path<Vector3>>  paths;
 
     private PerspectiveCamera    cam;
@@ -43,9 +40,6 @@ public class World implements Disposable {
 
     public World(Model scena, PerspectiveCamera cam) {
         this.cam = cam;
-
-        point1 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
-        point2 = new ModelInstance( new ModelBuilder().createBox( 1, 4, 1, new Material( ColorAttribute.createDiffuse( Color.BLUE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates ), tmp );
 
         populateWorld( scena );
         makeNori();
@@ -89,8 +83,6 @@ public class World implements Disposable {
             e.render( modelBatch, light );
         for (Entitate e : shot )
             e.render( modelBatch );
-        modelBatch.render( point1 );
-        modelBatch.render( point2 );
     }
 
     private Vector3 tmp = new Vector3();
