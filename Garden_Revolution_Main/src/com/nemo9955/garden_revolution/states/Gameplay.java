@@ -25,10 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.Shot;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.entitati.Knight;
-import com.nemo9955.garden_revolution.game.entitati.Rosie;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
@@ -265,7 +262,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public boolean tap(float x, float y, int count, int button) {
 
         Ray ray = cam.getPickRay( x, y );
-        world.addShot( new Shot( ray.origin, ray.direction ) );
+        world.addShot( ray.origin, ray.direction );
 
         return false;
     }
@@ -278,9 +275,9 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = ray.getEndPoint( new Vector3(), distance );
             if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.addFoe( new Knight( world.closestPath( poz ), poz.x, poz.y, poz.z ) );
+                world.addAlly( poz.x, poz.y, poz.z );
             else
-                world.addFoe( new Rosie( world.closestPath( poz ), poz.x, poz.y, poz.z ) );
+                world.addFoe( poz.x, poz.y, poz.z );
             gestures.invalidateTapSquare();
         }
         return false;

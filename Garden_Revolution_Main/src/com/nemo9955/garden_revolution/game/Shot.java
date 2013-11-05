@@ -11,14 +11,25 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Shot extends Entitate {
 
-    private final Vector3 direction;
+    private Vector3 direction;
 
-    private float         life;
+    private float   life;
 
-    public Shot(Vector3 position, Vector3 direction) {
-        super( position );
+    public Shot() {
+        super();
+    }
+
+    public Shot create(Vector3 position, Vector3 direction) {
+        super.init( position );
         this.direction = direction.cpy();
         life = 3f;
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        direction = null;
     }
 
     @Override

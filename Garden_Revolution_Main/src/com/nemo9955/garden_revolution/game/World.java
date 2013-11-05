@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
@@ -33,9 +34,9 @@ public class World implements Disposable {
     private Array<ModelInstance> nori      = new Array<ModelInstance>( false, 10 );
     public Array<ModelInstance>  mediu     = new Array<ModelInstance>( false, 10 );
 
-    public Array<Entitate>       foe       = new Array<Entitate>( false, 10 );
-    public Array<Entitate>       ally      = new Array<Entitate>( false, 10 );
-    public Array<Entitate>       shot      = new Array<Entitate>( false, 10 );
+    public Array<Inamic>         foe       = new Array<Inamic>( false, 10 );
+    public Array<Aliat>          ally      = new Array<Aliat>( false, 10 );
+    public Array<Shot>           shot      = new Array<Shot>( false, 10 );
 
     public Array<Path<Vector3>>  paths;
 
@@ -45,24 +46,23 @@ public class World implements Disposable {
 
     public World(Model scena, PerspectiveCamera cam) {
         this.cam = cam;
-
-        populateWorld( scena );
         makeNori();
+        populateWorld( scena );
     }
 
     public void update(float delta) {
 
-        for (Entitate fo : foe ) {
+        for (Inamic fo : foe ) {
             fo.update( delta );
             if ( fo.dead )
                 foe.removeValue( fo, false );
         }
-        for (Entitate al : ally ) {
+        for (Aliat al : ally ) {
             al.update( delta );
             if ( al.dead )
                 ally.removeValue( al, false );
         }
-        for (Entitate sh : shot ) {
+        for (Shot sh : shot ) {
             sh.update( delta );
             if ( sh.dead )
                 shot.removeValue( sh, false );
@@ -216,13 +216,8 @@ public class World implements Disposable {
             Vector3 cps[] = new Vector3[cp.get( k ).size +2];
             for (int j = 0 ; j <cp.get( k ).size ; j ++ )
                 cps[j +1] = cp.get( k ).get( j ).object;
-
             cps[0] = cps[1];
             cps[cps.length -1] = cps[cps.length -2];
-
-            System.out.println();
-            for (Vector3 pct : cps )
-                System.out.println( pct );
 
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
@@ -278,24 +273,51 @@ public class World implements Disposable {
         return closest;
     }
 
-    public Entitate addFoe(Entitate ent) {
-        foe.add( ent );
-        return ent;
+    public Inamic addFoe(float x, float y, float z) {
+        Inamic inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), x, y, z );
+        foe.add( inamicTemp );
+        return inamicTemp;
     }
 
-    public Entitate addAlly(Entitate ent) {
-        ally.add( ent );
-        return ent;
+    public Aliat addAlly(float x, float y, float z) {
+        Aliat aliatTemp = aliatPool.obtain().create( x, y, z );
+        ally.add( aliatTemp );
+        return aliatTemp;
     }
 
-    public Entitate addShot(Entitate ent) {
-        shot.add( ent );
-        return ent;
+    public Shot addShot(Vector3 position, Vector3 direction) {
+        Shot shotTemp = shotPool.obtain().create( position, direction );
+        shot.add( shotTemp );
+        return shotTemp;
     }
 
     private void addMediu(ModelInstance med) {
         mediu.add( med );
     }
+
+    private Pool<Inamic> inamicPool = new Pool<Inamic>() {
+
+                                        @Override
+                                        protected Inamic newObject() {
+                                            return new Inamic();
+                                        }
+                                    };
+
+    private Pool<Aliat>  aliatPool  = new Pool<Aliat>() {
+
+                                        @Override
+                                        protected Aliat newObject() {
+                                            return new Aliat();
+                                        }
+                                    };
+
+    private Pool<Shot>   shotPool   = new Pool<Shot>() {
+
+                                        @Override
+                                        protected Shot newObject() {
+                                            return new Shot();
+                                        }
+                                    };
 
     @Override
     public void dispose() {

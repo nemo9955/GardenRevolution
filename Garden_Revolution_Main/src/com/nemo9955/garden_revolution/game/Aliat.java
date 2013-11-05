@@ -1,33 +1,38 @@
-package com.nemo9955.garden_revolution.game.entitati;
+package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.Vietate;
 import com.nemo9955.garden_revolution.utility.Assets;
 
 
-public class Knight extends Vietate {
+public class Aliat extends Vietate {
 
+    public Vector3 duty;
 
-    public Knight(Path<Vector3> drum, float x, float y, float z) {
-        super( drum, x, y, z );
-        speed = 10;
-        animation.setAnimation( "Sneak", -1, null );
+    public Aliat() {
+        super();
+        duty = new Vector3();
+    }
+
+    public Aliat create(float x, float y, float z) {
+        super.init( x, y, z );
+        duty.set( x, y, z );
+        return this;
+    }
+
+    @Override
+    protected void setBox(float x, float y, float z) {
+        box.set( new Vector3( x -2, y -6, z -2 ), new Vector3( x +2, y +2, z +2 ) );
+
         model.transform.scl( 0.5f );
     }
 
     @Override
     protected Model getModel() {
         return Garden_Revolution.getModel( Assets.KNIGHT );
-    }
-
-    @Override
-    protected void setBox(float x, float y, float z) {
-        box.set( new Vector3( x -2, y -6, z -2 ), new Vector3( x +2, y +2, z +2 ) );
     }
 
     @Override
@@ -65,5 +70,6 @@ public class Knight extends Vietate {
 
 
     }
+
 
 }
