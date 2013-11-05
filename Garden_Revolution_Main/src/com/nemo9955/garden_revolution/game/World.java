@@ -1,5 +1,7 @@
 package com.nemo9955.garden_revolution.game;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -21,6 +23,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
+import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
 public class World implements Disposable {
@@ -78,7 +83,7 @@ public class World implements Disposable {
             modelBatch.render( e, light );
 
         for (Entitate e : foe )
-            e.render( modelBatch );
+            e.render( modelBatch, light );
         for (Entitate e : ally )
             e.render( modelBatch, light );
         for (Entitate e : shot )
@@ -160,11 +165,26 @@ public class World implements Disposable {
 
     private void populateWorld(Model scena) {
         int cams = 0;
-        int perPath[] = new int[5];
         int numPaths = 0;
-        Array<Vector3[]> cp;
-
+        Array<Array<IndexedObject<Vector3>>> cp = null;
         String[] sect;
+
+        Element map;
+        try {
+            map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
+            cams = map.getInt( "turnuri" );
+            numPaths = map.getInt( "drumuri" );
+
+            camPoz = new Vector3[cams];
+            paths = new Array<Path<Vector3>>( numPaths );
+            cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
+
+            for (int k = 0 ; k <numPaths ; k ++ )
+                cp.add( new Array<IndexedObject<Vector3>>( 1 ) );
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
@@ -176,71 +196,44 @@ public class World implements Disposable {
             node.rotation.idt();
             instance.calculateTransforms();
 
-            // System.out.println( id );
-
-            if ( id.startsWith( "cam" ) )
-                cams ++;
-            else if ( id.startsWith( "path" ) ) {
-                sect = id.split( "_" );
-                perPath[Integer.parseInt( sect[1] ) -1] ++;
-                if ( Integer.parseInt( sect[1] ) >numPaths )
-                    numPaths = Integer.parseInt( sect[1] );
-            }
-            else
-                addMediu( instance );
-
-        }
-
-        paths = new Array<Path<Vector3>>();
-        camPoz = new Vector3[cams];
-        cp = new Array<Vector3[]>();
-        for (int k = 0 ; k <numPaths ; k ++ ) {
-            cp.insert( k, new Vector3[perPath[k] +2] );
-            // System.out.println( ( k +1 ) +" " + ( perPath[k] +2 ) );
-        }
-        // System.out.println();
-
-        // for (int k = 0 ; k <numPaths ; k ++ )
-        // System.out.println( ( k +1 ) +"  " +cp.get( k ).length );
-
-        for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
-            String id = scena.nodes.get( i ).id;
-
             if ( id.startsWith( "cam" ) ) {
                 sect = id.split( "_" );
                 camPoz[Integer.parseInt( sect[1] ) -1] = scena.nodes.get( i ).translation;
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
-                // System.out.println( id +" " +Integer.parseInt( sect[1] ) +" " +Integer.parseInt( sect[2] ) );
-                cp.get( Integer.parseInt( sect[1] ) -1 )[Integer.parseInt( sect[2] )] = scena.nodes.get( i ).translation;
+                int pat = Integer.parseInt( sect[1] ) -1;
+                int pct = Integer.parseInt( sect[2] );
+                cp.get( pat ).add( new IndexedObject<Vector3>( scena.nodes.get( i ).translation, pct ) );
             }
+            else
+                addMediu( instance );
 
         }
 
         for (int k = 0 ; k <numPaths ; k ++ ) {
-            cp.get( k )[0] = cp.get( k )[1];
-            cp.get( k )[perPath[k] +1] = cp.get( k )[perPath[k]];
+
+            Vector3 cps[] = new Vector3[cp.get( k ).size +2];
+            for (int j = 0 ; j <cp.get( k ).size ; j ++ )
+                cps[j +1] = cp.get( k ).get( j ).object;
+
+            cps[0] = cps[1];
+            cps[cps.length -1] = cps[cps.length -2];
+
+            System.out.println();
+            for (Vector3 pct : cps )
+                System.out.println( pct );
+
+            paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        // for (int k = 0 ; k <numPaths ; k ++ )
-        // for (int j = 0 ; j <perPath[k] +2 ; j ++ )
-        // System.out.println( k +" " +j +" " +cp.get( k )[j] );
-        // System.out.println();
-
-        for (int k = 0 ; k <numPaths ; k ++ ) {
-            paths.add( new CatmullRomSpline<Vector3>( cp.get( k ), false ) );
-        }
-        // System.out.println();
-
-        for (int k = 0 ; k <numPaths ; k ++ )
-            for (int j = 0 ; j < ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints.length ; j ++ )
-                // System.out.println( ( (CatmullRomSpline<Vector3>) paths.get( k ) ).controlPoints[j] );
-                setCamera( 0 );
+        setCamera( 2 );
 
     }
 
     public void setCamera(int nr) {// FIXME point at
+
+        nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
 
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         float distance = -ray.origin.y /ray.direction.y;

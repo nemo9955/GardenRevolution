@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Harta map="scena.g3db" turnuri="3"  drumuri="2" waves="5" >
+   
+    <wave nr="1"  delay="5" interval="0.5" >
+        <path nr="1" >
+            <rosii>5</rosii>
+            <knight>2</knight>
+            <rosii>4</rosii>
+        </path>
+        
+        <path nr="2">
+            <knight>1</knight>
+            <rosii>2</rosii>
+            <knight>1</knight>
+            <rosii>3</rosii>
+        </path>
+    </wave>
+
+</Harta>

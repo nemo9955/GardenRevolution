@@ -18,7 +18,7 @@ public abstract class Vietate extends Entitate {
     public static final float  STEP  = 1f /50f;
     public Vector3             flag;
     public Vector3             dir;
-    protected Vector3          offset;
+    protected final Vector3    offset;
 
     public Vietate(Path<Vector3> drum, float x, float y, float z) {
         super( x, y, z );
