@@ -1,7 +1,7 @@
 package com.nemo9955.garden_revolution.utility;
 
 
-public class IndexedObject<Obj> implements Comparable<Integer> {
+public class IndexedObject<Obj> implements Comparable<IndexedObject<?>> {
 
     public Obj object;
     public int index;
@@ -12,10 +12,11 @@ public class IndexedObject<Obj> implements Comparable<Integer> {
     }
 
     @Override
-    public int compareTo(Integer to) {
-        if ( index >to )
+    public int compareTo(IndexedObject<?> o) {
+
+        if ( index >o.index )
             return 1;
-        else if ( index ==to )
+        else if ( index ==o.index )
             return 0;
         else
             return -1;

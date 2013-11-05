@@ -38,6 +38,8 @@ public class Inamic extends Vietate {
 
         lookAt( drum.valueAt( flag, percent +STEP ) );
         flag.add( offset );
+
+
         return this;
     }
 
@@ -61,8 +63,8 @@ public class Inamic extends Vietate {
     }
 
     protected void movement(float delta) {
-        dir.set( flag.sub( poz ) ).nor().scl( speed *delta );
-        // dir.set( flag.x -poz.x, flag.y -poz.y, flag.z -poz.z ).nor().scl( speed *delta );
+        super.movement( delta );
+        dir.set( flag ).sub( poz ).nor().scl( speed *delta );
         move( dir );
         if ( flag.epsilonEquals( poz, 0.5f ) ) {
             percent += STEP;

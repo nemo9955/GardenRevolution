@@ -24,6 +24,7 @@ public abstract class Entitate implements Disposable, Poolable {
     public Entitate() {
         poz = new Vector3();
         box = new CustomBox();
+
     }
 
     public void init(Vector3 position) {

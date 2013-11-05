@@ -38,16 +38,8 @@ public class Aliat extends Vietate {
     @Override
     public void update(float delta) {
         super.update( delta );
-
-        // if ( Gdx.input.isKeyPressed( Keys.F5 ) ||Gdx.input.isTouched( 0 ) )
-        // animation.animate( "Walk", -1, null, 0.5f );
-        // if ( Gdx.input.isKeyPressed( Keys.F6 ) ||Gdx.input.isTouched( 1 ) )
-        // animation.animate( "Sneak", -1, null, 1 );
-        // if ( Gdx.input.isKeyPressed( Keys.F7 ) ||Gdx.input.isTouched( 2 ) )
-        // animation.animate( "Damaged", -1, null, 0.5f );
-        // if ( Gdx.input.isKeyPressed( Keys.F8 ) ||Gdx.input.isTouched( 3 ) )
-        // animation.animate( "Idle", -1, null, 0.5f );
-
+        
+        
         final float rot = 65f;
         final float spd = 7f;
         if ( Gdx.input.isKeyPressed( Keys.UP ) ) {

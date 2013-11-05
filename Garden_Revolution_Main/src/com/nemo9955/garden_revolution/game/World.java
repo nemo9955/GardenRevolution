@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
@@ -54,18 +55,24 @@ public class World implements Disposable {
 
         for (Inamic fo : foe ) {
             fo.update( delta );
-            if ( fo.dead )
+            if ( fo.dead ) {
+                inamicPool.free( fo );
                 foe.removeValue( fo, false );
+            }
         }
         for (Aliat al : ally ) {
             al.update( delta );
-            if ( al.dead )
+            if ( al.dead ) {
+                aliatPool.free( al );
                 ally.removeValue( al, false );
+            }
         }
         for (Shot sh : shot ) {
             sh.update( delta );
-            if ( sh.dead )
+            if ( sh.dead ) {
+                shotPool.free( sh );
                 shot.removeValue( sh, false );
+            }
             for (Entitate fo : foe ) {
                 if ( fo.box.intersects( sh.box ) ) {
                     fo.damage( sh );
@@ -140,7 +147,6 @@ public class World implements Disposable {
             val += 1f /100f;
         }
 
-
     }
 
 
@@ -180,7 +186,7 @@ public class World implements Disposable {
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
             for (int k = 0 ; k <numPaths ; k ++ )
-                cp.add( new Array<IndexedObject<Vector3>>( 1 ) );
+                cp.add( new Array<IndexedObject<Vector3>>( false, 1, IndexedObject.class ) );
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -208,8 +214,10 @@ public class World implements Disposable {
             }
             else
                 addMediu( instance );
-
         }
+
+        for (int k = 0 ; k <numPaths ; k ++ )
+            Sort.instance().sort( cp.get( k ) );
 
         for (int k = 0 ; k <numPaths ; k ++ ) {
 

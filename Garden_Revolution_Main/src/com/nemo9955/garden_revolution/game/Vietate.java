@@ -32,6 +32,7 @@ public abstract class Vietate extends Entitate {
     @Override
     public void update(float delta) {
         super.update( delta );
+        animation.update( delta );
     }
 
 
