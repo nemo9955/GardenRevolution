@@ -2,15 +2,11 @@ package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
+import com.nemo9955.garden_revolution.game.entitati.Inamici;
 
 
 public class Inamic extends Vietate {
@@ -20,7 +16,8 @@ public class Inamic extends Vietate {
     public float              percent;
     public static final float STEP = 1f /50f;
     public Vector3            flag;
-    protected Vector3         offset;
+    private Vector3           offset;
+    private Inamici           type;
 
     public Inamic() {
         super();
@@ -28,7 +25,9 @@ public class Inamic extends Vietate {
         flag = new Vector3();
     }
 
-    public Inamic create(Path<Vector3> drum, float x, float y, float z) {
+    public Inamic create(Path<Vector3> drum, Inamici type, float x, float y, float z) {
+        this.type = type;
+
         super.init( x, y, z );
 
         offset.set( MathUtils.random( -20, 20 ), 0, MathUtils.random( -20, 20 ) );
@@ -51,7 +50,7 @@ public class Inamic extends Vietate {
 
     @Override
     protected Model getModel() {
-        return new ModelBuilder().createBox( 0.5f, 3f, 0.5f, new Material( ColorAttribute.createDiffuse( Color.PINK ) ), Usage.Position |Usage.Normal );
+        return type.getModel();
     }
 
     @Override

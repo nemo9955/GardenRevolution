@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
@@ -49,6 +50,7 @@ public class World implements Disposable {
         this.cam = cam;
         makeNori();
         populateWorld( scena );
+        addWaves();
     }
 
     public void update(float delta) {
@@ -234,6 +236,18 @@ public class World implements Disposable {
 
     }
 
+    private void addWaves() {
+
+        Element map;
+        try {
+            map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void setCamera(int nr) {// FIXME point at
 
         nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
@@ -281,8 +295,8 @@ public class World implements Disposable {
         return closest;
     }
 
-    public Inamic addFoe(float x, float y, float z) {
-        Inamic inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), x, y, z );
+    public Inamic addFoe(Inamici type, float x, float y, float z) {
+        Inamic inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
         foe.add( inamicTemp );
         return inamicTemp;
     }

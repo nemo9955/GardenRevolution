@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
@@ -276,8 +277,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             Vector3 poz = ray.getEndPoint( new Vector3(), distance );
             if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 world.addAlly( poz.x, poz.y, poz.z );
+            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
+                world.addFoe( Inamici.ROSIE, poz.x, poz.y, poz.z );
             else
-                world.addFoe( poz.x, poz.y, poz.z );
+                world.addFoe( Inamici.MORCOV, poz.x, poz.y, poz.z );
             gestures.invalidateTapSquare();
         }
         return false;

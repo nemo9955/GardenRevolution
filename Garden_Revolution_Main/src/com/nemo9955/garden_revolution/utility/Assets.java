@@ -16,6 +16,8 @@ public enum Assets {
 
     SCENA(LOC.MODEL, "scena.g3db"), //
     KNIGHT(LOC.MODEL, "knight.g3db"), //
+    ROSIE(LOC.MODEL, "rosie.g3db"), //
+    MORCOV(LOC.MODEL, "morcov.g3db"), //
 
     ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //
     SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class), //
