@@ -2,9 +2,9 @@
 
 <Harta map="scena.g3db" turnuri="3"  drumuri="2" >
    
-    <wave index="1" delay="3" interval="0.5" >
+    <wave index="1" delay="4" interval="2" >
         <path nr="1" >
-            <rosie amount="2"/>
+            <morcov amount="1"/>
         </path>
         
         <path nr="2">
@@ -12,14 +12,13 @@
         </path>
     </wave>
 
-    <wave index="2" delay="4" interval="0.1" >
+    <wave index="2" delay="5" interval="1" >
         <path nr="1" >
-            <rosie amount="2"/>
+            <morcov amount="1"/>
         </path>
         
         <path nr="2">
-            <morcov amount="2"/>
-            <rosie amount="3"/>
+            <rosie amount="1"/>
         </path>
     </wave>
     

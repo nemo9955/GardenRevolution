@@ -98,6 +98,8 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         Gdx.gl.glViewport( 0, 0, scrw, scrh );
         Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
+    //    Gdx.gl20.glVertexPointer(3, GL20.GL_FLOAT, 0, GL20.GL_VERTEX_ATTRIB_ARRAY_ENABLED);FIXME Cannot use offsets when Array Buffer Object is disabled
+
         tweeger.update( delta );
 
         if ( toUpdate ==0 )

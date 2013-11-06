@@ -55,7 +55,8 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-        waves.update( delta );
+        if ( waves.finishedWaves() )
+            waves.update( delta );
 
         for (Inamic fo : foe ) {
             fo.update( delta );
@@ -255,21 +256,23 @@ public class World implements Disposable {
         for (int i = 0 ; i <tmpWaves.size ; i ++ )
             sortedWaves.add( new IndexedObject<Element>( tmpWaves.get( i ), tmpWaves.get( i ).getInt( "index" ) -1 ) );
         sortedWaves.sort();
-
+        tmpWaves.clear();
         for (IndexedObject<Element> wav : sortedWaves ) {
             waves.addWave( wav.object.getFloat( "delay", 5 ), wav.object.getFloat( "interval", 0.5f ) );
             Array<Element> tmpPaths = wav.object.getChildrenByName( "path" );
-            
+
             for (Element pat : tmpPaths ) {
-                
+
                 int numar = pat.getInt( "nr" );
                 for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
-                    
+
                     Element monstru = pat.getChild( i );
-                    waves.populate( numar, Inamici.valueOf( monstru.getText().toUpperCase() ), monstru.getInt( "amont" ) );
+                    System.out.print( monstru.getName().toUpperCase() +"  " );
+                    waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount" ) );
                 }
             }
         }
+        sortedWaves.clear();
     }
 
     public void setCamera(int nr) {// FIXME point at

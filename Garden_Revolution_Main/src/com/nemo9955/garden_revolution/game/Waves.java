@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
@@ -24,19 +25,19 @@ public class Waves {
         if ( wvs.get( next ).delay <=0 ) {
             if ( wvs.get( next ).finishedCooldown( delta ) ) {
 
-
                 Array<Monstru> add = getMonsters();
                 for (Monstru mo : add ) {
                     Vector3 location = new Vector3( getPath( mo ).controlPoints[0] );
-                    world.addFoe( mo.type, getPath( mo ), location.x, location.y, location.z );
+                    world.addFoe( mo.type, getPath( mo ), location.x +MathUtils.random( 1 ) -0.5f, location.y, location.z +MathUtils.random( 1 ) -0.5f );
                 }
             }
 
             if ( !wvs.get( next ).hasMonsters() )
                 next ++;
         }
-        else
+        else {
             wvs.get( next ).delay -= delta;
+        }
     }
 
     private CatmullRomSpline<Vector3> getPath(Monstru mo) {
@@ -51,15 +52,17 @@ public class Waves {
     }
 
     public void addWave(float delay, float interval) {
+        System.out.println( "aded wave " +wvs.size );
         wvs.add( new Wave( delay, interval ) );
     }
 
     public void populate(int path, Inamici type, int amont) {
+        System.out.println( "populated wave " +path +" " +type.getName() +" " +amont );
         wvs.peek().populate( path, type, amont );
     }
 
     public boolean finishedWaves() {
-        return next <wvs.size -1;
+        return next <wvs.size;
     }
 
 
@@ -75,8 +78,9 @@ public class Waves {
 
         public Wave(float delay, float interval) {
             monstrii = new Array<Array<Monstru>>( world.paths.size );
-            for (int i = 0 ; i <=monstrii.size ; i ++ )
+            for (int i = 0 ; i <world.paths.size ; i ++ ) {
                 monstrii.add( new Array<Monstru>( 1 ) );
+            }
             this.delay = delay;
             this.INTERVAL = interval;
             timer = interval;
@@ -119,7 +123,6 @@ public class Waves {
         public int     path;
 
         private Monstru(Inamici type, int path) {
-            super();
             this.type = type;
             this.path = path;
         }
