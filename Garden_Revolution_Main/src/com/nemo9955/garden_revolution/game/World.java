@@ -18,13 +18,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
@@ -33,18 +31,20 @@ import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 public class World implements Disposable {
 
-    private Array<ModelInstance> nori      = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>  mediu     = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>            nori      = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>             mediu     = new Array<ModelInstance>( false, 10 );
 
-    public Array<Inamic>         foe       = new Array<Inamic>( false, 10 );
-    public Array<Aliat>          ally      = new Array<Aliat>( false, 10 );
-    public Array<Shot>           shot      = new Array<Shot>( false, 10 );
+    public Array<Inamic>                    foe       = new Array<Inamic>( false, 10 );
+    public Array<Aliat>                     ally      = new Array<Aliat>( false, 10 );
+    public Array<Shot>                      shot      = new Array<Shot>( false, 10 );
 
-    public Array<Path<Vector3>>  paths;
+    public Array<CatmullRomSpline<Vector3>> paths;
 
-    private PerspectiveCamera    cam;
-    private Vector3[]            camPoz;
-    public int                   curentCam = 0;
+    private PerspectiveCamera               cam;
+    private Vector3[]                       camPoz;
+    public int                              curentCam = 0;
+
+    public Waves                            waves;
 
     public World(Model scena, PerspectiveCamera cam) {
         this.cam = cam;
@@ -54,6 +54,8 @@ public class World implements Disposable {
     }
 
     public void update(float delta) {
+
+        waves.update( delta );
 
         for (Inamic fo : foe ) {
             fo.update( delta );
@@ -184,7 +186,7 @@ public class World implements Disposable {
             numPaths = map.getInt( "drumuri" );
 
             camPoz = new Vector3[cams];
-            paths = new Array<Path<Vector3>>( numPaths );
+            paths = new Array<CatmullRomSpline<Vector3>>( numPaths );
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
             for (int k = 0 ; k <numPaths ; k ++ )
@@ -219,7 +221,7 @@ public class World implements Disposable {
         }
 
         for (int k = 0 ; k <numPaths ; k ++ )
-            Sort.instance().sort( cp.get( k ) );
+            cp.get( k ).sort();
 
         for (int k = 0 ; k <numPaths ; k ++ ) {
 
@@ -238,14 +240,36 @@ public class World implements Disposable {
 
     private void addWaves() {
 
-        Element map;
+        Element map = null;
         try {
             map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+        waves = new Waves( this );
 
+        Array<Element> tmpWaves = map.getChildrenByName( "wave" );
+        tmpWaves.shrink();
+        Array<IndexedObject<Element>> sortedWaves = new Array<IndexedObject<Element>>( tmpWaves.size );
+        for (int i = 0 ; i <tmpWaves.size ; i ++ )
+            sortedWaves.add( new IndexedObject<Element>( tmpWaves.get( i ), tmpWaves.get( i ).getInt( "index" ) -1 ) );
+        sortedWaves.sort();
+
+        for (IndexedObject<Element> wav : sortedWaves ) {
+            waves.addWave( wav.object.getFloat( "delay", 5 ), wav.object.getFloat( "interval", 0.5f ) );
+            Array<Element> tmpPaths = wav.object.getChildrenByName( "path" );
+            
+            for (Element pat : tmpPaths ) {
+                
+                int numar = pat.getInt( "nr" );
+                for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
+                    
+                    Element monstru = pat.getChild( i );
+                    waves.populate( numar, Inamici.valueOf( monstru.getText().toUpperCase() ), monstru.getInt( "amont" ) );
+                }
+            }
+        }
     }
 
     public void setCamera(int nr) {// FIXME point at
@@ -282,17 +306,23 @@ public class World implements Disposable {
         setCamera( curentCam );
     }
 
-    public Path<Vector3> closestPath(final Vector3 location) {
-        Path<Vector3> closest = null;
+    public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
+        CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
-        for (Path<Vector3> path : paths ) {
-            tmp = ( (CatmullRomSpline<Vector3>) path ).controlPoints[0].cpy();
+        for (CatmullRomSpline<Vector3> path : paths ) {
+            tmp = path.controlPoints[0].cpy();
             if ( location.dst2( tmp ) <dist ) {
                 dist = location.dst2( tmp );
                 closest = path;
             }
         }
         return closest;
+    }
+
+    public Inamic addFoe(Inamici type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
+        Inamic inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
+        foe.add( inamicTemp );
+        return inamicTemp;
     }
 
     public Inamic addFoe(Inamici type, float x, float y, float z) {

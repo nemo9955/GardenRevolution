@@ -6,8 +6,8 @@ public class IndexedObject<Obj> implements Comparable<IndexedObject<?>> {
     public Obj object;
     public int index;
 
-    public IndexedObject(Obj point, int index) {
-        this.object = point;
+    public IndexedObject(Obj object, int index) {
+        this.object = object;
         this.index = index;
     }
 

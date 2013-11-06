@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
@@ -25,7 +26,7 @@ public class Inamic extends Vietate {
         flag = new Vector3();
     }
 
-    public Inamic create(Path<Vector3> drum, Inamici type, float x, float y, float z) {
+    public Inamic create(CatmullRomSpline<Vector3> drum, Inamici type, float x, float y, float z) {
         this.type = type;
 
         super.init( x, y, z );
