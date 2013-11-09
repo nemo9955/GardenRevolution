@@ -28,14 +28,13 @@ public class Waves {
                 Array<Monstru> add = getMonsters();
                 for (Monstru mo : add ) {
                     Vector3 location = new Vector3( getPath( mo ).controlPoints[0] );
-                    world.addFoe( mo.type, getPath( mo ), location.x +MathUtils.random( 1 ) -0.5f, location.y, location.z +MathUtils.random( 1 ) -0.5f );
+                    world.addFoe( mo.type, getPath( mo ), location.x, location.y, location.z );
                 }
             }
 
-            if ( !wvs.get( curent ).hasMonsters() ) {
-                System.out.println( "next wave" );
+            if ( !wvs.get( curent ).hasMonsters() )
                 curent ++;
-            }
+
         }
         else {
             wvs.get( curent ).delay -= delta;

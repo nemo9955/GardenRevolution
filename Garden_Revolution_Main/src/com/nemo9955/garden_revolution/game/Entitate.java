@@ -42,7 +42,6 @@ public abstract class Entitate implements Disposable, Poolable {
 
     @Override
     public void reset() {
-        model.model.dispose();
         model = null;
     }
 

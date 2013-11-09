@@ -55,8 +55,8 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-        if ( waves.finishedWaves() )
-            waves.update( delta );
+//        if ( waves.finishedWaves() )
+//            waves.update( delta ); TODO 
 
         for (Inamic fo : foe ) {
             fo.update( delta );
