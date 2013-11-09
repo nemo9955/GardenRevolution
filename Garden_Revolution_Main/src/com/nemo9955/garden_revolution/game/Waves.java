@@ -12,7 +12,7 @@ public class Waves {
     private final World world;
 
     private Array<Wave> wvs;
-    private int         next = 0;
+    private int         curent = 0;
 
     public Waves(World world) {
         this.world = world;
@@ -22,8 +22,8 @@ public class Waves {
     public void update(float delta) {
 
 
-        if ( wvs.get( next ).delay <=0 ) {
-            if ( wvs.get( next ).finishedCooldown( delta ) ) {
+        if ( wvs.get( curent ).delay <=0 ) {
+            if ( wvs.get( curent ).finishedCooldown( delta ) ) {
 
                 Array<Monstru> add = getMonsters();
                 for (Monstru mo : add ) {
@@ -32,11 +32,13 @@ public class Waves {
                 }
             }
 
-            if ( !wvs.get( next ).hasMonsters() )
-                next ++;
+            if ( !wvs.get( curent ).hasMonsters() ) {
+                System.out.println( "next wave" );
+                curent ++;
+            }
         }
         else {
-            wvs.get( next ).delay -= delta;
+            wvs.get( curent ).delay -= delta;
         }
     }
 
@@ -45,24 +47,19 @@ public class Waves {
     }
 
     private Array<Monstru> getMonsters() {
-        Array<Monstru> tmp = new Array<Monstru>();
-        for (Wave wv : wvs )
-            tmp.addAll( wv.getMonster() );
-        return tmp;
+        return wvs.get( curent ).getMonsters();
     }
 
     public void addWave(float delay, float interval) {
-        System.out.println( "aded wave " +wvs.size );
         wvs.add( new Wave( delay, interval ) );
     }
 
     public void populate(int path, Inamici type, int amont) {
-        System.out.println( "populated wave " +path +" " +type.getName() +" " +amont );
         wvs.peek().populate( path, type, amont );
     }
 
     public boolean finishedWaves() {
-        return next <wvs.size;
+        return curent <wvs.size;
     }
 
 
@@ -87,14 +84,15 @@ public class Waves {
         }
 
         public boolean hasMonsters() {
-            for (Array<Monstru> monstr : monstrii )
+            for (Array<Monstru> monstr : monstrii ) {
                 if ( monstr.size >0 )
                     return true;
+            }
             return false;
 
         }
 
-        public Array<Monstru> getMonster() {
+        public Array<Monstru> getMonsters() {
             Array<Monstru> tmp = new Array<Monstru>();
             for (Array<Monstru> monstr : monstrii )
                 if ( monstr.size >0 )
@@ -112,7 +110,8 @@ public class Waves {
         }
 
         public void populate(int path, Inamici type, int amont) {
-            monstrii.get( path ).add( new Monstru( type, path ) );
+            for (int i = 0 ; i <amont ; i ++ )
+                monstrii.get( path ).add( new Monstru( type, path ) );
         }
 
     }

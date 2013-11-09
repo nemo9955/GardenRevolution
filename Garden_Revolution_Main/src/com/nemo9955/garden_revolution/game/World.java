@@ -257,6 +257,7 @@ public class World implements Disposable {
             sortedWaves.add( new IndexedObject<Element>( tmpWaves.get( i ), tmpWaves.get( i ).getInt( "index" ) -1 ) );
         sortedWaves.sort();
         tmpWaves.clear();
+
         for (IndexedObject<Element> wav : sortedWaves ) {
             waves.addWave( wav.object.getFloat( "delay", 5 ), wav.object.getFloat( "interval", 0.5f ) );
             Array<Element> tmpPaths = wav.object.getChildrenByName( "path" );
@@ -267,8 +268,8 @@ public class World implements Disposable {
                 for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
 
                     Element monstru = pat.getChild( i );
-                    System.out.print( monstru.getName().toUpperCase() +"  " );
                     waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount" ) );
+                    
                 }
             }
         }
