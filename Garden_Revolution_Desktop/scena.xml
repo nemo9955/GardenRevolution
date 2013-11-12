@@ -1,0 +1,23 @@
+<Harta map="scena.g3db" turnuri="3"  drumuri="2" >
+   
+    <wave index="1" delay="2" interval="2" >
+        <path nr="1" >
+            <morcov amount="7"/>
+        </path>
+        
+        <path nr="2">
+            <rosie amount="3"/>
+        </path>
+    </wave>
+
+    <wave index="2" delay="5" interval="1" >
+        <path nr="1" >
+            <morcov amount="4"/>
+        </path>
+        
+        <path nr="2">
+            <rosie amount="4"/>
+        </path>
+    </wave>
+    
+</Harta>

@@ -42,7 +42,8 @@ public class Meniu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( start.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+//                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                    Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
                 // if(optiuni.isPressed())
                 // Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
                 if ( test1.isPressed() )

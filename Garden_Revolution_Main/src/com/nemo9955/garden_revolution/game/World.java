@@ -55,8 +55,8 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-//        if ( waves.finishedWaves() )
-//            waves.update( delta ); TODO 
+        if ( waves.finishedWaves() )
+            waves.update( delta );// TODO
 
         for (Inamic fo : foe ) {
             fo.update( delta );
@@ -243,9 +243,12 @@ public class World implements Disposable {
 
         Element map = null;
         try {
-            map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
+            if ( Gdx.files.local( "scena.xml" ).exists() )
+                map = new XmlReader().parse( Gdx.files.local( "scena.xml" ) );
+            else
+                map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
         waves = new Waves( this );
@@ -269,7 +272,7 @@ public class World implements Disposable {
 
                     Element monstru = pat.getChild( i );
                     waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount" ) );
-                    
+
                 }
             }
         }

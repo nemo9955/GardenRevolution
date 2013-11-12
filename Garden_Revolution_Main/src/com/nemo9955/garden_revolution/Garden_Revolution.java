@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
+import com.nemo9955.garden_revolution.states.LevelSelector;
 import com.nemo9955.garden_revolution.states.Meniu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
@@ -28,6 +29,7 @@ public class Garden_Revolution extends Game {
     public static Meniu             meniu;
     public static TestScene         test;
     public static SplashScreen      splash;
+    public static LevelSelector     selecter;
 
     public static Garden_Revolution game;
     public static AssetManager      manager;
@@ -71,6 +73,7 @@ public class Garden_Revolution extends Game {
         test = new TestScene();
         gameplay = new Gameplay();
         meniu = new Meniu();
+        selecter = new LevelSelector();
 
         game = this;
     }
