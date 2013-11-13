@@ -88,7 +88,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
-        world = new World( Gdx.files.internal( "harti/nivele" ).child( "harta 1.xml" ), cam );
+        world = new World( Garden_Revolution.maploc.child( "nivele" ).child( "harta 1.xml" ), cam );
     }
 
     @Override

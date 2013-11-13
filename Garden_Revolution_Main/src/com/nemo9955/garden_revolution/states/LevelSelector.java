@@ -1,7 +1,9 @@
 package com.nemo9955.garden_revolution.states;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,7 +36,24 @@ public class LevelSelector implements Screen {
         table.clear();
         stage.clear();
 
-        String[] harti = new String[] { "e4sgre324", "2sg34sg23", "23dfsg4" };
+        FileHandle lvlLoc;
+        if ( Gdx.app.getType() ==ApplicationType.Android ) {
+            lvlLoc = Garden_Revolution.maploc.child( "nivele" );
+        }
+        else {
+            lvlLoc = Gdx.files.internal( String.format( "./bin/%s", Garden_Revolution.maploc.child( "nivele" ).path() ) );
+        }
+
+        System.out.println(lvlLoc);
+
+        FileHandle nivele[] = lvlLoc.list();
+
+        String harti[] = new String[nivele.length];
+
+        for (int i = 0 ; i <harti.length ; i ++ ) {
+            harti[i] = nivele[i].name();
+            System.out.println( nivele[i] );
+        }
 
         List elem = new List( harti, skin );
         ScrollPane lista = new ScrollPane( elem, skin, "default" );
@@ -59,7 +78,6 @@ public class LevelSelector implements Screen {
 
         table.add( lista ).expand().left().fillY();
         table.add( "Select a LEVEL" ).expand().top();
-        // table.row();
         table.add( play );
         table.add( back ).expand().bottom().right();
 

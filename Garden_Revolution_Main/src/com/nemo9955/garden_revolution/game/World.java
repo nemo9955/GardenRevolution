@@ -202,10 +202,8 @@ public class World implements Disposable {
             e.printStackTrace();
         }
 
-        FileHandle path = location.parent().parent().child( "maps" ).child( map.get( "map" ) );
-        Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( path );
+        Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
 
-        System.out.println( path.path() );
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;

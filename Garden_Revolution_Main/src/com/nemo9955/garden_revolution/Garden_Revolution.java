@@ -3,8 +3,10 @@ package com.nemo9955.garden_revolution;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,6 +27,8 @@ public class Garden_Revolution extends Game {
     public static final String      TITLU    = "Garden Revolution";
     public static final String      VERSIUNE = "alfa 0.34,5";
 
+    public static FileHandle        maploc;
+
     public static Gameplay          gameplay;
     public static Meniu             meniu;
     public static TestScene         test;
@@ -36,6 +40,8 @@ public class Garden_Revolution extends Game {
 
     @Override
     public void create() {
+
+        maploc = Gdx.files.internal( "harti" );
 
         manager = new AssetManager();
 
