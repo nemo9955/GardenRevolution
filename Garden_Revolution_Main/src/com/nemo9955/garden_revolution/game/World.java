@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
@@ -46,11 +49,11 @@ public class World implements Disposable {
 
     public Waves                            waves;
 
-    public World(Model scena, PerspectiveCamera cam) {
+    public World(FileHandle location, PerspectiveCamera cam) {
         this.cam = cam;
         makeNori();
-        populateWorld( scena );
-        addWaves();
+        populateWorld( location );
+        addWaves( location );
     }
 
     public void update(float delta) {
@@ -174,17 +177,19 @@ public class World implements Disposable {
         }
     }
 
-    private void populateWorld(Model scena) {
+    private void populateWorld(FileHandle location) {
         int cams = 0;
         int numPaths = 0;
         Array<Array<IndexedObject<Vector3>>> cp = null;
         String[] sect;
 
-        Element map;
+        Element map = null;
         try {
-            map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
+            map = new XmlReader().parse( location );
             cams = map.getInt( "turnuri" );
             numPaths = map.getInt( "drumuri" );
+
+            // scena = new ObjLoader().loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
 
             camPoz = new Vector3[cams];
             paths = new Array<CatmullRomSpline<Vector3>>( numPaths );
@@ -196,6 +201,11 @@ public class World implements Disposable {
         catch (IOException e) {
             e.printStackTrace();
         }
+
+        FileHandle path = location.parent().parent().child( "maps" ).child( map.get( "map" ) );
+        Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( path );
+
+        System.out.println( path.path() );
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
@@ -239,14 +249,11 @@ public class World implements Disposable {
 
     }
 
-    private void addWaves() {
+    private void addWaves(FileHandle location) {
 
         Element map = null;
         try {
-            if ( Gdx.files.local( "scena.xml" ).exists() )
-                map = new XmlReader().parse( Gdx.files.local( "scena.xml" ) );
-            else
-                map = new XmlReader().parse( Gdx.files.internal( "harti/scena.xml" ) );
+            map = new XmlReader().parse( location );
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -381,12 +388,6 @@ public class World implements Disposable {
     @Override
     public void dispose() {
 
-        for (Entitate e : foe )
-            e.dispose();
-        for (Entitate e : ally )
-            e.dispose();
-        for (Entitate e : shot )
-            e.dispose();
         for (ModelInstance e : mediu )
             e.model.dispose();
         for (ModelInstance e : nori )

@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
 import com.nemo9955.garden_revolution.utility.StageUtils;
@@ -89,7 +88,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
         toUpdate = 0;
-        world = new World( Garden_Revolution.getModel( Assets.SCENA ), cam );
+        world = new World( Gdx.files.internal( "harti/nivele" ).child( "harta 1.xml" ), cam );
     }
 
     @Override

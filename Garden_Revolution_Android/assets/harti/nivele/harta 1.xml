@@ -1,4 +1,4 @@
-<Harta map="scena.g3db" turnuri="3"  drumuri="2" >
+<Harta map="harta.g3db" turnuri="3"  drumuri="2" >
    
     <wave index="1" delay="4" interval="2" >
         <path nr="1" >

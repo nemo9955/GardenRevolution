@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.nemo9955.garden_revolution.utility.CustomBox;
 
 
-public abstract class Entitate implements Disposable, Poolable {
+public abstract class Entitate implements Poolable {
 
     protected ModelInstance model;
 
@@ -29,7 +28,7 @@ public abstract class Entitate implements Disposable, Poolable {
 
     public void init(Vector3 position) {
         init( position.x, position.y, position.z );
-    } 
+    }
 
     // principalul
     public void init(float x, float y, float z) {
@@ -102,10 +101,5 @@ public abstract class Entitate implements Disposable, Poolable {
 
     public void damage(Entitate e) {
         dead = true;
-    }
-
-    @Override
-    public void dispose() {
-        model.model.dispose();
     }
 }

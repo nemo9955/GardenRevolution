@@ -33,7 +33,7 @@ public class LevelSelector implements Screen {
     public void show() {
         table.clear();
         stage.clear();
-        
+
         String[] harti = new String[] { "e4sgre324", "2sg34sg23", "23dfsg4" };
 
         List elem = new List( harti, skin );
@@ -44,7 +44,7 @@ public class LevelSelector implements Screen {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // TODO selecteaza nivelul pe baza folderului
+                Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
             }
         } );
 
@@ -59,8 +59,8 @@ public class LevelSelector implements Screen {
 
         table.add( lista ).expand().left().fillY();
         table.add( "Select a LEVEL" ).expand().top();
-       // table.row();
-        table.add();
+        // table.row();
+        table.add( play );
         table.add( back ).expand().bottom().right();
 
         stage.addActor( table );

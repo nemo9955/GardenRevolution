@@ -14,7 +14,6 @@ public enum Assets {
     DEMON32(LOC.FONT, "demonized_32.fnt"), //
     DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
-    SCENA(LOC.MODEL, "scena.g3db"), //
     KNIGHT(LOC.MODEL, "knight.g3db"), //
     ROSIE(LOC.MODEL, "rosie.g3db"), //
     MORCOV(LOC.MODEL, "morcov.g3db"), //
