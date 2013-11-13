@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,7 +15,7 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
 
 
-public class LevelSelector extends InputAdapter implements Screen {
+public class LevelSelector implements Screen {
 
     private Stage stage;
     private Skin  skin;
@@ -28,8 +27,14 @@ public class LevelSelector extends InputAdapter implements Screen {
         table = new Table( skin );
         table.setFillParent( true );
 
+    }
 
-        String harti[] = new String[] { "e4sgre324", "2sg34sg23", "23dfsg4" };
+    @Override
+    public void show() {
+        table.clear();
+        stage.clear();
+        
+        String[] harti = new String[] { "e4sgre324", "2sg34sg23", "23dfsg4" };
 
         List elem = new List( harti, skin );
         ScrollPane lista = new ScrollPane( elem, skin, "default" );
@@ -43,7 +48,7 @@ public class LevelSelector extends InputAdapter implements Screen {
             }
         } );
 
-        TextButton back = new TextButton( "Menu", skin );
+        TextButton back = new TextButton( "Back", skin );
         back.addListener( new ChangeListener() {
 
             @Override
@@ -52,18 +57,15 @@ public class LevelSelector extends InputAdapter implements Screen {
             }
         } );
 
-        table.add( lista ).expandY();
-        table.add( "Select a LEVEL" );
-        table.row();
-        table.add( back );
-
+        table.add( lista ).expand().left().fillY();
+        table.add( "Select a LEVEL" ).expand().top();
+       // table.row();
+        table.add();
+        table.add( back ).expand().bottom().right();
 
         stage.addActor( table );
-    }
 
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor( this );
+        Gdx.input.setInputProcessor( stage );
     }
 
     @Override
