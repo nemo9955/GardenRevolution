@@ -19,9 +19,11 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public class LevelSelector implements Screen {
 
-    private Stage stage;
-    private Skin  skin;
-    private Table table;
+    private Stage  stage;
+    private Skin   skin;
+    private Table  table;
+
+    private String toAcces;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
@@ -44,26 +46,35 @@ public class LevelSelector implements Screen {
             lvlLoc = Gdx.files.internal( String.format( "./bin/%s", Garden_Revolution.maploc.child( "nivele" ).path() ) );
         }
 
-        System.out.println(lvlLoc);
+        System.out.println( lvlLoc );
 
         FileHandle nivele[] = lvlLoc.list();
 
         String harti[] = new String[nivele.length];
 
         for (int i = 0 ; i <harti.length ; i ++ ) {
-            harti[i] = nivele[i].name();
+            harti[i] = nivele[i].nameWithoutExtension();
             System.out.println( nivele[i] );
         }
 
+        final TextButton play = new TextButton( "Play", skin );
+
         List elem = new List( harti, skin );
         ScrollPane lista = new ScrollPane( elem, skin, "default" );
+        lista.addListener( new ChangeListener() {
 
-        TextButton play = new TextButton( "Play", skin );
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                toAcces = ( (List) actor ).getSelection();
+            }
+        } );
+
+
         play.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                System.out.println( toAcces );
             }
         } );
 
