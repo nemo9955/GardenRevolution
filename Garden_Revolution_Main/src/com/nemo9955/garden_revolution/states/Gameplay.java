@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -87,8 +88,13 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @Override
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
+    }
+
+    public Gameplay init(FileHandle nivel) {
         toUpdate = 0;
-        world = new World( Garden_Revolution.maploc.child( "nivele" ).child( "harta 1.xml" ), cam );
+        world = new World( nivel, cam );
+
+        return this;
     }
 
     @Override
@@ -330,6 +336,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
+        world.dispose();
     }
 
 

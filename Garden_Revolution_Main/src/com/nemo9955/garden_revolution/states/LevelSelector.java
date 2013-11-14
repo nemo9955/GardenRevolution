@@ -19,13 +19,17 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public class LevelSelector implements Screen {
 
-    private Stage  stage;
-    private Skin   skin;
-    private Table  table;
+    private Stage            stage;
+    private Skin             skin;
+    private Table            table;
 
-    private String toAcces;
+    public static FileHandle nivelLoc;
+
+    private FileHandle       lvlLoc;
+    private String           toAcces;
 
     public LevelSelector() {
+        nivelLoc = Gdx.files.internal( "harti/nivele" );
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage();
         table = new Table( skin );
@@ -38,23 +42,16 @@ public class LevelSelector implements Screen {
         table.clear();
         stage.clear();
 
-        FileHandle lvlLoc;
-        if ( Gdx.app.getType() ==ApplicationType.Android ) {
-            lvlLoc = Garden_Revolution.maploc.child( "nivele" );
-        }
-        else {
-            lvlLoc = Gdx.files.internal( String.format( "./bin/%s", Garden_Revolution.maploc.child( "nivele" ).path() ) );
-        }
-
-        System.out.println( lvlLoc );
+        if ( Gdx.app.getType() ==ApplicationType.Desktop )
+            lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
+        else
+            lvlLoc = nivelLoc;
 
         FileHandle nivele[] = lvlLoc.list();
-
         String harti[] = new String[nivele.length];
 
         for (int i = 0 ; i <harti.length ; i ++ ) {
             harti[i] = nivele[i].nameWithoutExtension();
-            System.out.println( nivele[i] );
         }
 
         final TextButton play = new TextButton( "Play", skin );
@@ -70,10 +67,13 @@ public class LevelSelector implements Screen {
         } );
 
 
+        toAcces = elem.getSelection();
+
         play.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.init( lvlLoc.child( toAcces +".xml" ) ) );
                 System.out.println( toAcces );
             }
         } );

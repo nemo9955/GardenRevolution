@@ -178,24 +178,17 @@ public class World implements Disposable {
     }
 
     private void populateWorld(FileHandle location) {
-        int cams = 0;
-        int numPaths = 0;
         Array<Array<IndexedObject<Vector3>>> cp = null;
         String[] sect;
 
         Element map = null;
         try {
             map = new XmlReader().parse( location );
-            cams = map.getInt( "turnuri" );
-            numPaths = map.getInt( "drumuri" );
-
-            // scena = new ObjLoader().loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
-
-            camPoz = new Vector3[cams];
-            paths = new Array<CatmullRomSpline<Vector3>>( numPaths );
+            camPoz = new Vector3[map.getInt( "turnuri" )];
+            paths = new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
-            for (int k = 0 ; k <numPaths ; k ++ )
+            for (int k = 0 ; k <map.getInt( "drumuri" ) ; k ++ )
                 cp.add( new Array<IndexedObject<Vector3>>( false, 1, IndexedObject.class ) );
         }
         catch (IOException e) {
@@ -229,21 +222,21 @@ public class World implements Disposable {
                 addMediu( instance );
         }
 
-        for (int k = 0 ; k <numPaths ; k ++ )
-            cp.get( k ).sort();
+        for (Array<IndexedObject<Vector3>> pat : cp )
+            pat.sort();
 
-        for (int k = 0 ; k <numPaths ; k ++ ) {
+        for (Array<IndexedObject<Vector3>> pat : cp ) {
 
-            Vector3 cps[] = new Vector3[cp.get( k ).size +2];
-            for (int j = 0 ; j <cp.get( k ).size ; j ++ )
-                cps[j +1] = cp.get( k ).get( j ).object;
+            Vector3 cps[] = new Vector3[pat.size +2];
+            for (int j = 0 ; j <pat.size ; j ++ )
+                cps[j +1] = pat.get( j ).object;
             cps[0] = cps[1];
             cps[cps.length -1] = cps[cps.length -2];
 
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        setCamera( 2 );
+        setCamera( 2, false );
 
     }
 
@@ -284,21 +277,25 @@ public class World implements Disposable {
         sortedWaves.clear();
     }
 
-    public void setCamera(int nr) {// FIXME point at
+    public void setCamera(int nr, boolean point) {// FIXME point at
 
-        nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
+        Vector3 look = null;
+        Vector3 initial = null;
+        if ( point ) {
+            nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
 
-        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        float distance = -ray.origin.y /ray.direction.y;
-        Vector3 look = ray.getEndPoint( new Vector3(), distance );
-        Vector3 tr = cam.direction.cpy();
+            Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+            float distance = -ray.origin.y /ray.direction.y;
+            look = ray.getEndPoint( new Vector3(), distance );
+            initial = cam.direction.cpy();
 
+        }
         cam.position.set( camPoz[nr] );
+        if ( point ) {
 
-        cam.lookAt( look );
-
-        cam.direction.y = tr.y;
-
+            cam.lookAt( look );
+            cam.direction.y = initial.y;
+        }
         curentCam = nr;
 
         cam.update();
@@ -308,14 +305,14 @@ public class World implements Disposable {
         curentCam ++;
         if ( curentCam >=camPoz.length )
             curentCam = 0;
-        setCamera( curentCam );
+        setCamera( curentCam, true );
     }
 
     public void prevCamera() {
         curentCam --;
         if ( curentCam <0 )
             curentCam = camPoz.length -1;
-        setCamera( curentCam );
+        setCamera( curentCam, true );
     }
 
     public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
