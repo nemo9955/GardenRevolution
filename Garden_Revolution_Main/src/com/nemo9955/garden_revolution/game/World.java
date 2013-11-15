@@ -29,10 +29,13 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.utility.CustomBox;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
 public class World implements Disposable {
+
+    private Array<Disposable>               toDispose = new Array<Disposable>( false, 1 );
 
     private Array<ModelInstance>            nori      = new Array<ModelInstance>( false, 10 );
     public Array<ModelInstance>             mediu     = new Array<ModelInstance>( false, 10 );
@@ -40,6 +43,8 @@ public class World implements Disposable {
     public Array<Inamic>                    foe       = new Array<Inamic>( false, 10 );
     public Array<Aliat>                     ally      = new Array<Aliat>( false, 10 );
     public Array<Shot>                      shot      = new Array<Shot>( false, 10 );
+
+    public Array<CustomBox>                 colide    = new Array<CustomBox>( false, 10 );
 
     public Array<CatmullRomSpline<Vector3>> paths;
 
@@ -110,6 +115,14 @@ public class World implements Disposable {
     public void renderLines(ImmediateModeRenderer20 renderer) {
         Vector3 corn[] = new Vector3[8];
 
+        for (CustomBox box : colide ) {
+            corn = box.getCorners();
+            for (Vector3 crn : corn ) {
+                renderer.color( 1, 0.5f, 0, 1 );
+                renderer.vertex( crn.x, crn.y, crn.z );
+            }
+        }
+
         for (Entitate e : foe ) {
             corn = e.box.getCorners();
             for (Vector3 crn : corn ) {
@@ -163,6 +176,7 @@ public class World implements Disposable {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         ModelInstance nor;
+        toDispose.add( sfera );
 
         int norx, norz;
 
@@ -197,6 +211,7 @@ public class World implements Disposable {
 
         Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
 
+        toDispose.add( scena );
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
@@ -218,9 +233,19 @@ public class World implements Disposable {
                 int pct = Integer.parseInt( sect[2] );
                 cp.get( pat ).add( new IndexedObject<Vector3>( scena.nodes.get( i ).translation, pct ) );
             }
+            else if ( id.startsWith( "colid" ) ) {
+                CustomBox box = new CustomBox();
+                scena.nodes.get( i ).calculateBoundingBox( box, false );
+                box.addPoz( scena.nodes.get( i ).translation );
+                // scena.nodes.get( i ).
+                colide.add( box );
+                System.out.println( "cutie " +box.getDimensions() );
+            }
             else
                 addMediu( instance );
         }
+
+        // System.out.println( colide.size );
 
         for (Array<IndexedObject<Vector3>> pat : cp )
             pat.sort();
@@ -236,7 +261,7 @@ public class World implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        setCamera( 2, false );
+        setCamera( 2 );
 
     }
 
@@ -277,25 +302,17 @@ public class World implements Disposable {
         sortedWaves.clear();
     }
 
-    public void setCamera(int nr, boolean point) {// FIXME point at
+    public void setCamera(int nr) {
 
-        Vector3 look = null;
-        Vector3 initial = null;
-        if ( point ) {
-            nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
+        nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
+        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        float distance = -ray.origin.y /ray.direction.y;
+        Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
-            Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-            float distance = -ray.origin.y /ray.direction.y;
-            look = ray.getEndPoint( new Vector3(), distance );
-            initial = cam.direction.cpy();
-
-        }
         cam.position.set( camPoz[nr] );
-        if ( point ) {
 
-            cam.lookAt( look );
-            cam.direction.y = initial.y;
-        }
+        cam.lookAt( look );
+        cam.up.set( Vector3.Y );
         curentCam = nr;
 
         cam.update();
@@ -305,14 +322,14 @@ public class World implements Disposable {
         curentCam ++;
         if ( curentCam >=camPoz.length )
             curentCam = 0;
-        setCamera( curentCam, true );
+        setCamera( curentCam );
     }
 
     public void prevCamera() {
         curentCam --;
         if ( curentCam <0 )
             curentCam = camPoz.length -1;
-        setCamera( curentCam, true );
+        setCamera( curentCam );
     }
 
     public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
@@ -383,11 +400,10 @@ public class World implements Disposable {
     @Override
     public void dispose() {
 
-        for (ModelInstance e : mediu )
-            e.model.dispose();
-        for (ModelInstance e : nori )
-            e.model.dispose();
+        for (Disposable dis : toDispose )
+            dis.dispose();
 
+        toDispose.clear();
         foe.clear();
         ally.clear();
         shot.clear();
