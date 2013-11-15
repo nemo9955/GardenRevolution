@@ -134,15 +134,9 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
         cam.rotateAround( cam.position, Vector3.Y, amontX );
 
-        //
         if ( ( amontY >0 &&cam.direction.y <0.3f ) || ( amontY <0 &&cam.direction.y >-1f &&cam.up.y >0 ) ) {
-            System.out.println( amontY );
             tmp.set( cam.direction ).crs( cam.up ).y = 0f;
             cam.rotateAround( cam.position, tmp.nor(), amontY );
-
-            System.out.println( cam.up.y );
-            System.out.println( cam.direction.y );
-            System.out.println();
         }
 
         cam.translate( dolly );

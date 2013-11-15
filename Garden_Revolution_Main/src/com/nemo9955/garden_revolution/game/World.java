@@ -15,12 +15,12 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -29,7 +29,6 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
-import com.nemo9955.garden_revolution.utility.CustomBox;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
@@ -44,7 +43,7 @@ public class World implements Disposable {
     public Array<Aliat>                     ally      = new Array<Aliat>( false, 10 );
     public Array<Shot>                      shot      = new Array<Shot>( false, 10 );
 
-    public Array<CustomBox>                 colide    = new Array<CustomBox>( false, 10 );
+    public Array<BoundingBox>               colide    = new Array<BoundingBox>( false, 10 );
 
     public Array<CatmullRomSpline<Vector3>> paths;
 
@@ -92,6 +91,10 @@ public class World implements Disposable {
                     sh.dead = true;
                 }
             }
+            for (BoundingBox col : colide ) {
+                if ( col.intersects( sh.box ) )
+                    sh.dead = true;
+            }
         }
 
     }
@@ -115,7 +118,7 @@ public class World implements Disposable {
     public void renderLines(ImmediateModeRenderer20 renderer) {
         Vector3 corn[] = new Vector3[8];
 
-        for (CustomBox box : colide ) {
+        for (BoundingBox box : colide ) {
             corn = box.getCorners();
             for (Vector3 crn : corn ) {
                 renderer.color( 1, 0.5f, 0, 1 );
@@ -216,12 +219,12 @@ public class World implements Disposable {
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
             ModelInstance instance = new ModelInstance( scena, id );
-            Node node = instance.getNode( id );
-            instance.transform.set( node.globalTransform );
-            node.translation.set( 0, 0, 0 );
-            node.scale.set( 1, 1, 1 );
-            node.rotation.idt();
-            instance.calculateTransforms();
+            // Node node = instance.getNode( id );
+            // instance.transform.set( node.globalTransform );
+            // node.translation.set( 0, 0, 0 );
+            // node.scale.set( 1, 1, 1 );
+            // node.rotation.idt();
+            // instance.calculateTransforms();
 
             if ( id.startsWith( "cam" ) ) {
                 sect = id.split( "_" );
@@ -233,17 +236,24 @@ public class World implements Disposable {
                 int pct = Integer.parseInt( sect[2] );
                 cp.get( pat ).add( new IndexedObject<Vector3>( scena.nodes.get( i ).translation, pct ) );
             }
-            else if ( id.startsWith( "colid" ) ) {
-                CustomBox box = new CustomBox();
-                scena.nodes.get( i ).calculateBoundingBox( box, false );
-                box.addPoz( scena.nodes.get( i ).translation );
-                // scena.nodes.get( i ).
+            else if ( id.startsWith( "colider" ) ) {
+                BoundingBox box = new BoundingBox();
+                instance.calculateBoundingBox( box );
                 colide.add( box );
-                System.out.println( "cutie " +box.getDimensions() );
+            }
+            else if ( id.endsWith( "solid" ) ||id.equalsIgnoreCase( "cone" ) ) {
+                BoundingBox box = new BoundingBox();
+                instance.calculateBoundingBox( box );
+                colide.add( box );
+                addMediu( instance );
             }
             else
                 addMediu( instance );
+
+            if ( !id.startsWith( "path" ) )
+                System.out.println( id );
         }
+
 
         // System.out.println( colide.size );
 

@@ -74,7 +74,6 @@ public class LevelSelector implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.init( lvlLoc.child( toAcces +".xml" ) ) );
-                System.out.println( toAcces );
             }
         } );
 
