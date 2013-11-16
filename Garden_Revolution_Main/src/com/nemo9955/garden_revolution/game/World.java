@@ -309,7 +309,7 @@ public class World implements Disposable {
         sortedWaves.clear();
     }
 
-    public void setCamera(int nr) {// FIXME daca se misca prea mult apar probleme
+    public void setCamera(int nr) {
 
         nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
@@ -319,9 +319,9 @@ public class World implements Disposable {
         cam.position.set( camPoz[nr] );
 
         cam.lookAt( look );
+
         cam.up.set( Vector3.Y );
         curentCam = nr;
-
         cam.update();
     }
 

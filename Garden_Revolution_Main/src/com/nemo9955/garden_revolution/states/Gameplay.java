@@ -137,15 +137,23 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     private void moveCamera(float amontX, float amontY) {
 
         cam.rotateAround( cam.position, Vector3.Y, amontX );
-
-        if ( ( amontY >0 &&cam.direction.y <0.3f ) || ( amontY <0 &&cam.direction.y >-1f &&cam.up.y >0 ) ) {
-            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
-            cam.rotateAround( cam.position, tmp.nor(), amontY );
+        if ( amontY >0 ) {
+            if ( cam.direction.y <0.3f )
+                pitchCamera( amontY );
+        }
+        else {
+            if ( cam.direction.y >-0.9f )
+                pitchCamera( amontY );
         }
 
         cam.translate( dolly );
 
         cam.update();
+    }
+
+    private void pitchCamera(float amontY) {
+        tmp.set( cam.direction ).crs( cam.up ).y = 0f;
+        cam.rotateAround( cam.position, tmp.nor(), amontY );
     }
 
     @Override
