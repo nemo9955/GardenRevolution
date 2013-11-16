@@ -24,7 +24,7 @@ public class LevelSelector implements Screen {
     private Table            table;
 
     public static FileHandle nivelLoc;
-    public static boolean    internal = true;
+    public static boolean    internal = false;
 
     private FileHandle       lvlLoc;
     private String           toAcces;

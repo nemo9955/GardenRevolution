@@ -1,0 +1,23 @@
+<Harta map="harta buna 2.g3db" turnuri="4"  drumuri="2" >
+   
+    <wave index="1" delay="1" interval="1" >
+        <path nr="1" >
+            <rosie amount="2"/>
+        </path>
+        
+        <path nr="2">
+            <rosie amount="2"/>
+        </path>
+    </wave>
+
+    <wave index="2" delay="30" interval="1" >
+        <path nr="1" >
+            <rosie amount="1"/>
+        </path>
+        
+        <path nr="2">
+            <morcov amount="2"/>
+        </path>
+    </wave>
+    
+</Harta>

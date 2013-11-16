@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,7 +24,6 @@ public class StageUtils {
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         final Touchpad mover = new Touchpad( 5, skin );
-        final ImageButton optBut = new ImageButton( skin, "IGoptiuni" );
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
         final ImageButton camRight = new ImageButton( skin, "camRight" );
@@ -31,8 +31,10 @@ public class StageUtils {
         final TextButton resumeBut = new TextButton( "Resume play", skin );
         final TextButton meniuBut = new TextButton( "Main menu", skin );
 
+        final TextButton optBut = new TextButton( "Options", skin );
+
         final Board optFill = new Board();
-        final Table hud = new Table();
+        final Board hud = new Board();
         final ScrollPane optIG = new ScrollPane( optFill, skin );
         final Table pauseIG = new Table( skin );
 
@@ -46,6 +48,8 @@ public class StageUtils {
         pauseIG.row();
         pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
         pauseIG.row();
+        pauseIG.add( optBut ).padBottom( stage.getHeight() *0.07f );
+        pauseIG.row();
         pauseIG.add( meniuBut );
 
 
@@ -56,25 +60,35 @@ public class StageUtils {
         backBut.setPosition( 50, 50 );
         optFill.addActor( backBut );
 
-     //   hud.debug();
-        hud.setFillParent( true );
-        hud.add( optBut ).top().left();
-        hud.add( pauseBut ).top().right();
-        hud.row();
-        hud.add( camLeft ).expand().left();
-        hud.add( camRight ).expand().right();
-        hud.row();
-        hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
+        Image tinta = new Image( skin, "tinta" );
+        tinta.setX( stage.getWidth() -tinta.getWidth() /2 );
+        tinta.setY( stage.getHeight() -tinta.getHeight() /2 );
+
+        // hud.add();
+        // hud.add( pauseBut ).top().right();
+        // hud.row();
+        // hud.add( camLeft ).expand().left();
+        // hud.add( tinta );
+        // hud.add( camRight ).expand().right();
+        // hud.row();
+        // hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
+
+        pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
+        camLeft.setPosition( 0, stage.getHeight()/2 -camLeft.getHeight() /2 );
+        camRight.setPosition( stage.getWidth() -camRight.getWidth() , stage.getHeight()/2 -camRight.getHeight() /2);
+        tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
+        mover.setPosition( stage.getWidth() *0.03f, stage.getWidth() *0.03f );
+
+        hud.addActor( pauseBut );
+        hud.addActor( camLeft );
+        hud.addActor( camRight );
+        hud.addActor( tinta );
+        hud.addActor( mover );
 
         ChangeListener hudButons = new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if ( optBut.isPressed() ) {
-                    hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    optIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 1;
-                }
                 if ( pauseBut.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -89,8 +103,7 @@ public class StageUtils {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( backBut.isPressed() ) {
                     optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 0;
+                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
             }
         };
@@ -103,7 +116,7 @@ public class StageUtils {
                 if ( camLeft.isPressed() ) {
                     gameplay.world.prevCamera();
                 }
-                if ( camRight.isPressed() ) {
+                else if ( camRight.isPressed() ) {
                     gameplay.world.nextCamera();
                 }
             }
@@ -113,13 +126,19 @@ public class StageUtils {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if ( resumeBut.isPressed() ) {
+                if ( optBut.isPressed() ) {
+                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    optIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    gameplay.toUpdate = 1;
+                }
+                else if ( resumeBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 0;
                 }
-                if ( meniuBut.isPressed() ) {
+                else if ( meniuBut.isPressed() ) {
                     hud.setVisible( true );
+                    hud.addAction( Actions.alpha( 1 ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ), Actions.run( new Runnable() {
 
                         @Override
@@ -145,8 +164,8 @@ public class StageUtils {
 
         meniuBut.addListener( pauseButons );
         resumeBut.addListener( pauseButons );
+        optBut.addListener( pauseButons );
         pauseBut.addListener( hudButons );
-        optBut.addListener( hudButons );
         backBut.addListener( optButons );
         optFill.pack();
         stage.addActor( hud );
@@ -155,7 +174,6 @@ public class StageUtils {
 
         return stage;
     }
-
 
     /**
      * https://bitbucket.org/dermetfan/somelibgdxtests/src/28080ff7dd7bd6d000ec8ba7f9514e177bb03e17/SomeLibgdxTests/src/net/dermetfan/someLibgdxTests/screens/TabsLeftTest.java?at=default

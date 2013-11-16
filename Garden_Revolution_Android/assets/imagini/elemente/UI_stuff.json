@@ -36,7 +36,6 @@
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle:{
 		default:  { imageUp: buton_up , imageDown: buton_down , imageOver: buton_over  },
-		IGoptiuni:{ imageUp: IGoptiuni , pressedOffsetX: 2 , pressedOffsetY: -2},
 		IGpause:  { imageUp: IGpause , pressedOffsetX: -2 , pressedOffsetY: -2},
 		start:    { imageUp: play , pressedOffsetX: -2 , pressedOffsetY: -2},
 		test:     { imageUp: test , pressedOffsetX: -2 , pressedOffsetY: -2},

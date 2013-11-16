@@ -34,7 +34,7 @@ public class Meniu implements Screen {
         final ImageButton exit = new ImageButton( skin, "exit" );
         final ImageButton test1 = new ImageButton( skin, "test" );
 
-        final CheckBox optiuni = new CheckBox( "INTERN", skin );
+        final CheckBox optiuni = new CheckBox( "EXTERN", skin );
 
         final Table tab = new Table();
         tab.setFillParent( true );
@@ -56,7 +56,7 @@ public class Meniu implements Screen {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (! optiuni.isChecked() ) {
+                if ( optiuni.isChecked() ) {
                     optiuni.setText( "INTERN" );
                     LevelSelector.internal = true;
                 }

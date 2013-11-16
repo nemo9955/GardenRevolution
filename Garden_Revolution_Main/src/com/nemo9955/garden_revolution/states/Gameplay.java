@@ -92,10 +92,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     public Gameplay init(FileHandle nivel) {
         toUpdate = 0;
-        
+
         if ( world !=null )
             world.dispose();
-        
+
         world = new World( nivel, cam );
 
         return this;
@@ -270,17 +270,17 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-
-        Ray ray = cam.getPickRay( x, y );
-        world.addShot( ray.origin, ray.direction );
-
+        if ( toUpdate ==0 ) {
+            Ray ray = cam.getPickRay( x, y );
+            world.addShot( ray.origin, ray.direction );
+        }
         return false;
     }
 
     @Override
     public boolean longPress(float x, float y) {
 
-        if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
+        if ( toUpdate ==0 &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = ray.getEndPoint( new Vector3(), distance );

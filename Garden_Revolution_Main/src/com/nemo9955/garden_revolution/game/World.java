@@ -48,7 +48,7 @@ public class World implements Disposable {
     public Array<CatmullRomSpline<Vector3>> paths;
 
     private PerspectiveCamera               cam;
-    private Vector3 tmp = new Vector3();
+    private Vector3                         tmp       = new Vector3();
 
     private Vector3[]                       camPoz;
     public int                              curentCam = 0;
@@ -241,7 +241,7 @@ public class World implements Disposable {
                 instance.calculateBoundingBox( box );
                 colide.add( box );
             }
-            else if ( id.endsWith( "solid" ) ||id.equalsIgnoreCase( "cone" ) ) {
+            else if ( id.endsWith( "solid" ) ) {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
                 colide.add( box );
@@ -250,8 +250,8 @@ public class World implements Disposable {
             else
                 addMediu( instance );
 
-//            if ( !id.startsWith( "path" ) )
-//                System.out.println( id );
+            // if ( !id.startsWith( "path" ) )
+            // System.out.println( id );
         }
 
         for (Array<IndexedObject<Vector3>> pat : cp )
@@ -309,7 +309,7 @@ public class World implements Disposable {
         sortedWaves.clear();
     }
 
-    public void setCamera(int nr) {
+    public void setCamera(int nr) {// FIXME daca se misca prea mult apar probleme
 
         nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
