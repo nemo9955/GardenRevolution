@@ -7,14 +7,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -48,6 +48,8 @@ public class World implements Disposable {
     public Array<CatmullRomSpline<Vector3>> paths;
 
     private PerspectiveCamera               cam;
+    private Vector3 tmp = new Vector3();
+
     private Vector3[]                       camPoz;
     public int                              curentCam = 0;
 
@@ -99,7 +101,7 @@ public class World implements Disposable {
 
     }
 
-    public void render(ModelBatch modelBatch, Lights light, Shader shader) {
+    public void render(ModelBatch modelBatch, Environment light, Shader shader) {
         for (ModelInstance nor : nori )
             modelBatch.render( nor, shader );
         for (ModelInstance e : mediu )
@@ -112,8 +114,6 @@ public class World implements Disposable {
         for (Entitate e : shot )
             e.render( modelBatch );
     }
-
-    private Vector3 tmp = new Vector3();
 
     public void renderLines(ImmediateModeRenderer20 renderer) {
         Vector3 corn[] = new Vector3[8];

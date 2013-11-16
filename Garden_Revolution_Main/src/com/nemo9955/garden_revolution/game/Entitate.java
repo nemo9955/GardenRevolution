@@ -1,10 +1,10 @@
 package com.nemo9955.garden_revolution.game;
 
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -59,7 +59,7 @@ public abstract class Entitate implements Poolable {
         modelBatch.render( model );
     }
 
-    public void render(ModelBatch modelBatch, Lights light) {
+    public void render(ModelBatch modelBatch, Environment light) {
         modelBatch.render( model, light );
     }
 

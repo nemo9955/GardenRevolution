@@ -9,13 +9,14 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -36,7 +37,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
 
     private PerspectiveCamera       cam;
-    private Lights                  lights   = new Lights();
+    private Environment             lights   = new Environment();
     private Shader                  shader;
     private ModelBatch              modelBatch;
     private ImmediateModeRenderer20 renderer;
@@ -59,13 +60,13 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public World                    world;
 
     public Gameplay() {
-        float amb = 0.4f, lum = 0.3f;
         tweeger = new TweenManager();
 
         modelBatch = new ModelBatch();
 
-        lights.ambientLight.set( amb, amb, amb, .5f );
-        lights.add( new DirectionalLight().set( lum, lum, lum, 0f, -15f, 0f ) );
+        // lights.
+        // lights.add( new PointLight().set( Color.BLUE, new Vector3( 0, 10, 0 ), 100 ) );
+        lights.add( new DirectionalLight().set( new Color( 1, 1, 1, 0.1f ), new Vector3( 0, -1, 0 ).nor() ) );
 
         cam = new PerspectiveCamera( 67, scrw, scrh );
         cam.position.set( 0, 12, 0 );
@@ -83,7 +84,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         renderer = new ImmediateModeRenderer20( true, true, 0 );
 
     }
-
 
     @Override
     public void show() {
