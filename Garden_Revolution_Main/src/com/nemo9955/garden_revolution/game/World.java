@@ -250,12 +250,9 @@ public class World implements Disposable {
             else
                 addMediu( instance );
 
-            if ( !id.startsWith( "path" ) )
-                System.out.println( id );
+//            if ( !id.startsWith( "path" ) )
+//                System.out.println( id );
         }
-
-
-        // System.out.println( colide.size );
 
         for (Array<IndexedObject<Vector3>> pat : cp )
             pat.sort();

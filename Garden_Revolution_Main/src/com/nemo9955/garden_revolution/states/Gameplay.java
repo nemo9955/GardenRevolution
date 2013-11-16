@@ -92,6 +92,10 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
     public Gameplay init(FileHandle nivel) {
         toUpdate = 0;
+        
+        if ( world !=null )
+            world.dispose();
+        
         world = new World( nivel, cam );
 
         return this;
@@ -335,7 +339,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        world.dispose();
     }
 
 
@@ -343,8 +346,8 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public void dispose() {
         modelBatch.dispose();
         stage.dispose();
-        world.dispose();
-        skin.dispose();
+        if ( world !=null )
+            world.dispose();
         renderer.dispose();
     }
 }

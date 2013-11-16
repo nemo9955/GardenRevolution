@@ -124,7 +124,6 @@ public class Meniu implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
     }
 
 }

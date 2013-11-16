@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -10,9 +11,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
-import com.nemo9955.garden_revolution.utility.Buton;
 
 
 public class TestScene implements Screen, InputProcessor {
@@ -22,10 +27,18 @@ public class TestScene implements Screen, InputProcessor {
     private OrthographicCamera cam;
 
     private BitmapFont         font;
+    private Stage              stage;
 
-    private Buton              butoane[] = new Buton[1];
+    private TextButton         back    = new TextButton( "back", (Skin) Garden_Revolution.manager.get( Assets.SKIN_JSON.path() ) );
 
-    private float              pozitie   = 0;
+    private float              pozitie = 0;
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        shape.dispose();
+        stage.dispose();
+    }
 
     public TestScene() {
         font = Garden_Revolution.manager.get( Assets.ARIAL32.path() );
@@ -39,15 +52,23 @@ public class TestScene implements Screen, InputProcessor {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         cam.update();
 
-        butoane[0] = new Buton( "back" ).setPozi( 100, 100 ).setOrigin( 0, 0.5f );
-        for (Buton buton : butoane )
-            buton.setCamera( cam );
+        stage = new Stage( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch );
+
+        back.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+            }
+
+        } );
+        stage.addActor( back );
     }
 
     @Override
     public void show() {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
-        Gdx.input.setInputProcessor( this );
+        Gdx.input.setInputProcessor( new InputMultiplexer( this, stage ) );
     }
 
     @Override
@@ -56,18 +77,12 @@ public class TestScene implements Screen, InputProcessor {
         cam.update();
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
-
-
-        if ( butoane[0].isPressed() ) {
-            // Gdx.input.vibrate( 500 );
-            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
-        }
+        stage.act( delta );
 
         // normal image rendering
         batch.setProjectionMatrix( cam.combined );
         batch.begin();
-        for (Buton buton : butoane )
-            buton.render( delta, batch );
+
 
         font.draw( batch, String.format( "Height : %s", Gdx.graphics.getHeight() ), 100, 850 );
         font.draw( batch, String.format( "Width    : %s", Gdx.graphics.getWidth() ), 100, 800 );
@@ -86,6 +101,7 @@ public class TestScene implements Screen, InputProcessor {
 
         batch.end();
 
+        stage.draw();
         // shape rendering
         shape.setProjectionMatrix( cam.combined );
         shape.begin( ShapeType.Line );
@@ -109,15 +125,6 @@ public class TestScene implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        font.dispose();
-        shape.dispose();
-        for (Buton buton : butoane )
-            buton.dispose();
     }
 
     @Override

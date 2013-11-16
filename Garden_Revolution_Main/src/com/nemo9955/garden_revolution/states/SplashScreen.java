@@ -80,6 +80,9 @@ public class SplashScreen implements Screen {
     @Override
     public void dispose() {
         loader.dispose();
+        bara.dispose();
+        fundal.getTexture().dispose();
+        font.dispose();
         batch.dispose();
     }
 

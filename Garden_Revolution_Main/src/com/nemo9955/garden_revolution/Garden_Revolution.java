@@ -94,6 +94,15 @@ public class Garden_Revolution extends Game {
 
     @Override
     public void dispose() {
+        gameplay.dispose();
+        meniu.dispose();
+        selecter.dispose();
+        splash.dispose();
+        test.dispose();
+
+
         manager.dispose();
+
+        System.out.println( "Toate resursele au fost eliminate cu succes !" );
     }
 }
