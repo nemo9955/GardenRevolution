@@ -27,7 +27,11 @@
 	        default: { up: buton_up, down: buton_down, over:buton_over , font: arial_32, pressedOffsetX: 1, pressedOffsetY: -1 },
 	        big:     { up: buton_up, down: buton_down, over:buton_over , font: arial_64, pressedOffsetX: 1, pressedOffsetY: -1 },
 	        bigdemon:{ up: buton_up, down: buton_down, over:buton_over , font: demonized_64, pressedOffsetX: 1, pressedOffsetY: -1 },
-	        demon:   { up: buton_up, down: buton_down, over:buton_over , font: demonized_32, pressedOffsetX: 1, pressedOffsetY: -1 }
+	        demon:   { up: buton_up, down: buton_down, over:buton_over , font: demonized_32, pressedOffsetX: 1, pressedOffsetY: -1 },
+	},
+	
+	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+		default : { font : arial_32 , checkboxOn : buton_over , checkboxOff : buton_down },
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle:{

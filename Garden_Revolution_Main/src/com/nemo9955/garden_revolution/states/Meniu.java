@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,8 +33,9 @@ public class Meniu implements Screen {
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );
         final ImageButton test1 = new ImageButton( skin, "test" );
-      //  final ImageButton test2 = new ImageButton( skin, "test" );
-        final ImageButton optiuni = new ImageButton( skin );
+
+        final CheckBox optiuni = new CheckBox( "INTERN", skin );
+
         final Table tab = new Table();
         tab.setFillParent( true );
 
@@ -42,10 +44,7 @@ public class Meniu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( start.isPressed() )
-//                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
                     Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
-                // if(optiuni.isPressed())
-                // Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
                 if ( test1.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.test );
                 if ( exit.isPressed() )
@@ -53,10 +52,26 @@ public class Meniu implements Screen {
             }
         };
 
+        optiuni.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (! optiuni.isChecked() ) {
+                    optiuni.setText( "INTERN" );
+                    LevelSelector.internal = true;
+                }
+                else {
+                    optiuni.setText( "EXTERN" );
+                    LevelSelector.internal = false;
+                }
+            }
+
+        } );
+
+
         start.addListener( asc );
         exit.addListener( asc );
         test1.addListener( asc );
-      //  test2.addListener( asc );
         exit.addListener( asc );
 
         tab.defaults().pad( 20 );
@@ -65,7 +80,7 @@ public class Meniu implements Screen {
         tab.add( optiuni ).colspan( 2 );
         tab.row();
         tab.add( test1 ).expandX();
-   //     tab.add( test2 ).expandX().left();
+        // tab.add( test2 ).expandX().left();
         tab.row();
         tab.add( exit ).colspan( 2 );
 
@@ -83,17 +98,6 @@ public class Meniu implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
         tweeger.update( delta );
-
-        /*
-         * if ( butoane[0].isPressed() )
-         * Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
-         * if ( butoane[1].isPressed() )
-         * Garden_Revolution.game.setScreen( Garden_Revolution.bullet );
-         * if ( butoane[2].isPressed() )
-         * Garden_Revolution.game.setScreen( Garden_Revolution.test );
-         * if ( butoane[3].isPressed() )
-         * Gdx.app.exit();
-         */
 
         stage.act();
         stage.draw();
