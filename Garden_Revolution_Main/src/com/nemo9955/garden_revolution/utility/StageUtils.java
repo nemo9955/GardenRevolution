@@ -4,14 +4,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.states.Gameplay;
@@ -61,10 +64,28 @@ public class StageUtils {
         backBut.setPosition( 50, 50 );
         optFill.addActor( backBut );
 
-        Image tinta = new Image( skin, "tinta" );
+        final TextButton backTowe = new TextButton( "Back", skin );
 
+        final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
+        final HorizontalGroup upgrades = new HorizontalGroup();
+        final VerticalGroup selecter = new VerticalGroup();
+
+
+        selecter.addActor( backTowe );
+        final SplitPane panel = new SplitPane( selecter, upgrades, false, skin );
+
+        panel.setFillParent( true );
+        panel.setVisible( false );
+        panel.addAction( Actions.alpha( 0 ) );
+        panel.setSplitAmount( 0.3f );
+        panel.setMaxSplitAmount( 0.4f );
+        panel.setMinSplitAmount( 0.2f );
+
+
+        Image tinta = new Image( skin, "tinta" );
         gameplay.viataTurn = new Label( "Life ", skin );
 
+        turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
         gameplay.viataTurn.setPosition( 0, stage.getHeight() -pauseBut.getHeight() );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
@@ -78,7 +99,23 @@ public class StageUtils {
         hud.addActor( camRight );
         hud.addActor( tinta );
         hud.addActor( mover );
+        hud.addActor( turnIG );
 
+        // pentru tot ce tine de upgradarea turnurilor
+        ChangeListener turnButons = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( backTowe.isPressed() ) {
+                    panel.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                }
+
+            }
+        };
+
+
+        // pentru elementele din HUD
         ChangeListener hudButons = new ChangeListener() {
 
             @Override
@@ -88,9 +125,21 @@ public class StageUtils {
                     pauseIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
+                else if ( camLeft.isPressed() ) {
+                    gameplay.world.prevCamera();
+                }
+                else if ( camRight.isPressed() ) {
+                    gameplay.world.nextCamera();
+                }
+                else if ( turnIG.isPressed() ) {
+                    hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    panel.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                }
+
             }
         };
 
+        // pentru elementele din optiuni
         ChangeListener optButons = new ChangeListener() {
 
             @Override
@@ -102,20 +151,7 @@ public class StageUtils {
             }
         };
 
-
-        ChangeListener camBut = new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( camLeft.isPressed() ) {
-                    gameplay.world.prevCamera();
-                }
-                else if ( camRight.isPressed() ) {
-                    gameplay.world.nextCamera();
-                }
-            }
-        };
-
+        // pentru butoanele din pause
         ChangeListener pauseButons = new ChangeListener() {
 
             @Override
@@ -153,15 +189,12 @@ public class StageUtils {
             }
         } );
 
-        camRight.addListener( camBut );
-        camLeft.addListener( camBut );
-
-        meniuBut.addListener( pauseButons );
-        resumeBut.addListener( pauseButons );
-        optBut.addListener( pauseButons );
-        pauseBut.addListener( hudButons );
+        panel.addListener( turnButons );
+        hud.addListener( hudButons );
+        pauseIG.addListener( pauseButons );
         backBut.addListener( optButons );
         optFill.pack();
+        stage.addActor( panel );
         stage.addActor( hud );
         stage.addActor( optIG );
         stage.addActor( pauseIG );
