@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
@@ -44,8 +45,9 @@ public class World implements Disposable {
     public Array<Shot>                      shot      = new Array<Shot>( false, 10 );
 
     public Array<BoundingBox>               colide    = new Array<BoundingBox>( false, 10 );
-
     public Array<CatmullRomSpline<Vector3>> paths;
+    private int                             viata;
+
 
     private PerspectiveCamera               cam;
     private Vector3                         tmp       = new Vector3();
@@ -59,7 +61,7 @@ public class World implements Disposable {
         this.cam = cam;
         makeNori();
         populateWorld( location );
-        addWaves( location );
+        readData( location );
     }
 
     public void update(float delta) {
@@ -272,7 +274,7 @@ public class World implements Disposable {
 
     }
 
-    private void addWaves(FileHandle location) {
+    private void readData(FileHandle location) {
 
         Element map = null;
         try {
@@ -282,6 +284,8 @@ public class World implements Disposable {
             e.printStackTrace();
         }
         waves = new Waves( this );
+
+        setViata( map.getInt( "viata", 100 ) );
 
         Array<Element> tmpWaves = map.getChildrenByName( "wave" );
         tmpWaves.shrink();
@@ -307,6 +311,22 @@ public class World implements Disposable {
             }
         }
         sortedWaves.clear();
+    }
+
+
+    public int getViata() {
+        return viata;
+    }
+
+
+    public void setViata(int viata) {
+        this.viata = viata;
+        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
+    }
+
+    public void addViata(int amount) {
+        this.viata += amount;
+        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
     public void setCamera(int nr) {
@@ -384,7 +404,7 @@ public class World implements Disposable {
 
                                         @Override
                                         protected Inamic newObject() {
-                                            return new Inamic();
+                                            return new Inamic( World.this );
                                         }
                                     };
 
@@ -392,7 +412,7 @@ public class World implements Disposable {
 
                                         @Override
                                         protected Aliat newObject() {
-                                            return new Aliat();
+                                            return new Aliat( World.this );
                                         }
                                     };
 
@@ -400,7 +420,7 @@ public class World implements Disposable {
 
                                         @Override
                                         protected Shot newObject() {
-                                            return new Shot();
+                                            return new Shot( World.this );
                                         }
                                     };
 

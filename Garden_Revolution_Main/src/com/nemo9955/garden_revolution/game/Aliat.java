@@ -12,8 +12,8 @@ public class Aliat extends Vietate {
 
     public Vector3 duty;
 
-    public Aliat() {
-        super();
+    public Aliat(World world) {
+        super( world );
         duty = new Vector3();
     }
 
@@ -38,8 +38,8 @@ public class Aliat extends Vietate {
     @Override
     public void update(float delta) {
         super.update( delta );
-        
-        
+
+
         final float rot = 65f;
         final float spd = 7f;
         if ( Gdx.input.isKeyPressed( Keys.UP ) ) {

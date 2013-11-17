@@ -15,8 +15,8 @@ public class Shot extends Entitate {
 
     private float   life;
 
-    public Shot() {
-        super();
+    public Shot(World world) {
+        super(world);
     }
 
     public Shot create(Vector3 position, Vector3 direction) {

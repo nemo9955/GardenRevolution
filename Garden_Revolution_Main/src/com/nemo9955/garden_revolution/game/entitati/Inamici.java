@@ -12,12 +12,16 @@ public enum Inamici {
     MORCOV("morcov", Assets.MORCOV);//
 
 
-    String nume;
-    Assets type;
+    String             nume;
+    Assets             type;
+    public final int   force;
+    public final float speed;
 
     Inamici(String nume, Assets type) {
         this.nume = nume;
         this.type = type;
+        force = 5;
+        speed = 8;
     }
 
     public Model getModel() {
@@ -27,5 +31,6 @@ public enum Inamici {
     public String getName() {
         return nume;
     }
+
 
 }

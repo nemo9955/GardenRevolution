@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,10 +20,10 @@ import com.nemo9955.garden_revolution.states.Gameplay;
 public class StageUtils {
 
 
-    public static Stage makeGamePlayStage(Stage stage, Skin skin, final Gameplay gameplay) {
+    public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
         stage = new Stage();
 
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         final Touchpad mover = new Touchpad( 5, skin );
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
@@ -61,24 +62,17 @@ public class StageUtils {
         optFill.addActor( backBut );
 
         Image tinta = new Image( skin, "tinta" );
-        tinta.setX( stage.getWidth() -tinta.getWidth() /2 );
-        tinta.setY( stage.getHeight() -tinta.getHeight() /2 );
 
-        // hud.add();
-        // hud.add( pauseBut ).top().right();
-        // hud.row();
-        // hud.add( camLeft ).expand().left();
-        // hud.add( tinta );
-        // hud.add( camRight ).expand().right();
-        // hud.row();
-        // hud.add( mover ).bottom().left().padLeft( stage.getWidth() *0.03f ).padBottom( stage.getWidth() *0.03f );
+        gameplay.viataTurn = new Label( "Life ", skin );
 
+        gameplay.viataTurn.setPosition( 0, stage.getHeight() -pauseBut.getHeight() );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
-        camLeft.setPosition( 0, stage.getHeight()/2 -camLeft.getHeight() /2 );
-        camRight.setPosition( stage.getWidth() -camRight.getWidth() , stage.getHeight()/2 -camRight.getHeight() /2);
+        camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
+        camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
         mover.setPosition( stage.getWidth() *0.03f, stage.getWidth() *0.03f );
 
+        hud.addActor( gameplay.viataTurn );
         hud.addActor( pauseBut );
         hud.addActor( camLeft );
         hud.addActor( camRight );

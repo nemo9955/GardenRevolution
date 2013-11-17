@@ -19,9 +19,10 @@ public class Inamic extends Vietate {
     public Vector3            flag;
     private Vector3           offset;
     private Inamici           type;
+    private int               forta;
 
-    public Inamic() {
-        super();
+    public Inamic(World world) {
+        super( world );
         offset = new Vector3();
         flag = new Vector3();
     }
@@ -30,6 +31,9 @@ public class Inamic extends Vietate {
         this.type = type;
 
         super.init( x, y, z );
+
+        forta = type.force;
+        viteza = type.speed;
 
         offset.set( MathUtils.random( -20, 20 ), 0, MathUtils.random( -20, 20 ) );
         offset.scl( 0.1f );
@@ -64,13 +68,14 @@ public class Inamic extends Vietate {
 
     protected void movement(float delta) {
         super.movement( delta );
-        dir.set( flag ).sub( poz ).nor().scl( speed *delta );
+        dir.set( flag ).sub( poz ).nor().scl( viteza *delta );
         move( dir );
         if ( flag.epsilonEquals( poz, 0.5f ) ) {
             percent += STEP;
             if ( percent >=1 ) {
-                // TODO cand ajunge la capatul drumului
-                speed = 0;
+                world.addViata( -forta );
+                viteza = 0;
+                dead = true;
             }
             drum.valueAt( flag, percent +STEP );
             lookAt( drum.valueAt( flag, percent +STEP ) );

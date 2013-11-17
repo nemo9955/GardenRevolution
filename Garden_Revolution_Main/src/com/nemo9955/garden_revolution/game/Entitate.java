@@ -19,8 +19,10 @@ public abstract class Entitate implements Poolable {
     protected CustomBox     box;
     public float            angle;
     public Vector3          poz;
+    protected final World   world;
 
-    public Entitate() {
+    public Entitate(World world) {
+        this.world = world;
         poz = new Vector3();
         box = new CustomBox();
 

@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
@@ -52,8 +52,9 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public short                    toUpdate = 0;
     private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
     private final Vector3           tmp      = new Vector3();
-    private Stage                   stage;
-    private Skin                    skin;
+    public Stage                    stage;
+    public Label                    viataTurn;
+
     private GestureDetector         gestures = new GestureDetector( this );
     private TweenManager            tweeger;
 
@@ -74,7 +75,7 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         cam.far = 300f;
         cam.update();
 
-        stage = StageUtils.makeGamePlayStage( stage, skin, this );
+        stage = StageUtils.makeGamePlayStage( stage, this );
 
         shader = new CustShader();
         shader.init();

@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector3;
 public abstract class Vietate extends Entitate {
 
     public AnimationController animation;
-    public float               speed;
+    public float               viteza;
     public Vector3             dir;
 
 
-    public Vietate() {
-        super();
+    public Vietate(World world) {
+        super( world );
         dir = new Vector3();
     }
 
@@ -20,7 +20,7 @@ public abstract class Vietate extends Entitate {
         super.init( x, y, z );
         animation = new AnimationController( model );
         dir = Vector3.Zero;
-        speed = 9;
+        viteza = 4;
     }
 
     @Override
