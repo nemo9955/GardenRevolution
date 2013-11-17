@@ -139,7 +139,7 @@ public class World extends GestureAdapter implements Disposable {
         for (Turn turn : turnuri ) {
             corn = turn.baza.getCorners();
             for (Vector3 crn : corn ) {
-                renderer.color( 0.2f, 0, 0.5f, 1 );
+                renderer.color( 0.5f, 0, 0.5f, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
         }
