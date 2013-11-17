@@ -150,8 +150,6 @@ public class World extends GestureAdapter implements Disposable {
                 renderer.color( 1, 0, 0, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
-            renderer.color( 1, 0, 0, 1 );
-            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
 
         for (Entitate e : ally ) {
@@ -160,8 +158,6 @@ public class World extends GestureAdapter implements Disposable {
                 renderer.color( 0, 0, 1, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
-            renderer.color( 0, 0, 1, 1 );
-            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
 
         for (Entitate e : shot ) {
@@ -170,27 +166,19 @@ public class World extends GestureAdapter implements Disposable {
                 renderer.color( 0, 1, 1, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
-            renderer.color( 0, 1, 1, 1 );
-            renderer.vertex( e.box.getCenter().x, e.box.getCenter().y, e.box.getCenter().z );
         }
-
-        float val = 0;
-        while ( val <=1f ) {
-            paths.get( 0 ).valueAt( tmp, val );
-            renderer.color( 0.5f, 0f, 0f, 1f );
-            renderer.vertex( tmp.x, tmp.y, tmp.z );
-            val += 1f /100f;
-        }
-        val = 0;
-        while ( val <=1f ) {
-            paths.get( 1 ).valueAt( tmp, val );
-            renderer.color( 0f, 0f, 0.5f, 1f );
-            renderer.vertex( tmp.x, tmp.y, tmp.z );
-            val += 1f /100f;
+        int pts = paths.size;
+        for (int i = 0 ; i <pts ; i ++ ) {
+            float val = 0;
+            while ( val <=1f ) {
+                paths.get( i ).valueAt( tmp, val );
+                renderer.color( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
+                renderer.vertex( tmp.x, tmp.y, tmp.z );
+                val += 1f /100f;
+            }
         }
 
     }
-
 
     private void makeNori() {
         nori.clear();

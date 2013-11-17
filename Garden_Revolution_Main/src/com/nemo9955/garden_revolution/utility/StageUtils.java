@@ -77,9 +77,9 @@ public class StageUtils {
         panel.setFillParent( true );
         panel.setVisible( false );
         panel.addAction( Actions.alpha( 0 ) );
-        panel.setSplitAmount( 0.3f );
         panel.setMaxSplitAmount( 0.4f );
         panel.setMinSplitAmount( 0.2f );
+        panel.setSplitAmount( 0.3f );
 
 
         Image tinta = new Image( skin, "tinta" );
@@ -109,8 +109,8 @@ public class StageUtils {
                 if ( backTowe.isPressed() ) {
                     panel.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    gameplay.toUpdate = 0;
                 }
-
             }
         };
 
@@ -134,6 +134,7 @@ public class StageUtils {
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     panel.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    gameplay.toUpdate = 1;
                 }
 
             }
