@@ -66,7 +66,7 @@ public class World extends GestureAdapter implements Disposable {
     public World(FileHandle location, PerspectiveCamera cam) {
         this.cam = cam;
         gestures = new GestureDetector( this );
-        gestures.setLongPressSeconds( 0.5f );
+        gestures.setLongPressSeconds( 1f );
         makeNori();
         populateWorld( location );
         readData( location );
@@ -132,6 +132,14 @@ public class World extends GestureAdapter implements Disposable {
             corn = box.getCorners();
             for (Vector3 crn : corn ) {
                 renderer.color( 1, 0.5f, 0, 1 );
+                renderer.vertex( crn.x, crn.y, crn.z );
+            }
+        }
+
+        for (Turn turn : turnuri ) {
+            corn = turn.baza.getCorners();
+            for (Vector3 crn : corn ) {
+                renderer.color( 0.2f, 0, 0.5f, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
             }
         }
@@ -444,9 +452,18 @@ public class World extends GestureAdapter implements Disposable {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-
-        Ray ray = cam.getPickRay( x, y );
-        addShot( ray.origin, ray.direction );
+        if ( !overview ) {
+            Ray ray = cam.getPickRay( x, y );
+            addShot( ray.origin, ray.direction );
+        }
+        else {
+            Ray ray = cam.getPickRay( x, y );
+            float distance = -ray.origin.y /ray.direction.y;
+            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
+            for (int i = 0 ; i <turnuri.length ; i ++ )
+                if ( turnuri[i].baza.contains( poz ) )
+                    setCamera( i );
+        }
 
         return false;
     }
@@ -454,7 +471,7 @@ public class World extends GestureAdapter implements Disposable {
     @Override
     public boolean longPress(float x, float y) {
 
-        if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
+        if ( !overview &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
             Vector3 poz = ray.getEndPoint( new Vector3(), distance );

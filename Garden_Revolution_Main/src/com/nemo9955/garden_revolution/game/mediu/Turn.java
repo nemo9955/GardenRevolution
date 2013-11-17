@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Turn {
 
-    private BoundingBox          baza     = new BoundingBox();
+    public BoundingBox           baza     = new BoundingBox();
     private Array<BoundingBox>   coliders = new Array<BoundingBox>( false, 1 );
 
     private Array<ModelInstance> parti    = new Array<ModelInstance>( false, 1 );
