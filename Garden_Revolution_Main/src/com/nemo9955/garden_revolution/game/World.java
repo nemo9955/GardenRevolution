@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
@@ -52,7 +53,7 @@ public class World implements Disposable {
     private PerspectiveCamera               cam;
     private Vector3                         tmp       = new Vector3();
 
-    private Vector3[]                       camPoz;
+    private Turn[]                          turnuri;
     public int                              curentCam = 0;
 
     public Waves                            waves;
@@ -203,7 +204,7 @@ public class World implements Disposable {
         Element map = null;
         try {
             map = new XmlReader().parse( location );
-            camPoz = new Vector3[map.getInt( "turnuri" )];
+            turnuri = new Turn[map.getInt( "turnuri" )];
             paths = new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
@@ -228,9 +229,10 @@ public class World implements Disposable {
             // node.rotation.idt();
             // instance.calculateTransforms();
 
-            if ( id.startsWith( "cam" ) ) {
+            if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
-                camPoz[Integer.parseInt( sect[1] ) -1] = scena.nodes.get( i ).translation;
+                turnuri[Integer.parseInt( sect[1] ) -1] = new Turn( instance, scena.nodes.get( i ).translation );
+                addMediu( instance );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -249,11 +251,17 @@ public class World implements Disposable {
                 colide.add( box );
                 addMediu( instance );
             }
+            else if ( id.startsWith( "camera" ) ) {
+                cam.position.set( scena.nodes.get( i ).translation );
+                cam.lookAt( Vector3.Zero );
+                cam.update();
+                System.out.println( scena.nodes.get( i ).translation );
+            }
             else
                 addMediu( instance );
 
-            // if ( !id.startsWith( "path" ) )
-            // System.out.println( id );
+            // if(!id.startsWith( "path" ))
+            // System.out.println(id);
         }
 
         for (Array<IndexedObject<Vector3>> pat : cp )
@@ -270,7 +278,6 @@ public class World implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        setCamera( 2 );
 
     }
 
@@ -331,12 +338,12 @@ public class World implements Disposable {
 
     public void setCamera(int nr) {
 
-        nr = MathUtils.clamp( nr, 0, camPoz.length -1 );
+        nr = MathUtils.clamp( nr, 0, turnuri.length -1 );
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         float distance = -ray.origin.y /ray.direction.y;
         Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
-        cam.position.set( camPoz[nr] );
+        cam.position.set( turnuri[nr].place );// TODO
 
         cam.lookAt( look );
 
@@ -347,7 +354,7 @@ public class World implements Disposable {
 
     public void nextCamera() {
         curentCam ++;
-        if ( curentCam >=camPoz.length )
+        if ( curentCam >=turnuri.length )
             curentCam = 0;
         setCamera( curentCam );
     }
@@ -355,7 +362,7 @@ public class World implements Disposable {
     public void prevCamera() {
         curentCam --;
         if ( curentCam <0 )
-            curentCam = camPoz.length -1;
+            curentCam = turnuri.length -1;
         setCamera( curentCam );
     }
 

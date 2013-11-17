@@ -18,6 +18,8 @@ public enum Assets {
     ROSIE(LOC.MODEL, "rosie.g3db"), //
     MORCOV(LOC.MODEL, "morcov.g3db"), //
 
+    TURN_BASIC(LOC.MODEL, "turn_basic.g3db"), //
+
     ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //
     SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class), //
 

@@ -1,4 +1,4 @@
-<Harta map="harta buna 2.g3db" turnuri="4"  drumuri="2" viata="100" >
+<Harta map="harta buna 3.g3db" turnuri="5"  drumuri="2" viata="666" >
    
     <wave index="1" delay="1" interval="1" >
         <path nr="1" >
