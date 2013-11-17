@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -17,6 +18,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -34,9 +37,10 @@ import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
-public class World implements Disposable {
+public class World extends GestureAdapter implements Disposable {
 
     private Array<Disposable>               toDispose = new Array<Disposable>( false, 1 );
+    public GestureDetector                  gestures;
 
     private Array<ModelInstance>            nori      = new Array<ModelInstance>( false, 10 );
     public Array<ModelInstance>             mediu     = new Array<ModelInstance>( false, 10 );
@@ -52,6 +56,7 @@ public class World implements Disposable {
 
     private PerspectiveCamera               cam;
     private Vector3                         tmp       = new Vector3();
+    private boolean                         overview  = false;
 
     private Turn[]                          turnuri;
     public int                              curentCam = 0;
@@ -60,6 +65,8 @@ public class World implements Disposable {
 
     public World(FileHandle location, PerspectiveCamera cam) {
         this.cam = cam;
+        gestures = new GestureDetector( this );
+        gestures.setLongPressSeconds( 0.5f );
         makeNori();
         populateWorld( location );
         readData( location );
@@ -255,7 +262,7 @@ public class World implements Disposable {
                 cam.position.set( scena.nodes.get( i ).translation );
                 cam.lookAt( Vector3.Zero );
                 cam.update();
-                System.out.println( scena.nodes.get( i ).translation );
+                overview = true;
             }
             else
                 addMediu( instance );
@@ -278,6 +285,8 @@ public class World implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
+        if ( !overview )
+            setCamera( 0 );
 
     }
 
@@ -343,12 +352,13 @@ public class World implements Disposable {
         float distance = -ray.origin.y /ray.direction.y;
         Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
-        cam.position.set( turnuri[nr].place );// TODO
+        cam.position.set( turnuri[nr].place );
 
         cam.lookAt( look );
 
         cam.up.set( Vector3.Y );
         curentCam = nr;
+        overview = false;
         cam.update();
     }
 
@@ -430,6 +440,35 @@ public class World implements Disposable {
                                             return new Shot( World.this );
                                         }
                                     };
+
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+
+        Ray ray = cam.getPickRay( x, y );
+        addShot( ray.origin, ray.direction );
+
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+
+        if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
+            Ray ray = cam.getPickRay( x, y );
+            float distance = -ray.origin.y /ray.direction.y;
+            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
+            if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
+                addAlly( poz.x, poz.y, poz.z );
+            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
+                addFoe( Inamici.ROSIE, poz.x, poz.y, poz.z );
+            else
+                addFoe( Inamici.MORCOV, poz.x, poz.y, poz.z );
+            gestures.invalidateTapSquare();
+        }
+        return false;
+    }
+
 
     @Override
     public void dispose() {

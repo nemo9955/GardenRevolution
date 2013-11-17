@@ -3,10 +3,9 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -18,22 +17,17 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
 import com.nemo9955.garden_revolution.utility.StageUtils;
 
-public class Gameplay implements Screen, InputProcessor, GestureListener {
+public class Gameplay extends InputAdapter implements Screen {
 
 
     private PerspectiveCamera       cam;
@@ -55,7 +49,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
     public Stage                    stage;
     public Label                    viataTurn;
 
-    private GestureDetector         gestures = new GestureDetector( this );
     private TweenManager            tweeger;
 
     public World                    world;
@@ -80,15 +73,13 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
         shader = new CustShader();
         shader.init();
 
-        gestures.setLongPressSeconds( 0.5f );
-
         renderer = new ImmediateModeRenderer20( true, true, 0 );
 
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, world.gestures ) );
     }
 
     public Gameplay init(FileHandle nivel) {
@@ -113,6 +104,8 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
         if ( toUpdate ==0 )
             updateGameplay( delta );
+        else
+            world.gestures.cancel();
 
         modelBatch.begin( cam );
         world.render( modelBatch, lights, shader );
@@ -164,11 +157,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
             startX = screenX;
             startY = screenY;
         }
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
 
@@ -256,79 +244,6 @@ public class Gameplay implements Screen, InputProcessor, GestureListener {
 
         return false;
     }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        if ( toUpdate ==0 ) {
-            Ray ray = cam.getPickRay( x, y );
-            world.addShot( ray.origin, ray.direction );
-        }
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-
-        if ( toUpdate ==0 &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
-            Ray ray = cam.getPickRay( x, y );
-            float distance = -ray.origin.y /ray.direction.y;
-            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
-            if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.addAlly( poz.x, poz.y, poz.z );
-            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.addFoe( Inamici.ROSIE, poz.x, poz.y, poz.z );
-            else
-                world.addFoe( Inamici.MORCOV, poz.x, poz.y, poz.z );
-            gestures.invalidateTapSquare();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
-    }
-
 
     @Override
     public void resize(int width, int height) {

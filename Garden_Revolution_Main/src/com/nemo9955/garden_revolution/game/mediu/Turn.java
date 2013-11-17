@@ -21,7 +21,7 @@ public class Turn {
 
     public Turn(ModelInstance baza, Vector3 poz) {
         parti.add( baza );
-        place = poz.cpy().add( 0, 5, 0 );
+        place = poz.cpy().add( 0, 10, 0 );
         baza.calculateBoundingBox( this.baza );
         this.poz = poz.cpy();
     }
