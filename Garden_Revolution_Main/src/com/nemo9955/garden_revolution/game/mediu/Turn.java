@@ -41,7 +41,7 @@ public class Turn {
             String id = model.nodes.get( i ).id;
 
             if ( id.startsWith( "arma" ) ) {
-                place = model.nodes.get( i ).translation.cpy();
+                place = model.nodes.get( i ).translation.cpy().add( poz );
             }
             else if ( id.startsWith( "colide" ) ) {
                 BoundingBox box = new BoundingBox();

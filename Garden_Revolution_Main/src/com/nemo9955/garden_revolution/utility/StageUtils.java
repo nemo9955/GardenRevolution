@@ -28,7 +28,6 @@ public class StageUtils {
         stage = new Stage();
 
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        final Touchpad mover = new Touchpad( 5, skin );
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
         final ImageButton camRight = new ImageButton( skin, "camRight" );
@@ -87,6 +86,8 @@ public class StageUtils {
 
         Image tinta = new Image( skin, "tinta" );
         gameplay.viataTurn = new Label( "Life ", skin );
+        gameplay.mover = new Touchpad( 5, skin );
+        gameplay.mover.setVisible( false );
 
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
         gameplay.viataTurn.setPosition( 0, stage.getHeight() -pauseBut.getHeight() );
@@ -94,14 +95,14 @@ public class StageUtils {
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
-        mover.setPosition( stage.getWidth() *0.03f, stage.getWidth() *0.03f );
+        gameplay.mover.setPosition( stage.getWidth() *0.03f, stage.getWidth() *0.03f );
 
         hud.addActor( gameplay.viataTurn );
         hud.addActor( pauseBut );
         hud.addActor( camLeft );
         hud.addActor( camRight );
         hud.addActor( tinta );
-        hud.addActor( mover );
+        hud.addActor( gameplay.mover );
         hud.addActor( turnIG );
 
         // pentru tot ce tine de upgradarea turnurilor
@@ -187,12 +188,12 @@ public class StageUtils {
             }
         };
 
-        mover.addListener( new ChangeListener() {
+        gameplay.mover.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameplay.movex = Mod.invertPadX *mover.getKnobPercentX() *Mod.modCamSpeedX;
-                gameplay.movey = Mod.invertPadY *mover.getKnobPercentY() *Mod.modCamSpeedY;
+                gameplay.movex = Mod.invertPadX *gameplay.mover.getKnobPercentX() *Mod.modCamSpeedX;
+                gameplay.movey = Mod.invertPadY *gameplay.mover.getKnobPercentY() *Mod.modCamSpeedY;
             }
         } );
 

@@ -9,18 +9,18 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.CustShader;
@@ -30,28 +30,30 @@ import com.nemo9955.garden_revolution.utility.StageUtils;
 public class Gameplay extends InputAdapter implements Screen {
 
 
-    private PerspectiveCamera       cam;
-    private Environment             lights   = new Environment();
-    private Shader                  shader;
-    private ModelBatch              modelBatch;
-    private ImmediateModeRenderer20 renderer;
+    private PerspectiveCamera cam;
+    private Environment       lights         = new Environment();
+    private Shader            shader;
+    private ModelBatch        modelBatch;
+    private ShapeRenderer     shape;
 
-    private float                   startX, startY;
-    public float                    movex    = 0;
-    public float                    movey    = 0;
-    private float                   deltaX   = 0;
-    private float                   deltaY   = 0;
+    private float             startX, startY;
+    public float              movex          = 0;
+    public float              movey          = 0;
+    private float             deltaX         = 0;
+    private float             deltaY         = 0;
 
-    private Vector3                 dolly    = new Vector3();
-    public short                    toUpdate = 0;
-    private final int               scrw     = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private final Vector3           tmp      = new Vector3();
-    public Stage                    stage;
-    public Label                    viataTurn;
+    private Vector3           dolly          = new Vector3();
+    public short              toUpdate       = 0;
+    private final int         scrw           = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
+    private final Vector3     tmp            = new Vector3();
+    public Stage              stage;
+    public Label              viataTurn;
+    public Touchpad           mover;
 
-    private TweenManager            tweeger;
+    private TweenManager      tweeger;
 
-    public World                    world;
+    public World              world;
+    private float             touchPadTimmer = 0;
 
     public Gameplay() {
         tweeger = new TweenManager();
@@ -59,8 +61,9 @@ public class Gameplay extends InputAdapter implements Screen {
         modelBatch = new ModelBatch();
 
         // lights.
-        // lights.add( new PointLight().set( Color.BLUE, new Vector3( 0, 10, 0 ), 100 ) );
-        lights.add( new DirectionalLight().set( new Color( 1, 1, 1, 0.1f ), new Vector3( 0, -1, 0 ).nor() ) );
+        lights.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
+        lights.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
+        lights.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 1 ) ) );
 
         cam = new PerspectiveCamera( 67, scrw, scrh );
         cam.position.set( 0, 12, 0 );
@@ -73,7 +76,7 @@ public class Gameplay extends InputAdapter implements Screen {
         shader = new CustShader();
         shader.init();
 
-        renderer = new ImmediateModeRenderer20( true, true, 0 );
+        shape = new ShapeRenderer();
 
     }
 
@@ -102,6 +105,14 @@ public class Gameplay extends InputAdapter implements Screen {
 
         tweeger.update( delta );
 
+        if ( touchPadTimmer !=0 &&!mover.isTouched() ) {
+            touchPadTimmer -= delta;
+            if ( touchPadTimmer <0 ) {
+                touchPadTimmer = 0;
+                mover.setVisible( false );
+            }
+        }
+
         if ( toUpdate ==0 )
             updateGameplay( delta );
         else
@@ -111,13 +122,11 @@ public class Gameplay extends InputAdapter implements Screen {
         world.render( modelBatch, lights, shader );
         modelBatch.end();
 
-        renderer.begin( cam.combined, GL10.GL_LINE_STRIP );
-        world.renderLines( renderer );
-        renderer.end();
+        if ( !Gdx.input.isKeyPressed( Keys.NUMPAD_0 ) )
+            world.renderDebug( shape );
 
         stage.act();
         stage.draw();
-        Table.drawDebug( stage );// TODO scapa de asta
 
     }
 
@@ -152,6 +161,13 @@ public class Gameplay extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        if ( screenX <scrw *0.25f &&scrh -screenY <scrh *0.3f ) {// TODO sa fac pad-ul sa reactioneze din primul click
+            mover.setPosition( screenX -mover.getWidth() /2, scrh -screenY -mover.getHeight() /2 );
+            mover.setVisible( true );
+            touchPadTimmer = 1f;
+            return true;
+        }
 
         if ( Mod.moveByTouch &&toUpdate ==0 ) {
             startX = screenX;
@@ -272,6 +288,6 @@ public class Gameplay extends InputAdapter implements Screen {
         stage.dispose();
         if ( world !=null )
             world.dispose();
-        renderer.dispose();
+        shape.dispose();
     }
 }

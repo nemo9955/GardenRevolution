@@ -17,7 +17,8 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -128,67 +129,120 @@ public class World extends GestureAdapter implements Disposable {
             turn.render( modelBatch, light );
     }
 
-    public void renderLines(ImmediateModeRenderer20 renderer) {
-        Vector3 corn[] = new Vector3[8];
+    // public void renderLines() {
+    // Vector3 corn[] = new Vector3[8];
+    //
+    // for (BoundingBox box : colide ) {
+    // corn = box.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 1, 0.5f, 0, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    // for (Turn turn : turnuri ) {
+    // for (BoundingBox box : turn.coliders ) {
+    // corn = box.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 0.3f, 0.9f, 0.2f, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    // }
+    //
+    // for (Turn turn : turnuri ) {
+    // corn = turn.baza.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 0.5f, 0, 0.5f, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    //
+    // for (Entitate e : foe ) {
+    // corn = e.box.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 1, 0, 0, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    //
+    // for (Entitate e : ally ) {
+    // corn = e.box.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 0, 0, 1, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    //
+    // for (Entitate e : shot ) {
+    // corn = e.box.getCorners();
+    // for (Vector3 crn : corn ) {
+    // renderer.color( 0, 1, 1, 1 );
+    // renderer.vertex( crn.x, crn.y, crn.z );
+    // }
+    // }
+    // int pts = paths.size;
+    // for (int i = 0 ; i <pts ; i ++ ) {
+    // float val = 0;
+    // while ( val <=1f ) {
+    // paths.get( i ).valueAt( tmp, val );
+    // renderer.color( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
+    // renderer.vertex( tmp.x, tmp.y, tmp.z );
+    // val += 1f /100f;
+    // }
+    // }
+    //
+    // }
 
-        for (BoundingBox box : colide ) {
-            corn = box.getCorners();
-            for (Vector3 crn : corn ) {
-                renderer.color( 1, 0.5f, 0, 1 );
-                renderer.vertex( crn.x, crn.y, crn.z );
-            }
-        }
-        for (Turn turn : turnuri ) {
-            for (BoundingBox box : turn.coliders ) {
-                corn = box.getCorners();
-                for (Vector3 crn : corn ) {
-                    renderer.color( 0.3f, 0.9f, 0.2f, 1 );
-                    renderer.vertex( crn.x, crn.y, crn.z );
-                }
-            }
-        }
+    public void renderDebug(ShapeRenderer shape) {
 
-        for (Turn turn : turnuri ) {
-            corn = turn.baza.getCorners();
-            for (Vector3 crn : corn ) {
-                renderer.color( 0.5f, 0, 0.5f, 1 );
-                renderer.vertex( crn.x, crn.y, crn.z );
-            }
-        }
+        shape.setProjectionMatrix( cam.combined );
+        shape.begin( ShapeType.Line );
 
-        for (Entitate e : foe ) {
-            corn = e.box.getCorners();
-            for (Vector3 crn : corn ) {
-                renderer.color( 1, 0, 0, 1 );
-                renderer.vertex( crn.x, crn.y, crn.z );
-            }
-        }
+        shape.setColor( 1, 0.5f, 0, 1 );
 
-        for (Entitate e : ally ) {
-            corn = e.box.getCorners();
-            for (Vector3 crn : corn ) {
-                renderer.color( 0, 0, 1, 1 );
-                renderer.vertex( crn.x, crn.y, crn.z );
-            }
-        }
+        for (BoundingBox box : colide )
+            shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
-        for (Entitate e : shot ) {
-            corn = e.box.getCorners();
-            for (Vector3 crn : corn ) {
-                renderer.color( 0, 1, 1, 1 );
-                renderer.vertex( crn.x, crn.y, crn.z );
-            }
-        }
+        shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
+
+        for (Turn turn : turnuri )
+            for (BoundingBox box : turn.coliders )
+                shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
+
+        shape.setColor( 0.5f, 0, 0.5f, 1 );
+
+        for (Turn turn : turnuri )
+            shape.box( turn.baza.min.x, turn.baza.min.y, turn.baza.max.z, turn.baza.getDimensions().x, turn.baza.getDimensions().y, turn.baza.getDimensions().z );
+
+        shape.setColor( 1, 0, 0, 1 );
+
+        for (Entitate e : foe )
+            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+
+        shape.setColor( 0, 0, 1, 1 );
+
+        for (Entitate e : ally )
+            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+
+        shape.setColor( 0, 1, 1, 1 );
+
+        for (Entitate e : shot )
+            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+
+        shape.end();
+
+        shape.begin( ShapeType.Point );
         int pts = paths.size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
             while ( val <=1f ) {
                 paths.get( i ).valueAt( tmp, val );
-                renderer.color( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
-                renderer.vertex( tmp.x, tmp.y, tmp.z );
-                val += 1f /100f;
+                shape.setColor( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
+                shape.point( tmp.x, tmp.y, tmp.z );
+                val += 1f /300f;
             }
         }
+        shape.end();
 
     }
 
