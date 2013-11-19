@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.mediu.Turnuri;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
 
@@ -65,6 +66,7 @@ public class StageUtils {
         optFill.addActor( backBut );
 
         final TextButton backTowe = new TextButton( "Back", skin );
+        final TextButton basicT = new TextButton( "BASIC", skin );
 
         final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
         final HorizontalGroup upgrades = new HorizontalGroup();
@@ -72,6 +74,7 @@ public class StageUtils {
 
 
         selecter.addActor( backTowe );
+        selecter.addActor( basicT );
         final SplitPane panel = new SplitPane( selecter, upgrades, false, skin );
 
         panel.setFillParent( true );
@@ -110,6 +113,9 @@ public class StageUtils {
                     panel.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 0;
+                }
+                else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
+                    gameplay.world.getCurrentTower().upgradeTower( Turnuri.BASIC );
                 }
             }
         };

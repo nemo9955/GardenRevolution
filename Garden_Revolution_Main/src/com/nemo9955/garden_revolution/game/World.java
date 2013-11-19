@@ -39,27 +39,28 @@ import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 public class World extends GestureAdapter implements Disposable {
 
-    private Array<Disposable>               toDispose = new Array<Disposable>( false, 1 );
+    private Array<Disposable>               toDispose  = new Array<Disposable>( false, 1 );
     public GestureDetector                  gestures;
 
-    private Array<ModelInstance>            nori      = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>             mediu     = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>            nori       = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>             mediu      = new Array<ModelInstance>( false, 10 );
 
-    public Array<Inamic>                    foe       = new Array<Inamic>( false, 10 );
-    public Array<Aliat>                     ally      = new Array<Aliat>( false, 10 );
-    public Array<Shot>                      shot      = new Array<Shot>( false, 10 );
+    public Array<Inamic>                    foe        = new Array<Inamic>( false, 10 );
+    public Array<Aliat>                     ally       = new Array<Aliat>( false, 10 );
+    public Array<Shot>                      shot       = new Array<Shot>( false, 10 );
 
-    public Array<BoundingBox>               colide    = new Array<BoundingBox>( false, 10 );
+    public Array<BoundingBox>               colide     = new Array<BoundingBox>( false, 10 );
     public Array<CatmullRomSpline<Vector3>> paths;
     private int                             viata;
 
 
     private PerspectiveCamera               cam;
-    private Vector3                         tmp       = new Vector3();
-    private boolean                         overview  = false;
+    private Vector3                         tmp        = new Vector3();
+    public boolean                          overview   = false;
+    private int                             curentTurn = -1;
 
     private Turn[]                          turnuri;
-    public int                              curentCam = 0;
+    public int                              curentCam  = 0;
 
     public Waves                            waves;
 
@@ -123,6 +124,8 @@ public class World extends GestureAdapter implements Disposable {
             e.render( modelBatch, light );
         for (Entitate e : shot )
             e.render( modelBatch );
+        for (Turn turn : turnuri )
+            turn.render( modelBatch, light );
     }
 
     public void renderLines(ImmediateModeRenderer20 renderer) {
@@ -133,6 +136,15 @@ public class World extends GestureAdapter implements Disposable {
             for (Vector3 crn : corn ) {
                 renderer.color( 1, 0.5f, 0, 1 );
                 renderer.vertex( crn.x, crn.y, crn.z );
+            }
+        }
+        for (Turn turn : turnuri ) {
+            for (BoundingBox box : turn.coliders ) {
+                corn = box.getCorners();
+                for (Vector3 crn : corn ) {
+                    renderer.color( 0.3f, 0.9f, 0.2f, 1 );
+                    renderer.vertex( crn.x, crn.y, crn.z );
+                }
             }
         }
 
@@ -235,7 +247,6 @@ public class World extends GestureAdapter implements Disposable {
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
                 turnuri[Integer.parseInt( sect[1] ) -1] = new Turn( instance, scena.nodes.get( i ).translation );
-                addMediu( instance );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -260,11 +271,10 @@ public class World extends GestureAdapter implements Disposable {
                 cam.update();
                 overview = true;
             }
-            else
+            else {
                 addMediu( instance );
+            }
 
-            // if(!id.startsWith( "path" ))
-            // System.out.println(id);
         }
 
         for (Array<IndexedObject<Vector3>> pat : cp )
@@ -281,7 +291,7 @@ public class World extends GestureAdapter implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        if ( !overview )
+        if ( !overview &&turnuri.length !=0 )
             setCamera( 0 );
 
     }
@@ -348,7 +358,8 @@ public class World extends GestureAdapter implements Disposable {
         float distance = -ray.origin.y /ray.direction.y;
         Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
-        cam.position.set( turnuri[nr].place );
+        cam.position.set( turnuri[nr].place );// TODO
+        curentTurn = nr;
 
         cam.lookAt( look );
 
@@ -356,6 +367,12 @@ public class World extends GestureAdapter implements Disposable {
         curentCam = nr;
         overview = false;
         cam.update();
+    }
+
+    public Turn getCurrentTower() {
+        if ( turnuri.length ==0 )
+            return null;
+        return turnuri[curentTurn];
     }
 
     public void nextCamera() {

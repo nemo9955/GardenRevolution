@@ -8,16 +8,19 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum Turnuri {
 
 
-    BASIC("Turn de baza", Assets.TURN_BASIC);//
+    EMPTY("Nici un turn", 0, null), //
+    BASIC("Turn de baza", 5, Assets.TURN_BASIC);//
 
 
     Assets              type;
     public final String nume;
+    public final int    rank;
 
 
-    Turnuri(String nume, Assets type) {
+    Turnuri(String nume, int rank, Assets type) {
         this.nume = nume;
         this.type = type;
+        this.rank = rank;
     }
 
     public Model getModel() {
