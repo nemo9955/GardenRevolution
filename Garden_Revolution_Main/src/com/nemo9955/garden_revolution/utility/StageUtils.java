@@ -91,8 +91,8 @@ public class StageUtils {
 
         Image tinta = new Image( skin, "tinta" );
         gameplay.viataTurn = new Label( "Life ", skin );
-        gameplay.mover = new Touchpad( 5, skin );
-        gameplay.mover.setVisible( false );
+        gameplay.mover = new Touchpad( 1, skin );
+        gameplay.mover.setVisible( true );
 
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
         gameplay.viataTurn.setPosition( 0, stage.getHeight() -pauseBut.getHeight() );
@@ -100,7 +100,7 @@ public class StageUtils {
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
-        gameplay.mover.setPosition( stage.getWidth() *0.03f, stage.getWidth() *0.03f );
+        gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
 
         hud.addActor( gameplay.viataTurn );
         hud.addActor( pauseBut );
@@ -215,6 +215,8 @@ public class StageUtils {
             public void changed(ChangeEvent event, Actor actor) {
                 gameplay.movex = Mod.invertPadX *gameplay.mover.getKnobPercentX() *Mod.modCamSpeedX;
                 gameplay.movey = Mod.invertPadY *gameplay.mover.getKnobPercentY() *Mod.modCamSpeedY;
+                gameplay.touchPadTimmer = Mod.tPadAlphaDellay;
+                gameplay.mover.addAction( Actions.alpha( 1 ) );
             }
         } );
 

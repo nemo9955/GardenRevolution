@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -53,7 +54,7 @@ public class Gameplay extends InputAdapter implements Screen {
     private TweenManager      tweeger;
 
     public World              world;
-    private float             touchPadTimmer = 0;
+    public float              touchPadTimmer = 0;
 
     public Gameplay() {
         tweeger = new TweenManager();
@@ -105,12 +106,12 @@ public class Gameplay extends InputAdapter implements Screen {
 
         tweeger.update( delta );
 
-        if ( touchPadTimmer !=0 &&!mover.isTouched() ) {
+        if ( touchPadTimmer !=Mod.tPadMinAlpha &&!mover.isTouched() ) {
             touchPadTimmer -= delta;
-            if ( touchPadTimmer <0 ) {
-                touchPadTimmer = 0;
-                mover.setVisible( false );
-            }
+            if ( touchPadTimmer <Mod.tPadMinAlpha )
+                touchPadTimmer = Mod.tPadMinAlpha;
+            if ( touchPadTimmer <1 )
+                mover.addAction( Actions.alpha( touchPadTimmer ) );
         }
 
         if ( toUpdate ==0 )
@@ -161,13 +162,6 @@ public class Gameplay extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        if ( screenX <scrw *0.25f &&scrh -screenY <scrh *0.3f ) {// TODO sa fac pad-ul sa reactioneze din primul click
-            mover.setPosition( screenX -mover.getWidth() /2, scrh -screenY -mover.getHeight() /2 );
-            mover.setVisible( true );
-            touchPadTimmer = 1f;
-            return true;
-        }
 
         if ( Mod.moveByTouch &&toUpdate ==0 ) {
             startX = screenX;

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 public class MainActivity extends AndroidApplication {
 
@@ -16,7 +17,10 @@ public class MainActivity extends AndroidApplication {
         cfg.useAccelerometer = false;
         cfg.useCompass = false;
 
+        Mod.densitate = getResources().getDisplayMetrics().density;
+
         initialize( new Garden_Revolution(), cfg );
+
 
     }
 }

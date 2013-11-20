@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 
 public class TestScene implements Screen, InputProcessor {
@@ -84,6 +85,7 @@ public class TestScene implements Screen, InputProcessor {
         batch.begin();
 
 
+        font.draw( batch, String.format( "Densitate : %s", Mod.densitate ), 100, 200 );
         font.draw( batch, String.format( "Height : %s", Gdx.graphics.getHeight() ), 100, 850 );
         font.draw( batch, String.format( "Width    : %s", Gdx.graphics.getWidth() ), 100, 800 );
 
