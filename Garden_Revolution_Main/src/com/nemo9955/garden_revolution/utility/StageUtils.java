@@ -36,11 +36,8 @@ public class StageUtils {
 
         final TextButton optBut = new TextButton( "Options", skin );
 
-        final Board optFill = new Board();
         final Board hud = new Board();
-        final ScrollPane optIG = new ScrollPane( optFill, skin );
         final Table pauseIG = new Table( skin );
-
 
         pauseIG.setVisible( false );
         pauseIG.addAction( Actions.alpha( 0 ) );
@@ -54,19 +51,26 @@ public class StageUtils {
         pauseIG.row();
         pauseIG.add( meniuBut );
 
+
+        final Table optContinut = new Table();
+        final ScrollPane optIG = new ScrollPane( optContinut, skin );
+
         final TextButton backBut = new TextButton( "Back", skin, "demon" );
         final TextButton updWaves = new TextButton( "Activate Wave", skin );
         final TextButton debug = new TextButton( "Hide Debug", skin );
 
         optIG.addAction( Actions.alpha( 0 ) );
         optIG.setVisible( false );
-        optIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
-        backBut.setPosition( 50, 50 );
-        updWaves.setPosition( 100, 150 );
-        debug.setPosition( 100, 250 );
-        optFill.addActor( updWaves );
-        optFill.addActor( debug );
-        optFill.addActor( backBut );
+        optIG.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
+
+        // backBut.setPosition( 50, 50 );
+        // updWaves.setPosition( 100, 150 );
+        // debug.setPosition( 100, 250 );
+        optContinut.setFillParent( true );
+        optContinut.defaults().space( 70 *Mod.densitate );
+        optContinut.add( updWaves ).row();
+        optContinut.add( debug ).row();
+        optContinut.add( backBut ).row();
 
         final TextButton backTowe = new TextButton( "Back", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
@@ -239,8 +243,7 @@ public class StageUtils {
             }
         } );
 
-        optFill.pack();
-        optIG.setWidget( optFill );
+        optIG.setWidget( optContinut );
 
 
         panel.addListener( turnButons );
