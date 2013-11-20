@@ -15,5 +15,8 @@ public class Mod {
     public static byte    invertDragX  = -1;
     public static byte    invertDragY  = 1;
 
+    public static boolean updateUave   = false;
+    public static boolean showDebug    = true;
+
 
 }

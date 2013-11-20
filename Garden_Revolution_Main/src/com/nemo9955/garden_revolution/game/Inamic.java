@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 
 public class Inamic extends Vietate {
@@ -62,7 +63,7 @@ public class Inamic extends Vietate {
     public void update(float delta) {
         super.update( delta );
         animation.update( delta );
-        if ( Gdx.input.isKeyPressed( Keys.F12 ) )
+        if ( Mod.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) )
             movement( delta );
     }
 

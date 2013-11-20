@@ -30,15 +30,10 @@ public class LevelSelector implements Screen {
     private String           toAcces;
 
     public LevelSelector() {
-        if ( internal )
-            nivelLoc = Gdx.files.internal( "harti/nivele" );
-        else
-            nivelLoc = Gdx.files.local( "harti/nivele" );
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage();
         table = new Table( skin );
         table.setFillParent( true );
-
     }
 
     @Override
@@ -47,7 +42,14 @@ public class LevelSelector implements Screen {
         stage.clear();
 
 
+        if ( internal )
+            nivelLoc = Gdx.files.internal( "harti/nivele" );
+        else
+            nivelLoc = Gdx.files.local( "harti/nivele" );
+
         if ( Gdx.app.getType() ==ApplicationType.Desktop &&internal )
+            lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
+        else if ( Gdx.app.getType() ==ApplicationType.Android &&!internal )
             lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
         else
             lvlLoc = nivelLoc;

@@ -122,7 +122,7 @@ public class Gameplay extends InputAdapter implements Screen {
         world.render( modelBatch, lights, shader );
         modelBatch.end();
 
-        if ( !Gdx.input.isKeyPressed( Keys.NUMPAD_0 ) )
+        if ( Mod.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
             world.renderDebug( shape );
 
         stage.act();

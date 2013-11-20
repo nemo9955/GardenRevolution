@@ -31,7 +31,6 @@ public class StageUtils {
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
         final ImageButton camRight = new ImageButton( skin, "camRight" );
-        final TextButton backBut = new TextButton( "Back", skin, "demon" );
         final TextButton resumeBut = new TextButton( "Resume play", skin );
         final TextButton meniuBut = new TextButton( "Main menu", skin );
 
@@ -56,12 +55,18 @@ public class StageUtils {
         pauseIG.row();
         pauseIG.add( meniuBut );
 
+        final TextButton backBut = new TextButton( "Back", skin, "demon" );
+        final TextButton updWaves = new TextButton( "Activate Wave", skin );
+        final TextButton debug = new TextButton( "Hide Debug", skin );
 
         optIG.addAction( Actions.alpha( 0 ) );
-        optIG.setWidget( optFill );
         optIG.setVisible( false );
         optIG.setBounds( 100, 50, stage.getWidth() -200, stage.getHeight() -100 );
         backBut.setPosition( 50, 50 );
+        updWaves.setPosition( 100, 150 );
+        debug.setPosition( 100, 250 );
+        optFill.addActor( updWaves );
+        optFill.addActor( debug );
         optFill.addActor( backBut );
 
         final TextButton backTowe = new TextButton( "Back", skin );
@@ -156,6 +161,22 @@ public class StageUtils {
                     optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
+                else if ( updWaves.isPressed() ) {
+                    if ( updWaves.isChecked() )
+                        updWaves.setText( "Dezactivate Wave" );
+                    else
+                        updWaves.setText( "Activate Wave" );
+                    updWaves.pack();
+                    Mod.updateUave = !Mod.updateUave;
+                }
+                else if ( debug.isPressed() ) {
+                    if ( debug.isChecked() )
+                        debug.setText( "Show Debug" );
+                    else
+                        debug.setText( "Hide Debug" );
+                    debug.pack();
+                    Mod.showDebug = !Mod.showDebug;
+                }
             }
         };
 
@@ -197,11 +218,14 @@ public class StageUtils {
             }
         } );
 
+        optFill.pack();
+        optIG.setWidget( optFill );
+
+
         panel.addListener( turnButons );
         hud.addListener( hudButons );
         pauseIG.addListener( pauseButons );
-        backBut.addListener( optButons );
-        optFill.pack();
+        optIG.addListener( optButons );
         stage.addActor( panel );
         stage.addActor( hud );
         stage.addActor( optIG );
