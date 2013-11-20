@@ -345,8 +345,10 @@ public class World extends GestureAdapter implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        if ( !overview &&turnuri.length !=0 )
+        if ( !overview &&turnuri.length !=0 ) {
+            overview = false;
             setCamera( 0 );
+        }
 
     }
 
@@ -419,7 +421,6 @@ public class World extends GestureAdapter implements Disposable {
 
         cam.up.set( Vector3.Y );
         curentCam = nr;
-        overview = false;
         cam.update();
     }
 
@@ -511,18 +512,20 @@ public class World extends GestureAdapter implements Disposable {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        if ( !overview ) {
-            Ray ray = cam.getPickRay( x, y );
-            addShot( ray.origin, ray.direction );
-        }
-        else {
+        if ( overview ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
-            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
+            tmp = ray.getEndPoint( new Vector3(), distance );
             for (int i = 0 ; i <turnuri.length ; i ++ )
-                if ( turnuri[i].baza.contains( poz ) )
+                if ( turnuri[i].baza.contains( tmp ) ) {
                     setCamera( i );
+                    overview = false;
+                }
+
+            return true;
         }
+        Ray ray = cam.getPickRay( x, y );
+        addShot( ray.origin, ray.direction );
 
         return false;
     }

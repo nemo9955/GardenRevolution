@@ -46,7 +46,6 @@ public class StageUtils {
         pauseIG.addAction( Actions.alpha( 0 ) );
         pauseIG.setBackground( "pix30" );
         pauseIG.setFillParent( true );
-        // pauseIG.debug();
         pauseIG.add( "PAUSE", "big-green" ).padBottom( stage.getHeight() *0.1f );
         pauseIG.row();
         pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
@@ -94,13 +93,33 @@ public class StageUtils {
         gameplay.mover = new Touchpad( 1, skin );
         gameplay.mover.setVisible( true );
 
+        turnIG.setScale( Mod.densitate );
+        // turnIG.setSize( turnIG.getWidth() *Mod.densitate, turnIG.getHeight() *Mod.densitate );
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
-        gameplay.viataTurn.setPosition( 0, stage.getHeight() -pauseBut.getHeight() );
+
+        gameplay.viataTurn.setScale( Mod.densitate );
+        // gameplay.viataTurn.setSize( gameplay.viataTurn.getWidth() *Mod.densitate , gameplay.viataTurn.getHeight() *Mod.densitate );
+        gameplay.viataTurn.setPosition( 0, stage.getHeight() -gameplay.viataTurn.getHeight() );
+
+        pauseBut.setScale( Mod.densitate );
+        // pauseBut.setSize( pauseBut.getWidth() *Mod.densitate, pauseBut.getHeight() *Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
+
+        camLeft.setScale( Mod.densitate );
+        // camLeft.setSize( camLeft.getWidth() *Mod.densitate, camLeft.getHeight() *Mod.densitate );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
+
+        camRight.setScale( Mod.densitate );
+        // camRight.setSize( camRight.getWidth() *Mod.densitate, camRight.getHeight() *Mod.densitate );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
-        tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
+
+        // gameplay.mover.setScale( Mod.densitate );
+        gameplay.mover.setSize( gameplay.mover.getWidth() *Mod.densitate, gameplay.mover.getHeight() *Mod.densitate );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
+
+        tinta.setScale( Mod.densitate );
+        // tinta.setSize( tinta.getWidth() *Mod.densitate, tinta.getHeight() *Mod.densitate );
+        tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );
         hud.addActor( pauseBut );
