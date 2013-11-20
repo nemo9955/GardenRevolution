@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -33,14 +33,12 @@ public class LevelSelector implements Screen {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage();
         table = new Table( skin );
-        table.setFillParent( true );
     }
 
     @Override
     public void show() {
         table.clear();
         stage.clear();
-
 
         if ( internal )
             nivelLoc = Gdx.files.internal( "harti/nivele" );
@@ -58,15 +56,22 @@ public class LevelSelector implements Screen {
         FileHandle nivele[] = lvlLoc.list();
         String harti[] = new String[nivele.length];
 
-        for (int i = 0 ; i <harti.length ; i ++ ) {
+        for (int i = 0 ; i <harti.length ; i ++ )
             harti[i] = nivele[i].nameWithoutExtension();
-        }
 
         final TextButton play = new TextButton( "Play", skin );
 
         List elem = new List( harti, skin );
-        ScrollPane lista = new ScrollPane( elem, skin, "default" );
-        lista.addListener( new ChangeListener() {
+        SplitPane lista = new SplitPane( elem, table, false, skin );
+        lista.setFillParent( true );
+        lista.setMaxSplitAmount( 0.5f );
+        lista.setMinSplitAmount( 0.3f );
+        lista.setSplitAmount( 0.4f );
+
+       // table.setFillParent( true );
+        table.setHeight( stage.getHeight() );
+
+        elem.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -94,12 +99,12 @@ public class LevelSelector implements Screen {
             }
         } );
 
-        table.add( lista ).expand().left().fillY();
-        table.add( "Select a LEVEL" ).expand().top();
-        table.add( play );
-        table.add( back ).expand().bottom().right();
+        // table.add( lista ).expand().left().fill();
+        table.add( "Select a LEVEL" ).expand().top().row();
+        table.add( play ).expand().row();
+        table.add( back ).bottom().expand().right();
 
-        stage.addActor( table );
+        stage.addActor( lista );
 
         Gdx.input.setInputProcessor( stage );
     }

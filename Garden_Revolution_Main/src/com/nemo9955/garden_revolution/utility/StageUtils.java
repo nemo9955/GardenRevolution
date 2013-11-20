@@ -51,7 +51,6 @@ public class StageUtils {
         pauseIG.row();
         pauseIG.add( meniuBut );
 
-
         final Table optContinut = new Table();
         final ScrollPane optIG = new ScrollPane( optContinut, skin );
 
@@ -63,9 +62,6 @@ public class StageUtils {
         optIG.setVisible( false );
         optIG.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
 
-        // backBut.setPosition( 50, 50 );
-        // updWaves.setPosition( 100, 150 );
-        // debug.setPosition( 100, 250 );
         optContinut.setFillParent( true );
         optContinut.defaults().space( 70 *Mod.densitate );
         optContinut.add( updWaves ).row();
