@@ -162,6 +162,8 @@ public class Gameplay extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
+        System.out.println( screenX +"  " +screenY );
+
         if ( Mod.moveByTouch &&toUpdate ==0 ) {
             startX = screenX;
             startY = screenY;

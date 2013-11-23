@@ -109,6 +109,8 @@ public class StageUtils {
         final TextButton basicT = new TextButton( "BASIC", skin );
         final CircularGroup mainUpgrades = new CircularGroup( new Vector2( 0, stage.getHeight() /2 ), 300, 50, gameplay.shape );
 
+        mainUpgrades.setActivInterval( -20, 20 );
+        mainUpgrades.addActor( basicT );
         backTowe.setPosition( 20 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
         upgradeTower.setVisible( false );
         upgradeTower.addActor( backTowe );
