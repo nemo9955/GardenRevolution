@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.utility;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -18,8 +17,7 @@ public class CircularGroup extends Group {
     private ShapeRenderer shape;
 
     private float         minAngle = 0, maxAngle = 359;
-    private float         spacing  = 10;
-    private int           showMax  = 42;
+    private float         interval = 20;
     private boolean       rotChids = false;
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
@@ -35,27 +33,69 @@ public class CircularGroup extends Group {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw( batch, parentAlpha );
+
         shape.setProjectionMatrix( getStage().getCamera().combined );
         shape.begin( ShapeType.Line );
-        shape.setColor( 1, 1, 1, parentAlpha );
+        shape.setColor( 0.5f, 1, 0.7f, parentAlpha );
         shape.circle( center.x, center.y, radius );
         shape.circle( center.x, center.y, radius +stroke );
         shape.end();
-    }
 
+    }
 
     @Override
     protected void childrenChanged() {
+        int kids = getChildren().size;
 
-        float unghi = minAngle;// TODO make it go in both directions acording to the interval
+        float unghi = ( maxAngle +minAngle ) %360 /2;
+        float direction = Math.abs( minAngle -maxAngle );
+
+        if ( kids ==interval )
+            System.out.print( unghi +" " +direction +" ; " );
+
+        if ( isClockwise( minAngle, maxAngle ) ) {
+            if ( maxAngle +minAngle <0 ) {
+                unghi += 180;
+                direction = 360 -direction;
+            }
+            if ( kids ==interval )
+                System.out.print( "true :  " +unghi +" " +direction +" ; " );
+        }
+        else {
+            if ( maxAngle +minAngle <0 ) {
+                unghi -= 180;
+            }
+            else
+                direction *= -1;
+            if ( kids ==interval )
+                System.out.print( "true :  " +unghi +" " +direction +" ; " );
+        }
+
+        direction /= interval;
+        unghi -= kids *direction /2 -direction /2;
         Vector2 tmp = new Vector2();
+        if ( kids ==interval )
+            System.out.print( kids +" -> " +unghi +" " +direction +"\n" );
 
         for (Actor actor : getChildren() ) {
             tmp = getPosition( tmp, unghi );
-            actor.setPosition( tmp.x,tmp.y );
-            System.out.println( tmp );
-            unghi += 10;// TODO make it take in consideration everything it should
+            actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
+            if ( rotChids ) {
+                actor.setOrigin( actor.getWidth() /2, actor.getHeight() /2 );
+                actor.setRotation( unghi );
+            }
+            unghi += direction;
         }
+    }
+
+    private boolean isClockwise(float min, float max) {
+        float dist = 360 -Math.min( max, min );
+        if ( getChildren().size ==interval )
+            System.out.print( " size (" + ( min +dist ) %360 +" " + ( max +dist ) %360 +") " );
+        if ( ( min +dist ) %360 < ( max +dist ) %360 )
+            return true;
+        return false;
+
     }
 
     private Vector2 getPosition(Vector2 out, float angle) {
@@ -63,26 +103,27 @@ public class CircularGroup extends Group {
     }
 
     /**
-     * Set the min and max angles in degrees to draw the children .
+     * Set the min and max angles in degrees in which the elements will be emphasized and how many should it accept
+     * The direction in which the elements are drawn alse depend on the min and max parameters
      * 
      * @param minAngle
      * @param maxAngle
+     * @param amount
      */
-    public void setActivInterval(float minAngle, float maxAngle) {
-        this.minAngle = minAngle;
-        this.maxAngle = maxAngle;
+    public void setActivInterval(float minAngle, float maxAngle, int amount) {
+        this.minAngle = minAngle >=0 ? minAngle %360 : minAngle %360 +360;
+        this.maxAngle = maxAngle >=0 ? maxAngle %360 : maxAngle %360 +360;
+        this.interval = amount;
+
+        System.out.println( amount +" : " +this.minAngle +" -> " +this.maxAngle );
     }
 
     /**
-     * Wether to rotate the children acording to their position or not .
+     * Whether to rotate the children according to their position or not .
      * 
      * @param rotChildern
      */
     public void setRotateChildren(boolean rotChildern) {
         this.rotChids = rotChildern;
-    }
-
-    public void setSpacing(float spacing) {
-        this.spacing = spacing;
     }
 }

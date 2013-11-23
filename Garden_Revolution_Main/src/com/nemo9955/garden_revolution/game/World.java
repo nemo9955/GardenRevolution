@@ -57,6 +57,7 @@ public class World extends GestureAdapter implements Disposable {
 
     private PerspectiveCamera               cam;
     private Vector3                         tmp        = new Vector3();
+    private Vector3                         tmp2       = new Vector3();
     public boolean                          overview   = false;
     private int                             curentTurn = -1;
 
@@ -165,21 +166,19 @@ public class World extends GestureAdapter implements Disposable {
         for (Entitate e : shot )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
-        shape.end();
-
-        shape.begin( ShapeType.Point );
         int pts = paths.size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
-            while ( val <=1f ) {
-                paths.get( i ).valueAt( tmp, val );
+            paths.get( i ).valueAt( tmp, val );
+            while ( val <1f ) {
+                val += 1f /150f;
+                paths.get( i ).valueAt( tmp2, val );
                 shape.setColor( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
-                shape.point( tmp.x, tmp.y, tmp.z );
-                val += 1f /300f;
+                shape.line( tmp, tmp2 );
+                tmp.set( tmp2 );
             }
         }
         shape.end();
-
     }
 
     private void makeNori() {

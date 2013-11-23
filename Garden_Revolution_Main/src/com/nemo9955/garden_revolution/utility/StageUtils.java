@@ -104,17 +104,36 @@ public class StageUtils {
         optContinut.add( backBut ).row();
 
 
-        final Board upgradeTower = new Board();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
+        final Group upgradeTower = new Group();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
         final TextButton backTowe = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
-        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( 0, stage.getHeight() /2 ), 300, 50, gameplay.shape );
+        final TextButton fill1 = new TextButton( "fill1", skin );
+        final TextButton fill2 = new TextButton( "fill2", skin );
+        final TextButton fill3 = new TextButton( "fill3", skin );
+        final TextButton fill4 = new TextButton( "fill4", skin );
+        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 300, 100, gameplay.shape );
+        final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
 
-        mainUpgrades.setActivInterval( -20, 20 );
+
+        mainUpgrades.setActivInterval( 270, 90, 5 );
         mainUpgrades.addActor( basicT );
-        backTowe.setPosition( 20 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
+        mainUpgrades.addActor( fill1 );
+        mainUpgrades.addActor( fill2 );
+        mainUpgrades.addActor( fill3 );
+        mainUpgrades.addActor( fill4 );
+
+        secondUpgrades.setActivInterval( 50, -50, 10 );
+        // secondUpgrades.addActor( fill1 );
+        // secondUpgrades.addActor( fill2 );
+        // secondUpgrades.addActor( fill3 );
+        // secondUpgrades.addActor( fill4 );
+
+
+        backTowe.setPosition( 25 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
         upgradeTower.setVisible( false );
         upgradeTower.addActor( backTowe );
         upgradeTower.addActor( mainUpgrades );
+        upgradeTower.addActor( secondUpgrades );
 
         // pentru elementele din HUD
         ChangeListener hudButons = new ChangeListener() {
@@ -234,10 +253,10 @@ public class StageUtils {
         pauseIG.addListener( pauseButons );
         optIG.addListener( optButons );
 
+        stage.addActor( upgradeTower );
         stage.addActor( hud );
         stage.addActor( optIG );
         stage.addActor( pauseIG );
-        stage.addActor( upgradeTower );
 
         return stage;
     }
