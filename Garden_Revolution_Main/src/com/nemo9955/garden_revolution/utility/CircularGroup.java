@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 
@@ -21,12 +20,8 @@ public class CircularGroup extends Group {
         this.radius = radius;
         this.stroke = stroke;
         this.shape = shape;
-    }
-
-    @Override
-    public void addActor(Actor actor) {
-        super.addActor( actor );
-
+        setSize( radius +stroke, radius +stroke );
+        setOrigin( center.x, center.y );
     }
 
     @Override
@@ -37,7 +32,6 @@ public class CircularGroup extends Group {
         shape.circle( center.x, center.y, radius );
         shape.circle( center.x, center.y, radius +stroke );
         shape.end();
-
     }
 
 }

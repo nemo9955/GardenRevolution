@@ -129,70 +129,6 @@ public class World extends GestureAdapter implements Disposable {
             turn.render( modelBatch, light );
     }
 
-    // public void renderLines() {
-    // Vector3 corn[] = new Vector3[8];
-    //
-    // for (BoundingBox box : colide ) {
-    // corn = box.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 1, 0.5f, 0, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    // for (Turn turn : turnuri ) {
-    // for (BoundingBox box : turn.coliders ) {
-    // corn = box.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 0.3f, 0.9f, 0.2f, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    // }
-    //
-    // for (Turn turn : turnuri ) {
-    // corn = turn.baza.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 0.5f, 0, 0.5f, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    //
-    // for (Entitate e : foe ) {
-    // corn = e.box.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 1, 0, 0, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    //
-    // for (Entitate e : ally ) {
-    // corn = e.box.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 0, 0, 1, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    //
-    // for (Entitate e : shot ) {
-    // corn = e.box.getCorners();
-    // for (Vector3 crn : corn ) {
-    // renderer.color( 0, 1, 1, 1 );
-    // renderer.vertex( crn.x, crn.y, crn.z );
-    // }
-    // }
-    // int pts = paths.size;
-    // for (int i = 0 ; i <pts ; i ++ ) {
-    // float val = 0;
-    // while ( val <=1f ) {
-    // paths.get( i ).valueAt( tmp, val );
-    // renderer.color( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
-    // renderer.vertex( tmp.x, tmp.y, tmp.z );
-    // val += 1f /100f;
-    // }
-    // }
-    //
-    // }
-
     public void renderDebug(ShapeRenderer shape) {
 
         shape.setProjectionMatrix( cam.combined );
@@ -345,10 +281,9 @@ public class World extends GestureAdapter implements Disposable {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        if ( !overview &&turnuri.length !=0 ) {
-            overview = false;
+        if ( !overview &&turnuri.length !=0 )
             setCamera( 0 );
-        }
+
 
     }
 
@@ -422,6 +357,7 @@ public class World extends GestureAdapter implements Disposable {
         cam.up.set( Vector3.Y );
         curentCam = nr;
         cam.update();
+        overview = false;
     }
 
     public Turn getCurrentTower() {

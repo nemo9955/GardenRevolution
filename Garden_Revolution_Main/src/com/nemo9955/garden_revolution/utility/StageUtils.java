@@ -24,104 +24,41 @@ public class StageUtils {
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
         stage = new Stage();
-
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+
+        final Board hud = new Board(); // aici e tot ce e legat de HUD ------------------------------------------------------------------------------
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
         final ImageButton camRight = new ImageButton( skin, "camRight" );
-        final TextButton resumeBut = new TextButton( "Resume play", skin );
-        final TextButton meniuBut = new TextButton( "Main menu", skin );
-
-        final TextButton optBut = new TextButton( "Options", skin );
-
-        final Board hud = new Board();
-        final Table pauseIG = new Table( skin );
-
-        pauseIG.setVisible( false );
-        pauseIG.addAction( Actions.alpha( 0 ) );
-        pauseIG.setBackground( "pix30" );
-        pauseIG.setFillParent( true );
-        pauseIG.add( "PAUSE", "big-green" ).padBottom( stage.getHeight() *0.1f );
-        pauseIG.row();
-        pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
-        pauseIG.row();
-        pauseIG.add( optBut ).padBottom( stage.getHeight() *0.07f );
-        pauseIG.row();
-        pauseIG.add( meniuBut );
-
-        final Table optContinut = new Table();
-        final ScrollPane optIG = new ScrollPane( optContinut, skin );
-
-        final TextButton backBut = new TextButton( "Back", skin, "demon" );
-        final TextButton updWaves = new TextButton( "Activate Wave", skin );
-        final TextButton debug = new TextButton( "Hide Debug", skin );
-
-        optIG.addAction( Actions.alpha( 0 ) );
-        optIG.setVisible( false );
-        optIG.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
-
-        optContinut.setFillParent( true );
-        optContinut.defaults().space( 70 *Mod.densitate );
-        optContinut.add( updWaves ).row();
-        optContinut.add( debug ).row();
-        optContinut.add( backBut ).row();
-
-        final TextButton backTowe = new TextButton( "Back", skin );
-        final TextButton basicT = new TextButton( "BASIC", skin );
-
         final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
-
-
-        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( 0, stage.getHeight() /2 ), 100, 20, gameplay.shape );
-        final Group upgradeTower = new Group();
-        upgradeTower.addActor( mainUpgrades );
-        upgradeTower.setVisible( false );
-
-
-        // final HorizontalGroup upgrades = new HorizontalGroup();
-        // final VerticalGroup selecter = new VerticalGroup();
-        // selecter.addActor( backTowe );
-        // selecter.addActor( basicT );
-        // final SplitPane panel = new SplitPane( selecter, upgrades, false, skin );
-        // panel.setFillParent( true );
-        // panel.setVisible( false );
-        // panel.addAction( Actions.alpha( 0 ) );
-        // panel.setMaxSplitAmount( 0.4f );
-        // panel.setMinSplitAmount( 0.2f );
-        // panel.setSplitAmount( 0.3f );
-
 
         Image tinta = new Image( skin, "tinta" );
         gameplay.viataTurn = new Label( "Life ", skin );
         gameplay.mover = new Touchpad( 1, skin );
         gameplay.mover.setVisible( true );
 
+        /*
+         * turnIG.setSize( turnIG.getWidth() *Mod.densitate, turnIG.getHeight() *Mod.densitate );
+         * gameplay.viataTurn.setSize( gameplay.viataTurn.getWidth() *Mod.densitate , gameplay.viataTurn.getHeight() *Mod.densitate );
+         * pauseBut.setSize( pauseBut.getWidth() *Mod.densitate, pauseBut.getHeight() *Mod.densitate );
+         * camLeft.setSize( camLeft.getWidth() *Mod.densitate, camLeft.getHeight() *Mod.densitate );
+         * camRight.setSize( camRight.getWidth() *Mod.densitate, camRight.getHeight() *Mod.densitate );
+         * gameplay.mover.setScale( Mod.densitate );
+         * tinta.setSize( tinta.getWidth() *Mod.densitate, tinta.getHeight() *Mod.densitate );
+         */
         turnIG.setScale( Mod.densitate );
-        // turnIG.setSize( turnIG.getWidth() *Mod.densitate, turnIG.getHeight() *Mod.densitate );
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
-
         gameplay.viataTurn.setScale( Mod.densitate );
-        // gameplay.viataTurn.setSize( gameplay.viataTurn.getWidth() *Mod.densitate , gameplay.viataTurn.getHeight() *Mod.densitate );
         gameplay.viataTurn.setPosition( 0, stage.getHeight() -gameplay.viataTurn.getHeight() );
-
         pauseBut.setScale( Mod.densitate );
-        // pauseBut.setSize( pauseBut.getWidth() *Mod.densitate, pauseBut.getHeight() *Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
-
         camLeft.setScale( Mod.densitate );
-        // camLeft.setSize( camLeft.getWidth() *Mod.densitate, camLeft.getHeight() *Mod.densitate );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
-
         camRight.setScale( Mod.densitate );
-        // camRight.setSize( camRight.getWidth() *Mod.densitate, camRight.getHeight() *Mod.densitate );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
-
-        // gameplay.mover.setScale( Mod.densitate );
         gameplay.mover.setSize( gameplay.mover.getWidth() *Mod.densitate, gameplay.mover.getHeight() *Mod.densitate );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
-
         tinta.setScale( Mod.densitate );
-        // tinta.setSize( tinta.getWidth() *Mod.densitate, tinta.getHeight() *Mod.densitate );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );
@@ -132,22 +69,50 @@ public class StageUtils {
         hud.addActor( gameplay.mover );
         hud.addActor( turnIG );
 
-        // pentru tot ce tine de upgradarea turnurilor
-        ChangeListener turnButons = new ChangeListener() {
 
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( backTowe.isPressed() ) {
-                    upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 0;
-                }
-                else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
-                    gameplay.world.getCurrentTower().upgradeTower( Turnuri.BASIC );
-                }
-            }
-        };
+        final Table pauseIG = new Table( skin ); // aici e tot ce are legatura cu meniul de pauza --------------------------------------------------------------------
+        final TextButton resumeBut = new TextButton( "Resume play", skin );
+        final TextButton optBut = new TextButton( "Options", skin );
+        final TextButton meniuBut = new TextButton( "Main menu", skin );
 
+        pauseIG.setVisible( false );
+        pauseIG.setFillParent( true );
+        pauseIG.setBackground( "pix30" );
+        pauseIG.add( "PAUSE", "big-green" ).padBottom( stage.getHeight() *0.1f );
+        pauseIG.row();
+        pauseIG.add( resumeBut ).padBottom( stage.getHeight() *0.07f );
+        pauseIG.row();
+        pauseIG.add( optBut ).padBottom( stage.getHeight() *0.07f );
+        pauseIG.row();
+        pauseIG.add( meniuBut );
+
+
+        final Table optContinut = new Table();// aici e tot ce tine de optiunile in-game ---------------------------------------------------------------------------------
+        final ScrollPane optIG = new ScrollPane( optContinut, skin );
+        final TextButton backBut = new TextButton( "Back", skin, "demon" );
+        final TextButton updWaves = new TextButton( "Activate Wave", skin );
+        final TextButton debug = new TextButton( "Hide Debug", skin );
+
+        optIG.setVisible( false );
+        optIG.setWidget( optContinut );
+        optIG.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
+
+        optContinut.setFillParent( true );
+        optContinut.defaults().space( 70 *Mod.densitate );
+        optContinut.add( updWaves ).row();
+        optContinut.add( debug ).row();
+        optContinut.add( backBut ).row();
+
+
+        final Board upgradeTower = new Board();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
+        final TextButton backTowe = new TextButton( "Bk", skin );
+        final TextButton basicT = new TextButton( "BASIC", skin );
+        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( 0, stage.getHeight() /2 ), 300, 50, gameplay.shape );
+
+        backTowe.setPosition( 20 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
+        upgradeTower.setVisible( false );
+        upgradeTower.addActor( backTowe );
+        upgradeTower.addActor( mainUpgrades );
 
         // pentru elementele din HUD
         ChangeListener hudButons = new ChangeListener() {
@@ -156,7 +121,7 @@ public class StageUtils {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( pauseBut.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    pauseIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
                 else if ( camLeft.isPressed() ) {
@@ -167,40 +132,13 @@ public class StageUtils {
                 }
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    upgradeTower.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    upgradeTower.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
 
             }
         };
 
-        // pentru elementele din optiuni
-        ChangeListener optButons = new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if ( backBut.isPressed() ) {
-                    optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                }
-                else if ( updWaves.isPressed() ) {
-                    if ( updWaves.isChecked() )
-                        updWaves.setText( "Dezactivate Wave" );
-                    else
-                        updWaves.setText( "Activate Wave" );
-                    updWaves.pack();
-                    Mod.updateUave = !Mod.updateUave;
-                }
-                else if ( debug.isPressed() ) {
-                    if ( debug.isChecked() )
-                        debug.setText( "Show Debug" );
-                    else
-                        debug.setText( "Hide Debug" );
-                    debug.pack();
-                    Mod.showDebug = !Mod.showDebug;
-                }
-            }
-        };
 
         // pentru butoanele din pause
         ChangeListener pauseButons = new ChangeListener() {
@@ -231,6 +169,52 @@ public class StageUtils {
             }
         };
 
+
+        // pentru tot ce tine de upgradarea turnurilor
+        ChangeListener turnButons = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( backTowe.isPressed() ) {
+                    upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    gameplay.toUpdate = 0;
+                }
+                else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
+                    gameplay.world.getCurrentTower().upgradeTower( Turnuri.BASIC );
+                }
+            }
+        };
+
+
+        // pentru elementele din optiuni
+        ChangeListener optButons = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( backBut.isPressed() ) {
+                    optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                }
+                else if ( updWaves.isPressed() ) {
+                    if ( updWaves.isChecked() )
+                        updWaves.setText( "Dezactivate Wave" );
+                    else
+                        updWaves.setText( "Activate Wave" );
+                    updWaves.pack();
+                    Mod.updateUave = !Mod.updateUave;
+                }
+                else if ( debug.isPressed() ) {
+                    if ( debug.isChecked() )
+                        debug.setText( "Show Debug" );
+                    else
+                        debug.setText( "Hide Debug" );
+                    debug.pack();
+                    Mod.showDebug = !Mod.showDebug;
+                }
+            }
+        };
+
         gameplay.mover.addListener( new ChangeListener() {
 
             @Override
@@ -242,17 +226,16 @@ public class StageUtils {
             }
         } );
 
-        optIG.setWidget( optContinut );
-
 
         upgradeTower.addListener( turnButons );
         hud.addListener( hudButons );
         pauseIG.addListener( pauseButons );
         optIG.addListener( optButons );
-        stage.addActor( upgradeTower );
+
         stage.addActor( hud );
         stage.addActor( optIG );
         stage.addActor( pauseIG );
+        stage.addActor( upgradeTower );
 
         return stage;
     }
