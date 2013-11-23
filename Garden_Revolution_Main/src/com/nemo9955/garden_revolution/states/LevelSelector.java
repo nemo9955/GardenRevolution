@@ -28,17 +28,21 @@ public class LevelSelector implements Screen {
 
     private FileHandle       lvlLoc;
     private String           toAcces;
+    private SplitPane        lista;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage();
         table = new Table( skin );
+        table.setHeight( stage.getHeight() );
     }
 
     @Override
     public void show() {
         table.clear();
         stage.clear();
+        if ( lista !=null )
+            lista.clear();
 
         if ( internal )
             nivelLoc = Gdx.files.internal( "harti/nivele" );
@@ -62,14 +66,25 @@ public class LevelSelector implements Screen {
         final TextButton play = new TextButton( "Play", skin );
 
         List elem = new List( harti, skin );
-        SplitPane lista = new SplitPane( elem, table, false, skin );
+
+        TextButton back = new TextButton( "Back", skin );
+        back.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+            }
+        } );
+
+        table.add( "Select a LEVEL" ).expand().top().row();
+        table.add( play ).expand().row();
+        table.add( back ).bottom().expand().right();
+
+        lista = new SplitPane( elem, table, false, skin );
         lista.setFillParent( true );
         lista.setMaxSplitAmount( 0.5f );
         lista.setMinSplitAmount( 0.3f );
         lista.setSplitAmount( 0.4f );
-
-       // table.setFillParent( true );
-        table.setHeight( stage.getHeight() );
 
         elem.addListener( new ChangeListener() {
 
@@ -90,19 +105,6 @@ public class LevelSelector implements Screen {
             }
         } );
 
-        TextButton back = new TextButton( "Back", skin );
-        back.addListener( new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
-            }
-        } );
-
-        // table.add( lista ).expand().left().fill();
-        table.add( "Select a LEVEL" ).expand().top().row();
-        table.add( play ).expand().row();
-        table.add( back ).bottom().expand().right();
 
         stage.addActor( lista );
 

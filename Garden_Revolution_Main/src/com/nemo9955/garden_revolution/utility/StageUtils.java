@@ -1,20 +1,18 @@
 package com.nemo9955.garden_revolution.utility;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.mediu.Turnuri;
@@ -72,20 +70,25 @@ public class StageUtils {
         final TextButton basicT = new TextButton( "BASIC", skin );
 
         final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
-        final HorizontalGroup upgrades = new HorizontalGroup();
-        final VerticalGroup selecter = new VerticalGroup();
 
 
-        selecter.addActor( backTowe );
-        selecter.addActor( basicT );
-        final SplitPane panel = new SplitPane( selecter, upgrades, false, skin );
+        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( 0, stage.getHeight() /2 ), 100, 20, gameplay.shape );
+        final Group upgradeTower = new Group();
+        upgradeTower.addActor( mainUpgrades );
+        upgradeTower.setVisible( false );
 
-        panel.setFillParent( true );
-        panel.setVisible( false );
-        panel.addAction( Actions.alpha( 0 ) );
-        panel.setMaxSplitAmount( 0.4f );
-        panel.setMinSplitAmount( 0.2f );
-        panel.setSplitAmount( 0.3f );
+
+        // final HorizontalGroup upgrades = new HorizontalGroup();
+        // final VerticalGroup selecter = new VerticalGroup();
+        // selecter.addActor( backTowe );
+        // selecter.addActor( basicT );
+        // final SplitPane panel = new SplitPane( selecter, upgrades, false, skin );
+        // panel.setFillParent( true );
+        // panel.setVisible( false );
+        // panel.addAction( Actions.alpha( 0 ) );
+        // panel.setMaxSplitAmount( 0.4f );
+        // panel.setMinSplitAmount( 0.2f );
+        // panel.setSplitAmount( 0.3f );
 
 
         Image tinta = new Image( skin, "tinta" );
@@ -135,7 +138,7 @@ public class StageUtils {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( backTowe.isPressed() ) {
-                    panel.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 0;
                 }
@@ -164,7 +167,7 @@ public class StageUtils {
                 }
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    panel.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    upgradeTower.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
 
@@ -242,11 +245,11 @@ public class StageUtils {
         optIG.setWidget( optContinut );
 
 
-        panel.addListener( turnButons );
+        upgradeTower.addListener( turnButons );
         hud.addListener( hudButons );
         pauseIG.addListener( pauseButons );
         optIG.addListener( optButons );
-        stage.addActor( panel );
+        stage.addActor( upgradeTower );
         stage.addActor( hud );
         stage.addActor( optIG );
         stage.addActor( pauseIG );

@@ -35,7 +35,7 @@ public class Gameplay extends InputAdapter implements Screen {
     private Environment       lights         = new Environment();
     private Shader            shader;
     private ModelBatch        modelBatch;
-    private ShapeRenderer     shape;
+    public ShapeRenderer      shape;
 
     private float             startX, startY;
     public float              movex          = 0;
@@ -58,7 +58,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
     public Gameplay() {
         tweeger = new TweenManager();
-
+        shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
 
         // lights.
@@ -77,7 +77,6 @@ public class Gameplay extends InputAdapter implements Screen {
         shader = new CustShader();
         shader.init();
 
-        shape = new ShapeRenderer();
 
     }
 
