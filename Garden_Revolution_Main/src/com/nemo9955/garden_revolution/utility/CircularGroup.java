@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 
 public class CircularGroup extends Group {
@@ -19,7 +20,10 @@ public class CircularGroup extends Group {
     private float         minAngle  = 0, maxAngle = 359;
     private float         interval  = 20;
     private boolean       rotKids   = false;
+
     private boolean       clockwise = true;
+    private float         mid, dir;
+    private float         rotation  = 0;
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
         super();
@@ -46,40 +50,26 @@ public class CircularGroup extends Group {
     @Override
     protected void childrenChanged() {
 
-        float unghi;
-        float direction;
 
-        if ( clockwise && ( minAngle >maxAngle ) ) {
-            float dif = 360 -Math.min( maxAngle, minAngle );
-            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
-            direction = 360 -direction;
-            unghi = ( minAngle +maxAngle -360 ) /2;
-        }
-        else if ( !clockwise && ( minAngle <maxAngle ) ) {
-            float dif = 360 -Math.min( maxAngle, minAngle );
-            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
-            direction = 360 -direction;
-            unghi = ( minAngle +maxAngle -360 ) /2;
-        }
-        else {
-            direction = Math.abs( minAngle -maxAngle );
-            unghi = ( maxAngle +minAngle ) /2;
-        }
-
-        if ( !clockwise )
-            direction *= -1;
-
-        direction /= interval -1;
+        float unghi = rotation +mid;
+        float direction = dir / ( interval -1 );
         unghi = unghi - ( ( ( getChildren().size -1 ) *direction ) /2 );
 
         Vector2 tmp = new Vector2();
         for (Actor actor : getChildren() ) {
             tmp = getPosition( tmp, unghi );
             actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
+
+            if ( Math.abs( unghi ) >mid +Math.abs( dir /2 ) )
+                actor.addAction( Actions.alpha( Math.abs( 1 -unghi / ( Math.abs( dir /2 ) *3 ) ) ) );
+            else
+                actor.addAction( Actions.alpha( 1 ) );
+
             if ( rotKids ) {
                 actor.setOrigin( actor.getWidth() /2, actor.getHeight() /2 );
                 actor.setRotation( unghi );
             }
+
             unghi += direction;
         }
     }
@@ -100,8 +90,35 @@ public class CircularGroup extends Group {
     public void setActivInterval(float firstAngle, float secondAngle, boolean clockwise, int amount) {
         this.minAngle = firstAngle >=0 ? firstAngle %360 : firstAngle %360 +360;
         this.maxAngle = secondAngle >=0 ? secondAngle %360 : secondAngle %360 +360;
-        this.interval = amount;
+        this.interval = amount +1;
         this.clockwise = clockwise;
+
+        float unghi;
+        float direction;
+
+        if ( this.clockwise && ( minAngle >maxAngle ) ) {
+            float dif = 360 -Math.min( maxAngle, minAngle );
+            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
+            direction = 360 -direction;
+            unghi = ( minAngle +maxAngle -360 ) /2;
+        }
+        else if ( !this.clockwise && ( minAngle <maxAngle ) ) {
+            float dif = 360 -Math.min( maxAngle, minAngle );
+            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
+            direction = 360 -direction;
+            unghi = ( minAngle +maxAngle -360 ) /2;
+        }
+        else {
+            direction = Math.abs( minAngle -maxAngle );
+            unghi = ( maxAngle +minAngle ) /2;
+        }
+
+        if ( !this.clockwise )
+            direction *= -1;
+
+        mid = unghi;
+        dir = direction;
+
     }
 
     /**

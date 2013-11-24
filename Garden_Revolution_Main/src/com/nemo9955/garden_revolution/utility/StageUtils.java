@@ -115,7 +115,7 @@ public class StageUtils {
         final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
 
 
-        mainUpgrades.setActivInterval(200 ,100 , false, 5 );
+        mainUpgrades.setActivInterval( 340, 20, true, 2 );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );

@@ -3,66 +3,94 @@ UI_stuff.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+arrows-left-1
+  rotate: false
+  xy: 1, 1
+  size: 40, 200
+  orig: 40, 200
+  offset: 0, 0
+  index: -1
+arrows-right-1
+  rotate: false
+  xy: 43, 1
+  size: 40, 200
+  orig: 40, 200
+  offset: 0, 0
+  index: -1
 mover-bg
   rotate: false
-  xy: 1, 160
+  xy: 85, 101
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
-back
-  rotate: false
-  xy: 1, 108
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-exit
-  rotate: false
-  xy: 103, 210
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-meniu
-  rotate: false
-  xy: 1, 56
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-play
-  rotate: false
-  xy: 103, 158
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-test
-  rotate: false
-  xy: 1, 4
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
 tower-upgrade
   rotate: false
-  xy: 205, 175
+  xy: 85, 14
   size: 54, 85
   orig: 54, 85
   offset: 0, 0
   index: -1
+pix100
+  rotate: false
+  xy: 85, 11
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix30
+  rotate: false
+  xy: 85, 8
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix50
+  rotate: false
+  xy: 85, 5
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+pix80
+  rotate: false
+  xy: 85, 2
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+arrows-down-1
+  rotate: false
+  xy: 141, 19
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+arrows-up-1
+  rotate: false
+  xy: 187, 121
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
 buton_down
   rotate: false
-  xy: 103, 96
+  xy: 223, 59
   size: 60, 60
   split: 14, 15, 11, 11
   orig: 60, 60
   offset: 0, 0
   index: -1
+back
+  rotate: false
+  xy: 223, 7
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 buton_over
   rotate: false
-  xy: 103, 34
+  xy: 269, 141
   size: 60, 60
   split: 14, 16, 13, 16
   orig: 60, 60
@@ -70,7 +98,7 @@ buton_over
   index: -1
 buton_up
   rotate: false
-  xy: 165, 96
+  xy: 285, 79
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
@@ -78,80 +106,66 @@ buton_up
   index: -1
 element1
   rotate: false
-  xy: 165, 34
+  xy: 331, 141
   size: 60, 60
   split: 12, 14, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-arrows-left-1
-  rotate: false
-  xy: 261, 190
-  size: 20, 70
-  orig: 20, 70
-  offset: 0, 0
-  index: -1
 element2
   rotate: false
-  xy: 227, 113
+  xy: 325, 17
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-arrows-right-1
+exit
   rotate: false
-  xy: 227, 41
-  size: 20, 70
-  orig: 20, 70
+  xy: 347, 89
+  size: 100, 50
+  orig: 100, 50
   offset: 0, 0
   index: -1
-IGpause
+meniu
   rotate: false
-  xy: 249, 71
-  size: 39, 40
-  orig: 39, 40
+  xy: 449, 151
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+play
+  rotate: false
+  xy: 449, 99
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+test
+  rotate: false
+  xy: 449, 47
+  size: 100, 50
+  orig: 100, 50
   offset: 0, 0
   index: -1
 tinta
   rotate: false
-  xy: 249, 29
+  xy: 387, 5
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
+IGpause
+  rotate: false
+  xy: 387, 47
+  size: 39, 40
+  orig: 39, 40
+  offset: 0, 0
+  index: -1
 mover-knob
   rotate: false
-  xy: 103, 6
+  xy: 429, 19
   size: 26, 26
   orig: 26, 26
-  offset: 0, 0
-  index: -1
-pix100
-  rotate: false
-  xy: 1, 1
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
-pix30
-  rotate: false
-  xy: 205, 172
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
-pix50
-  rotate: false
-  xy: 261, 187
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
-pix80
-  rotate: false
-  xy: 283, 259
-  size: 1, 1
-  orig: 1, 1
   offset: 0, 0
   index: -1
