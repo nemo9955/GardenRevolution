@@ -46,17 +46,31 @@ public class CircularGroup extends Group {
     @Override
     protected void childrenChanged() {
 
-        float unghi = ( maxAngle +minAngle ) %360 /2;
-        float direction = Math.abs( minAngle -maxAngle );
+        float unghi;
+        float direction;
 
-        if ( !clockwise ) {
-            unghi -= 180;
+        if ( clockwise && ( minAngle >maxAngle ) ) {
+            float dif = 360 -Math.min( maxAngle, minAngle );
+            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
             direction = 360 -direction;
-            direction *= -1;
+            unghi = ( minAngle +maxAngle -360 ) /2;
+        }
+        else if ( !clockwise && ( minAngle <maxAngle ) ) {
+            float dif = 360 -Math.min( maxAngle, minAngle );
+            direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
+            direction = 360 -direction;
+            unghi = ( minAngle +maxAngle -360 ) /2;
+        }
+        else {
+            direction = Math.abs( minAngle -maxAngle );
+            unghi = ( maxAngle +minAngle ) /2;
         }
 
+        if ( !clockwise )
+            direction *= -1;
+
         direction /= interval -1;
-        unghi -= ( getChildren().size *direction ) /2 -direction /2;
+        unghi = unghi - ( ( ( getChildren().size -1 ) *direction ) /2 );
 
         Vector2 tmp = new Vector2();
         for (Actor actor : getChildren() ) {
