@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -72,7 +73,6 @@ public class Gameplay extends InputAdapter implements Screen {
         cam.far = 300f;
         cam.update();
 
-        stage = StageUtils.makeGamePlayStage( stage, this );
 
         shader = new CustShader();
         shader.init();
@@ -87,12 +87,18 @@ public class Gameplay extends InputAdapter implements Screen {
 
     public Gameplay init(FileHandle nivel) {
         toUpdate = 0;
+    
+        if ( stage !=null ) {
+            for (Actor actor : stage.getActors() )
+                actor.clear();
+            stage.clear();
+        }
+        stage = StageUtils.makeGamePlayStage( stage, this );
 
         if ( world !=null )
             world.dispose();
-
         world = new World( nivel, cam );
-
+    
         return this;
     }
 

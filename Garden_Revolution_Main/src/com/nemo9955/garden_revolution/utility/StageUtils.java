@@ -111,18 +111,18 @@ public class StageUtils {
         final TextButton fill2 = new TextButton( "fill2", skin );
         final TextButton fill3 = new TextButton( "fill3", skin );
         final TextButton fill4 = new TextButton( "fill4", skin );
-        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 300, 100, gameplay.shape );
+        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 230, 70, gameplay.shape );
         final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
 
 
-        mainUpgrades.setActivInterval( 270, 90, 5 );
+        mainUpgrades.setActivInterval( 45, 200, true, 5 );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );
         mainUpgrades.addActor( fill3 );
         mainUpgrades.addActor( fill4 );
 
-        secondUpgrades.setActivInterval( 50, -50, 10 );
+        secondUpgrades.setActivInterval( 50, -50, false, 10 );
         // secondUpgrades.addActor( fill1 );
         // secondUpgrades.addActor( fill2 );
         // secondUpgrades.addActor( fill3 );
