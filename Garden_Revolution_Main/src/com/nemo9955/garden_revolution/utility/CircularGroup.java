@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.utility;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -7,7 +8,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class CircularGroup extends Group {
@@ -23,7 +27,9 @@ public class CircularGroup extends Group {
 
     private boolean       clockwise = true;
     private float         mid, dir;
-    private float         rotation  = 0;
+    private float         rotation  = 90;
+
+    private ClickListener clickListener;
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
         super();
@@ -32,6 +38,33 @@ public class CircularGroup extends Group {
         this.stroke = stroke;
         this.shape = shape;
         setSize( 0, 0 );
+
+
+        addCaptureListener( clickListener = new ClickListener() {
+
+            private float stx, sty;
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                System.out.println( "apasat" );
+                stx = x;
+                sty = y;
+
+                return false;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                rotateMenu( (float) Math.toDegrees( Math.atan2( stx -x, sty -y ) ) );
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+        } );
+
     }
 
     @Override
@@ -45,6 +78,12 @@ public class CircularGroup extends Group {
         shape.circle( center.x, center.y, radius +stroke );
         shape.end();
 
+    }
+
+    public void rotateMenu(float degrees) {
+        System.out.println(degrees);
+        rotation += degrees;
+        childrenChanged();
     }
 
     @Override
@@ -72,6 +111,7 @@ public class CircularGroup extends Group {
 
             unghi += direction;
         }
+        act( Gdx.graphics.getDeltaTime() );
     }
 
     private Vector2 getPosition(Vector2 out, float angle) {
