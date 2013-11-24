@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -10,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 public class CircularGroup extends Group {
@@ -27,9 +28,10 @@ public class CircularGroup extends Group {
 
     private boolean       clockwise = true;
     private float         mid, dir;
-    private float         rotation  = 90;
+    private float         rotation  = 0;
 
-    private ClickListener clickListener;
+    @SuppressWarnings("unused")
+    private InputListener inputListener;
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
         super();
@@ -39,8 +41,9 @@ public class CircularGroup extends Group {
         this.shape = shape;
         setSize( 0, 0 );
 
+        setTouchable( Touchable.enabled );
 
-        addCaptureListener( clickListener = new ClickListener() {
+        addCaptureListener( inputListener = new InputListener() {
 
             private float stx, sty;
 
@@ -81,28 +84,31 @@ public class CircularGroup extends Group {
     }
 
     public void rotateMenu(float degrees) {
-        System.out.println(degrees);
+        // System.out.println( degrees );
         rotation += degrees;
+        childrenChanged();
+    }
+
+
+    public void setRotationMenu(float degrees) {
+        System.out.println( degrees );
+        rotation = degrees;
         childrenChanged();
     }
 
     @Override
     protected void childrenChanged() {
 
-
+        rotation = formatAngle( rotation );
         float unghi = rotation +mid;
         float direction = dir / ( interval -1 );
         unghi = unghi - ( ( ( getChildren().size -1 ) *direction ) /2 );
-
         Vector2 tmp = new Vector2();
         for (Actor actor : getChildren() ) {
             tmp = getPosition( tmp, unghi );
             actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
 
-            if ( Math.abs( unghi ) >mid +Math.abs( dir /2 ) )
-                actor.addAction( Actions.alpha( Math.abs( 1 -unghi / ( Math.abs( dir /2 ) *3 ) ) ) );
-            else
-                actor.addAction( Actions.alpha( 1 ) );
+            actor.addAction( Actions.alpha( getAlphaByDistance( unghi ) ) );
 
             if ( rotKids ) {
                 actor.setOrigin( actor.getWidth() /2, actor.getHeight() /2 );
@@ -111,7 +117,35 @@ public class CircularGroup extends Group {
 
             unghi += direction;
         }
-        act( Gdx.graphics.getDeltaTime() );
+        System.out.println();
+        super.act( Gdx.graphics.getDeltaTime() );
+    }
+
+    private float getAlphaByDistance(float unghi) {
+        System.out.println( unghi +"    " +getDifference( unghi, mid ) +"    " +dir );
+        if ( getDifference( unghi, mid ) >Math.abs( dir ) )
+            return 1f -getDifference( unghi, mid ) /180;
+        return 1;
+
+    }
+
+    private float formatAngle(float angle) {
+        return angle >=0 ? angle %360 : angle %360 +360;
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act( delta );
+
+        if ( Gdx.input.isKeyPressed( Keys.O ) )
+            rotateMenu( 2 );
+        if ( Gdx.input.isKeyPressed( Keys.L ) )
+            rotateMenu( -2 );
+
+    }
+
+    private float getDifference(float a1, float a2) {
+        return Math.min( ( a1 -a2 ) <0 ? a1 -a2 +360 : a1 -a2, ( a2 -a1 ) <0 ? a2 -a1 +360 : a2 -a1 );
     }
 
     private Vector2 getPosition(Vector2 out, float angle) {
@@ -158,6 +192,8 @@ public class CircularGroup extends Group {
 
         mid = unghi;
         dir = direction;
+
+        System.out.println( unghi +" " +direction +"    " +mid +" " +dir +" " +interval +" " +rotation );
 
     }
 
