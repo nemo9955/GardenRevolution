@@ -8,29 +8,39 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum Inamici {
 
 
-    ROSIE("rosie", Assets.ROSIE), //
-    MORCOV("morcov", Assets.MORCOV);//
+    ROSIE(Assets.ROSIE), //
+    MORCOV(Assets.MORCOV);//
 
+    Assets              type;
+    public ProprInamici prop;
 
-    String             nume;
-    Assets             type;
-    public final int   force;
-    public final float speed;
-
-    Inamici(String nume, Assets type) {
-        this.nume = nume;
+    Inamici(Assets type) {
         this.type = type;
-        force = 5;
-        speed = 8;
+        prop = new ProprInamici( this );
     }
+
 
     public Model getModel() {
         return Garden_Revolution.getModel( type );
     }
 
-    public String getName() {
-        return nume;
+    public static class ProprInamici {
+
+        public int    force = 5;
+        public float  speed = 8;
+        public String nume  = "frunc";
+
+        public ProprInamici(Inamici type) {
+
+            nume = type.name().charAt( 0 ) +"" +type.name().replaceFirst( type.name().charAt( 0 ) +"", "" ).toLowerCase();
+            System.out.println( nume );
+
+            if ( type ==Inamici.MORCOV ) {
+                force = 7;
+            }
+            else if ( type ==Inamici.ROSIE ) {
+                speed = 10;
+            }
+        }
     }
-
-
 }

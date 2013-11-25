@@ -22,14 +22,14 @@ public class Turn {
 
     public Turn(ModelInstance baza, Vector3 poz) {
         parti.add( baza );
-        type = Turnuri.EMPTY;
+        type = null;
         place = poz.cpy().add( 0, 10, 0 );
         baza.calculateBoundingBox( this.baza );
         this.poz = poz.cpy();
     }
 
     public boolean upgradeTower(Turnuri upgrade) {
-        if ( type.rank >=upgrade.rank )
+        if ( type !=null &&type.prop.rank >=upgrade.prop.rank )
             return false;
         type = upgrade;
         parti.clear();

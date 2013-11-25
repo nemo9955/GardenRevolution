@@ -33,8 +33,8 @@ public class Inamic extends Vietate {
 
         super.init( x, y, z );
 
-        forta = type.force;
-        viteza = type.speed;
+        forta = type.prop.force;
+        viteza = type.prop.speed;
 
         offset.set( MathUtils.random( -20, 20 ), 0, MathUtils.random( -20, 20 ) );
         offset.scl( 0.1f );

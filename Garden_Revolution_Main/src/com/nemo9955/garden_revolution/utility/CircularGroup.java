@@ -52,7 +52,6 @@ public class CircularGroup extends Group {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                System.out.println( "apasat" );
                 stx = x;
                 sty = y;
 
