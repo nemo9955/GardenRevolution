@@ -57,9 +57,11 @@ public class StageUtils {
         pauseBut.setScale( Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
         camLeft.setColor( 1, 1, 1, 0.6f );
+        camLeft.setSize( camLeft.getWidth() *Mod.densitate, camLeft.getHeight() *Mod.densitate );
         camLeft.setScale( Mod.densitate );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
         camRight.setColor( 1, 1, 1, 0.6f );
+        camRight.setSize( camRight.getWidth() *Mod.densitate, camRight.getHeight() *Mod.densitate );
         camRight.setScale( Mod.densitate );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
         gameplay.mover.setSize( gameplay.mover.getWidth() *Mod.densitate, gameplay.mover.getHeight() *Mod.densitate );
@@ -119,7 +121,7 @@ public class StageUtils {
         final TextButton fill4 = new TextButton( "fill4", skin );
 
         final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 230, 70, gameplay.shape );
-       // mainUpgrades.setActivInterval( 200, 160, false, 2 );
+        // mainUpgrades.setActivInterval( 200, 160, false, 2 );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );

@@ -15,9 +15,7 @@ public enum Assets {
     DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
     KNIGHT(LOC.MODEL, "knight.g3db"), //
-    ROSIE(LOC.MODEL, "rosie.g3db"), //
-    MORCOV(LOC.MODEL, "morcov.g3db"), //
-
+    INAMICI(LOC.MODEL, "inamici.g3db"), //
     TURN_BASIC(LOC.MODEL, "turn_basic.g3db"), //
 
     ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //

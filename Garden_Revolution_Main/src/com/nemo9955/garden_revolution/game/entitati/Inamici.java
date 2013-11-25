@@ -1,6 +1,9 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
 
@@ -8,20 +11,31 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum Inamici {
 
 
-    ROSIE(Assets.ROSIE), //
-    MORCOV(Assets.MORCOV);//
+    ALUNA("aluna"), //
+    ROSIE("rosie"), //
+    MORCOV("morcov");//
 
-    Assets              type;
+    Model               model;
     public ProprInamici prop;
 
-    Inamici(Assets type) {
-        this.type = type;
+    Inamici(String name) {
+        Model tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) ).model;
+        // ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
+        Array<Node> rem = new Array<Node>( true, 1 );
+        for (Node nod : tmp.nodes )
+            if ( !nod.id.equalsIgnoreCase( name ) ) {
+                rem.add( nod );
+                // System.out.println( nod.id );
+            }
+            else
+                System.out.println( name );
+        tmp.nodes.removeAll( rem, false );
+        model = tmp;
         prop = new ProprInamici( this );
     }
 
-
     public Model getModel() {
-        return Garden_Revolution.getModel( type );
+        return model;
     }
 
     public static class ProprInamici {
