@@ -33,6 +33,8 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.entitati.Aliat;
+import com.nemo9955.garden_revolution.game.entitati.Inamic;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.utility.IndexedObject;

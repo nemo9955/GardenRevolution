@@ -50,6 +50,7 @@ public class Gameplay extends InputAdapter implements Screen {
     private final Vector3     tmp            = new Vector3();
     public Stage              stage;
     public Label              viataTurn;
+    public Label              fps;
     public Touchpad           mover;
 
     private TweenManager      tweeger;
@@ -73,10 +74,8 @@ public class Gameplay extends InputAdapter implements Screen {
         cam.far = 300f;
         cam.update();
 
-
         shader = new CustShader();
         shader.init();
-
 
     }
 
@@ -87,7 +86,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
     public Gameplay init(FileHandle nivel) {
         toUpdate = 0;
-    
+
         if ( stage !=null ) {
             for (Actor actor : stage.getActors() )
                 actor.clear();
@@ -98,7 +97,7 @@ public class Gameplay extends InputAdapter implements Screen {
         if ( world !=null )
             world.dispose();
         world = new World( nivel, cam );
-    
+
         return this;
     }
 
@@ -131,6 +130,8 @@ public class Gameplay extends InputAdapter implements Screen {
         if ( Mod.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) ) {
             world.renderDebug( shape );
         }
+
+        fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
         stage.act();
         stage.draw();

@@ -1,10 +1,11 @@
-package com.nemo9955.garden_revolution.game;
+package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.Assets;
 
 

@@ -26,6 +26,10 @@ public class StageUtils {
         stage = new Stage();
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
 
+        gameplay.fps = new Label( "FPS: ", skin );
+        gameplay.fps.setScale( Mod.densitate );
+        gameplay.fps.setPosition( stage.getWidth() /2, stage.getHeight() -gameplay.fps.getHeight() );
+
         final Board hud = new Board(); // aici e tot ce e legat de HUD ------------------------------------------------------------------------------
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton camLeft = new ImageButton( skin, "camLeft" );
@@ -52,8 +56,10 @@ public class StageUtils {
         gameplay.viataTurn.setPosition( 0, stage.getHeight() -gameplay.viataTurn.getHeight() );
         pauseBut.setScale( Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
+        camLeft.setColor( 1, 1, 1, 0.6f );
         camLeft.setScale( Mod.densitate );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
+        camRight.setColor( 1, 1, 1, 0.6f );
         camRight.setScale( Mod.densitate );
         camRight.setPosition( stage.getWidth() -camRight.getWidth(), stage.getHeight() /2 -camRight.getHeight() /2 );
         gameplay.mover.setSize( gameplay.mover.getWidth() *Mod.densitate, gameplay.mover.getHeight() *Mod.densitate );
@@ -111,16 +117,16 @@ public class StageUtils {
         final TextButton fill2 = new TextButton( "fill2", skin );
         final TextButton fill3 = new TextButton( "fill3", skin );
         final TextButton fill4 = new TextButton( "fill4", skin );
-        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 230, 70, gameplay.shape );
-        final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
 
-        mainUpgrades.setActivInterval( 200, 160, false, 2 );
+        final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 230, 70, gameplay.shape );
+       // mainUpgrades.setActivInterval( 200, 160, false, 2 );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );
         mainUpgrades.addActor( fill3 );
         mainUpgrades.addActor( fill4 );
 
+        final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
         // secondUpgrades.setActivInterval( 50, -50, false, 10 );
         // secondUpgrades.addActor( fill1 );
         // secondUpgrades.addActor( fill2 );
@@ -167,7 +173,7 @@ public class StageUtils {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( optBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    optIG.addAction( Actions.sequence( Actions.visible( true ), Actions.alpha( 0 ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    optIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
                 else if ( resumeBut.isPressed() ) {
@@ -252,6 +258,7 @@ public class StageUtils {
         pauseIG.addListener( pauseButons );
         optIG.addListener( optButons );
 
+        stage.addActor( gameplay.fps );
         stage.addActor( upgradeTower );
         stage.addActor( hud );
         stage.addActor( optIG );

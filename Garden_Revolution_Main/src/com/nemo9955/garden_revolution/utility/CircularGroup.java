@@ -17,21 +17,23 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class CircularGroup extends Group {
 
-    private Vector2       center;
-    private int           radius;
-    private int           stroke;
-    private ShapeRenderer shape;
+    private Vector2              center;
+    private int                  radius;
+    private int                  stroke;
+    private ShapeRenderer        shape;
+    private static final Vector2 tmp         = new Vector2();
 
-    private float         minAngle  = 0, maxAngle = 359;
-    private float         interval  = 20;
-    private boolean       rotKids   = false;
+    private float                minAngle    = 0, maxAngle = 359;
+    private int                  interval    = 42 /2;
+    private boolean              rotKids     = false;
+    private boolean              modifyAlpha = true;
 
-    private boolean       clockwise = true;
-    private float         mid, dir;
-    private float         rotation  = 0;
+    private boolean              clockwise   = true;
+    private float                mid, dir;
+    private float                rotation    = 0;
 
     @SuppressWarnings("unused")
-    private InputListener inputListener;
+    private InputListener        inputListener;
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
         super();
@@ -68,6 +70,7 @@ public class CircularGroup extends Group {
             }
         } );
 
+        setActivInterval( 0, 359, clockwise, interval );
     }
 
     @Override
@@ -84,31 +87,31 @@ public class CircularGroup extends Group {
     }
 
     public void rotateMenu(float degrees) {
-        // System.out.println( degrees );
         rotation += degrees;
+        rotation = formatAngle( rotation );
         childrenChanged();
     }
 
 
     public void setRotationMenu(float degrees) {
-        System.out.println( degrees );
         rotation = degrees;
+        rotation = formatAngle( rotation );
         childrenChanged();
     }
 
     @Override
     protected void childrenChanged() {
 
-        rotation = formatAngle( rotation );
         float unghi = rotation +mid;
         float direction = dir / ( interval -1 );
         unghi = unghi - ( ( ( getChildren().size -1 ) *direction ) /2 );
-        Vector2 tmp = new Vector2();
+
         for (Actor actor : getChildren() ) {
-            tmp = getPosition( tmp, unghi );
+            tmp.set( getPosition( tmp, unghi ) );
             actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
 
-            actor.addAction( Actions.alpha( getAlphaByDistance( unghi ) ) );
+            if ( modifyAlpha )
+                actor.addAction( Actions.alpha( getAlphaByDistance( unghi ) ) );
 
             if ( rotKids ) {
                 actor.setOrigin( actor.getWidth() /2, actor.getHeight() /2 );
@@ -117,12 +120,10 @@ public class CircularGroup extends Group {
 
             unghi += direction;
         }
-        System.out.println();
         super.act( Gdx.graphics.getDeltaTime() );
     }
 
     private float getAlphaByDistance(float unghi) {
-        System.out.println( unghi +"    " +getDifference( unghi, mid ) +"    " +dir );
         if ( getDifference( unghi, mid ) >Math.abs( dir ) )
             return 1f -getDifference( unghi, mid ) /180;
         return 1;
@@ -193,7 +194,7 @@ public class CircularGroup extends Group {
         mid = unghi;
         dir = direction;
 
-        System.out.println( unghi +" " +direction +"    " +mid +" " +dir +" " +interval +" " +rotation );
+        // System.out.println( firstAngle +" -> " +secondAngle +" " +clockwise +"  :    " +unghi +" " +direction +"    " +mid +" " +dir +" " +interval +" " +rotation );
 
     }
 
@@ -205,4 +206,9 @@ public class CircularGroup extends Group {
     public void setRotateChildren(boolean rotChildern) {
         this.rotKids = rotChildern;
     }
+
+    public void setModifyAlpha(boolean modifyAlpha) {
+        this.modifyAlpha = modifyAlpha;
+    }
+
 }

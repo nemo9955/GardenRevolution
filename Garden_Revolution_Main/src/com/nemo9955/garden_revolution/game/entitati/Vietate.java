@@ -1,7 +1,9 @@
-package com.nemo9955.garden_revolution.game;
+package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
+import com.nemo9955.garden_revolution.game.Entitate;
+import com.nemo9955.garden_revolution.game.World;
 
 
 public abstract class Vietate extends Entitate {
