@@ -61,10 +61,9 @@ public class World extends GestureAdapter implements Disposable {
     private Vector3                         tmp        = new Vector3();
     private Vector3                         tmp2       = new Vector3();
     public boolean                          overview   = false;
-    private int                             curentTurn = -1;
 
     private Turn[]                          turnuri;
-    public int                              curentCam  = 0;
+    public int                              curentTurn = -1;
 
     public Waves                            waves;
 
@@ -187,8 +186,8 @@ public class World extends GestureAdapter implements Disposable {
         nori.clear();
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        ModelInstance nor;
         toDispose.add( sfera );
+        ModelInstance nor;
 
         int norx, norz;
 
@@ -237,7 +236,7 @@ public class World extends GestureAdapter implements Disposable {
 
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
-                turnuri[Integer.parseInt( sect[1] ) -1] = new Turn( instance, scena.nodes.get( i ).translation );
+                turnuri[Integer.parseInt( sect[1] ) -1] = new Turn( instance, this, scena.nodes.get( i ).translation );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -356,7 +355,7 @@ public class World extends GestureAdapter implements Disposable {
         cam.lookAt( look );
 
         cam.up.set( Vector3.Y );
-        curentCam = nr;
+        curentTurn = nr;
         cam.update();
         overview = false;
     }
@@ -368,17 +367,17 @@ public class World extends GestureAdapter implements Disposable {
     }
 
     public void nextCamera() {
-        curentCam ++;
-        if ( curentCam >=turnuri.length )
-            curentCam = 0;
-        setCamera( curentCam );
+        curentTurn ++;
+        if ( curentTurn >=turnuri.length )
+            curentTurn = 0;
+        setCamera( curentTurn );
     }
 
     public void prevCamera() {
-        curentCam --;
-        if ( curentCam <0 )
-            curentCam = turnuri.length -1;
-        setCamera( curentCam );
+        curentTurn --;
+        if ( curentTurn <0 )
+            curentTurn = turnuri.length -1;
+        setCamera( curentTurn );
     }
 
     public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
@@ -461,8 +460,8 @@ public class World extends GestureAdapter implements Disposable {
 
             return true;
         }
-        Ray ray = cam.getPickRay( x, y );
-        addShot( ray.origin, ray.direction );
+
+        getCurrentTower().fireMain( this, cam.getPickRay( x, y ) );
 
         return false;
     }
@@ -481,6 +480,7 @@ public class World extends GestureAdapter implements Disposable {
             else
                 addFoe( Inamici.MORCOV, poz.x, poz.y, poz.z );
             gestures.invalidateTapSquare();
+            return true;
         }
         return false;
     }

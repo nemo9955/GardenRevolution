@@ -33,7 +33,6 @@ public enum Inamici {
         public ProprInamici(Inamici type) {
 
             nume = type.name().charAt( 0 ) +"" +type.name().replaceFirst( type.name().charAt( 0 ) +"", "" ).toLowerCase();
-            System.out.println( nume );
 
             if ( type ==Inamici.MORCOV ) {
                 force = 7;

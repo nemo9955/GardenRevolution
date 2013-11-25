@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.nemo9955.garden_revolution.game.World;
 
 
 public class Turn {
@@ -20,12 +22,17 @@ public class Turn {
     public Vector3               poz;
     public Turnuri               type;
 
-    public Turn(ModelInstance baza, Vector3 poz) {
+    private Arma                 arma;
+
+    public Turn(ModelInstance baza, World world, Vector3 poz) {
         parti.add( baza );
-        type = null;
         place = poz.cpy().add( 0, 10, 0 );
         baza.calculateBoundingBox( this.baza );
         this.poz = poz.cpy();
+    }
+
+    public void fireMain(World world, Ray ray) {
+
     }
 
     public boolean upgradeTower(Turnuri upgrade) {
@@ -75,5 +82,8 @@ public class Turn {
             modelBatch.render( model, shader );
     }
 
+    public void setArma(Arma arma) {
+        this.arma = arma;
+    }
 
 }
