@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.Assets;
 
 
 public class SplashScreen implements Screen {
@@ -28,10 +27,10 @@ public class SplashScreen implements Screen {
         this.game = game;
         batch = new SpriteBatch();
 
-        bara = new Texture( Assets.LOADING_BAR.path() );
+        bara = new Texture( "imagini/fundale/loading_bar.png" );
         bara.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
 
-        loader = new Texture( Assets.LOADING_BG.path() );
+        loader = new Texture( "imagini/fundale/loading_fundal.png" );
         loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
         fundal = new Sprite( loader );
         fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );

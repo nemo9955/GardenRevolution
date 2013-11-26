@@ -19,10 +19,7 @@ public enum Assets {
     TURN_BASIC(LOC.MODEL, "turn_basic.g3db"), //
 
     ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //
-    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class), //
-
-    LOADING_BAR(LOC.FUNDAL, "loading_bar.png"), //
-    LOADING_BG(LOC.FUNDAL, "loading_fundal.png"); //
+    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class); //
 
 
     private String   path;

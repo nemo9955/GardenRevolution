@@ -30,7 +30,7 @@ public class Arma implements Disposable {
     public Arma(Vector3 poz) {
         this.poz = poz;
         ModelBuilder build = new ModelBuilder();
-        Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates);
+        Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         toDispose.add( sfera );
         model = new ModelInstance( sfera, poz );
         animation = new AnimationController( model );
@@ -43,11 +43,9 @@ public class Arma implements Disposable {
 
     public void fireMain(World world, Ray ray) {
         float distance = -ray.origin.y /ray.direction.y;
+        distance = Math.abs( distance );
         tmp = ray.getEndPoint( new Vector3(), distance );
-        if ( distance >=0 )
-            world.addShot( poz, tmp.sub( poz ).nor() );
-        else
-            world.addShot( ray.origin.add( ray.direction ), ray.direction );
+        world.addShot( poz, tmp.sub( poz ).nor() );
     }
 
     public void render(ModelBatch modelBatch) {

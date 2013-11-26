@@ -285,6 +285,7 @@ public class Gameplay extends InputAdapter implements Screen {
     @Override
     public void dispose() {
         modelBatch.dispose();
+        if(stage!=null)
         stage.dispose();
         if ( world !=null )
             world.dispose();
