@@ -60,9 +60,5 @@ public class Aliat extends Vietate {
         if ( Gdx.input.isKeyPressed( Keys.RIGHT ) ) {
             rotate( 0, -rot *delta, 0 );
         }
-
-
     }
-
-
 }

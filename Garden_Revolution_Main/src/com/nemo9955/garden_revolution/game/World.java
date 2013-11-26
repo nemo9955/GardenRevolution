@@ -58,8 +58,8 @@ public class World extends GestureAdapter implements Disposable {
 
 
     private PerspectiveCamera               cam;
-    private Vector3                         tmp        = new Vector3();
-    private Vector3                         tmp2       = new Vector3();
+    private static Vector3                  tmp        = new Vector3();
+    private static Vector3                  tmp2       = new Vector3();
     public boolean                          overview   = false;
 
     private Turn[]                          turnuri;
@@ -318,7 +318,7 @@ public class World extends GestureAdapter implements Disposable {
                 for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
 
                     Element monstru = pat.getChild( i );
-                    waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount" ) );
+                    waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount", 1 ) );
 
                 }
             }
@@ -472,13 +472,13 @@ public class World extends GestureAdapter implements Disposable {
         if ( !overview &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
-            Vector3 poz = ray.getEndPoint( new Vector3(), distance );
+            tmp = ray.getEndPoint( new Vector3(), distance );
             if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                addAlly( poz.x, poz.y, poz.z );
+                addAlly( tmp.x, tmp.y, tmp.z );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                addFoe( Inamici.ROSIE, poz.x, poz.y, poz.z );
+                addFoe( Inamici.ROSIE, tmp.x, tmp.y, tmp.z );
             else
-                addFoe( Inamici.MORCOV, poz.x, poz.y, poz.z );
+                addFoe( Inamici.MORCOV, tmp.x, tmp.y, tmp.z );
             gestures.invalidateTapSquare();
             return true;
         }

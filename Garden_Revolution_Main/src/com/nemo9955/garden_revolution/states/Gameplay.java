@@ -47,7 +47,7 @@ public class Gameplay extends InputAdapter implements Screen {
     private Vector3           dolly          = new Vector3();
     public short              toUpdate       = 0;
     private final int         scrw           = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private final Vector3     tmp            = new Vector3();
+    private static Vector3    tmp            = new Vector3();
     public Stage              stage;
     public Label              viataTurn;
     public Label              fps;

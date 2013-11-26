@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.Entitate;
@@ -23,6 +24,7 @@ public abstract class Vietate extends Entitate {
         animation = new AnimationController( model );
         dir = Vector3.Zero;
         viteza = 4;
+        update( Gdx.graphics.getDeltaTime() );
     }
 
     @Override

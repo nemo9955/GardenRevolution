@@ -19,15 +19,10 @@ public enum Inamici {
 
     Inamici(String name) {
         ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
-        // ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
         Array<Node> rem = new Array<Node>( false, 1 );
         for (int i = 0 ; i <tmp.nodes.size ; i ++ )
-            if ( !tmp.nodes.get( i ).id.equalsIgnoreCase( name ) ) {
+            if ( !tmp.nodes.get( i ).id.equalsIgnoreCase( name ) )
                 rem.add( tmp.nodes.get( i ) );
-                // System.out.println( nod.id );
-            }
-        // else
-        // System.out.println( name );
         tmp.nodes.removeAll( rem, false );
         model = tmp;
         prop = new ProprInamici( this );

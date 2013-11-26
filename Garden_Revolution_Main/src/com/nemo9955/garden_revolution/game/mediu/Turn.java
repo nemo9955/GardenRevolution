@@ -9,10 +9,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 
 
-public class Turn {
+public class Turn implements Disposable {
 
     public BoundingBox           baza     = new BoundingBox();
     public Array<BoundingBox>    coliders = new Array<BoundingBox>( false, 1 );
@@ -29,10 +30,11 @@ public class Turn {
         place = poz.cpy().add( 0, 10, 0 );
         baza.calculateBoundingBox( this.baza );
         this.poz = poz.cpy();
+        arma = new Arma( place );
     }
 
     public void fireMain(World world, Ray ray) {
-
+        arma.fireMain( world, ray );
     }
 
     public boolean upgradeTower(Turnuri upgrade) {
@@ -70,20 +72,28 @@ public class Turn {
     public void render(ModelBatch modelBatch) {
         for (ModelInstance model : parti )
             modelBatch.render( model );
+        arma.render( modelBatch );
     }
 
     public void render(ModelBatch modelBatch, Environment light) {
         for (ModelInstance model : parti )
             modelBatch.render( model, light );
+        arma.render( modelBatch, light );
     }
 
     public void render(ModelBatch modelBatch, Shader shader) {
         for (ModelInstance model : parti )
             modelBatch.render( model, shader );
+        arma.render( modelBatch, shader );
     }
 
     public void setArma(Arma arma) {
         this.arma = arma;
+    }
+
+    @Override
+    public void dispose() {
+        arma.dispose();
     }
 
 }
