@@ -2,7 +2,7 @@ package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
@@ -55,8 +55,8 @@ public class Inamic extends Vietate {
     }
 
     @Override
-    protected Model getModel() {
-        return type.getModel();
+    protected ModelInstance getModel(float x, float y, float z) {
+        return type.getModel(x,y,z);
     }
 
     @Override

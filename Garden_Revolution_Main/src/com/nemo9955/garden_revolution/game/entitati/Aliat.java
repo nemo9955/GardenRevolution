@@ -2,7 +2,7 @@ package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
@@ -32,8 +32,8 @@ public class Aliat extends Vietate {
     }
 
     @Override
-    protected Model getModel() {
-        return Garden_Revolution.getModel( Assets.KNIGHT );
+    protected ModelInstance getModel(float x, float y, float z) {
+        return new ModelInstance( Garden_Revolution.getModel( Assets.KNIGHT ), x, y, z );
     }
 
     @Override

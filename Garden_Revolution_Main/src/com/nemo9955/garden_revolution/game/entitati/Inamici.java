@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.utils.Array;
@@ -15,27 +14,28 @@ public enum Inamici {
     ROSIE("rosie"), //
     MORCOV("morcov");//
 
-    Model               model;
+    ModelInstance       model;
     public ProprInamici prop;
 
     Inamici(String name) {
-        Model tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) ).model;
+        ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
         // ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
-        Array<Node> rem = new Array<Node>( true, 1 );
-        for (Node nod : tmp.nodes )
-            if ( !nod.id.equalsIgnoreCase( name ) ) {
-                rem.add( nod );
+        Array<Node> rem = new Array<Node>( false, 1 );
+        for (int i = 0 ; i <tmp.nodes.size ; i ++ )
+            if ( !tmp.nodes.get( i ).id.equalsIgnoreCase( name ) ) {
+                rem.add( tmp.nodes.get( i ) );
                 // System.out.println( nod.id );
             }
-            else
-                System.out.println( name );
+        // else
+        // System.out.println( name );
         tmp.nodes.removeAll( rem, false );
         model = tmp;
         prop = new ProprInamici( this );
     }
 
-    public Model getModel() {
-        return model;
+    public ModelInstance getModel(float x, float y, float z) {
+        model.transform.setToTranslation( x, y, z );
+        return new ModelInstance( model );
     }
 
     public static class ProprInamici {

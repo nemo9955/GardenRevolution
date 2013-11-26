@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution.game;
 
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -34,7 +33,7 @@ public abstract class Entitate implements Poolable {
 
     // principalul
     public void init(float x, float y, float z) {
-        model = new ModelInstance( getModel(), x, y, z );
+        model = getModel( x, y, z );
         poz.set( x, y, z );
         setBox( x, y, z );
         dead = false;
@@ -46,7 +45,7 @@ public abstract class Entitate implements Poolable {
         model = null;
     }
 
-    protected abstract Model getModel();
+    protected abstract ModelInstance getModel(float x, float y, float z);
 
     protected void setBox(float x, float y, float z) {
         model.calculateBoundingBox( box );

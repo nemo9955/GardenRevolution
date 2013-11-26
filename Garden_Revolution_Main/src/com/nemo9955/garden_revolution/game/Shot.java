@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
@@ -16,7 +16,7 @@ public class Shot extends Entitate {
     private float   life;
 
     public Shot(World world) {
-        super(world);
+        super( world );
     }
 
     public Shot create(Vector3 position, Vector3 direction) {
@@ -43,9 +43,9 @@ public class Shot extends Entitate {
     }
 
     @Override
-    protected Model getModel() {
+    protected ModelInstance getModel(float x, float y, float z) {
 
-        return new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
+        return new ModelInstance( new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal ), x, y, z );
 
     }
 
