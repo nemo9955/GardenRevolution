@@ -119,22 +119,19 @@ public class StageUtils {
         final TextButton fill2 = new TextButton( "fill2", skin );
         final TextButton fill3 = new TextButton( "fill3", skin );
         final TextButton fill4 = new TextButton( "fill4", skin );
+        final ImageButton ceva = new ImageButton( skin.getDrawable( Icons.GHINDA.getName() ) );
 
         final CircularGroup mainUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 230, 70, gameplay.shape );
-        // mainUpgrades.setActivInterval( 200, 160, false, 2 );
+        mainUpgrades.setActivInterval( 200, 160, false, 2 );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );
         mainUpgrades.addActor( fill3 );
-        mainUpgrades.addActor( fill4 );
+        mainUpgrades.addActor( ceva );
 
-        final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 500, 100, gameplay.shape );
-        // secondUpgrades.setActivInterval( 50, -50, false, 10 );
-        // secondUpgrades.addActor( fill1 );
-        // secondUpgrades.addActor( fill2 );
-        // secondUpgrades.addActor( fill3 );
-        // secondUpgrades.addActor( fill4 );
-
+        final CircularGroup secondUpgrades = new CircularGroup( new Vector2( stage.getWidth() /2, stage.getHeight() /2 ), 350, 50, gameplay.shape );
+        secondUpgrades.setActivInterval( 50, -50, false, 10 );
+        secondUpgrades.addActor( fill4 );
 
         backTowe.setPosition( 25 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
         upgradeTower.setVisible( false );
@@ -209,7 +206,7 @@ public class StageUtils {
                     gameplay.toUpdate = 0;
                 }
                 else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
-                    gameplay.world.getCurrentTower().upgradeTower( Turnuri.BASIC );
+                    gameplay.world.upgradeCurentTower( Turnuri.BASIC );
                 }
             }
         };

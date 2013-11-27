@@ -21,19 +21,40 @@ public class CircularGroup extends Group {
     private int                  radius;
     private int                  stroke;
     private ShapeRenderer        shape;
-    private static final Vector2 tmp         = new Vector2();
+    private static final Vector2 tmp           = new Vector2();
 
-    private float                minAngle    = 0, maxAngle = 359;
-    private int                  interval    = 42 /2;
-    private boolean              rotKids     = false;
-    private boolean              modifyAlpha = true;
+    private float                minAngle      = 0, maxAngle = 359;
+    private int                  interval      = 42 /2;
+    private boolean              rotKids       = false;
+    private boolean              modifyAlpha   = true;
 
-    private boolean              clockwise   = true;
+    private boolean              clockwise     = true;
     private float                mid, dir;
-    private float                rotation    = 0;
+    private float                rotation      = 0;
 
-    @SuppressWarnings("unused")
-    private InputListener        inputListener;
+    private InputListener        inputListener = new InputListener() {
+
+                                                   private float stx, sty;
+
+                                                   @Override
+                                                   public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                                                       stx = x;
+                                                       sty = y;
+
+                                                       return false;
+                                                   }
+
+                                                   @Override
+                                                   public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                                                       rotateMenu( (float) Math.toDegrees( Math.atan2( stx -x, sty -y ) ) );
+                                                   }
+
+                                                   @Override
+                                                   public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                                                   }
+                                               };
 
     public CircularGroup(Vector2 center, int radius, int stroke, ShapeRenderer shape) {
         super();
@@ -44,30 +65,7 @@ public class CircularGroup extends Group {
         setSize( 0, 0 );
 
         setTouchable( Touchable.enabled );
-
-        addCaptureListener( inputListener = new InputListener() {
-
-            private float stx, sty;
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-                stx = x;
-                sty = y;
-
-                return false;
-            }
-
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                rotateMenu( (float) Math.toDegrees( Math.atan2( stx -x, sty -y ) ) );
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-            }
-        } );
+        addCaptureListener( inputListener );
 
         setActivInterval( 0, 359, clockwise, interval );
     }

@@ -37,33 +37,35 @@ import com.nemo9955.garden_revolution.game.entitati.Aliat;
 import com.nemo9955.garden_revolution.game.entitati.Inamic;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
+import com.nemo9955.garden_revolution.game.mediu.Turnuri;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
 public class World extends GestureAdapter implements Disposable {
 
-    private Array<Disposable>               toDispose  = new Array<Disposable>( false, 1 );
+    private Array<Disposable>               toDispose   = new Array<Disposable>( false, 1 );
     public GestureDetector                  gestures;
 
-    private Array<ModelInstance>            nori       = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>             mediu      = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>            nori        = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>             mediu       = new Array<ModelInstance>( false, 10 );
 
-    public Array<Inamic>                    foe        = new Array<Inamic>( false, 10 );
-    public Array<Aliat>                     ally       = new Array<Aliat>( false, 10 );
-    public Array<Shot>                      shot       = new Array<Shot>( false, 10 );
+    public Array<Inamic>                    foe         = new Array<Inamic>( false, 10 );
+    public Array<Aliat>                     ally        = new Array<Aliat>( false, 10 );
+    public Array<Shot>                      shot        = new Array<Shot>( false, 10 );
 
-    public Array<BoundingBox>               colide     = new Array<BoundingBox>( false, 10 );
+    public Array<BoundingBox>               colide      = new Array<BoundingBox>( false, 10 );
     public Array<CatmullRomSpline<Vector3>> paths;
     private int                             viata;
 
 
     private PerspectiveCamera               cam;
-    private static Vector3                  tmp        = new Vector3();
-    private static Vector3                  tmp2       = new Vector3();
-    public boolean                          overview   = false;
+    private static Vector3                  tmp         = new Vector3();
+    private static Vector3                  tmp2        = new Vector3();
+    public boolean                          overview    = false;
 
     private Turn[]                          turnuri;
-    public int                              curentTurn = -1;
+    public int                              curentTurn  = -1;
+    protected boolean                       isOneToweUp = false;
 
     public Waves                            waves;
 
@@ -78,8 +80,8 @@ public class World extends GestureAdapter implements Disposable {
 
     public void update(float delta) {
 
-        if ( waves.finishedWaves() )
-            waves.update( delta );// TODO
+        if ( isOneToweUp &&waves.finishedWaves() )
+            waves.update( delta );
 
         for (Inamic fo : foe ) {
             fo.update( delta );
@@ -498,6 +500,13 @@ public class World extends GestureAdapter implements Disposable {
         shot.clear();
         mediu.clear();
         nori.clear();
+
+    }
+
+    public void upgradeCurentTower(Turnuri upgrade) {
+        if ( curentTurn !=-1 &&!overview )
+            if ( getCurrentTower().upgradeTower( upgrade ) )
+                isOneToweUp = true;
 
     }
 
