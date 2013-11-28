@@ -352,20 +352,33 @@ public class World extends GestureAdapter implements Disposable {
         Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
         cam.position.set( turnuri[nr].place );// TODO
-        curentTurn = nr;
-
         cam.lookAt( look );
-
         cam.up.set( Vector3.Y );
+
+        tmp2.set( cam.direction );
+        tmp2.scl( 4 );
+        tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
+
+        cam.position.sub( tmp2 );
+        cam.position.sub( tmp );
+        cam.position.add( 0, 2, 0 );
+
         curentTurn = nr;
         cam.update();
         overview = false;
     }
 
     public Turn getCurrentTower() {
-        if ( turnuri.length ==0 )
+        if ( turnuri.length ==0 ||curentTurn ==-1 )
             return null;
         return turnuri[curentTurn];
+    }
+
+    public Vector3 getCameraRotAround() {
+        if ( getCurrentTower() ==null )
+            return cam.position;
+        return getCurrentTower().place;
+
     }
 
     public void nextCamera() {
@@ -502,6 +515,8 @@ public class World extends GestureAdapter implements Disposable {
         nori.clear();
 
     }
+
+    
 
     public void upgradeCurentTower(Turnuri upgrade) {
         if ( curentTurn !=-1 &&!overview )

@@ -45,17 +45,13 @@ public class Meniu implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( start.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
+
                 if ( test1.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.test );
+
                 if ( exit.isPressed() )
                     Gdx.app.exit();
-            }
-        };
 
-        optiuni.addListener( new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
                 if ( optiuni.isChecked() ) {
                     optiuni.setText( "INTERN" );
                     LevelSelector.internal = true;
@@ -65,24 +61,17 @@ public class Meniu implements Screen {
                     LevelSelector.internal = false;
                 }
             }
+        };
 
-        } );
 
+        tab.addListener( asc );
 
-        start.addListener( asc );
-        exit.addListener( asc );
-        test1.addListener( asc );
-        exit.addListener( asc );
-
-        tab.defaults().pad( 20 );
-        tab.add( start ).colspan( 2 );
+        tab.defaults().pad( 25 );
+        tab.add( start );
+        tab.add( optiuni ).space( 10 );
         tab.row();
-        tab.add( optiuni ).colspan( 2 );
-        tab.row();
-        tab.add( test1 ).expandX();
-        // tab.add( test2 ).expandX().left();
-        tab.row();
-        tab.add( exit ).colspan( 2 );
+        tab.add( test1 );
+        tab.add( exit );
 
         stage.addActor( tab );
     }

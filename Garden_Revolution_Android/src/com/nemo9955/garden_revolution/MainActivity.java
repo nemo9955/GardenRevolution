@@ -14,7 +14,7 @@ public class MainActivity extends AndroidApplication {
 
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
-        cfg.useAccelerometer = false;
+        cfg.useAccelerometer = true;
         cfg.useCompass = false;
 
         Mod.densitate = getResources().getDisplayMetrics().density;

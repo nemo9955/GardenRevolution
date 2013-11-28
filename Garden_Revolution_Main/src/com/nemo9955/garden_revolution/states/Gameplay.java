@@ -146,24 +146,15 @@ public class Gameplay extends InputAdapter implements Screen {
 
     private void moveCamera(float amontX, float amontY) {
 
-        cam.rotateAround( cam.position, Vector3.Y, amontX );
-        if ( amontY >0 ) {
-            if ( cam.direction.y <0.3f )
-                pitchCamera( amontY );
-        }
-        else {
-            if ( cam.direction.y >-0.9f )
-                pitchCamera( amontY );
+        cam.rotateAround( world.getCameraRotAround(), Vector3.Y, amontX );
+        if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
+            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
+            cam.rotateAround( world.getCameraRotAround(), tmp.nor(), amontY );
         }
 
         cam.translate( dolly );
 
         cam.update();
-    }
-
-    private void pitchCamera(float amontY) {
-        tmp.set( cam.direction ).crs( cam.up ).y = 0f;
-        cam.rotateAround( cam.position, tmp.nor(), amontY );
     }
 
     @Override
@@ -285,8 +276,8 @@ public class Gameplay extends InputAdapter implements Screen {
     @Override
     public void dispose() {
         modelBatch.dispose();
-        if(stage!=null)
-        stage.dispose();
+        if ( stage !=null )
+            stage.dispose();
         if ( world !=null )
             world.dispose();
         shape.dispose();

@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.utility;
 public class Mod {
 
     // densitatea ecranului
-    public static float    densitate       = 0.8f;
+    public static float    densitate       = 1f;
 
     // modul de miscare a camerei
     public static boolean  moveByTouch     = false;

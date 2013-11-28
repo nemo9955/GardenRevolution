@@ -22,7 +22,7 @@ public class Shot extends Entitate {
     public Shot create(Vector3 position, Vector3 direction) {
         super.init( position );
         this.direction = direction.cpy();
-        life = 3f;
+        life = 5f;
         return this;
     }
 
@@ -37,7 +37,7 @@ public class Shot extends Entitate {
         super.update( delta );
         move( direction );
         life -= delta;
-        if ( life <=0 ) {
+        if ( life <=0 ||poz.y <0 ) {
             dead = true;
         }
     }

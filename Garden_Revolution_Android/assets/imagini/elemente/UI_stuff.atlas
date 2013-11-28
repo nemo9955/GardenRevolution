@@ -1,144 +1,151 @@
 
 UI_stuff.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Linear,Nearest
 repeat: none
 acorn
   rotate: false
-  xy: 0, 301
+  xy: 1, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 archery-target
   rotate: false
-  xy: 0, 151
+  xy: 1, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 aubergine
   rotate: false
-  xy: 150, 301
+  xy: 154, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 beam-wake
   rotate: false
-  xy: 0, 1
+  xy: 154, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 cannon
   rotate: false
-  xy: 150, 151
+  xy: 307, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 crossbow
   rotate: false
-  xy: 300, 301
+  xy: 307, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 lightning-bow
   rotate: false
-  xy: 150, 1
+  xy: 460, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 profit
   rotate: false
-  xy: 300, 151
+  xy: 460, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 radial-balance
   rotate: false
-  xy: 450, 301
+  xy: 613, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 shiny-apple
   rotate: false
-  xy: 300, 1
+  xy: 766, 270
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 spotted-mushroom
   rotate: false
-  xy: 450, 151
+  xy: 613, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 targeting
   rotate: false
-  xy: 600, 301
+  xy: 766, 117
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
+back
+  rotate: false
+  xy: 1, 64
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+exit
+  rotate: false
+  xy: 1, 11
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+meniu
+  rotate: false
+  xy: 104, 64
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 mover-bg
   rotate: false
-  xy: 450, 51
+  xy: 207, 14
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
-arrows-left-1
+play
   rotate: false
-  xy: 600, 101
-  size: 40, 200
-  orig: 40, 200
+  xy: 104, 11
+  size: 100, 50
+  orig: 100, 50
   offset: 0, 0
   index: -1
-arrows-right-1
+test
   rotate: false
-  xy: 640, 101
-  size: 40, 200
-  orig: 40, 200
+  xy: 310, 64
+  size: 100, 50
+  orig: 100, 50
   offset: 0, 0
   index: -1
 arrows-down-1
   rotate: false
-  xy: 750, 371
+  xy: 413, 34
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 arrows-up-1
   rotate: false
-  xy: 680, 221
+  xy: 496, 34
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-back
-  rotate: false
-  xy: 450, 1
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-tower-upgrade
-  rotate: false
-  xy: 680, 136
-  size: 54, 85
-  orig: 54, 85
-  offset: 0, 0
-  index: -1
 buton_down
   rotate: false
-  xy: 750, 311
+  xy: 310, 1
   size: 60, 60
   split: 14, 15, 11, 11
   orig: 60, 60
@@ -146,51 +153,23 @@ buton_down
   index: -1
 buton_over
   rotate: false
-  xy: 760, 251
+  xy: 579, 54
   size: 60, 60
   split: 14, 16, 13, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-exit
-  rotate: false
-  xy: 550, 51
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-meniu
-  rotate: false
-  xy: 550, 1
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
 buton_up
   rotate: false
-  xy: 760, 191
+  xy: 642, 54
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-play
-  rotate: false
-  xy: 734, 141
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-test
-  rotate: false
-  xy: 734, 91
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
 element1
   rotate: false
-  xy: 650, 41
+  xy: 705, 54
   size: 60, 60
   split: 12, 14, 14, 16
   orig: 60, 60
@@ -198,57 +177,78 @@ element1
   index: -1
 element2
   rotate: false
-  xy: 710, 31
+  xy: 768, 54
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+tower-upgrade
+  rotate: false
+  xy: 831, 29
+  size: 54, 85
+  orig: 54, 85
+  offset: 0, 0
+  index: -1
+arrows-left-1
+  rotate: false
+  xy: 919, 220
+  size: 40, 200
+  orig: 40, 200
+  offset: 0, 0
+  index: -1
+arrows-right-1
+  rotate: false
+  xy: 919, 17
+  size: 40, 200
+  orig: 40, 200
+  offset: 0, 0
+  index: -1
 tinta
   rotate: false
-  xy: 550, 111
+  xy: 579, 11
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 IGpause
   rotate: false
-  xy: 650, 1
+  xy: 622, 11
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
   index: -1
 mover-knob
   rotate: false
-  xy: 734, 195
+  xy: 373, 35
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 pix100
   rotate: false
-  xy: 0, 0
+  xy: 402, 60
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix30
   rotate: false
-  xy: 750, 310
+  xy: 406, 60
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix50
   rotate: false
-  xy: 810, 370
+  xy: 402, 56
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix80
   rotate: false
-  xy: 830, 450
+  xy: 406, 56
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
