@@ -33,10 +33,12 @@ public class CircularGroup extends WidgetGroup {
 
                                                    private float   inAngle;
                                                    private Vector2 temp = new Vector2();
+                                                   private float   initianRot;
 
                                                    @Override
                                                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                                                        inAngle = temp.set( x, y ).sub( center ).angle();
+                                                       initianRot = rotation;
                                                        float distCenter = temp.dst2( 0, 0 );
                                                        if ( distCenter >radius *radius &&distCenter < ( radius +stroke ) * ( radius +stroke ) )
                                                            return true;
@@ -46,7 +48,7 @@ public class CircularGroup extends WidgetGroup {
                                                    @Override
                                                    public void touchDragged(InputEvent event, float x, float y, int pointer) {
                                                        temp.set( x, y ).sub( center );
-                                                       setRotationMenu( ( temp.angle() -inAngle ) );// FIXME sa nu se mai restarteze unghiul cand apas
+                                                       setRotationMenu( formatAngle( initianRot + ( temp.angle() -inAngle ) ) );
                                                    }
                                                };
 
@@ -213,4 +215,11 @@ public class CircularGroup extends WidgetGroup {
         this.modifyAlpha = modifyAlpha;
     }
 
+    public int getRadius() {
+        return radius;
+    }
+
+    public int getStroke() {
+        return stroke;
+    }
 }

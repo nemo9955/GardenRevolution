@@ -23,7 +23,7 @@ public class Meniu implements Screen {
     private Stage        stage;
     private Skin         skin;
 
-    private final float  rap = 1.3f;
+    private static final float  rap = 1.3f;
 
 
     public Meniu() {
@@ -31,7 +31,7 @@ public class Meniu implements Screen {
         tweeger = new TweenManager();
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( Gdx.graphics.getWidth() *rap *Mod.densitate, Gdx.graphics.getHeight() *rap *Mod.densitate, true );
+        stage = new Stage( Gdx.graphics.getWidth() *rap /Mod.densitate, Gdx.graphics.getHeight() *rap /Mod.densitate, true );
 
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );

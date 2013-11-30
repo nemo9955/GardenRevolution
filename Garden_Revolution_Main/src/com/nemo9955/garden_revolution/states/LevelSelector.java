@@ -30,11 +30,11 @@ public class LevelSelector implements Screen {
     private FileHandle       lvlLoc;
     private String           toAcces;
     private SplitPane        lista;
-    private final float      rap      = 1.5f;
+    private static final float      rap      = 1.5f;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( Gdx.graphics.getWidth() *rap *Mod.densitate, Gdx.graphics.getHeight() *rap *Mod.densitate, true );
+        stage = new Stage( Gdx.graphics.getWidth() *rap /Mod.densitate, Gdx.graphics.getHeight() *rap /Mod.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
     }

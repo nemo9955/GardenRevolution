@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.mediu.Turnuri;
@@ -24,7 +24,7 @@ public class StageUtils {
 
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
-        stage = new Stage( Gdx.graphics.getWidth() *1.5f *Mod.densitate, Gdx.graphics.getHeight() *1.5f *Mod.densitate, true );
+        stage = new Stage( Gdx.graphics.getWidth() *1.5f /Mod.densitate, Gdx.graphics.getHeight() *1.5f /Mod.densitate, true );
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
 
 
@@ -98,27 +98,31 @@ public class StageUtils {
 
 
         final Group upgradeTower = new Group();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
-        final TextButton backTowe = new TextButton( "Bk", skin );
+        final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME epara afiseara butonului
+        final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
-        final TextButton fill1 = new TextButton( "fill1", skin );
-        final TextButton fill2 = new TextButton( "fill2", skin );
         final CircularGroup mainUpgrades = new CircularGroup( gameplay.shape );
 
-        backTowe.setPosition( 25 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
+        float freeSpace = 25 *Mod.densitate;
+
+        upgradeTower.setTouchable( Touchable.childrenOnly );
+        backTowe1.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
+        backTowe2.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
 
         mainUpgrades.setDraggable( true );
         mainUpgrades.setAsCircle( 230, 70 );
-        mainUpgrades.setPosition( /*stage.getWidth() /2*/0, stage.getHeight() /2 );
+        mainUpgrades.setPosition( /* stage.getWidth() /2 */-mainUpgrades.getRadius() + ( freeSpace *2.5f ) +backTowe1.getWidth(), stage.getHeight() /2 );
         mainUpgrades.setActivInterval( -35, 35, true, 30f );
-        mainUpgrades.addActor( fill1 );
-        mainUpgrades.addActor( fill2 );
+        mainUpgrades.addActor( new TextButton( "fill1", skin ) );
+        mainUpgrades.addActor( new TextButton( "fill2", skin ) );
         mainUpgrades.addActor( basicT );
-        mainUpgrades.addActor( new ImageButton( Icons.ARC_FULGER.getAsDrawable( skin, 80, 80 ) ) );
+        mainUpgrades.addActor( new ImageButton( Icons.ARC_FULGER.getAsDrawable( skin, 70, 70 ) ) );
         mainUpgrades.addActor( new ImageButton( Icons.ATINTIT.getAsDrawable( skin, 70, 70 ) ) );
 
 
+        upgradeTower.addActor( backTowe1 );
         upgradeTower.addActor( mainUpgrades );
-        upgradeTower.addActor( backTowe );
+        upgradeTower.addActor( backTowe2 );
         upgradeTower.setVisible( false );
 
         // pentru elementele din HUD +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -182,7 +186,7 @@ public class StageUtils {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if ( backTowe.isPressed() ) {
+                if ( backTowe1.isPressed() ||backTowe2.isPressed() ) {
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 0;
