@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,8 +27,9 @@ public class CircularGroup extends WidgetGroup {
     private boolean              modifyAlpha   = true;
 
     private boolean              clockwise     = true;
-    private float                mid, dir;
+    private float                mid, dir, lungimea;
     private float                rotation      = 0;
+    private boolean              lockInside;
 
     private InputListener        inputListener = new InputListener() {
 
@@ -87,13 +89,17 @@ public class CircularGroup extends WidgetGroup {
     }
 
     @Override
+    protected void childrenChanged() {
+        super.childrenChanged();
+        lungimea = ( getChildren().size -1 ) *interval;
+    }
+
+    @Override
     public void layout() {
 
-
         float unghi = rotation +mid;
-        float direction = clockwise ? interval : -interval;
-        unghi = unghi - ( ( ( getChildren().size -1 ) *direction ) /2 );
-
+        float direction = clockwise ? -interval : interval;
+        unghi = unghi - ( ( clockwise ? -lungimea : lungimea ) /2 );
         for (Actor actor : getChildren() ) {
             tmp.set( getPositionbyAngle( tmp, unghi ) );
             actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
@@ -112,6 +118,9 @@ public class CircularGroup extends WidgetGroup {
     }
 
     public void rotateMenu(float degrees) {
+        if ( lockInside )
+            if ( Math.min( rotation +degrees, 360 - ( rotation +degrees ) ) > ( lungimea -Math.abs( dir ) ) /2 )
+                return;
         rotation += degrees;
         rotation = formatAngle( rotation );
         invalidate();
@@ -119,14 +128,18 @@ public class CircularGroup extends WidgetGroup {
 
 
     public void setRotationMenu(float degrees) {
+        if ( lockInside )
+            if ( Math.min( degrees, 360 -degrees ) > ( lungimea -Math.abs( dir ) ) /2 )
+                return;
         rotation = degrees;
         rotation = formatAngle( rotation );
         invalidate();
     }
 
     private float getAlphaByDistance(float unghi) {
-        if ( getDifference( unghi, mid ) >Math.abs( dir ) )
-            return 1f -getDifference( unghi, mid ) /180;
+        float corect = formatAngle( unghi );
+        if ( getDifference( corect, mid ) >Math.abs( mid +dir /2 ) )
+            return 1 -getDifference( corect, mid ) /180;
         return 1;
 
     }
@@ -140,11 +153,11 @@ public class CircularGroup extends WidgetGroup {
         super.act( delta );
     }
 
-    private float getDifference(float a1, float a2) {
+    private static float getDifference(float a1, float a2) {
         return Math.min( ( a1 -a2 ) <0 ? a1 -a2 +360 : a1 -a2, ( a2 -a1 ) <0 ? a2 -a1 +360 : a2 -a1 );
     }
 
-    private Vector2 getPositionbyAngle(Vector2 out, float angle) {
+    public Vector2 getPositionbyAngle(Vector2 out, float angle) {
         return out.set( center ).add( MathUtils.cosDeg( angle ) * ( radius +stroke /2 ), MathUtils.sinDeg( angle ) * ( radius +stroke /2 ) );
     }
 
@@ -157,23 +170,26 @@ public class CircularGroup extends WidgetGroup {
      *        : the direction in which to draw the elements
      * @param angleBetween
      *        : the angle between each element
+     * @param lockInside
+     *        : if true the outer-most elements won't be allowed to go between the 2 angles
      */
-    public void setActivInterval(float firstAngle, float secondAngle, boolean clockwise, float angleBetween) {
+    public void setActivInterval(float firstAngle, float secondAngle, boolean clockwise, float angleBetween, boolean lockInside) {
         this.minAngle = firstAngle >=0 ? firstAngle %360 : firstAngle %360 +360;
         this.maxAngle = secondAngle >=0 ? secondAngle %360 : secondAngle %360 +360;
         this.interval = angleBetween;
         this.clockwise = clockwise;
+        this.lockInside = lockInside;
 
         float unghi;
         float direction;
 
-        if ( this.clockwise && ( minAngle >maxAngle ) ) {
+        if ( !this.clockwise && ( minAngle >maxAngle ) ) {
             float dif = 360 -Math.min( maxAngle, minAngle );
             direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
             direction = 360 -direction;
             unghi = ( minAngle +maxAngle -360 ) /2;
         }
-        else if ( !this.clockwise && ( minAngle <maxAngle ) ) {
+        else if ( this.clockwise && ( minAngle <maxAngle ) ) {
             float dif = 360 -Math.min( maxAngle, minAngle );
             direction = Math.abs( ( minAngle +dif ) - ( maxAngle +dif ) );
             direction = 360 -direction;
@@ -184,7 +200,7 @@ public class CircularGroup extends WidgetGroup {
             unghi = ( maxAngle +minAngle ) /2;
         }
 
-        if ( !this.clockwise )
+        if ( this.clockwise )
             direction *= -1;
 
         mid = unghi;
@@ -192,7 +208,7 @@ public class CircularGroup extends WidgetGroup {
 
         invalidate();
 
-        // System.out.println( firstAngle +" -> " +secondAngle +" " +clockwise +"  :    " +unghi +" " +direction +"    " +mid +" " +dir +" " +interval +" " +rotation );
+        // System.out.println( minAngle +" -> " +maxAngle +" " +clockwise +"  :    " +unghi +" " +direction +"    " +mid +" " +dir +" " +interval +" " +rotation );
 
     }
 
@@ -222,4 +238,38 @@ public class CircularGroup extends WidgetGroup {
     public int getStroke() {
         return stroke;
     }
+
+    /**
+     * Starts at 0 and increments by {@code angle} until the point is no longer in the {@code zon}
+     * 
+     * @param zon
+     * @param angle
+     * @param padding
+     *        :subtracts from the result the {@code angle*padding}
+     * @return
+     */
+    public float minAngleInZon(final Rectangle zon, final float angle, final float padding) {
+        tmp.set( zon.x +1, zon.y +1 );
+        float i = 0;
+        while ( zon.contains( tmp ) &&i <=180 ) {
+            i += angle;
+            getPositionbyAngle( tmp, i ).add( getX(), getY() );
+        }
+        return i -angle *padding;
+    }
+
+    /**
+     * 
+     * @param distance
+     *        : the distance from the center
+     * @param height
+     *        : the height of the element
+     * @return the angle for which the elements don't collide
+     */
+
+    public static float aprxOptAngl(float distance, float height) {
+        tmp.set( distance, height );
+        return getDifference( tmp.angle(), 0 );
+    }
+
 }

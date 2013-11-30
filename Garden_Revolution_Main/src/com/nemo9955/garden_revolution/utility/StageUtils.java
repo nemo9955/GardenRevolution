@@ -1,10 +1,10 @@
 package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -105,16 +105,28 @@ public class StageUtils {
 
         float freeSpace = 25 *Mod.densitate;
 
-        upgradeTower.setTouchable( Touchable.childrenOnly );
         backTowe1.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
         backTowe2.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
 
         mainUpgrades.setDraggable( true );
-        mainUpgrades.setAsCircle( 230, 70 );
-        mainUpgrades.setPosition( /* stage.getWidth() /2 */-mainUpgrades.getRadius() + ( freeSpace *2.5f ) +backTowe1.getWidth(), stage.getHeight() /2 );
-        mainUpgrades.setActivInterval( -35, 35, true, 30f );
+        mainUpgrades.setAsCircle( 1000, 70 );
+        mainUpgrades.setPosition( -mainUpgrades.getRadius() + ( freeSpace *2.1f ) +backTowe1.getWidth(), stage.getHeight() /2 );
+        // mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
+
+
+        float i, treapta = CircularGroup.aprxOptAngl( mainUpgrades.getRadius(), basicT.getHeight() );
+        Rectangle zon = new Rectangle( 0, 0, stage.getWidth(), stage.getHeight() );
+        i = mainUpgrades.minAngleInZon( zon, treapta, 2 );
+
+        mainUpgrades.setActivInterval( i, 360 -i, true, treapta *1.4f, true );
+        // mainUpgrades.setActivInterval( 30, -30, true, 30, false );
+
+
         mainUpgrades.addActor( new TextButton( "fill1", skin ) );
         mainUpgrades.addActor( new TextButton( "fill2", skin ) );
+        mainUpgrades.addActor( new TextButton( "fill4", skin ) );
+        mainUpgrades.addActor( new TextButton( "fill5", skin ) );
+        mainUpgrades.addActor( new TextButton( "fill6", skin ) );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( new ImageButton( Icons.ARC_FULGER.getAsDrawable( skin, 70, 70 ) ) );
         mainUpgrades.addActor( new ImageButton( Icons.ATINTIT.getAsDrawable( skin, 70, 70 ) ) );
