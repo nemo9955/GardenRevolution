@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 
 public class Meniu implements Screen {
@@ -22,13 +23,15 @@ public class Meniu implements Screen {
     private Stage        stage;
     private Skin         skin;
 
+    private final float  rap = 1.3f;
+
 
     public Meniu() {
 
         tweeger = new TweenManager();
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage();
+        stage = new Stage( Gdx.graphics.getWidth() *rap *Mod.densitate, Gdx.graphics.getHeight() *rap *Mod.densitate, true );
 
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );

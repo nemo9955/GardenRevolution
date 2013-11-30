@@ -1,7 +1,5 @@
 package com.nemo9955.garden_revolution.utility;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -138,12 +136,6 @@ public class CircularGroup extends WidgetGroup {
     @Override
     public void act(float delta) {
         super.act( delta );
-
-        if ( Gdx.input.isKeyPressed( Keys.O ) )
-            rotateMenu( 2 );
-        if ( Gdx.input.isKeyPressed( Keys.L ) )
-            rotateMenu( -2 );
-
     }
 
     private float getDifference(float a1, float a2) {

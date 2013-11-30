@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Mod;
 
 
 public class LevelSelector implements Screen {
@@ -29,10 +30,11 @@ public class LevelSelector implements Screen {
     private FileHandle       lvlLoc;
     private String           toAcces;
     private SplitPane        lista;
+    private final float      rap      = 1.5f;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage();
+        stage = new Stage( Gdx.graphics.getWidth() *rap *Mod.densitate, Gdx.graphics.getHeight() *rap *Mod.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
     }

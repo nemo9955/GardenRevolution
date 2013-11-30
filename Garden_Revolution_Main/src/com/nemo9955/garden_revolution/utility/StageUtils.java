@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.utility;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.mediu.Turnuri;
@@ -22,8 +24,9 @@ public class StageUtils {
 
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
-        stage = new Stage();
+        stage = new Stage( Gdx.graphics.getWidth() *1.5f *Mod.densitate, Gdx.graphics.getHeight() *1.5f *Mod.densitate, true );
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+
 
         gameplay.fps = new Label( "FPS: ", skin );
         gameplay.fps.setScale( Mod.densitate );
@@ -40,27 +43,15 @@ public class StageUtils {
         gameplay.mover = new Touchpad( 1, skin );
         gameplay.mover.setVisible( true );
 
-        turnIG.setOrigin( turnIG.getWidth(), 0 );
-        turnIG.setSize( turnIG.getWidth() *Mod.densitate, turnIG.getHeight() *Mod.densitate );
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
-        gameplay.viataTurn.setOrigin( 0, gameplay.viataTurn.getHeight() );
-        gameplay.viataTurn.setSize( gameplay.viataTurn.getWidth() *Mod.densitate, gameplay.viataTurn.getHeight() *Mod.densitate );
-        gameplay.viataTurn.setFontScale( Mod.densitate );
+        gameplay.viataTurn.setFontScale( 0.6f );
         gameplay.viataTurn.setPosition( 10 *Mod.densitate, stage.getHeight() -gameplay.viataTurn.getHeight() -10 *Mod.densitate );
-        pauseBut.setOrigin( pauseBut.getWidth(), pauseBut.getHeight() );
-        pauseBut.setSize( pauseBut.getWidth() *Mod.densitate, pauseBut.getHeight() *Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
-        camLeft.setOrigin( 0, camLeft.getHeight() /2 );
         camLeft.setColor( 1, 1, 1, 0.6f );
-        camLeft.setSize( camLeft.getWidth() *Mod.densitate, camLeft.getHeight() *Mod.densitate );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
         camRight.setColor( 1, 1, 1, 0.6f );
-        camRight.setOrigin( camRight.getWidth(), camRight.getHeight() /2 );
-        camRight.setSize( camRight.getWidth() *Mod.densitate, camRight.getHeight() *Mod.densitate );
         camRight.setPosition( stage.getWidth() -camRight.getRight(), stage.getHeight() /2 -camRight.getHeight() /2 );
-        gameplay.mover.setSize( gameplay.mover.getWidth() *Mod.densitate, gameplay.mover.getHeight() *Mod.densitate );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
-        tinta.setScale( Mod.densitate );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );
@@ -111,23 +102,24 @@ public class StageUtils {
         final TextButton basicT = new TextButton( "BASIC", skin );
         final TextButton fill1 = new TextButton( "fill1", skin );
         final TextButton fill2 = new TextButton( "fill2", skin );
-
-
         final CircularGroup mainUpgrades = new CircularGroup( gameplay.shape );
+
+        backTowe.setPosition( 25 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
+
         mainUpgrades.setDraggable( true );
         mainUpgrades.setAsCircle( 230, 70 );
-        mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
+        mainUpgrades.setPosition( /*stage.getWidth() /2*/0, stage.getHeight() /2 );
         mainUpgrades.setActivInterval( -35, 35, true, 30f );
-        mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( fill1 );
         mainUpgrades.addActor( fill2 );
+        mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( new ImageButton( Icons.ARC_FULGER.getAsDrawable( skin, 80, 80 ) ) );
         mainUpgrades.addActor( new ImageButton( Icons.ATINTIT.getAsDrawable( skin, 70, 70 ) ) );
 
-        backTowe.setPosition( 25 *Mod.densitate, stage.getHeight() /2 -backTowe.getHeight() /2 );
-        upgradeTower.setVisible( false );
-        upgradeTower.addActor( backTowe );
+
         upgradeTower.addActor( mainUpgrades );
+        upgradeTower.addActor( backTowe );
+        upgradeTower.setVisible( false );
 
         // pentru elementele din HUD +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         ChangeListener hudButons = new ChangeListener() {

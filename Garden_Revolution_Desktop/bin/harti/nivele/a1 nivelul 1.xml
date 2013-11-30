@@ -2,11 +2,14 @@
    
     <wave index="1" delay="1" interval="1" >
         <path nr="1" >
-            <rosie amount="2"/>
+            <rosie amount="1"/>
+            <aluna amount="2"/>
         </path>
         
         <path nr="2">
-            <rosie amount="2"/>
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+            <morcov amount="2"/>
         </path>
     </wave>
 
