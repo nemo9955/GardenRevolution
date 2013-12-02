@@ -11,30 +11,26 @@ public enum Turnuri {
     BASIC(Assets.TURN_BASIC);//
 
 
-    Assets             type;
-    public PropTurnuri prop;
+    Assets        type;
+    public String nume;
+    public int    rank;
+
 
     Turnuri(Assets type) {
         this.type = type;
-        prop = new PropTurnuri( this );
+        PropTurnuri( this );
     }
 
-    
+
     public Model getModel() {
         return Garden_Revolution.getModel( type );
     }
 
-    public static class PropTurnuri {
+    public void PropTurnuri(Turnuri type) {
 
-        public String nume;
-        public int    rank;
-
-        public PropTurnuri(Turnuri type) {
-            
-            if ( type ==Turnuri.BASIC ) {
-                nume = "Turn de baza";
-                rank = 5;
-            }
+        if ( type ==Turnuri.BASIC ) {
+            nume = "Turn de baza";
+            rank = 5;
         }
     }
 }

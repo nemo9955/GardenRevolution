@@ -36,6 +36,8 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.entitati.Aliat;
 import com.nemo9955.garden_revolution.game.entitati.Inamic;
 import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
+import com.nemo9955.garden_revolution.game.mediu.Armament;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.game.mediu.Turnuri;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
@@ -56,7 +58,6 @@ public class World extends GestureAdapter implements Disposable {
     public Array<BoundingBox>               colide      = new Array<BoundingBox>( false, 10 );
     public Array<CatmullRomSpline<Vector3>> paths;
     private int                             viata;
-
 
     private PerspectiveCamera               cam;
     private static Vector3                  tmp         = new Vector3();
@@ -82,6 +83,10 @@ public class World extends GestureAdapter implements Disposable {
 
         if ( isOneToweUp &&waves.finishedWaves() )
             waves.update( delta );
+
+        for (Turn trn : turnuri ) {
+            trn.update( delta );
+        }
 
         for (Inamic fo : foe ) {
             fo.update( delta );
@@ -113,6 +118,10 @@ public class World extends GestureAdapter implements Disposable {
                 if ( col.intersects( sh.box ) )
                     sh.dead = true;
             }
+        }
+
+        if ( Gdx.input.isTouched() &&curentTurn !=-1 &&getCurrentTower().getWeaponIsState( FireState.CONTINUOUS ) ) {
+            getCurrentTower().fireMain( this, cam.getPickRay( Gdx.input.getX(), Gdx.input.getY() ) );
         }
 
     }
@@ -374,6 +383,19 @@ public class World extends GestureAdapter implements Disposable {
         return turnuri[curentTurn];
     }
 
+    public void upgradeCurentTower(Turnuri upgrade) {
+        if ( curentTurn !=-1 &&!overview )
+            if ( getCurrentTower().upgradeTower( upgrade ) )
+                isOneToweUp = true;
+    }
+
+    public void changeCurentWeapon(Armament minigun) {
+        Turn turn = getCurrentTower();
+        if ( curentTurn !=-1 &&!overview &&turn.type !=null )
+            if ( turn.changeWeapon( minigun.getNewInstance( turn.place ) ) )
+                ;
+    }
+
     public Vector3 getCameraRotAround() {
         if ( getCurrentTower() ==null )
             return cam.position;
@@ -472,11 +494,15 @@ public class World extends GestureAdapter implements Disposable {
                     setCamera( i );
                     overview = false;
                 }
-
             return true;
         }
 
-        getCurrentTower().fireMain( this, cam.getPickRay( x, y ) );
+        Turn turn = getCurrentTower();
+
+        if ( turn.getWeaponIsState( FireState.TAP ) )
+            turn.fireMain( this, cam.getPickRay( x, y ) );
+        if ( turn.getWeaponIsState( FireState.LOCKED_TAP ) )
+            turn.fireMain( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
 
         return false;
     }
@@ -506,6 +532,8 @@ public class World extends GestureAdapter implements Disposable {
 
         for (Disposable dis : toDispose )
             dis.dispose();
+        for (Disposable dis : turnuri )
+            dis.dispose();
 
         toDispose.clear();
         foe.clear();
@@ -513,15 +541,6 @@ public class World extends GestureAdapter implements Disposable {
         shot.clear();
         mediu.clear();
         nori.clear();
-
-    }
-
-    
-
-    public void upgradeCurentTower(Turnuri upgrade) {
-        if ( curentTurn !=-1 &&!overview )
-            if ( getCurrentTower().upgradeTower( upgrade ) )
-                isOneToweUp = true;
 
     }
 

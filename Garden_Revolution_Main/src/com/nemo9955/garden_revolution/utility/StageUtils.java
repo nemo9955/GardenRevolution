@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.mediu.Armament;
 import com.nemo9955.garden_revolution.game.mediu.Turnuri;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
@@ -81,14 +82,14 @@ public class StageUtils {
 
 
         final Table optContinut = new Table();// aici e tot ce tine de optiunile in-game ---------------------------------------------------------------------------------
-        final ScrollPane optIG = new ScrollPane( optContinut, skin );
+        final ScrollPane optiuni = new ScrollPane( optContinut, skin );
         final TextButton backBut = new TextButton( "Back", skin, "demon" );
         final TextButton updWaves = new TextButton( "Activate Wave", skin );
         final TextButton debug = new TextButton( "Hide Debug", skin );
 
-        optIG.setVisible( false );
-        optIG.setWidget( optContinut );
-        optIG.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
+        optiuni.setVisible( false );
+        optiuni.setWidget( optContinut );
+        optiuni.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
 
         optContinut.setFillParent( true );
         optContinut.defaults().space( 70 *Mod.densitate );
@@ -101,6 +102,7 @@ public class StageUtils {
         final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME epara afiseara butonului
         final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
+        final ImageButton miniGun = new ImageButton( Icons.SAGETI.getAsDrawable( skin, 70, 70 ) );
         final CircularGroup mainUpgrades = new CircularGroup( gameplay.shape );
 
         float freeSpace = 25 *Mod.densitate;
@@ -123,13 +125,8 @@ public class StageUtils {
 
 
         mainUpgrades.addActor( new TextButton( "fill1", skin ) );
-        mainUpgrades.addActor( new TextButton( "fill2", skin ) );
-        mainUpgrades.addActor( new TextButton( "fill4", skin ) );
-        mainUpgrades.addActor( new TextButton( "fill5", skin ) );
-        mainUpgrades.addActor( new TextButton( "fill6", skin ) );
         mainUpgrades.addActor( basicT );
-        mainUpgrades.addActor( new ImageButton( Icons.ARC_FULGER.getAsDrawable( skin, 70, 70 ) ) );
-        mainUpgrades.addActor( new ImageButton( Icons.ATINTIT.getAsDrawable( skin, 70, 70 ) ) );
+        mainUpgrades.addActor( miniGun );
 
 
         upgradeTower.addActor( backTowe1 );
@@ -170,7 +167,7 @@ public class StageUtils {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( optBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
-                    optIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
+                    optiuni.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.toUpdate = 1;
                 }
                 else if ( resumeBut.isPressed() ) {
@@ -206,6 +203,9 @@ public class StageUtils {
                 else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
                     gameplay.world.upgradeCurentTower( Turnuri.BASIC );
                 }
+                else if ( miniGun.isPressed() &&!gameplay.world.overview ) {// TODO
+                    gameplay.world.changeCurentWeapon( Armament.MINIGUN );
+                }
             }
         };
 
@@ -216,7 +216,7 @@ public class StageUtils {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( backBut.isPressed() ) {
-                    optIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
+                    optiuni.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
                 else if ( updWaves.isPressed() ) {
@@ -253,13 +253,15 @@ public class StageUtils {
         upgradeTower.addListener( turnButons );
         hud.addListener( hudButons );
         pauseIG.addListener( pauseButons );
-        optIG.addListener( optButons );
+        optiuni.addListener( optButons );
 
-        stage.addActor( gameplay.fps );
-        stage.addActor( upgradeTower );
+        hud.setName( "hud" );
+
         stage.addActor( hud );
-        stage.addActor( optIG );
+        stage.addActor( upgradeTower );
+        stage.addActor( optiuni );
         stage.addActor( pauseIG );
+        stage.addActor( gameplay.fps );
 
         return stage;
     }

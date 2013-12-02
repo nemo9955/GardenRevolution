@@ -14,8 +14,10 @@ public enum Inamici {
     ROSIE("rosie"), //
     MORCOV("morcov");//
 
-    ModelInstance       model;
-    public ProprInamici prop;
+    ModelInstance model;
+    public int    force = 5;
+    public float  speed = 8;
+    public String nume  = "frunc";
 
     Inamici(String name) {
         ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
@@ -25,7 +27,7 @@ public enum Inamici {
                 rem.add( tmp.nodes.get( i ) );
         tmp.nodes.removeAll( rem, false );
         model = tmp;
-        prop = new ProprInamici( this );
+        ProprInamici( this );
     }
 
     public ModelInstance getModel(float x, float y, float z) {
@@ -33,22 +35,15 @@ public enum Inamici {
         return new ModelInstance( model );
     }
 
-    public static class ProprInamici {
 
-        public int    force = 5;
-        public float  speed = 8;
-        public String nume  = "frunc";
-
-        public ProprInamici(Inamici type) {
-
-            nume = type.name().charAt( 0 ) +"" +type.name().replaceFirst( type.name().charAt( 0 ) +"", "" ).toLowerCase();
-
-            if ( type ==Inamici.MORCOV ) {
-                force = 7;
-            }
-            else if ( type ==Inamici.ROSIE ) {
-                speed = 10;
-            }
+    public void ProprInamici(Inamici type) {
+        nume = type.name().charAt( 0 ) +"" +type.name().replaceFirst( type.name().charAt( 0 ) +"", "" ).toLowerCase();
+        if ( type ==Inamici.MORCOV ) {
+            force = 7;
         }
+        else if ( type ==Inamici.ROSIE ) {
+            speed = 10;
+        }
+
     }
 }

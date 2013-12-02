@@ -33,8 +33,8 @@ public class Inamic extends Vietate {
 
         super.init( x, y, z );
 
-        forta = type.prop.force;
-        viteza = type.prop.speed;
+        forta = type.force;
+        viteza = type.speed;
 
         offset.set( MathUtils.random( -20, 20 ), 0, MathUtils.random( -20, 20 ) );
         offset.scl( 0.1f );
@@ -56,7 +56,7 @@ public class Inamic extends Vietate {
 
     @Override
     protected ModelInstance getModel(float x, float y, float z) {
-        return type.getModel(x,y,z);
+        return type.getModel( x, y, z );
     }
 
     @Override

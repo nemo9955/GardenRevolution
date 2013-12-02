@@ -18,28 +18,34 @@ import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 
 
-public class Arma implements Disposable {
+public abstract class Arma implements Disposable {
 
     private Array<Disposable>  toDispose = new Array<Disposable>( false, 1 );
-    private static Vector3     tmp       = new Vector3();
+    protected static Vector3   tmp       = new Vector3();
 
     private ModelInstance      model;
     public AnimationController animation;
     public Vector3             poz;
 
+    public FireState           state;
+
     public Arma(Vector3 poz) {
         this.poz = poz;
+        state = getFireState();
+
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         toDispose.add( sfera );
+
         model = new ModelInstance( sfera, poz );
         animation = new AnimationController( model );
     }
 
-
     public void update(float delta) {
         animation.update( delta );
     }
+
+    protected abstract FireState getFireState();
 
     public void fireMain(World world, Ray ray) {
         float distance = -ray.origin.y /ray.direction.y;
@@ -70,4 +76,11 @@ public class Arma implements Disposable {
         toDispose.clear();
     }
 
+
+    public static enum FireState {
+        TAP, //
+        CONTINUOUS, //
+        LOCKED_TAP, //
+        LOCKED_CHARGE; //
+    }
 }
