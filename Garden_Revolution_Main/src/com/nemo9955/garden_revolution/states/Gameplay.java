@@ -57,6 +57,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
     public World              world;
     public float              touchPadTimmer = 0;
+    private boolean           isPressed      = false;
 
     public Gameplay() {
         tweeger = new TweenManager();
@@ -141,7 +142,7 @@ public class Gameplay extends InputAdapter implements Screen {
     private void updateGameplay(float delta) {
         if ( movex !=0 ||movey !=0 ||!dolly.isZero() )
             moveCamera( movex, movey );
-        world.update( delta );
+        world.update( delta, isPressed );
     }
 
     private void moveCamera(float amontX, float amontY) {
@@ -159,7 +160,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        isPressed = true;
         if ( Mod.moveByTouch &&toUpdate ==0 ) {
             startX = screenX;
             startY = screenY;
@@ -181,6 +182,14 @@ public class Gameplay extends InputAdapter implements Screen {
 
         return false;
     }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        isPressed = false;
+        return false;
+
+    }
+
 
     @Override
     public boolean keyDown(int keycode) {

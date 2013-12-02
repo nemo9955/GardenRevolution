@@ -53,6 +53,7 @@ public class StageUtils {
         camRight.setColor( 1, 1, 1, 0.6f );
         camRight.setPosition( stage.getWidth() -camRight.getRight(), stage.getHeight() /2 -camRight.getHeight() /2 );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
+        gameplay.mover.addAction( Actions.alpha( Mod.tPadMinAlpha ) );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );

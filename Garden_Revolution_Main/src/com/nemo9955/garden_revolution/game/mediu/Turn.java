@@ -24,6 +24,7 @@ public class Turn implements Disposable {
     public Vector3               poz;
     public Turnuri               type;
 
+
     private Arma                 arma;
 
     public Turn(ModelInstance baza, World world, Vector3 poz) {
@@ -39,7 +40,7 @@ public class Turn implements Disposable {
     }
 
     public boolean changeWeapon(Arma toChange) {
-        if ( hasArma() &&arma.equals( toChange ) )
+        if ( hasArma() &&arma.type ==toChange.type )
             return false;
         arma = toChange;
         return true;

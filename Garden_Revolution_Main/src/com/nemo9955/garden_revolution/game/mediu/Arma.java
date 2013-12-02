@@ -28,9 +28,11 @@ public abstract class Arma implements Disposable {
     public Vector3             poz;
 
     public FireState           state;
+    public Armament            type;
 
-    public Arma(Vector3 poz) {
+    public Arma(Armament type, Vector3 poz) {
         this.poz = poz;
+        this.type = type;
         state = getFireState();
 
         ModelBuilder build = new ModelBuilder();

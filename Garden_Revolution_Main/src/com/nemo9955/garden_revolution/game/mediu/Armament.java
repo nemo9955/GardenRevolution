@@ -17,7 +17,7 @@ public enum Armament {
 
         switch (this) {
             case MINIGUN:
-                return new MiniGun( poz );
+                return new MiniGun( this, poz );
             default:
                 return null;
         }

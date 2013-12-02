@@ -12,8 +12,8 @@ public class MiniGun extends Arma {
     private long             time;
 
 
-    public MiniGun(Vector3 poz) {
-        super( poz );
+    public MiniGun(Armament type, Vector3 poz) {
+        super( type, poz );
     }
 
     @Override
@@ -24,7 +24,7 @@ public class MiniGun extends Arma {
             float distance = -ray.origin.y /ray.direction.y;
             distance = Math.abs( distance );
             tmp = ray.getEndPoint( new Vector3(), distance );
-            tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -2f, 2f ), MathUtils.random( -2f, 2f ) );
+            tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -2f, 2f ), MathUtils.random( -1f, 3f ) );
             world.addShot( poz, tmp.sub( poz ).nor() );
 
         }

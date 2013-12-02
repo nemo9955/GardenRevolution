@@ -79,7 +79,7 @@ public class World extends GestureAdapter implements Disposable {
         readData( location );
     }
 
-    public void update(float delta) {
+    public void update(float delta, boolean isPressed) {
 
         if ( isOneToweUp &&waves.finishedWaves() )
             waves.update( delta );
@@ -120,7 +120,8 @@ public class World extends GestureAdapter implements Disposable {
             }
         }
 
-        if ( Gdx.input.isTouched() &&curentTurn !=-1 &&getCurrentTower().getWeaponIsState( FireState.CONTINUOUS ) ) {
+
+        if ( isPressed &&curentTurn !=-1 &&getCurrentTower().getWeaponIsState( FireState.CONTINUOUS ) ) {
             getCurrentTower().fireMain( this, cam.getPickRay( Gdx.input.getX(), Gdx.input.getY() ) );
         }
 
@@ -385,15 +386,17 @@ public class World extends GestureAdapter implements Disposable {
 
     public void upgradeCurentTower(Turnuri upgrade) {
         if ( curentTurn !=-1 &&!overview )
-            if ( getCurrentTower().upgradeTower( upgrade ) )
+            if ( getCurrentTower().upgradeTower( upgrade ) ) {
+                setCamera( curentTurn );
                 isOneToweUp = true;
+            }
     }
 
     public void changeCurentWeapon(Armament minigun) {
         Turn turn = getCurrentTower();
         if ( curentTurn !=-1 &&!overview &&turn.type !=null )
             if ( turn.changeWeapon( minigun.getNewInstance( turn.place ) ) )
-                ;
+                setCamera( curentTurn );
     }
 
     public Vector3 getCameraRotAround() {
@@ -482,7 +485,6 @@ public class World extends GestureAdapter implements Disposable {
                                         }
                                     };
 
-
     @Override
     public boolean tap(float x, float y, int count, int button) {
         if ( overview ) {
@@ -514,18 +516,17 @@ public class World extends GestureAdapter implements Disposable {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
             tmp = ray.getEndPoint( new Vector3(), distance );
-            if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                addAlly( tmp.x, tmp.y, tmp.z );
-            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                addFoe( Inamici.ROSIE, tmp.x, tmp.y, tmp.z );
-            else
+
+            if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
                 addFoe( Inamici.MORCOV, tmp.x, tmp.y, tmp.z );
+            else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
+                addAlly( tmp.x, tmp.y, tmp.z );
+
             gestures.invalidateTapSquare();
             return true;
         }
         return false;
     }
-
 
     @Override
     public void dispose() {
