@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.Armament;
+import com.nemo9955.garden_revolution.game.enumTypes.Shots;
 
 
 public class MiniGun extends Arma {
@@ -25,7 +27,7 @@ public class MiniGun extends Arma {
             distance = Math.abs( distance );
             tmp = ray.getEndPoint( new Vector3(), distance );
             tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -2f, 2f ), MathUtils.random( -1f, 3f ) );
-            world.addShot( poz, tmp.sub( poz ).nor() );
+            world.addShot( Shots.STANDARD, poz, tmp.sub( poz ).nor() );
 
         }
     }

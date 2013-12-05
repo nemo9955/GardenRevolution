@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
 
 

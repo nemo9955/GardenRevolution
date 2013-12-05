@@ -1,4 +1,4 @@
-package com.nemo9955.garden_revolution.game;
+package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.utility.CustomBox;
 
 
@@ -15,7 +16,7 @@ public abstract class Entitate implements Poolable {
     protected ModelInstance model;
 
     public boolean          dead;
-    protected CustomBox     box;
+    public CustomBox        box;
     public float            angle;
     public Vector3          poz;
     protected final World   world;

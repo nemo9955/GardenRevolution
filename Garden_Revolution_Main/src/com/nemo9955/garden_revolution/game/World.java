@@ -34,12 +34,15 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.entitati.Aliat;
+import com.nemo9955.garden_revolution.game.entitati.Entitate;
 import com.nemo9955.garden_revolution.game.entitati.Inamic;
-import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.game.entitati.Shot;
+import com.nemo9955.garden_revolution.game.enumTypes.Armament;
+import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
+import com.nemo9955.garden_revolution.game.enumTypes.Shots;
+import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
-import com.nemo9955.garden_revolution.game.mediu.Armament;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
-import com.nemo9955.garden_revolution.game.mediu.Turnuri;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
@@ -107,16 +110,6 @@ public class World extends GestureAdapter implements Disposable {
             if ( sh.dead ) {
                 shotPool.free( sh );
                 shot.removeValue( sh, false );
-            }
-            for (Entitate fo : foe ) {
-                if ( fo.box.intersects( sh.box ) ) {
-                    fo.damage( sh );
-                    sh.dead = true;
-                }
-            }
-            for (BoundingBox col : colide ) {
-                if ( col.intersects( sh.box ) )
-                    sh.dead = true;
             }
         }
 
@@ -451,8 +444,8 @@ public class World extends GestureAdapter implements Disposable {
         return aliatTemp;
     }
 
-    public Shot addShot(Vector3 position, Vector3 direction) {
-        Shot shotTemp = shotPool.obtain().create( position, direction );
+    public Shot addShot(Shots type, Vector3 position, Vector3 direction) {
+        Shot shotTemp = shotPool.obtain().create( type, position, direction );
         shot.add( shotTemp );
         return shotTemp;
     }

@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.game.entitati;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.game.Entitate;
 import com.nemo9955.garden_revolution.game.World;
 
 
@@ -13,6 +12,7 @@ public abstract class Vietate extends Entitate {
     public float               viteza;
     public Vector3             dir;
 
+    public int                 viata;
 
     public Vietate(World world) {
         super( world );
@@ -41,6 +41,16 @@ public abstract class Vietate extends Entitate {
 
 
     protected void movement(float delta) {
+
+    }
+
+    @Override
+    public void damage(Entitate e) {
+        if ( e instanceof Shot )
+            viata -= ( (Shot) e ).damage;
+
+        if ( viata <=0 )
+            super.damage( e );
 
     }
 

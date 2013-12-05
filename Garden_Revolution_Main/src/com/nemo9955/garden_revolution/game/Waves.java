@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.nemo9955.garden_revolution.game.entitati.Inamici;
+import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
 
 
 public class Waves {

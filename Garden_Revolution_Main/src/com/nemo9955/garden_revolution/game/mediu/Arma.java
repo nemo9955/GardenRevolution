@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 
 
 public abstract class Arma implements Disposable {
@@ -49,12 +50,7 @@ public abstract class Arma implements Disposable {
 
     protected abstract FireState getFireState();
 
-    public void fireMain(World world, Ray ray) {
-        float distance = -ray.origin.y /ray.direction.y;
-        distance = Math.abs( distance );
-        tmp = ray.getEndPoint( new Vector3(), distance );
-        world.addShot( poz, tmp.sub( poz ).nor() );
-    }
+    public abstract void fireMain(World world, Ray ray);
 
     public void render(ModelBatch modelBatch) {
         modelBatch.render( model );

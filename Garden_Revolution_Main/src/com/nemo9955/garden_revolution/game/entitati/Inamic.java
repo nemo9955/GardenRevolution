@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
 import com.nemo9955.garden_revolution.utility.Mod;
 
 
@@ -35,9 +36,9 @@ public class Inamic extends Vietate {
 
         forta = type.force;
         viteza = type.speed;
+        viata = type.viata;
 
-        offset.set( MathUtils.random( -20, 20 ), 0, MathUtils.random( -20, 20 ) );
-        offset.scl( 0.1f );
+        offset.set( MathUtils.random( -30, 30 ), 0, MathUtils.random( -30, 30 ) ).scl( 0.1f );
         this.drum = drum;
         percent = -STEP;
 

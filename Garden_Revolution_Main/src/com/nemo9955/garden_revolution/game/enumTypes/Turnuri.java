@@ -1,4 +1,4 @@
-package com.nemo9955.garden_revolution.game.mediu;
+package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.Garden_Revolution;
@@ -8,8 +8,14 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum Turnuri {
 
 
-    BASIC(Assets.TURN_BASIC);//
+    BASIC(Assets.TURN_BASIC) {
 
+        @Override
+        protected void PropTurnuri() {
+            nume = "Turn de baza";
+            rank = 5;
+        }
+    };//
 
     Assets        type;
     public String nume;
@@ -18,19 +24,12 @@ public enum Turnuri {
 
     Turnuri(Assets type) {
         this.type = type;
-        PropTurnuri( this );
+        PropTurnuri();
     }
-
 
     public Model getModel() {
         return Garden_Revolution.getModel( type );
     }
 
-    public void PropTurnuri(Turnuri type) {
-
-        if ( type ==Turnuri.BASIC ) {
-            nume = "Turn de baza";
-            rank = 5;
-        }
-    }
+    protected abstract void PropTurnuri();
 }

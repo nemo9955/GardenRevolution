@@ -1,4 +1,4 @@
-package com.nemo9955.garden_revolution.game.entitati;
+package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -10,16 +10,44 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum Inamici {
 
 
-    ALUNA("aluna"), //
-    ROSIE("rosie"), //
-    MORCOV("morcov");//
+    ALUNA("aluna") {
+
+        @Override
+        public void propInamici() {
+            speed = 10;
+            viata = 75;
+        }
+    }, //
+
+    ROSIE("rosie") {
+
+        @Override
+        public void propInamici() {
+            speed = 9;
+            viata = 100;
+        }
+    }, //
+
+    MORCOV("morcov") {
+
+        @Override
+        public void propInamici() {
+            force = 7;
+            speed = 5;
+            viata = 150;
+        }
+    };//
 
     ModelInstance model;
     public int    force = 5;
     public float  speed = 8;
     public String nume  = "frunc";
+    public int    viata = 50;
 
     Inamici(String name) {
+        nume = name().charAt( 0 ) +"" +name().replaceFirst( name().charAt( 0 ) +"", "" ).toLowerCase();
+        propInamici();
+
         ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.INAMICI ) );
         Array<Node> rem = new Array<Node>( false, 1 );
         for (int i = 0 ; i <tmp.nodes.size ; i ++ )
@@ -27,7 +55,6 @@ public enum Inamici {
                 rem.add( tmp.nodes.get( i ) );
         tmp.nodes.removeAll( rem, false );
         model = tmp;
-        ProprInamici( this );
     }
 
     public ModelInstance getModel(float x, float y, float z) {
@@ -35,15 +62,7 @@ public enum Inamici {
         return new ModelInstance( model );
     }
 
+    protected abstract void propInamici();
 
-    public void ProprInamici(Inamici type) {
-        nume = type.name().charAt( 0 ) +"" +type.name().replaceFirst( type.name().charAt( 0 ) +"", "" ).toLowerCase();
-        if ( type ==Inamici.MORCOV ) {
-            force = 7;
-        }
-        else if ( type ==Inamici.ROSIE ) {
-            speed = 10;
-        }
 
-    }
 }

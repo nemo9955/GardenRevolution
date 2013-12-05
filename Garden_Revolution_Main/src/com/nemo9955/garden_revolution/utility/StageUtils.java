@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.mediu.Armament;
-import com.nemo9955.garden_revolution.game.mediu.Turnuri;
+import com.nemo9955.garden_revolution.game.enumTypes.Armament;
+import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
 
