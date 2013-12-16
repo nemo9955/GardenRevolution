@@ -68,8 +68,7 @@ public class Inamic extends Vietate {
             movement( delta );
     }
 
-    protected void movement(float delta) {
-        super.movement( delta );
+    private void movement(float delta) {
         dir.set( flag ).sub( poz ).nor().scl( viteza *delta );
         move( dir );
         if ( flag.epsilonEquals( poz, 0.5f ) ) {

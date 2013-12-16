@@ -47,7 +47,7 @@ public class Turn implements Disposable {
         return true;
     }
 
-    public boolean getWeaponIsState(FireState stagiu) {
+    public boolean isWeaponState(FireState stagiu) {
         if ( !hasArma() )
             return false;
         if ( stagiu !=arma.state )
@@ -108,12 +108,20 @@ public class Turn implements Disposable {
             arma.render( modelBatch, shader );
     }
 
+    public Arma getArma() {
+        return arma;
+    }
+
     public void setArma(Arma arma) {
         this.arma = arma;
     }
 
     public boolean hasArma() {
         return arma !=null;
+    }
+
+    public boolean weaponMoveByTouch() {
+        return isWeaponState( FireState.LOCKED_CHARGE ) ||isWeaponState( FireState.LOCKED_TAP );
     }
 
     @Override

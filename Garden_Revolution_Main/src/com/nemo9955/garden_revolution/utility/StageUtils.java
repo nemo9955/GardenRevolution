@@ -28,6 +28,8 @@ public class StageUtils {
         stage = new Stage( Gdx.graphics.getWidth() *1.5f /Mod.densitate, Gdx.graphics.getHeight() *1.5f /Mod.densitate, true );
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
 
+        gameplay.weaponCharger = new Image( skin, "mover-knob" );
+        gameplay.weaponCharger.setVisible( false );
 
         gameplay.fps = new Label( "FPS: ", skin );
         gameplay.fps.setScale( Mod.densitate );
@@ -63,6 +65,7 @@ public class StageUtils {
         hud.addActor( tinta );
         hud.addActor( gameplay.mover );
         hud.addActor( turnIG );
+        hud.addActor( gameplay.weaponCharger );
 
 
         final Table pauseIG = new Table( skin ); // aici e tot ce are legatura cu meniul de pauza --------------------------------------------------------------------
@@ -104,6 +107,7 @@ public class StageUtils {
         final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
         final ImageButton miniGun = new ImageButton( Icons.SAGETI.getAsDrawable( skin, 70, 70 ) );
+        final ImageButton cannon = new ImageButton( Icons.TUN.getAsDrawable( skin, 70, 70 ) );
         final CircularGroup mainUpgrades = new CircularGroup( gameplay.shape );
 
         float freeSpace = 25 *Mod.densitate;
@@ -128,6 +132,7 @@ public class StageUtils {
         mainUpgrades.addActor( new TextButton( "fill1", skin ) );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( miniGun );
+        mainUpgrades.addActor( cannon );
 
 
         upgradeTower.addActor( backTowe1 );
@@ -204,8 +209,11 @@ public class StageUtils {
                 else if ( basicT.isPressed() &&!gameplay.world.overview ) {// TODO
                     gameplay.world.upgradeCurentTower( Turnuri.BASIC );
                 }
-                else if ( miniGun.isPressed() &&!gameplay.world.overview ) {// TODO
+                else if ( miniGun.isPressed() &&!gameplay.world.overview ) {
                     gameplay.world.changeCurentWeapon( Armament.MINIGUN );
+                }
+                else if ( cannon.isPressed() &&!gameplay.world.overview ) {
+                    gameplay.world.changeCurentWeapon( Armament.CANON );
                 }
             }
         };

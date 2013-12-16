@@ -43,6 +43,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.Shots;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
+import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
@@ -72,9 +73,12 @@ public class World extends GestureAdapter implements Disposable {
     protected boolean                       isOneToweUp = false;
 
     public Waves                            waves;
+    @SuppressWarnings("unused")
+    private Gameplay                        gpl;
 
-    public World(FileHandle location, PerspectiveCamera cam) {
+    public World(FileHandle location, PerspectiveCamera cam, Gameplay gpl) {
         this.cam = cam;
+        this.gpl = gpl;
         gestures = new GestureDetector( this );
         gestures.setLongPressSeconds( 1f );
         makeNori();
@@ -114,7 +118,7 @@ public class World extends GestureAdapter implements Disposable {
         }
 
 
-        if ( isPressed &&curentTurn !=-1 &&getCurrentTower().getWeaponIsState( FireState.CONTINUOUS ) ) {
+        if ( isPressed &&curentTurn !=-1 &&getCurrentTower().isWeaponState( FireState.CONTINUOUS ) ) {
             getCurrentTower().fireMain( this, cam.getPickRay( Gdx.input.getX(), Gdx.input.getY() ) );
         }
 
@@ -347,30 +351,6 @@ public class World extends GestureAdapter implements Disposable {
         Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
-    public void setCamera(int nr) {
-
-        nr = MathUtils.clamp( nr, 0, turnuri.length -1 );
-        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        float distance = -ray.origin.y /ray.direction.y;
-        Vector3 look = ray.getEndPoint( new Vector3(), distance );
-
-        cam.position.set( turnuri[nr].place );// TODO
-        cam.lookAt( look );
-        cam.up.set( Vector3.Y );
-
-        tmp2.set( cam.direction );
-        tmp2.scl( 4 );
-        tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
-
-        cam.position.sub( tmp2 );
-        cam.position.sub( tmp );
-        cam.position.add( 0, 2, 0 );
-
-        curentTurn = nr;
-        cam.update();
-        overview = false;
-    }
-
     public Turn getCurrentTower() {
         if ( turnuri.length ==0 ||curentTurn ==-1 )
             return null;
@@ -397,6 +377,30 @@ public class World extends GestureAdapter implements Disposable {
             return cam.position;
         return getCurrentTower().place;
 
+    }
+
+    public void setCamera(int nr) {
+
+        nr = MathUtils.clamp( nr, 0, turnuri.length -1 );
+        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        float distance = -ray.origin.y /ray.direction.y;
+        Vector3 look = ray.getEndPoint( new Vector3(), distance );
+
+        cam.position.set( turnuri[nr].place );// TODO
+        cam.lookAt( look );
+        cam.up.set( Vector3.Y );
+        // if ( getCurrentTower() !=null &&!getCurrentTower().getArma().type.equals( 0 ) ) {
+        tmp2.set( cam.direction );
+        tmp2.scl( 4 );
+        tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
+
+        cam.position.sub( tmp2 );
+        cam.position.sub( tmp );
+        cam.position.add( 0, 2, 0 );
+        // }
+        curentTurn = nr;
+        cam.update();
+        overview = false;
     }
 
     public void nextCamera() {
@@ -494,9 +498,10 @@ public class World extends GestureAdapter implements Disposable {
 
         Turn turn = getCurrentTower();
 
-        if ( turn.getWeaponIsState( FireState.TAP ) )
+        if ( turn.isWeaponState( FireState.TAP ) )
             turn.fireMain( this, cam.getPickRay( x, y ) );
-        if ( turn.getWeaponIsState( FireState.LOCKED_TAP ) )
+
+        if ( turn.isWeaponState( FireState.LOCKED_TAP ) )
             turn.fireMain( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
 
         return false;

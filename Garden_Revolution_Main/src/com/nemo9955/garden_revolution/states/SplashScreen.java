@@ -5,8 +5,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 
 
@@ -21,6 +23,9 @@ public class SplashScreen implements Screen {
     private Sprite           fundal;
 
     private BitmapFont       font;
+    private String           mesaje[] = { "Fertilizing the enemy.", "Feeding the Queen.", "Planting new vegetables." };
+    private String           mesaj;
+    private TextBounds       mesMar   = new TextBounds();
 
 
     public SplashScreen(Garden_Revolution game) {
@@ -36,6 +41,8 @@ public class SplashScreen implements Screen {
         fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
 
         font = new BitmapFont( Gdx.files.internal( "fonts/arial_32.fnt" ) );
+        mesaj = mesaje[MathUtils.random( mesaje.length -1 )];
+        mesMar = font.getBounds( mesaj, mesMar );
     }
 
     @Override
@@ -57,6 +64,7 @@ public class SplashScreen implements Screen {
         fundal.draw( batch );
         batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), Garden_Revolution.manager.getProgress() *bara.getWidth(), bara.getHeight() +5 );
         font.draw( batch, String.format( "%d%% Completed", (int) ( Garden_Revolution.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -95, Gdx.graphics.getHeight() /2 +12 );
+        font.draw( batch, mesaj, Gdx.graphics.getWidth() /2 - ( mesMar.width /2 ), mesMar.height *2 );
         batch.end();
     }
 

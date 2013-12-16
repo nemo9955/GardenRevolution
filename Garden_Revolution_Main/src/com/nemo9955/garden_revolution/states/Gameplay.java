@@ -17,14 +17,18 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
 import com.nemo9955.garden_revolution.utility.StageUtils;
@@ -38,11 +42,9 @@ public class Gameplay extends InputAdapter implements Screen {
     private ModelBatch        modelBatch;
     public ShapeRenderer      shape;
 
-    private float             startX, startY;
+    private Vector2           presDown       = new Vector2();
     public float              movex          = 0;
     public float              movey          = 0;
-    private float             deltaX         = 0;
-    private float             deltaY         = 0;
 
     private Vector3           dolly          = new Vector3();
     public short              toUpdate       = 0;
@@ -52,6 +54,7 @@ public class Gameplay extends InputAdapter implements Screen {
     public Label              viataTurn;
     public Label              fps;
     public Touchpad           mover;
+    public Image              weaponCharger;
 
     private TweenManager      tweeger;
 
@@ -97,7 +100,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
         if ( world !=null )
             world.dispose();
-        world = new World( nivel, cam );
+        world = new World( nivel, cam, this );
 
         return this;
     }
@@ -158,12 +161,28 @@ public class Gameplay extends InputAdapter implements Screen {
         cam.update();
     }
 
+    private static Vector2 chargerStart = new Vector2();
+    private float          charge       = -1;
+
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         isPressed = true;
-        if ( Mod.moveByTouch &&toUpdate ==0 ) {
-            startX = screenX;
-            startY = screenY;
+        if ( ( world.getCurrentTower() !=null &&world.getCurrentTower().isWeaponState( FireState.LOCKED_CHARGE ) &&screenX >scrw /2 ) &&toUpdate ==0 ) {
+
+            weaponCharger.setVisible( true );
+            chargerStart.set( screenX, screenY );
+            charge = 0;
+            weaponCharger.setColor( Color.CLEAR );
+
+            presDown.set( stage.screenToStageCoordinates( presDown.set( screenX, screenY ) ) );
+            weaponCharger.setPosition( presDown.x - ( weaponCharger.getWidth() /2 ), presDown.y - ( weaponCharger.getHeight() /2 ) );
+            return true;
+        }
+
+        if ( ( Mod.moveByTouch || ( world.getCurrentTower() !=null &&world.getCurrentTower().weaponMoveByTouch() &&screenX <scrw /2 ) ) &&toUpdate ==0 ) {
+            presDown.set( screenX, screenY );
+            return true;
         }
         return false;
     }
@@ -171,14 +190,22 @@ public class Gameplay extends InputAdapter implements Screen {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if ( Mod.moveByTouch &&toUpdate ==0 ) {
-            deltaX = ( screenX -startX ) /10 *Mod.modCamSpeedX;
-            deltaY = ( startY -screenY ) /7 *Mod.modCamSpeedY;
-            startX = screenX;
-            startY = screenY;
+        if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.getCurrentTower() !=null &&world.getCurrentTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {
+            float deltaX = 0, deltaY = 0;
+            deltaX = ( screenX -presDown.x ) /10 *Mod.modCamSpeedX;
+            deltaY = ( presDown.y -screenY ) /7 *Mod.modCamSpeedY;
+            presDown.set( screenX, screenY );
             moveCamera( deltaX *Mod.invertDragX, deltaY *Mod.invertDragY );
             return true;
         }
+
+        if ( weaponCharger.isVisible() ) {
+            charge = MathUtils.clamp( chargerStart.dst( screenX, screenY ), 0, 200 );
+            charge /= 200;
+            weaponCharger.setColor( 1, 1, 1, charge );
+            return true;
+        }
+
 
         return false;
     }
@@ -186,6 +213,13 @@ public class Gameplay extends InputAdapter implements Screen {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         isPressed = false;
+        if ( weaponCharger.isVisible() ) {
+            weaponCharger.setVisible( false );
+            if ( world.getCurrentTower() !=null ) {
+                world.getCurrentTower().fireMain( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+            }
+        }
+
         return false;
 
     }

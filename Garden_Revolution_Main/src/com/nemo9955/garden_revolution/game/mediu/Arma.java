@@ -21,15 +21,19 @@ import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 
 public abstract class Arma implements Disposable {
 
-    private Array<Disposable>  toDispose = new Array<Disposable>( false, 1 );
-    protected static Vector3   tmp       = new Vector3();
+    protected Array<Disposable> toDispose  = new Array<Disposable>( false, 1 );
+    protected static Vector3    tmp        = new Vector3();
 
-    private ModelInstance      model;
-    public AnimationController animation;
-    public Vector3             poz;
+    private ModelInstance       model;
+    public AnimationController  animation;
+    public Vector3              poz;
 
-    public FireState           state;
-    public Armament            type;
+    public FireState            state;
+    public Armament             type;
+
+    protected int               fireDellay = 100;
+    protected long              fireTime;
+
 
     public Arma(Armament type, Vector3 poz) {
         this.poz = poz;
@@ -40,9 +44,11 @@ public abstract class Arma implements Disposable {
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         toDispose.add( sfera );
 
-        model = new ModelInstance( sfera, poz );
+        model = getModelInstance( poz );
         animation = new AnimationController( model );
     }
+
+    protected abstract ModelInstance getModelInstance(Vector3 poz2);
 
     public void update(float delta) {
         animation.update( delta );
@@ -64,6 +70,14 @@ public abstract class Arma implements Disposable {
         modelBatch.render( model, shader );
     }
 
+
+    public int getFireDellay() {
+        return fireDellay;
+    }
+
+    public void setFireDellay(int fireDellay) {
+        this.fireDellay = fireDellay;
+    }
 
     @Override
     public void dispose() {

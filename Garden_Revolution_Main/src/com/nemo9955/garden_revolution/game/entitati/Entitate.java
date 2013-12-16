@@ -59,14 +59,20 @@ public abstract class Entitate implements Poolable {
 
     public void render(ModelBatch modelBatch) {
         modelBatch.render( model );
+        renderGeneral( modelBatch );
     }
 
     public void render(ModelBatch modelBatch, Environment light) {
         modelBatch.render( model, light );
+        renderGeneral( modelBatch );
     }
 
     public void render(ModelBatch modelBatch, Shader shader) {
         modelBatch.render( model, shader );
+        renderGeneral( modelBatch );
+    }
+
+    protected void renderGeneral(ModelBatch modelBatch) {
     }
 
 
