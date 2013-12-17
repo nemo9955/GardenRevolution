@@ -110,4 +110,8 @@ public abstract class Entitate implements Poolable {
     public void damage(Entitate e) {
         dead = true;
     }
+
+    public void damage(int dmg) {
+        dead = true;
+    }
 }

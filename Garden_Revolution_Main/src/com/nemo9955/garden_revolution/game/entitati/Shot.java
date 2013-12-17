@@ -18,7 +18,10 @@ public class Shot extends Entitate {
     private float   life;
     public Shots    type;
 
+    private float   charge;
     public int      damage;
+    private int     range;
+    private int     speed;
 
     public Shot(World world) {
         super( world );
@@ -29,20 +32,50 @@ public class Shot extends Entitate {
         this.type = type;
         super.init( position );
         this.direction.set( direction );
-        damage = type.damage;
+        this.damage = type.damage;
+        this.range = type.range;
+        this.speed = type.speed;
         life = 5f;
+
+        return this;
+    }
+
+    public Shot create(Shots type, Vector3 position, Vector3 direction, float charge) {
+        create( type, position, direction );
+        this.charge = charge;
+
+        if ( type ==Shots.GHIULEA )
+            this.direction.add( 0, 1f, 0 ).nor();
+
+        this.direction.scl( 1f +this.charge );
+
         return this;
     }
 
     @Override
     public void reset() {
         super.reset();
+        speed = -1;
+        damage = -1;
+        range = -1;
+        charge = -1;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void update(float delta) {
         super.update( delta );
-        move( direction );
+
+        switch (type) {
+            case GHIULEA:
+                move( direction.sub( 0, 0.02f, 0 ).tmp().scl( delta *speed ) );
+                // System.out.println("ghiulea");
+                break;
+            default:
+                move( direction.tmp().scl( delta *speed ) );
+                break;
+        }
+
         life -= delta;
         if ( life <=0 ||poz.y <0 ) {
             dead = true;
@@ -57,8 +90,11 @@ public class Shot extends Entitate {
                     fo.damage( this );
                     dead = true;
                 }
-
-
+        if ( dead ==true &&type ==Shots.GHIULEA ) {
+            for (Inamic fo : world.foe )
+                if ( fo.poz.dst2( poz ) <=range *range )
+                    fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( poz ) /range ) ) ) );
+        }
     }
 
     @Override

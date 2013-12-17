@@ -28,7 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.Mod;
 import com.nemo9955.garden_revolution.utility.StageUtils;
@@ -167,8 +167,7 @@ public class Gameplay extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        isPressed = true;
-        if ( ( world.getCurrentTower() !=null &&world.getCurrentTower().isWeaponState( FireState.LOCKED_CHARGE ) &&screenX >scrw /2 ) &&toUpdate ==0 ) {
+        if ( ( world.isInTower() &&world.getTower().weaponFireByCharge() &&screenX >scrw /2 ) &&toUpdate ==0 ) {
 
             weaponCharger.setVisible( true );
             chargerStart.set( screenX, screenY );
@@ -177,20 +176,22 @@ public class Gameplay extends InputAdapter implements Screen {
 
             presDown.set( stage.screenToStageCoordinates( presDown.set( screenX, screenY ) ) );
             weaponCharger.setPosition( presDown.x - ( weaponCharger.getWidth() /2 ), presDown.y - ( weaponCharger.getHeight() /2 ) );
-            return true;
-        }
-
-        if ( ( Mod.moveByTouch || ( world.getCurrentTower() !=null &&world.getCurrentTower().weaponMoveByTouch() &&screenX <scrw /2 ) ) &&toUpdate ==0 ) {
             presDown.set( screenX, screenY );
             return true;
         }
+
+        if ( ( Mod.moveByTouch || ( world.isInTower() &&world.getTower().weaponMoveByTouch() &&screenX <scrw /2 ) ) &&toUpdate ==0 ) {
+            presDown.set( screenX, screenY );
+            return true;
+        }
+        isPressed = true;
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.getCurrentTower() !=null &&world.getCurrentTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {
+        if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.isInTower() &&world.getTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {// FIXME
             float deltaX = 0, deltaY = 0;
             deltaX = ( screenX -presDown.x ) /10 *Mod.modCamSpeedX;
             deltaY = ( presDown.y -screenY ) /7 *Mod.modCamSpeedY;
@@ -198,14 +199,13 @@ public class Gameplay extends InputAdapter implements Screen {
             moveCamera( deltaX *Mod.invertDragX, deltaY *Mod.invertDragY );
             return true;
         }
-
-        if ( weaponCharger.isVisible() ) {
-            charge = MathUtils.clamp( chargerStart.dst( screenX, screenY ), 0, 200 );
-            charge /= 200;
-            weaponCharger.setColor( 1, 1, 1, charge );
+        else if ( weaponCharger.isVisible() ) {
+            float distance = 150 *Mod.densitate;
+            charge = MathUtils.clamp( chargerStart.dst2( screenX, screenY ), 0, distance *distance );
+            charge /= distance *distance;
+            weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
             return true;
         }
-
 
         return false;
     }
@@ -215,8 +215,11 @@ public class Gameplay extends InputAdapter implements Screen {
         isPressed = false;
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.getCurrentTower() !=null ) {
-                world.getCurrentTower().fireMain( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+            if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged ) {
+                if ( world.getTower().weaponMoveByTouch() )
+                    world.getTower().fireCharged( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                else
+                    world.getTower().fireCharged( world, cam.getPickRay( presDown.x, presDown.y ), charge );
             }
         }
 

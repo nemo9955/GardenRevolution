@@ -12,33 +12,33 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 import com.nemo9955.garden_revolution.game.enumTypes.Shots;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
 
 
-public class Cannon extends Arma {
+public class Cannon extends Arma implements FireCharged {
 
     public Cannon(Armament type, Vector3 poz) {
         super( type, poz );
-        setFireDellay( 2500 );
+        setFireDellay( 500 );
     }
 
     @Override
-    public void fireMain(World world, Ray ray) {
+    public void fireCharged(World world, Ray ray, float charged) {
         if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
             fireTime = System.currentTimeMillis();
 
             float distance = -ray.origin.y /ray.direction.y;
             tmp = ray.getEndPoint( new Vector3(), distance );
             if ( distance >=0 )
-                world.addShot( Shots.STANDARD, poz, tmp.sub( poz ).nor() );
+                world.addShot( Shots.GHIULEA, poz, tmp.sub( poz ).nor(), charged );
             else
-                world.addShot( Shots.STANDARD, poz, ray.direction );
-
+                world.addShot( Shots.GHIULEA, poz, ray.direction, charged );
         }
     }
 
     @Override
-    protected FireState getFireState() {
-        return FireState.LOCKED_CHARGE;
+    protected FireMode getFireState() {
+        return FireMode.LOCKED_CHARGE;
     }
 
     @Override

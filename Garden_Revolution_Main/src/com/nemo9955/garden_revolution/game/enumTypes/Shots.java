@@ -8,10 +8,23 @@ public enum Shots {
         @Override
         protected void propShots() {
             damage = 35;
+            speed = 30;
         }
-    };//
+    },
 
-    public int damage;
+    GHIULEA {
+
+        @Override
+        protected void propShots() {
+            damage = 80;
+            range = 9;
+            speed = 18;
+        }
+    };
+
+    public int range  = 0;
+    public int damage = 10;
+    public int speed  = 20;
 
     Shots() {
         propShots();

@@ -12,7 +12,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireMode;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireNormal;
 
 
 public class Turn implements Disposable {
@@ -35,9 +37,14 @@ public class Turn implements Disposable {
         this.poz = poz.cpy();
     }
 
-    public void fireMain(World world, Ray ray) {
-        if ( hasArma() )
-            arma.fireMain( world, ray );
+    public void fireNormal(World world, Ray ray) {
+        if ( hasArma() &&arma instanceof FireNormal )
+            ( (FireNormal) arma ).fireNormal( world, ray );
+    }
+
+    public void fireCharged(World world, Ray ray, float charged) {
+        if ( hasArma() &&arma instanceof FireCharged )
+            ( (FireCharged) arma ).fireCharged( world, ray, charged );
     }
 
     public boolean changeWeapon(Arma toChange) {
@@ -47,7 +54,7 @@ public class Turn implements Disposable {
         return true;
     }
 
-    public boolean isWeaponState(FireState stagiu) {
+    public boolean isWeaponState(FireMode stagiu) {
         if ( !hasArma() )
             return false;
         if ( stagiu !=arma.state )
@@ -121,7 +128,11 @@ public class Turn implements Disposable {
     }
 
     public boolean weaponMoveByTouch() {
-        return isWeaponState( FireState.LOCKED_CHARGE ) ||isWeaponState( FireState.LOCKED_TAP );
+        return isWeaponState( FireMode.LOCKED_CHARGE ) ||isWeaponState( FireMode.LOCKED_TAP );
+    }
+
+    public boolean weaponFireByCharge() {
+        return isWeaponState( FireMode.LOCKED_CHARGE );
     }
 
     @Override

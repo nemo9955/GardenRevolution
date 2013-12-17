@@ -50,10 +50,14 @@ public abstract class Vietate extends Entitate {
     @Override
     public void damage(Entitate e) {
         if ( e instanceof Shot )
-            viata -= ( (Shot) e ).damage;
+            damage( ( (Shot) e ).damage );
+    }
 
+    @Override
+    public void damage(int dmg) {
+        viata -= dmg;
         if ( viata <=0 )
-            super.damage( e );
+            super.damage( dmg );
 
     }
 

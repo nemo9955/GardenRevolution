@@ -15,7 +15,7 @@ public enum Inamici {
         @Override
         public void propInamici() {
             speed = 10;
-            viata = 75;
+            viata = 1;
         }
     }, //
 

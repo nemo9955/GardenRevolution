@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -41,7 +42,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
 import com.nemo9955.garden_revolution.game.enumTypes.Shots;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireState;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireMode;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
@@ -118,8 +119,8 @@ public class World extends GestureAdapter implements Disposable {
         }
 
 
-        if ( isPressed &&curentTurn !=-1 &&getCurrentTower().isWeaponState( FireState.CONTINUOUS ) ) {
-            getCurrentTower().fireMain( this, cam.getPickRay( Gdx.input.getX(), Gdx.input.getY() ) );
+        if ( isPressed &&getTower() !=null &&getTower().isWeaponState( FireMode.CONTINUOUS ) ) {
+            getTower().fireNormal( this, cam.getPickRay( Gdx.input.getX(), Gdx.input.getY() ) );
         }
 
     }
@@ -351,7 +352,11 @@ public class World extends GestureAdapter implements Disposable {
         Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
-    public Turn getCurrentTower() {
+    public boolean isInTower() {
+        return getTower() !=null;
+    }
+
+    public Turn getTower() {
         if ( turnuri.length ==0 ||curentTurn ==-1 )
             return null;
         return turnuri[curentTurn];
@@ -359,46 +364,49 @@ public class World extends GestureAdapter implements Disposable {
 
     public void upgradeCurentTower(Turnuri upgrade) {
         if ( curentTurn !=-1 &&!overview )
-            if ( getCurrentTower().upgradeTower( upgrade ) ) {
+            if ( getTower().upgradeTower( upgrade ) ) {
                 setCamera( curentTurn );
                 isOneToweUp = true;
             }
     }
 
     public void changeCurentWeapon(Armament minigun) {
-        Turn turn = getCurrentTower();
+        Turn turn = getTower();
         if ( curentTurn !=-1 &&!overview &&turn.type !=null )
             if ( turn.changeWeapon( minigun.getNewInstance( turn.place ) ) )
                 setCamera( curentTurn );
     }
 
     public Vector3 getCameraRotAround() {
-        if ( getCurrentTower() ==null )
-            return cam.position;
-        return getCurrentTower().place;
+        if ( isInTower() )
+            return getTower().place;
+        return cam.position;
 
     }
 
-    public void setCamera(int nr) {
+    public void setCamera(int nr) {// FIXME cand se uita prea aproape de baza turnului , camera se pune intr-o pozitie in care turnul e prea in mijlocul ecranului
 
         nr = MathUtils.clamp( nr, 0, turnuri.length -1 );
+        curentTurn = nr;
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         float distance = -ray.origin.y /ray.direction.y;
         Vector3 look = ray.getEndPoint( new Vector3(), distance );
 
-        cam.position.set( turnuri[nr].place );// TODO
+        cam.position.set( turnuri[nr].place );
         cam.lookAt( look );
         cam.up.set( Vector3.Y );
-        // if ( getCurrentTower() !=null &&!getCurrentTower().getArma().type.equals( 0 ) ) {
-        tmp2.set( cam.direction );
-        tmp2.scl( 4 );
-        tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
 
-        cam.position.sub( tmp2 );
-        cam.position.sub( tmp );
-        cam.position.add( 0, 2, 0 );
-        // }
-        curentTurn = nr;
+        if ( getTower().type ==null ) {
+            cam.position.add( 0, 3, 0 );
+        }
+        else {
+            tmp2.set( cam.direction ).scl( 4 );
+            tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
+
+            cam.position.sub( tmp2 );
+            cam.position.sub( tmp );
+            cam.position.add( 0, 2, 0 );
+        }
         cam.update();
         overview = false;
     }
@@ -454,6 +462,12 @@ public class World extends GestureAdapter implements Disposable {
         return shotTemp;
     }
 
+    public Shot addShot(Shots type, Vector3 position, Vector3 direction, float charge) {
+        Shot shotTemp = shotPool.obtain().create( type, position, direction, charge );
+        shot.add( shotTemp );
+        return shotTemp;
+    }
+
     private void addMediu(ModelInstance med) {
         mediu.add( med );
     }
@@ -496,14 +510,15 @@ public class World extends GestureAdapter implements Disposable {
             return true;
         }
 
-        Turn turn = getCurrentTower();
+        if ( isInTower() ) {
+            Turn turn = getTower();
 
-        if ( turn.isWeaponState( FireState.TAP ) )
-            turn.fireMain( this, cam.getPickRay( x, y ) );
+            if ( turn.isWeaponState( FireMode.TAP ) )
+                turn.fireNormal( this, cam.getPickRay( x, y ) );
 
-        if ( turn.isWeaponState( FireState.LOCKED_TAP ) )
-            turn.fireMain( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
-
+            if ( turn.isWeaponState( FireMode.LOCKED_TAP ) )
+                turn.fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+        }
         return false;
     }
 
@@ -513,12 +528,18 @@ public class World extends GestureAdapter implements Disposable {
         if ( !overview &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
             Ray ray = cam.getPickRay( x, y );
             float distance = -ray.origin.y /ray.direction.y;
-            tmp = ray.getEndPoint( new Vector3(), distance );
+            Vector3 tmp = ray.getEndPoint( new Vector3(), distance );
 
-            if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                addFoe( Inamici.MORCOV, tmp.x, tmp.y, tmp.z );
+            if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
+                for (int i = 0 ; i <=20 ; i ++ )
+                    for (int j = 0 ; j <=20 ; j ++ ) {
+                        addFoe( Inamici.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
+                    }
+            }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 addAlly( tmp.x, tmp.y, tmp.z );
+            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
+                addFoe( Inamici.MORCOV, tmp.x, tmp.y, tmp.z );
 
             gestures.invalidateTapSquare();
             return true;
