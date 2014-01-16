@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -62,6 +64,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public World              world;
     public float              touchPadTimmer = 0;
     private boolean           isPressed      = false;
+
 
     public Gameplay() {
 
@@ -142,6 +145,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         stage.act();
         stage.draw();
+
     }
 
 
@@ -318,6 +322,30 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        
+        System.out.println(controller.getName() +" a apasat butonul  "+ buttonCode);
+         
+        return false;
+         
+    }
+    @Override
+    public boolean buttonUp(Controller controller, int buttonCode) {
+         
+        return false;
+         
+    }
+    
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+         
+        System.out.println(controller.getName() +" a activat axa "+ axisCode + " cu valoarea " + value);
+
+        return false;
+         
+    }
+    
+    @Override
     public void resize(int width, int height) {
     }
 
@@ -335,10 +363,13 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
+        Controllers.removeListener( this );
     }
 
     @Override
     public void show() {
+
+        Controllers.addListener( this );
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
     }
 
