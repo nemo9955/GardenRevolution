@@ -20,11 +20,13 @@ public class Mod {
 
     // directia de miscare a camerei folosind mouse-ul
     public static byte     invertDragX     = -1;
-    public static byte     invertDragY     = 1;
+    public static byte     invertDragY     = -1;
 
     // pentru debuging
     public static boolean  updateUave      = false;
     public static boolean  showDebug       = true;
 
+    // pentru controller
+    public static int      buton[]         = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
 }

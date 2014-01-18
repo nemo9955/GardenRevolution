@@ -13,10 +13,10 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 import com.nemo9955.garden_revolution.game.enumTypes.Shots;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireNormal;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireHold;
 
 
-public class MiniGun extends Arma implements FireNormal {
+public class MiniGun extends Arma implements FireHold {
 
     public MiniGun(Armament type, Vector3 poz) {
         super( type, poz );
@@ -24,7 +24,7 @@ public class MiniGun extends Arma implements FireNormal {
     }
 
     @Override
-    public void fireNormal(World world, Ray ray) {
+    public void fireHold(World world, Ray ray) {
         if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
             fireTime = System.currentTimeMillis();
 

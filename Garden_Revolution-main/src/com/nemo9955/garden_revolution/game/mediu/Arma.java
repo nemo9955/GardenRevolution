@@ -87,13 +87,8 @@ public abstract class Arma implements Disposable {
         public void fireCharged(World world, Ray ray, float charged);
     }
 
-    public static interface FireNormal {
+    public static interface FireHold {
 
-        public void fireNormal(World world, Ray ray);
-    }
-
-    public static interface FireTaped {
-
-        public void fireTaped(World world, Ray ray);
+        public void fireHold(World world, Ray ray);
     }
 }

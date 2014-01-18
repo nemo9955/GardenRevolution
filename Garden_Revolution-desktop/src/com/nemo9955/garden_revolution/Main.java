@@ -10,8 +10,8 @@ public class Main {
         cfg.title = Garden_Revolution.TITLU +" " +Garden_Revolution.VERSIUNE;
         cfg.useGL20 = true;
         cfg.resizable = false ;
-        cfg.width = 720;
-        cfg.height = 480;
+        cfg.width = 1280;
+        cfg.height = 720;
 
         new LwjglApplication( new Garden_Revolution(), cfg );
     }

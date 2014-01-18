@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireNormal;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireHold;
 
 
 public class Turn implements Disposable {
@@ -38,8 +38,8 @@ public class Turn implements Disposable {
     }
 
     public void fireNormal(World world, Ray ray) {
-        if ( hasArma() &&arma instanceof FireNormal )
-            ( (FireNormal) arma ).fireNormal( world, ray );
+        if ( hasArma() &&arma instanceof FireHold )
+            ( (FireHold) arma ).fireHold( world, ray );
     }
 
     public void fireCharged(World world, Ray ray, float charged) {

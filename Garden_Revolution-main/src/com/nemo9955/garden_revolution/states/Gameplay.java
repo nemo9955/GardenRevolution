@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireHold;
+import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Mod;
@@ -52,7 +54,8 @@ public class Gameplay extends CustomAdapter implements Screen {
     private Vector3           dolly          = new Vector3();
     public short              toUpdate       = 0;
     private final int         scrw           = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    private static Vector3    tmp            = new Vector3();
+    private static Vector3    tmp3           = new Vector3();
+    private static Vector2    tmp2           = new Vector2();
     public Stage              stage;
     public Label              viataTurn;
     public Label              fps;
@@ -129,7 +132,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         }
 
         if ( toUpdate ==0 )
-            updateGameplay( delta );
+            updateTheGame( delta );
         else
             gestures.cancel();
 
@@ -148,11 +151,27 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     }
 
+    private Controller cont = Controllers.getControllers().first();
 
-    private void updateGameplay(float delta) {
-        // if ( movex !=0 ||movey !=0 ||!dolly.isZero() ||!axis.isZero() )
-
+    private void updateTheGame(float delta) {
         moveCamera( movex, movey );
+
+        if ( world.isInTower() &&cont.getButton( Mod.buton[0] ) ) {
+            Turn tower = world.getTower();
+
+            if ( tower.getArma() instanceof FireHold )
+                tower.fireNormal( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+
+            if ( tower.getArma() instanceof FireCharged ) {
+                int time = (int) ( System.currentTimeMillis() -but0prs );
+                time = MathUtils.clamp( time, 0, 3000 );
+                charge = time /3000f;
+                weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
+
+            }
+
+        }
+
 
         world.update( delta );
         if ( isPressed )
@@ -163,8 +182,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         cam.rotateAround( world.getCameraRotAround(), Vector3.Y, amontX );
         if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
-            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
-            cam.rotateAround( world.getCameraRotAround(), tmp.nor(), amontY );
+            tmp3.set( cam.direction ).crs( cam.up ).y = 0f;
+            cam.rotateAround( world.getCameraRotAround(), tmp3.nor(), amontY );
         }
 
         cam.translate( dolly );
@@ -178,18 +197,16 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         presDown.set( screenX, screenY );
+        isPressed = true;
 
         if ( toUpdate ==0 &&world.isInTower() &&world.getTower().getArma() instanceof FireCharged &&screenX >scrw /2 ) {
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
             charge = 0;
 
-            presDown.set( stage.screenToStageCoordinates( presDown.set( screenX, screenY ) ) );
-            weaponCharger.setPosition( presDown.x - ( weaponCharger.getWidth() /2 ), presDown.y - ( weaponCharger.getHeight() /2 ) );
-            presDown.set( screenX, screenY );
-            return false;
+            tmp2.set( stage.screenToStageCoordinates( presDown ) );
+            weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
         }
-        isPressed = true;
         return false;
     }
 
@@ -212,7 +229,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         isPressed = false;
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.isInTower() &&charge >0.05f &&world.getTower().getArma() instanceof FireCharged ) {
+            if ( world.isInTower() &&presDown.epsilonEquals( screenX, screenY, 3 ) &&world.getTower().getArma() instanceof FireCharged ) {
                 world.getTower().fireCharged( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 return true;
             }
@@ -226,7 +243,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        // if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.isInTower() &&world.getTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {// FIXME
         if ( toUpdate ==0 &&!weaponCharger.isVisible() &&x <scrw /2 ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Mod.modCamSpeedX;
@@ -322,10 +338,35 @@ public class Gameplay extends CustomAdapter implements Screen {
         return false;
     }
 
+    private long but0prs = 0;
+
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
+        if ( buttonCode ==Mod.buton[0] ) {
 
-        // System.out.println( controller.getName() +" a apasat butonul  " +buttonCode );
+            weaponCharger.setColor( Color.CLEAR );
+            weaponCharger.setVisible( true );
+            charge = 0;
+
+
+            tmp2.set( stage.screenToStageCoordinates( tmp2.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
+            weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
+
+            but0prs = System.currentTimeMillis();
+            return false;
+        }
+
+        if ( buttonCode ==Mod.buton[1] ) {
+            return false;
+        }
+
+        if ( buttonCode ==Mod.buton[2] ) {
+            return false;
+        }
+
+        if ( buttonCode ==Mod.buton[3] ) {
+            return false;
+        }
 
         return false;
 
@@ -333,18 +374,19 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-
+        if ( buttonCode ==Mod.buton[0] ) {
+            if ( weaponCharger.isVisible() ) {
+                weaponCharger.setVisible( false );
+                if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged )
+                    world.getTower().fireCharged( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+            }
+        }
         return false;
 
     }
 
-    // private Vector3 axis = new Vector3();
-
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-
-        // System.out.println( controller.getName() +" a activat axa " +axisCode +" cu valoarea " +value );
-
         if ( axisCode ==0 )
             if ( Math.abs( value ) <=1 )
                 movey = -value;
