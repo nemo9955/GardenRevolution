@@ -28,7 +28,6 @@ public abstract class Arma implements Disposable {
     public AnimationController  animation;
     public Vector3              poz;
 
-    public FireMode             state;
     public Armament             type;
 
     protected int               fireDellay = 100;
@@ -38,7 +37,6 @@ public abstract class Arma implements Disposable {
     public Arma(Armament type, Vector3 poz) {
         this.poz = poz;
         this.type = type;
-        state = getFireState();
 
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
@@ -53,8 +51,6 @@ public abstract class Arma implements Disposable {
     public void update(float delta) {
         animation.update( delta );
     }
-
-    protected abstract FireMode getFireState();
 
     public void render(ModelBatch modelBatch) {
         modelBatch.render( model );
@@ -89,19 +85,15 @@ public abstract class Arma implements Disposable {
     public static interface FireCharged {
 
         public void fireCharged(World world, Ray ray, float charged);
-
     }
 
     public static interface FireNormal {
 
         public void fireNormal(World world, Ray ray);
-
     }
 
-    public static enum FireMode {
-        CONTINUOUS, //
-        TAP, //
-        LOCKED_TAP, //
-        LOCKED_CHARGE; //
+    public static interface FireTaped {
+
+        public void fireTaped(World world, Ray ray);
     }
 }

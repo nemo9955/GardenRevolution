@@ -39,11 +39,6 @@ public class MiniGun extends Arma implements FireNormal {
     }
 
     @Override
-    protected FireMode getFireState() {
-        return FireMode.CONTINUOUS;
-    }
-
-    @Override
     protected ModelInstance getModelInstance(Vector3 poz2) {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );

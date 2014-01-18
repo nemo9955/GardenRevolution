@@ -37,11 +37,6 @@ public class Cannon extends Arma implements FireCharged {
     }
 
     @Override
-    protected FireMode getFireState() {
-        return FireMode.LOCKED_CHARGE;
-    }
-
-    @Override
     protected ModelInstance getModelInstance(Vector3 poz2) {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );

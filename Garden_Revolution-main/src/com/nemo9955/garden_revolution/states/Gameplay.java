@@ -179,8 +179,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         presDown.set( screenX, screenY );
 
-        if ( ( world.isInTower() &&world.getTower().weaponFireByCharge() &&screenX >scrw /2 ) &&toUpdate ==0 ) {
-
+        if ( toUpdate ==0 &&world.isInTower() &&world.getTower().getArma() instanceof FireCharged &&screenX >scrw /2 ) {
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
             charge = 0;
@@ -188,7 +187,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             presDown.set( stage.screenToStageCoordinates( presDown.set( screenX, screenY ) ) );
             weaponCharger.setPosition( presDown.x - ( weaponCharger.getWidth() /2 ), presDown.y - ( weaponCharger.getHeight() /2 ) );
             presDown.set( screenX, screenY );
-            return true;
+            return false;
         }
         isPressed = true;
         return false;
@@ -213,12 +212,11 @@ public class Gameplay extends CustomAdapter implements Screen {
         isPressed = false;
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged ) {
-                if ( world.getTower().weaponMoveByTouch() )
-                    world.getTower().fireCharged( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
-                else
-                    world.getTower().fireCharged( world, cam.getPickRay( presDown.x, presDown.y ), charge );
+            if ( world.isInTower() &&charge >0.05f &&world.getTower().getArma() instanceof FireCharged ) {
+                world.getTower().fireCharged( world, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                return true;
             }
+
         }
 
         return false;
@@ -228,7 +226,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.isInTower() &&world.getTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {// FIXME
+        // if ( !weaponCharger.isVisible() && ( Mod.moveByTouch || ( world.isInTower() &&world.getTower().weaponMoveByTouch() &&presDown.x <scrw /2 ) ) &&toUpdate ==0 ) {// FIXME
+        if ( toUpdate ==0 &&!weaponCharger.isVisible() &&x <scrw /2 ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Mod.modCamSpeedX;
             difY = deltaY /7 *Mod.modCamSpeedY;

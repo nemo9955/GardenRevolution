@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireMode;
 import com.nemo9955.garden_revolution.game.mediu.Arma.FireNormal;
 
 
@@ -52,14 +51,6 @@ public class Turn implements Disposable {
         if ( hasArma() &&arma.type ==toChange.type )
             return false;
         arma = toChange;
-        return true;
-    }
-
-    public boolean isWeaponState(FireMode stagiu) {
-        if ( !hasArma() )
-            return false;
-        if ( stagiu !=arma.state )
-            return false;
         return true;
     }
 
@@ -126,14 +117,6 @@ public class Turn implements Disposable {
 
     public boolean hasArma() {
         return arma !=null;
-    }
-
-    public boolean weaponMoveByTouch() {
-        return isWeaponState( FireMode.LOCKED_CHARGE ) ||isWeaponState( FireMode.LOCKED_TAP );
-    }
-
-    public boolean weaponFireByCharge() {
-        return isWeaponState( FireMode.LOCKED_CHARGE );
     }
 
     public boolean intersectsRay(Ray ray) {

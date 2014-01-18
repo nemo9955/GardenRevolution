@@ -41,7 +41,8 @@ import com.nemo9955.garden_revolution.game.enumTypes.Armament;
 import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
 import com.nemo9955.garden_revolution.game.enumTypes.Shots;
 import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireMode;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireNormal;
+import com.nemo9955.garden_revolution.game.mediu.Arma.FireTaped;
 import com.nemo9955.garden_revolution.game.mediu.Turn;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
@@ -502,8 +503,9 @@ public class World implements Disposable {
 
     public void isTouched(int screenX, int screenY) {
 
-        if ( isInTower() &&getTower().isWeaponState( FireMode.CONTINUOUS ) ) {
-            getTower().fireNormal( this, cam.getPickRay( screenX, screenY ) );
+        if ( isInTower() &&getTower().getArma() instanceof FireNormal &&screenX >Gdx.graphics.getWidth() /2 ) {
+            getTower().fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+            // getTower().fireNormal( this, cam.getPickRay( screenX, screenY ) );
         }
 
     }
@@ -516,6 +518,7 @@ public class World implements Disposable {
         return null;
     }
 
+    
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
         if ( !isInTower() ||count >=2 ) {
             Ray ray = cam.getPickRay( x, y );
@@ -525,10 +528,7 @@ public class World implements Disposable {
         else if ( isInTower() ) {
             Turn turn = getTower();
 
-            if ( turn.isWeaponState( FireMode.TAP ) )
-                turn.fireNormal( this, cam.getPickRay( x, y ) );
-
-            if ( turn.isWeaponState( FireMode.LOCKED_TAP ) )
+            if ( turn instanceof FireTaped )
                 turn.fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
         }
         return false;

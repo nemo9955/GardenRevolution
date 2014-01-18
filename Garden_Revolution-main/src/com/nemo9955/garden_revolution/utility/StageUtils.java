@@ -265,7 +265,10 @@ public class StageUtils {
         pauseIG.addListener( pauseButons );
         optiuni.addListener( optButons );
 
-        hud.setName( "hud" );
+        hud.setName( "HUD" );
+        upgradeTower.setName( "Tower Upgrade" );
+        optiuni.setName( "Optiuni" );
+        pauseIG.setName( "Pause" );
 
         stage.addActor( hud );
         stage.addActor( upgradeTower );
