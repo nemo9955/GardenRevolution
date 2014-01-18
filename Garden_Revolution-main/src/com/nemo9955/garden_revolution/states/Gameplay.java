@@ -150,8 +150,10 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
     private void updateGameplay(float delta) {
-        if ( movex !=0 ||movey !=0 ||!dolly.isZero() )
-            moveCamera( movex, movey );
+        // if ( movex !=0 ||movey !=0 ||!dolly.isZero() ||!axis.isZero() )
+
+        moveCamera( movex, movey );
+
         world.update( delta );
         if ( isPressed )
             world.isTouched( Gdx.input.getX(), Gdx.input.getY() );
@@ -323,28 +325,44 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
-        
-        System.out.println(controller.getName() +" a apasat butonul  "+ buttonCode);
-         
-        return false;
-         
-    }
-    @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
-         
-        return false;
-         
-    }
-    
-    @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {
-         
-        System.out.println(controller.getName() +" a activat axa "+ axisCode + " cu valoarea " + value);
+
+        // System.out.println( controller.getName() +" a apasat butonul  " +buttonCode );
 
         return false;
-         
+
     }
-    
+
+    @Override
+    public boolean buttonUp(Controller controller, int buttonCode) {
+
+        return false;
+
+    }
+
+    // private Vector3 axis = new Vector3();
+
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+
+        // System.out.println( controller.getName() +" a activat axa " +axisCode +" cu valoarea " +value );
+
+        if ( axisCode ==0 )
+            if ( Math.abs( value ) <=1 )
+                movey = -value;
+            else
+                movey = 0;
+
+        if ( axisCode ==1 )
+            if ( Math.abs( value ) <=1 )
+                movex = -value;
+            else
+                movex = 0;
+
+
+        return false;
+
+    }
+
     @Override
     public void resize(int width, int height) {
     }

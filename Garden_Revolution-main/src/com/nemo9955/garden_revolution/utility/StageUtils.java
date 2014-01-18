@@ -50,8 +50,10 @@ public class StageUtils {
         gameplay.viataTurn.setFontScale( 0.6f );
         gameplay.viataTurn.setPosition( 10 *Mod.densitate, stage.getHeight() -gameplay.viataTurn.getHeight() -10 *Mod.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
+        camLeft.setName( "Left Camera" );
         camLeft.setColor( 1, 1, 1, 0.6f );
         camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
+        camRight.setName( "Right Camera" );
         camRight.setColor( 1, 1, 1, 0.6f );
         camRight.setPosition( stage.getWidth() -camRight.getRight(), stage.getHeight() /2 -camRight.getHeight() /2 );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );

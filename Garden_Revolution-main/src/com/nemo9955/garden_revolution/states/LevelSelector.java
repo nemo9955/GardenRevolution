@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.states;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
@@ -20,17 +19,17 @@ import com.nemo9955.garden_revolution.utility.Mod;
 
 public class LevelSelector implements Screen {
 
-    private Stage            stage;
-    private Skin             skin;
-    private Table            table;
+    private Stage              stage;
+    private Skin               skin;
+    private Table              table;
 
-    public static FileHandle nivelLoc;
-    public static boolean    internal = false;
+    public final static String nivelLoc = "harti/nivele";
+    public static boolean      internal = false;
 
-    private FileHandle       lvlLoc;
-    private String           toAcces;
-    private SplitPane        lista;
-    private static final float      rap      = 1.5f;
+    private FileHandle         lvlLoc;
+    private String             toAcces;
+    private SplitPane          lista;
+    private static final float rap      = 1.5f;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
@@ -46,18 +45,30 @@ public class LevelSelector implements Screen {
         if ( lista !=null )
             lista.clear();
 
-        if ( internal )
-            nivelLoc = Gdx.files.internal( "harti/nivele" );
-        else
-            nivelLoc = Gdx.files.local( "harti/nivele" );
+        // if ( internal )
+        // nivelLoc = Gdx.files.internal( "harti/nivele" );
+        // else
+        // nivelLoc = Gdx.files.local( "harti/nivele" );
+        //
+        // System.out.println( nivelLoc );
+        //
+        // if ( Gdx.app.getType() ==ApplicationType.Desktop &&internal )
+        // lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
+        // else if ( Gdx.app.getType() ==ApplicationType.Android &&!internal )
+        // lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
+        // else
+        // lvlLoc = nivelLoc;
 
-        if ( Gdx.app.getType() ==ApplicationType.Desktop &&internal )
-            lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
-        else if ( Gdx.app.getType() ==ApplicationType.Android &&!internal )
-            lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
-        else
-            lvlLoc = nivelLoc;
+        System.out.println( "Intern " +internal );
 
+        if ( internal ) {
+            lvlLoc = Gdx.files.internal( nivelLoc +"/" );
+        }
+        else {
+            lvlLoc = Gdx.files.local( nivelLoc );
+        }
+
+        System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
 
         FileHandle nivele[] = lvlLoc.list();
         String harti[] = new String[nivele.length];
