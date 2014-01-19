@@ -4,6 +4,7 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -27,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.mediu.Cannon;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
@@ -134,6 +138,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
     private void updateTheGame(float delta) {
+
 
         world.getCamera().translate( dolly );
         world.moveCamera( movex, movey );
@@ -312,29 +317,53 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonCode) {
+
         if ( buttonCode ==Vars.buton[0] ) {
 
-            weaponCharger.setColor( Color.CLEAR );
-            weaponCharger.setVisible( true );
-            charge = 0;
+            if ( isCurrentState( "Pause" ) ) {
+                // getActorInState( "resume" )
+                Actor temp = getActorInState( "resume" );
+                stage.touchDown( (int) ( temp.getX() + ( temp.getWidth() /2 ) ), (int) ( temp.getTop() - ( temp.getHeight() /2 ) ), 1, Buttons.LEFT );
+            }
 
+            if ( world.isInTower() &&world.getTower().getArma() instanceof Cannon ) {
+                weaponCharger.setColor( Color.CLEAR );
+                weaponCharger.setVisible( true );
+                charge = 0;
 
-            tmp2.set( stage.screenToStageCoordinates( tmp2.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
-            weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
+                tmp2.set( stage.screenToStageCoordinates( tmp2.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
+                weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
 
-            but0prs = System.currentTimeMillis();
-            return false;
+                but0prs = System.currentTimeMillis();
+                return false;
+            }
         }
 
         if ( buttonCode ==Vars.buton[1] ) {
+            if ( isCurrentState( "Tower Upgrade" ) )
+                getActorInState( "BASIC" ).fire( new Event() );
             return false;
         }
 
-        if ( buttonCode ==Vars.buton[2] ) {
+        if ( buttonCode ==Vars.buton[4] ) {
+            if ( isCurrentState( "HUD" ) )
+                world.prevCamera();
             return false;
         }
 
-        if ( buttonCode ==Vars.buton[3] ) {
+        if ( buttonCode ==Vars.buton[5] ) {
+            if ( isCurrentState( "HUD" ) )
+                world.nextCamera();
+            return false;
+        }
+
+        if ( buttonCode ==Vars.buton[6] ) {
+            Vars.invertControlletX *= -1;
+            return false;
+        }
+
+        if ( buttonCode ==Vars.buton[7] ) {
+            Vars.invertControlletY *= -1;
             return false;
         }
 
@@ -357,41 +386,50 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
+        value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
 
         if ( axisCode ==0 )
-            if ( value >0 )
-                Vars.invertControlletY = value +0.5f;
-            else if ( value <0 )
-                Vars.invertControlletY = value -0.5f;
+            Vars.multiplyControlletY = -value +1.5f;
 
+        if ( axisCode ==1 )
+            if ( Math.abs( value ) >=Vars.deadZone )
+                Vars.multiplyControlletX = ( Math.abs( value ) +0.5f ) *2;
+            else
+                Vars.multiplyControlletX = 1;
 
         if ( Math.abs( value ) <Vars.deadZone )
             value = 0f;
 
-
-        if ( axisCode ==1 )
-            if ( Math.abs( value ) <=1 )
-                movex = value *Vars.invertControlletX /2;
-            else
-                movex = 0;
-
+        if ( axisCode ==1 &&Math.abs( controller.getAxis( 3 ) ) >Vars.deadZone &&controller.getAxis( 3 ) ==MathUtils.clamp( controller.getAxis( 3 ), -1, 1 ) )
+            movex = controller.getAxis( 3 ) *Vars.invertControlletX *Vars.multiplyControlletX /2;
         if ( axisCode ==3 )
-            if ( Math.abs( value ) <=1 )
-                movex = value *Vars.invertControlletX;
-            else
-                movex = 0;
+            movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
 
+        if ( axisCode ==0 &&Math.abs( controller.getAxis( 2 ) ) >Vars.deadZone &&controller.getAxis( 2 ) ==MathUtils.clamp( controller.getAxis( 2 ), -1, 1 ) )
+            movey = controller.getAxis( 2 ) *Vars.invertControlletY *Vars.multiplyControlletY;
         if ( axisCode ==2 )
-            if ( Math.abs( value ) <=1 )
-                movey = value *Vars.invertControlletY;
-            else
-                movey = 0;
+            movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
 
 
         return false;
 
     }
 
+    private Actor getActorInState(String name) {
+        for (Actor zone : stage.getActors() )
+            if ( zone.isVisible() )
+                for (Actor actor : ( (Group) zone ).getChildren() )
+                    if ( actor.getName() ==name )
+                        return actor;
+        return null;
+    }
+
+    private boolean isCurrentState(String name) {
+        for (Actor actor : stage.getActors() )
+            if ( actor.isVisible() &&actor.getName() ==name )
+                return true;
+        return false;
+    }
 
     @Override
     public void resize(int width, int height) {

@@ -76,6 +76,8 @@ public class StageUtils {
         final TextButton optBut = new TextButton( "Options", skin );
         final TextButton meniuBut = new TextButton( "Main menu", skin );
 
+        resumeBut.setName( "resume" );
+
         pauseIG.setVisible( false );
         pauseIG.setFillParent( true );
         pauseIG.setBackground( "pix30" );
@@ -106,7 +108,7 @@ public class StageUtils {
 
 
         final Group upgradeTower = new Group();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
-        final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME epara afiseara butonului
+        final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME repara afiseara butonului
         final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
         final ImageButton miniGun = new ImageButton( IconType.SAGETI.getAsDrawable( skin, 70, 70 ) );
@@ -122,17 +124,13 @@ public class StageUtils {
         mainUpgrades.setAsCircle( 1000, 70 );
         mainUpgrades.setPosition( -mainUpgrades.getRadius() + ( freeSpace *2.1f ) +backTowe1.getWidth(), stage.getHeight() /2 );
         // mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
-
-
         float i, treapta = CircularGroup.aprxOptAngl( mainUpgrades.getRadius(), basicT.getHeight() );
         Rectangle zon = new Rectangle( 0, 0, stage.getWidth(), stage.getHeight() );
         i = mainUpgrades.minAngleInZon( zon, treapta, 2 );
-
         mainUpgrades.setActivInterval( i, 360 -i, true, treapta *1.4f, true );
         // mainUpgrades.setActivInterval( 30, -30, true, 30, false );
 
 
-        mainUpgrades.addActor( new TextButton( "fill1", skin ) );
         mainUpgrades.addActor( basicT );
         mainUpgrades.addActor( miniGun );
         mainUpgrades.addActor( cannon );
