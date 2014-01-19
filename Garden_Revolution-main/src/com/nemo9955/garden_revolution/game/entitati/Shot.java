@@ -19,9 +19,6 @@ public class Shot extends Entity {
     public ShotType type;
 
     private float   charge;
-    public int      damage;
-    private int     range;
-    private int     speed;
 
     public Shot(World world) {
         super( world );
@@ -32,9 +29,7 @@ public class Shot extends Entity {
         this.type = type;
         super.init( position );
         this.direction.set( direction );
-        this.damage = type.damage;
-        this.range = type.range;
-        this.speed = type.speed;
+
         life = 5f;
 
         return this;
@@ -57,25 +52,14 @@ public class Shot extends Entity {
     @Override
     public void reset() {
         super.reset();
-        speed = -1;
-        damage = -1;
-        range = -1;
-        charge = -1;
+
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void update(float delta) {
         super.update( delta );
 
-        switch (type) {
-            case GHIULEA:
-                move( direction.sub( 0, 0.7f *delta, 0 ).tmp().scl( delta *speed ) );
-                break;
-            default:
-                move( direction.tmp().scl( delta *speed ) );
-                break;
-        }
+        move( type.getMove( direction, delta ) );
 
         life -= delta;
         if ( life <=0 ||poz.y <0 ) {
@@ -85,17 +69,8 @@ public class Shot extends Entity {
         for (BoundingBox col : world.colide )
             if ( col.intersects( box ) )
                 dead = true;
-        if ( !dead )
-            for (Enemy fo : world.enemy )
-                if ( fo.box.intersects( box ) ) {
-                    fo.damage( this );
-                    dead = true;
-                }
-        if ( dead ==true &&type ==ShotType.GHIULEA ) {
-            for (Enemy fo : world.enemy )
-                if ( fo.poz.dst2( poz ) <=range *range )
-                    fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( poz ) /range ) ) ) );
-        }
+
+        type.hitActivity( this, world );
     }
 
     @Override

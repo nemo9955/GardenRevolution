@@ -62,6 +62,8 @@ public class Gameplay extends CustomAdapter implements Screen {
     private TweenManager   tweeger;
     private boolean        isPressed      = false;
 
+    private Vector3        dolly          = new Vector3();
+    private Controller     cont;
 
     public Gameplay() {
 
@@ -130,8 +132,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         stage.draw();
     }
 
-    private Vector3    dolly = new Vector3();
-    private Controller cont  = Controllers.getControllers().first();
 
     private void updateTheGame(float delta) {
 
@@ -176,7 +176,8 @@ public class Gameplay extends CustomAdapter implements Screen {
             weaponCharger.setVisible( true );
             charge = 0;
 
-            tmp2.set( stage.screenToStageCoordinates( presDown ) );
+            tmp2.set( presDown );
+            stage.screenToStageCoordinates( tmp2 );
             weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
         }
         return false;
@@ -201,11 +202,10 @@ public class Gameplay extends CustomAdapter implements Screen {
         isPressed = false;
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.isInTower() &&presDown.epsilonEquals( screenX, screenY, 3 ) &&world.getTower().getArma() instanceof FireCharged ) {
+            if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged ) {
                 world.getTower().fireCharged( world, world.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 return true;
             }
-
         }
 
         return false;
@@ -417,8 +417,11 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void show() {
-        if ( Gdx.app.getType() ==ApplicationType.Desktop )
+        if ( Gdx.app.getType() ==ApplicationType.Desktop ) {
             Controllers.addListener( this );
+            if ( Controllers.getControllers().size >0 )
+                cont = Controllers.getControllers().first();
+        }
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
     }
 

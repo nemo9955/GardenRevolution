@@ -23,7 +23,7 @@ public class LevelSelector implements Screen {
     private Skin               skin;
     private Table              table;
 
-    public final static String nivelLoc = "harti/nivele";
+    public final static String levelsLocation = "harti/nivele";
     public static boolean      internal = false;
 
     private FileHandle         lvlLoc;
@@ -62,10 +62,10 @@ public class LevelSelector implements Screen {
         System.out.println( "Intern " +internal );
 
         if ( internal ) {
-            lvlLoc = Gdx.files.internal(nivelLoc +"/" );
+            lvlLoc = Gdx.files.internal(levelsLocation +"/" );
         }
         else {
-            lvlLoc = Gdx.files.local( nivelLoc );
+            lvlLoc = Gdx.files.local( levelsLocation );
         }
 
         System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );

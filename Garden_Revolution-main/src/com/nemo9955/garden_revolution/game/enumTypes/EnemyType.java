@@ -14,7 +14,7 @@ public enum EnemyType {
 
         @Override
         public void propEnemys() {
-            speed = 10;
+            speed = 7;
             life = 1;
         }
     },
@@ -23,7 +23,7 @@ public enum EnemyType {
 
         @Override
         public void propEnemys() {
-            speed = 9;
+            speed = 4;
             life = 100;
         }
     },
@@ -32,8 +32,8 @@ public enum EnemyType {
 
         @Override
         public void propEnemys() {
-            strenght = 7;
-            speed = 5;
+            strenght = 5;
+            speed = 6;
             life = 150;
         }
     };

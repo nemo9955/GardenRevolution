@@ -48,7 +48,7 @@ public abstract class LifeForm extends Entity {
     @Override
     public void damage(Entity e) {
         if ( e instanceof Shot )
-            damage( ( (Shot) e ).damage );
+            damage( ( (Shot) e ).type.damage );
     }
 
     @Override

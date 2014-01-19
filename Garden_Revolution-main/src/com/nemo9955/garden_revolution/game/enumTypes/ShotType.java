@@ -1,5 +1,10 @@
 package com.nemo9955.garden_revolution.game.enumTypes;
 
+import com.badlogic.gdx.math.Vector3;
+import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.entitati.Shot;
+
 
 public enum ShotType {
 
@@ -10,6 +15,7 @@ public enum ShotType {
             damage = 35;
             speed = 30;
         }
+
     },
 
     GHIULEA {
@@ -19,6 +25,23 @@ public enum ShotType {
             damage = 80;
             range = 9;
             speed = 18;
+        }
+
+        @Override
+        public void hitActivity(Shot shot, World world) {
+            super.hitActivity( shot, world );
+
+            if ( shot.dead ) {
+                for (Enemy fo : world.enemy )
+                    if ( fo.poz.dst2( shot.poz ) <=range *range )
+                        fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( shot.poz ) /range ) ) ) );
+            }
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public Vector3 getMove(Vector3 direction, float delta) {
+            return direction.sub( 0, 0.7f *delta, 0 ).tmp().scl( delta *speed );
         }
     };
 
@@ -32,5 +55,19 @@ public enum ShotType {
 
     protected abstract void propShots();
 
+    @SuppressWarnings("deprecation")
+    public Vector3 getMove(Vector3 direction, float delta) {
+        return direction.tmp().scl( delta *speed );
+    }
+
+    public void hitActivity(Shot shot, World world) {
+        if ( !shot.dead )
+            for (Enemy fo : world.enemy )
+                if ( fo.box.intersects( shot.box ) ) {
+                    fo.damage( shot );
+                    shot.dead = true;
+                    break;
+                }
+    }
 
 }
