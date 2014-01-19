@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.enumTypes.Shots;
+import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 
 
-public class Shot extends Entitate {
+public class Shot extends Entity {
 
     private Vector3 direction;
     private float   life;
-    public Shots    type;
+    public ShotType type;
 
     private float   charge;
     public int      damage;
@@ -28,7 +28,7 @@ public class Shot extends Entitate {
         direction = new Vector3();
     }
 
-    public Shot create(Shots type, Vector3 position, Vector3 direction) {
+    public Shot create(ShotType type, Vector3 position, Vector3 direction) {
         this.type = type;
         super.init( position );
         this.direction.set( direction );
@@ -40,11 +40,11 @@ public class Shot extends Entitate {
         return this;
     }
 
-    public Shot create(Shots type, Vector3 position, Vector3 direction, float charge) {
+    public Shot create(ShotType type, Vector3 position, Vector3 direction, float charge) {
         create( type, position, direction );
         this.charge = charge;
 
-        if ( type ==Shots.GHIULEA ) {
+        if ( type ==ShotType.GHIULEA ) {
             this.direction.y = 0;
             this.direction.add( 0, 1f, 0 ).nor();
         }
@@ -86,13 +86,13 @@ public class Shot extends Entitate {
             if ( col.intersects( box ) )
                 dead = true;
         if ( !dead )
-            for (Inamic fo : world.foe )
+            for (Enemy fo : world.enemy )
                 if ( fo.box.intersects( box ) ) {
                     fo.damage( this );
                     dead = true;
                 }
-        if ( dead ==true &&type ==Shots.GHIULEA ) {
-            for (Inamic fo : world.foe )
+        if ( dead ==true &&type ==ShotType.GHIULEA ) {
+            for (Enemy fo : world.enemy )
                 if ( fo.poz.dst2( poz ) <=range *range )
                     fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( poz ) /range ) ) ) );
         }
@@ -101,7 +101,9 @@ public class Shot extends Entitate {
     @Override
     protected ModelInstance getModel(float x, float y, float z) {
 
-        return new ModelInstance( new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal ), x, y, z );
+        ModelInstance modelInstance = new ModelInstance( new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal ), x, y, z );
+        World.toDispose.add( modelInstance.model );
+        return modelInstance;
 
     }
 

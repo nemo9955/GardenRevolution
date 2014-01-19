@@ -16,8 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.enumTypes.Armament;
-import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
+import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.mediu.Cannon;
+import com.nemo9955.garden_revolution.game.mediu.MiniGun;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
 
@@ -25,14 +26,14 @@ public class StageUtils {
 
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
-        stage = new Stage( Gdx.graphics.getWidth() *1.5f /Mod.densitate, Gdx.graphics.getHeight() *1.5f /Mod.densitate, true );
+        stage = new Stage( Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate, true );
         Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
 
         gameplay.weaponCharger = new Image( skin, "mover-knob" );
         gameplay.weaponCharger.setVisible( false );
 
         gameplay.fps = new Label( "FPS: ", skin );
-        gameplay.fps.setScale( Mod.densitate );
+        gameplay.fps.setScale( Vars.densitate );
         gameplay.fps.setPosition( stage.getWidth() /2, stage.getHeight() -gameplay.fps.getHeight() );
 
         final Board hud = new Board(); // aici e tot ce e legat de HUD ------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ public class StageUtils {
 
         turnIG.setPosition( stage.getWidth() -turnIG.getWidth(), 0 );
         gameplay.viataTurn.setFontScale( 0.6f );
-        gameplay.viataTurn.setPosition( 10 *Mod.densitate, stage.getHeight() -gameplay.viataTurn.getHeight() -10 *Mod.densitate );
+        gameplay.viataTurn.setPosition( 10 *Vars.densitate, stage.getHeight() -gameplay.viataTurn.getHeight() -10 *Vars.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
         camLeft.setName( "Left Camera" );
         camLeft.setColor( 1, 1, 1, 0.6f );
@@ -57,7 +58,7 @@ public class StageUtils {
         camRight.setColor( 1, 1, 1, 0.6f );
         camRight.setPosition( stage.getWidth() -camRight.getRight(), stage.getHeight() /2 -camRight.getHeight() /2 );
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
-        gameplay.mover.addAction( Actions.alpha( Mod.tPadMinAlpha ) );
+        gameplay.mover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );
@@ -98,7 +99,7 @@ public class StageUtils {
         optiuni.setBounds( stage.getHeight() *0.1f, stage.getHeight() *0.1f, stage.getWidth() -stage.getHeight() *0.2f, stage.getHeight() *0.8f );
 
         optContinut.setFillParent( true );
-        optContinut.defaults().space( 70 *Mod.densitate );
+        optContinut.defaults().space( 70 *Vars.densitate );
         optContinut.add( updWaves ).row();
         optContinut.add( debug ).row();
         optContinut.add( backBut ).row();
@@ -108,14 +109,14 @@ public class StageUtils {
         final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME epara afiseara butonului
         final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
-        final ImageButton miniGun = new ImageButton( Icons.SAGETI.getAsDrawable( skin, 70, 70 ) );
-        final ImageButton cannon = new ImageButton( Icons.TUN.getAsDrawable( skin, 70, 70 ) );
+        final ImageButton miniGun = new ImageButton( IconType.SAGETI.getAsDrawable( skin, 70, 70 ) );
+        final ImageButton cannon = new ImageButton( IconType.TUN.getAsDrawable( skin, 70, 70 ) );
         final CircularGroup mainUpgrades = new CircularGroup( gameplay.shape );
 
-        float freeSpace = 25 *Mod.densitate;
+        float freeSpace = 25 *Vars.densitate;
 
-        backTowe1.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
-        backTowe2.setPosition( 15 *Mod.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
+        backTowe1.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
+        backTowe2.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
 
         mainUpgrades.setDraggable( true );
         mainUpgrades.setAsCircle( 1000, 70 );
@@ -150,7 +151,7 @@ public class StageUtils {
                 if ( pauseBut.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 1;
+                    gameplay.updWorld = false;
                 }
                 else if ( camLeft.isPressed() ) {
                     gameplay.world.prevCamera();
@@ -161,7 +162,7 @@ public class StageUtils {
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 1;
+                    gameplay.updWorld = false;
                 }
 
             }
@@ -176,12 +177,12 @@ public class StageUtils {
                 if ( optBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     optiuni.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 1;
+                    gameplay.updWorld = false;
                 }
                 else if ( resumeBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 0;
+                    gameplay.updWorld = true;
                 }
                 else if ( meniuBut.isPressed() ) {
                     hud.setVisible( true );
@@ -190,7 +191,7 @@ public class StageUtils {
 
                         @Override
                         public void run() {
-                            Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+                            Garden_Revolution.game.setScreen( Garden_Revolution.menu );
                         }
                     } ) ) );
                 }
@@ -206,15 +207,15 @@ public class StageUtils {
                 if ( backTowe1.isPressed() ||backTowe2.isPressed() ) {
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
-                    gameplay.toUpdate = 0;
+                    gameplay.updWorld = true;
                 }
                 else if ( gameplay.world.isInTower() ) {// TODO
                     if ( basicT.isPressed() )
-                        gameplay.world.upgradeCurentTower( Turnuri.BASIC );
+                        gameplay.world.upgradeCurentTower( TowerType.BASIC );
                     else if ( miniGun.isPressed() )
-                        gameplay.world.changeCurentWeapon( Armament.MINIGUN );
+                        gameplay.world.changeCurrentWeapon( MiniGun.class );
                     else if ( cannon.isPressed() )
-                        gameplay.world.changeCurentWeapon( Armament.CANON );
+                        gameplay.world.changeCurrentWeapon( Cannon.class );
                 }
             }
         };
@@ -235,7 +236,7 @@ public class StageUtils {
                     else
                         updWaves.setText( "Activate Wave" );
                     updWaves.pack();
-                    Mod.updateUave = !Mod.updateUave;
+                    Vars.updateUave = !Vars.updateUave;
                 }
                 else if ( debug.isPressed() ) {
                     if ( debug.isChecked() )
@@ -243,7 +244,7 @@ public class StageUtils {
                     else
                         debug.setText( "Hide Debug" );
                     debug.pack();
-                    Mod.showDebug = !Mod.showDebug;
+                    Vars.showDebug = !Vars.showDebug;
                 }
             }
         };
@@ -252,9 +253,9 @@ public class StageUtils {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameplay.movex = Mod.invertPadX *gameplay.mover.getKnobPercentX() *Mod.modCamSpeedX;
-                gameplay.movey = Mod.invertPadY *gameplay.mover.getKnobPercentY() *Mod.modCamSpeedY;
-                gameplay.touchPadTimmer = Mod.tPadAlphaDellay;
+                gameplay.movex = Vars.invertPadX *gameplay.mover.getKnobPercentX() *Vars.modCamSpeedX;
+                gameplay.movey = Vars.invertPadY *gameplay.mover.getKnobPercentY() *Vars.modCamSpeedY;
+                gameplay.touchPadTimmer = Vars.tPadAlphaDellay;
                 gameplay.mover.addAction( Actions.alpha( 1 ) );
             }
         } );

@@ -10,16 +10,17 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.enumTypes.Armament;
-import com.nemo9955.garden_revolution.game.enumTypes.Shots;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireCharged;
+import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
+import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
 
 
-public class Cannon extends Arma implements FireCharged {
+public class Cannon extends Weapon implements FireCharged {
 
-    public Cannon(Armament type, Vector3 poz) {
-        super( type, poz );
+    public Cannon(Vector3 poz) {
+        super( poz );
         setFireDellay( 200 );
+        name = "Cannon";
+        details = "Slow but powerfull.";
     }
 
     @Override
@@ -28,11 +29,11 @@ public class Cannon extends Arma implements FireCharged {
             fireTime = System.currentTimeMillis();
 
             float distance = -ray.origin.y /ray.direction.y;
-            tmp = ray.getEndPoint( new Vector3(), distance );
+            tmp = ray.getEndPoint(tmp, distance );
             if ( distance >=0 )
-                world.addShot( Shots.GHIULEA, poz, tmp.sub( poz ).nor(), charged );
+                world.addShot( ShotType.GHIULEA, poz, tmp.sub( poz ).nor(), charged );
             else
-                world.addShot( Shots.GHIULEA, poz, ray.direction, charged );
+                world.addShot( ShotType.GHIULEA, poz, ray.direction, charged );
         }
     }
 
@@ -40,7 +41,7 @@ public class Cannon extends Arma implements FireCharged {
     protected ModelInstance getModelInstance(Vector3 poz2) {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        toDispose.add( sfera );
+       World. toDispose.add( sfera );
 
         return new ModelInstance( sfera, poz2 );
 

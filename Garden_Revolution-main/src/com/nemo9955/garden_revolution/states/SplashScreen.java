@@ -56,7 +56,7 @@ public class SplashScreen implements Screen {
         // if ( Garden_Revolution.manager.getProgress() <0.8f )
         if ( Garden_Revolution.manager.update() ) {
             game.postLoading();
-            game.setScreen( Garden_Revolution.meniu );
+            game.setScreen( Garden_Revolution.menu );
         }
         font.setScale( 0.8f );
 

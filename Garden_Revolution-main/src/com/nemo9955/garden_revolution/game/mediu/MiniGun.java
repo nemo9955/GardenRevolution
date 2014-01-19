@@ -11,16 +11,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.enumTypes.Armament;
-import com.nemo9955.garden_revolution.game.enumTypes.Shots;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireHold;
+import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
+import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 
 
-public class MiniGun extends Arma implements FireHold {
+public class MiniGun extends Weapon implements FireHold {
 
-    public MiniGun(Armament type, Vector3 poz) {
-        super( type, poz );
+    public MiniGun(Vector3 poz) {
+        super( poz );
         setFireDellay( 100 );
+
+        name = "Mini Gun";
+        details = "Small but vicious.";
     }
 
     @Override
@@ -29,12 +31,12 @@ public class MiniGun extends Arma implements FireHold {
             fireTime = System.currentTimeMillis();
 
             float distance = -ray.origin.y /ray.direction.y;
-            tmp = ray.getEndPoint( new Vector3(), distance );
-            tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -2f, 2f ), MathUtils.random( -1f, 3f ) );
+            tmp = ray.getEndPoint( tmp, distance );
+            tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -1.5f, 3f ), MathUtils.random( -2f, 2f ) );
             if ( distance >=0 )
-                world.addShot( Shots.STANDARD, poz, tmp.sub( poz ).nor() );
+                world.addShot( ShotType.STANDARD, poz, tmp.sub( poz ).nor() );
             else
-                world.addShot( Shots.STANDARD, poz, ray.direction );
+                world.addShot( ShotType.STANDARD, poz, ray.direction );
         }
     }
 
@@ -42,7 +44,7 @@ public class MiniGun extends Arma implements FireHold {
     protected ModelInstance getModelInstance(Vector3 poz2) {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        toDispose.add( sfera );
+        World.toDispose.add( sfera );
 
         return new ModelInstance( sfera, poz2 );
 

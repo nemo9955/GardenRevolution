@@ -1,0 +1,69 @@
+package com.nemo9955.garden_revolution.game.entitati;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.Vector3;
+import com.nemo9955.garden_revolution.game.World;
+
+
+public abstract class LifeForm extends Entity {
+
+    public AnimationController animation;
+    public float               speed;
+    public Vector3             direction;
+
+    public int                 life;
+
+    public LifeForm(World world) {
+        super( world );
+        direction = new Vector3();
+    }
+
+    public void init(float x, float y, float z) {
+        super.init( x, y, z );
+        animation = new AnimationController( model );
+        direction = Vector3.Zero;
+        speed = 4;
+        update( Gdx.graphics.getDeltaTime() );
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        animation = null;
+    }
+
+    @Override
+    public void update(float delta) {
+        super.update( delta );
+        animation.update( delta );
+    }
+
+    @Override
+    protected void renderGeneral(ModelBatch modelBatch) {
+        super.renderGeneral( modelBatch );
+    }
+
+    @Override
+    public void damage(Entity e) {
+        if ( e instanceof Shot )
+            damage( ( (Shot) e ).damage );
+    }
+
+    @Override
+    public void damage(int dmg) {
+        life -= dmg;
+        if ( life <=0 )
+            super.damage( dmg );
+
+    }
+
+    protected void lookAt(Vector3 look) {// FIXME doar se invarte
+        float ung = (float) Math.toDegrees( Math.atan2( poz.x -look.x, poz.z -look.z ) );
+        if ( ung <0 )
+            ung += 360;
+        ung -= 180;
+        rotate( 0, angle -ung, 0 );
+    }
+}

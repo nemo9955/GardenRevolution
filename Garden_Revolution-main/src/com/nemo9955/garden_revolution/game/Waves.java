@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 
 
 public class Waves {
@@ -52,7 +52,7 @@ public class Waves {
         wvs.add( new Wave( delay, interval ) );
     }
 
-    public void populate(int path, Inamici type, int amont) {
+    public void populate(int path, EnemyType type, int amont) {
         wvs.peek().populate( path, type, amont );
     }
 
@@ -107,7 +107,7 @@ public class Waves {
             return false;
         }
 
-        public void populate(int path, Inamici type, int amont) {
+        public void populate(int path, EnemyType type, int amont) {
             for (int i = 0 ; i <amont ; i ++ )
                 monstrii.get( path ).add( new Monstru( type, path ) );
         }
@@ -116,10 +116,10 @@ public class Waves {
 
     private class Monstru {
 
-        public Inamici type;
-        public int     path;
+        public EnemyType type;
+        public int       path;
 
-        private Monstru(Inamici type, int path) {
+        private Monstru(EnemyType type, int path) {
             this.type = type;
             this.path = path;
         }

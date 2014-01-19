@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -33,69 +35,85 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.entitati.Aliat;
-import com.nemo9955.garden_revolution.game.entitati.Entitate;
-import com.nemo9955.garden_revolution.game.entitati.Inamic;
+import com.nemo9955.garden_revolution.game.entitati.Ally;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.entitati.Entity;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
-import com.nemo9955.garden_revolution.game.enumTypes.Armament;
-import com.nemo9955.garden_revolution.game.enumTypes.Inamici;
-import com.nemo9955.garden_revolution.game.enumTypes.Shots;
-import com.nemo9955.garden_revolution.game.enumTypes.Turnuri;
-import com.nemo9955.garden_revolution.game.mediu.Arma.FireHold;
-import com.nemo9955.garden_revolution.game.mediu.Turn;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
+import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.game.mediu.Weapon;
+import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
 public class World implements Disposable {
 
-    private Array<Disposable>               toDispose   = new Array<Disposable>( false, 1 );
+    public static Array<Disposable>         toDispose    = new Array<Disposable>( false, 1 );
 
-    private Array<ModelInstance>            nori        = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>             mediu       = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>            clouds       = new Array<ModelInstance>( false, 10 );
+    public Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
 
-    public Array<Inamic>                    foe         = new Array<Inamic>( false, 10 );
-    public Array<Aliat>                     ally        = new Array<Aliat>( false, 10 );
-    public Array<Shot>                      shot        = new Array<Shot>( false, 10 );
-
-    public Array<BoundingBox>               colide      = new Array<BoundingBox>( false, 10 );
+    public Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
+    public Array<Ally>                      ally         = new Array<Ally>( false, 10 );
+    public Array<Shot>                      shot         = new Array<Shot>( false, 10 );
+    public Array<BoundingBox>               colide       = new Array<BoundingBox>( false, 10 );
     public Array<CatmullRomSpline<Vector3>> paths;
     private int                             viata;
 
-    private PerspectiveCamera               cam;
-    private Vector3                         tmp         = new Vector3();
-    private Vector3                         tmp2        = new Vector3();
-    public final Vector3                    overview    = new Vector3();
+    private static Vector3                  tmp          = new Vector3();
+    private static Vector3                  tmp2         = new Vector3();
+    public final Vector3                    overview     = new Vector3();
 
-    private Turn[]                          turnuri;
-    public int                              curentTurn  = -1;
-    protected boolean                       isOneToweUp = false;
+    private Tower[]                         towers;
+    public int                              currentTower = -1;
+    protected boolean                       isOneToweUp  = false;
 
     public Waves                            waves;
 
-    public World(FileHandle location, PerspectiveCamera cam) {
-        this.cam = cam;
+    private PerspectiveCamera               cam;
+    private Environment                     environment  = new Environment();
+
+
+    public World(FileHandle location) {
+
+
+        // lights.
+        environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
+        environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
+        // envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
+        environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
+
+        cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        cam.near = 0.1f;
+        cam.far = 300f;
+        cam.update();
+
+
         makeNori();
         populateWorld( location );
         readData( location );
     }
+
 
     public void update(float delta) {
 
         if ( isOneToweUp &&waves.finishedWaves() )
             waves.update( delta );
 
-        for (Turn trn : turnuri ) {
+        for (Tower trn : towers ) {
             trn.update( delta );
         }
 
-        for (Inamic fo : foe ) {
+        for (Enemy fo : enemy ) {
             fo.update( delta );
             if ( fo.dead ) {
                 inamicPool.free( fo );
-                foe.removeValue( fo, false );
+                enemy.removeValue( fo, false );
             }
         }
-        for (Aliat al : ally ) {
+        for (Ally al : ally ) {
             al.update( delta );
             if ( al.dead ) {
                 aliatPool.free( al );
@@ -113,19 +131,19 @@ public class World implements Disposable {
     }
 
     public void render(ModelBatch modelBatch, Environment light, Shader shader) {
-        for (ModelInstance nor : nori )
+        for (ModelInstance nor : clouds )
             modelBatch.render( nor, shader );
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
-        for (Entitate e : foe )
+        for (Entity e : enemy )
             e.render( modelBatch, light );
-        for (Entitate e : ally )
+        for (Entity e : ally )
             e.render( modelBatch, light );
-        for (Entitate e : shot )
+        for (Entity e : shot )
             e.render( modelBatch );
-        for (Turn turn : turnuri )
-            turn.render( modelBatch, light );
+        for (Tower tower : towers )
+            tower.render( modelBatch, light );
     }
 
     public void renderDebug(ShapeRenderer shape) {
@@ -140,28 +158,28 @@ public class World implements Disposable {
 
         shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
 
-        for (Turn turn : turnuri )
-            for (BoundingBox box : turn.coliders )
+        for (Tower tower : towers )
+            for (BoundingBox box : tower.coliders )
                 shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 0.5f, 0, 0.5f, 1 );
 
-        for (Turn turn : turnuri )
-            shape.box( turn.baza.min.x, turn.baza.min.y, turn.baza.max.z, turn.baza.getDimensions().x, turn.baza.getDimensions().y, turn.baza.getDimensions().z );
+        for (Tower tower : towers )
+            shape.box( tower.fundation.min.x, tower.fundation.min.y, tower.fundation.max.z, tower.fundation.getDimensions().x, tower.fundation.getDimensions().y, tower.fundation.getDimensions().z );
 
         shape.setColor( 1, 0, 0, 1 );
 
-        for (Entitate e : foe )
+        for (Entity e : enemy )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0, 1, 1 );
 
-        for (Entitate e : ally )
+        for (Entity e : ally )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 1, 1, 1 );
 
-        for (Entitate e : shot )
+        for (Entity e : shot )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         int pts = paths.size;
@@ -180,7 +198,7 @@ public class World implements Disposable {
     }
 
     private void makeNori() {
-        nori.clear();
+        clouds.clear();
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
         toDispose.add( sfera );
@@ -194,7 +212,7 @@ public class World implements Disposable {
             for (int j = 1 ; j <=5 ; j ++ ) {
                 nor = new ModelInstance( sfera );
                 nor.transform.translate( norx +MathUtils.random( 0f, 7f ), 50, norz +MathUtils.random( 0f, 7f ) );
-                nori.add( nor );
+                clouds.add( nor );
             }
         }
     }
@@ -206,7 +224,7 @@ public class World implements Disposable {
         Element map = null;
         try {
             map = new XmlReader().parse( location );
-            turnuri = new Turn[map.getInt( "turnuri" )];
+            towers = new Tower[map.getInt( "turnuri" )];
             paths = new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
@@ -233,7 +251,7 @@ public class World implements Disposable {
 
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
-                turnuri[Integer.parseInt( sect[1] ) -1] = new Turn( instance, this, scena.nodes.get( i ).translation );
+                towers[Integer.parseInt( sect[1] ) -1] = new Tower( instance, this, scena.nodes.get( i ).translation );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -317,7 +335,7 @@ public class World implements Disposable {
                 for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
 
                     Element monstru = pat.getChild( i );
-                    waves.populate( numar -1, Inamici.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount", 1 ) );
+                    waves.populate( numar -1, EnemyType.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount", 1 ) );
 
                 }
             }
@@ -326,106 +344,33 @@ public class World implements Disposable {
     }
 
 
-    public int getViata() {
-        return viata;
-    }
-
-
-    public void setViata(int viata) {
-        this.viata = viata;
-        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
-    }
-
-    public void addViata(int amount) {
-        this.viata += amount;
-        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
-    }
-
-    public boolean isInTower() {
-        return getTower() !=null;
-    }
-
-    public Turn getTower() {
-        if ( turnuri.length ==0 ||curentTurn ==-1 )
-            return null;
-        return turnuri[curentTurn];
-    }
-
-    public void upgradeCurentTower(Turnuri upgrade) {
+    public void upgradeCurentTower(TowerType upgrade) {
         if ( isInTower() )
             if ( getTower().upgradeTower( upgrade ) ) {
-                setCamera( curentTurn );
+                setCamera( currentTower );
                 isOneToweUp = true;
             }
     }
 
-    public void changeCurentWeapon(Armament arma) {
-        Turn turn = getTower();
-        if ( isInTower() &&turn.type !=null )
-            if ( turn.changeWeapon( arma.getNewInstance( turn.place ) ) )
-                setCamera( curentTurn );
-    }
-
-    public Vector3 getCameraRotAround() {
-        if ( isInTower() )
-            return getTower().place;
-        return cam.position;
-
-    }
-
-    public void setCamera(Turn turn) {
-        if ( turn !=null )
-            setCamera( getTowerIndex( turn ) );
+    public void changeCurrentWeapon(Class<? extends Weapon> weapon) {
+        Tower tower = getTower();
+        if ( isInTower() &&tower.type !=null )
+            try {
+                if ( tower.changeWeapon( weapon.getDeclaredConstructor( Vector3.class ).newInstance( tower.place ) ) )
+                    setCamera( currentTower );
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     @SuppressWarnings("deprecation")
-    public void setCamera(int nr) {// FIXME cand se uita prea aproape de baza turnului , camera se pune intr-o pozitie in care turnul e prea in mijlocul ecranului
-
-        if ( nr !=MathUtils.clamp( nr, 0, turnuri.length -1 ) )
-            return;
-        curentTurn = nr;
-
-        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        float distance = -ray.origin.y /ray.direction.y;
-        Vector3 look = ray.getEndPoint( Vector3.tmp3, distance );
-
-        cam.position.set( turnuri[nr].place );
-        cam.lookAt( look );
-        cam.up.set( Vector3.Y );
-
-        if ( getTower().type ==null ) {
-            cam.position.add( 0, 3, 0 );
-        }
-        else {
-            tmp2.set( cam.direction ).scl( 4 );
-            tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
-
-            cam.position.sub( tmp2 );
-            cam.position.sub( tmp );
-            cam.position.add( 0, 2, 0 );
-        }
-        cam.update();
-    }
-
-    public void nextCamera() {
-        curentTurn ++;
-        if ( curentTurn >=turnuri.length )
-            curentTurn = 0;
-        setCamera( curentTurn );
-    }
-
-    public void prevCamera() {
-        curentTurn --;
-        if ( curentTurn <0 )
-            curentTurn = turnuri.length -1;
-        setCamera( curentTurn );
-    }
-
     public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
+
         for (CatmullRomSpline<Vector3> path : paths ) {
-            tmp = path.controlPoints[0].cpy();
+            tmp = path.controlPoints[0].tmp();
             if ( location.dst2( tmp ) <dist ) {
                 dist = location.dst2( tmp );
                 closest = path;
@@ -434,39 +379,31 @@ public class World implements Disposable {
         return closest;
     }
 
-    private int getTowerIndex(Turn turn) {
-        for (int i = 0 ; i <turnuri.length ; i ++ )
-            if ( turnuri[i].equals( turn ) )
-                return i;
-
-        return -1;
-    }
-
-    public Inamic addFoe(Inamici type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
-        Inamic inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
-        foe.add( inamicTemp );
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
+        Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
+        enemy.add( inamicTemp );
         return inamicTemp;
     }
 
-    public Inamic addFoe(Inamici type, float x, float y, float z) {
-        Inamic inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
-        foe.add( inamicTemp );
+    public Enemy addFoe(EnemyType type, float x, float y, float z) {
+        Enemy inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
+        enemy.add( inamicTemp );
         return inamicTemp;
     }
 
-    public Aliat addAlly(float x, float y, float z) {
-        Aliat aliatTemp = aliatPool.obtain().create( x, y, z );
+    public Ally addAlly(float x, float y, float z) {
+        Ally aliatTemp = aliatPool.obtain().create( x, y, z );
         ally.add( aliatTemp );
         return aliatTemp;
     }
 
-    public Shot addShot(Shots type, Vector3 position, Vector3 direction) {
+    public Shot addShot(ShotType type, Vector3 position, Vector3 direction) {
         Shot shotTemp = shotPool.obtain().create( type, position, direction );
         shot.add( shotTemp );
         return shotTemp;
     }
 
-    public Shot addShot(Shots type, Vector3 position, Vector3 direction, float charge) {
+    public Shot addShot(ShotType type, Vector3 position, Vector3 direction, float charge) {
         Shot shotTemp = shotPool.obtain().create( type, position, direction, charge );
         shot.add( shotTemp );
         return shotTemp;
@@ -476,29 +413,37 @@ public class World implements Disposable {
         mediu.add( med );
     }
 
-    private Pool<Inamic> inamicPool = new Pool<Inamic>() {
+    private int getTowerIndex(Tower tower) {
+        for (int i = 0 ; i <towers.length ; i ++ )
+            if ( towers[i].equals( tower ) )
+                return i;
 
-                                        @Override
-                                        protected Inamic newObject() {
-                                            return new Inamic( World.this );
-                                        }
-                                    };
+        return -1;
+    }
 
-    private Pool<Aliat>  aliatPool  = new Pool<Aliat>() {
+    private Pool<Enemy> inamicPool = new Pool<Enemy>() {
 
-                                        @Override
-                                        protected Aliat newObject() {
-                                            return new Aliat( World.this );
-                                        }
-                                    };
+                                       @Override
+                                       protected Enemy newObject() {
+                                           return new Enemy( World.this );
+                                       }
+                                   };
 
-    private Pool<Shot>   shotPool   = new Pool<Shot>() {
+    private Pool<Ally>  aliatPool  = new Pool<Ally>() {
 
-                                        @Override
-                                        protected Shot newObject() {
-                                            return new Shot( World.this );
-                                        }
-                                    };
+                                       @Override
+                                       protected Ally newObject() {
+                                           return new Ally( World.this );
+                                       }
+                                   };
+
+    private Pool<Shot>  shotPool   = new Pool<Shot>() {
+
+                                       @Override
+                                       protected Shot newObject() {
+                                           return new Shot( World.this );
+                                       }
+                                   };
 
     public void isTouched(int screenX, int screenY) {
 
@@ -509,10 +454,10 @@ public class World implements Disposable {
 
     }
 
-    public Turn getTowerHitByRay(Ray ray) {
-        for (Turn turn : turnuri )
-            if ( turn.intersectsRay( ray ) ) {
-                return turn;
+    public Tower getTowerHitByRay(Ray ray) {
+        for (Tower tower : towers )
+            if ( tower.intersectsRay( ray ) ) {
+                return tower;
             }
         return null;
     }
@@ -542,13 +487,13 @@ public class World implements Disposable {
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        addFoe( Inamici.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
+                        addFoe( EnemyType.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
                     }
             }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 addAlly( tmp.x, tmp.y, tmp.z );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                addFoe( Inamici.MORCOV, tmp.x, tmp.y, tmp.z );
+                addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
 
             gestures.invalidateTapSquare();
             return true;
@@ -556,20 +501,140 @@ public class World implements Disposable {
         return false;
     }
 
+    public void moveCamera(float amontX, float amontY) {
+
+        cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
+        if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
+            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
+            cam.rotateAround( getCameraRotAround(), tmp.nor(), amontY );
+        }
+
+        cam.update();
+    }
+
+
+    @SuppressWarnings("deprecation")
+    public void setCamera(int index) {
+
+        if ( index !=MathUtils.clamp( index, 0, towers.length -1 ) )
+            return;
+        currentTower = index;
+
+        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        float distance = -ray.origin.y /ray.direction.y;
+        Vector3 look = ray.getEndPoint( Vector3.tmp3, distance );
+
+        // System.out.println( Vector3.dst( look.x, 0, look.z, cam.position.x, 0, cam.position.z ) );
+        // if ( Vector3.dst( look.x, 0, look.z, cam.position.x, 0, cam.position.z ) <3 )
+        // look.add( look.x -cam.position.x, 0, look.z -cam.position.z );
+
+
+        cam.position.set( towers[index].place );
+        look.y = cam.position.y;
+        cam.lookAt( look );
+        cam.up.set( Vector3.Y );
+
+        if ( getTower().type ==null ) {
+            cam.position.add( 0, 3, 0 );
+        }
+        else {
+            tmp2.set( cam.direction ).scl( 4 );
+            tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
+
+            cam.position.sub( tmp2 );
+            cam.position.sub( tmp );
+            cam.position.add( 0, 2, 0 );
+        }
+
+        // TODO sa aproximez valoarea pt a folosi moveCamera(0 , valoare) sa se uite aproximativ la zona initiala
+
+        cam.update();
+    }
+
+
+    public void setCamera(Tower tower) {
+        if ( tower !=null )
+            setCamera( getTowerIndex( tower ) );
+    }
+
+
+    public void nextCamera() {
+        currentTower ++;
+        if ( currentTower >=towers.length )
+            currentTower = 0;
+        setCamera( currentTower );
+    }
+
+
+    public void prevCamera() {
+        currentTower --;
+        if ( currentTower <0 )
+            currentTower = towers.length -1;
+        setCamera( currentTower );
+    }
+
+
+    public boolean isInTower() {
+        return getTower() !=null;
+    }
+
+
+    public Tower getTower() {
+        if ( towers.length ==0 ||currentTower ==-1 )
+            return null;
+        return towers[currentTower];
+    }
+
+
+    public Vector3 getCameraRotAround() {
+        if ( isInTower() )
+            return getTower().place;
+        return cam.position;
+
+    }
+
+
+    public PerspectiveCamera getCamera() {
+        return cam;
+    }
+
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+
+    public void addViata(int amount) {
+        this.viata += amount;
+        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
+    }
+
+
+    public int getViata() {
+        return viata;
+    }
+
+
+    public void setViata(int viata) {
+        this.viata = viata;
+        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
+    }
+
+
     @Override
     public void dispose() {
 
         for (Disposable dis : toDispose )
             dis.dispose();
-        for (Disposable dis : turnuri )
+        for (Disposable dis : towers )
             dis.dispose();
 
         toDispose.clear();
-        foe.clear();
+        enemy.clear();
         ally.clear();
         shot.clear();
         mediu.clear();
-        nori.clear();
+        clouds.clear();
 
     }
 

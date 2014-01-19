@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
-import com.nemo9955.garden_revolution.utility.Mod;
+import com.nemo9955.garden_revolution.utility.Vars;
 
 
 public class LevelSelector implements Screen {
@@ -33,7 +33,7 @@ public class LevelSelector implements Screen {
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( Gdx.graphics.getWidth() *rap /Mod.densitate, Gdx.graphics.getHeight() *rap /Mod.densitate, true );
+        stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
     }
@@ -62,7 +62,7 @@ public class LevelSelector implements Screen {
         System.out.println( "Intern " +internal );
 
         if ( internal ) {
-            lvlLoc = Gdx.files.internal( nivelLoc +"/" );
+            lvlLoc = Gdx.files.internal(nivelLoc +"/" );
         }
         else {
             lvlLoc = Gdx.files.local( nivelLoc );
@@ -85,7 +85,7 @@ public class LevelSelector implements Screen {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.meniu );
+                Garden_Revolution.game.setScreen( Garden_Revolution.menu );
             }
         } );
 

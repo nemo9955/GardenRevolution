@@ -12,21 +12,21 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
-import com.nemo9955.garden_revolution.states.Meniu;
+import com.nemo9955.garden_revolution.states.Menu;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
- 
+
 
 public class Garden_Revolution extends Game {
 
     public static final String      TITLU    = "Garden Revolution";
-    public static final String      VERSIUNE = "alfa 0.34,5";
+    public static final String      VERSIUNE = "alfa 0.666";
 
     public static Gameplay          gameplay;
-    public static Meniu             meniu;
+    public static Menu              menu;
     public static TestScene         test;
     public static SplashScreen      splash;
     public static LevelSelector     selecter;
@@ -72,7 +72,7 @@ public class Garden_Revolution extends Game {
 
         test = new TestScene();
         gameplay = new Gameplay();
-        meniu = new Meniu();
+        menu = new Menu();
         selecter = new LevelSelector();
 
         game = this;
@@ -95,7 +95,7 @@ public class Garden_Revolution extends Game {
     @Override
     public void dispose() {
         gameplay.dispose();
-        meniu.dispose();
+        menu.dispose();
         selecter.dispose();
         splash.dispose();
         test.dispose();
