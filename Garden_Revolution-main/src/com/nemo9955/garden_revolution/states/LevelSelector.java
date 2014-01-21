@@ -59,7 +59,7 @@ public class LevelSelector implements Screen {
         // else
         // lvlLoc = nivelLoc;
 
-        System.out.println( "Intern " +internal );
+      //  System.out.println( "Intern " +internal );
 
         if ( internal ) {
             lvlLoc = Gdx.files.internal(levelsLocation +"/" );
@@ -68,7 +68,7 @@ public class LevelSelector implements Screen {
             lvlLoc = Gdx.files.local( levelsLocation );
         }
 
-        System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
+      //  System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
 
         FileHandle nivele[] = lvlLoc.list();
         String harti[] = new String[nivele.length];
@@ -76,7 +76,7 @@ public class LevelSelector implements Screen {
         for (int i = 0 ; i <harti.length ; i ++ )
             harti[i] = nivele[i].nameWithoutExtension();
 
-        final TextButton play = new TextButton( "Play", skin );
+        final TextButton play = new TextButton( "Start", skin );
 
         List elem = new List( harti, skin );
 

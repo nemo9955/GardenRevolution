@@ -546,6 +546,18 @@ public class World implements Disposable {
             cam.position.add( 0, 2, 0 );
         }
 
+        Vector3 u = Vector3.tmp2.set( look.tmp().sub( cam.position ) );
+        look.y = 0;
+        Vector3 v = Vector3.tmp3.set( look.tmp().sub( cam.position ) );
+
+        float dot = u.tmp().dot( v );
+        float lenu = u.len();
+        float lenv = v.len();
+        float cos = dot / ( Math.abs( lenv ) *Math.abs( lenu ) );
+
+        float angle = (float) Math.toDegrees( Math.acos( cos ));
+        moveCamera( 0, -angle );
+
         // TODO sa aproximez valoarea pt a folosi moveCamera(0 , valoare) sa se uite aproximativ la zona initiala
 
         cam.update();

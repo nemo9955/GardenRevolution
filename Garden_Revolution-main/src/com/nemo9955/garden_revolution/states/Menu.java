@@ -15,16 +15,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
 public class Menu implements Screen {
 
-    private TweenManager tweeger;
-    private Stage        stage;
-    private Skin         skin;
+    private StageActorPointer  pointer;
+    private TweenManager       tweeger;
+    private Stage              stage;
+    private Skin               skin;
 
-    private static final float  rap = 1.3f;
+    private static final float rap = 1.3f;
 
 
     public Menu() {
@@ -56,13 +58,12 @@ public class Menu implements Screen {
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
-                if ( optiuni.isChecked() ) {
-                    optiuni.setText( "INTERN" );
-                    LevelSelector.internal = true;
-                }
-                else {
-                    optiuni.setText( "EXTERN" );
-                    LevelSelector.internal = false;
+                if ( optiuni.isPressed() ) {
+                    LevelSelector.internal = optiuni.isChecked();
+                    if ( LevelSelector.internal )
+                        optiuni.setText( "INTERN" );
+                    else
+                        optiuni.setText( "EXTERN" );
                 }
             }
         };
@@ -78,6 +79,8 @@ public class Menu implements Screen {
         tab.add( exit );
 
         stage.addActor( tab );
+        pointer = new StageActorPointer( stage );
+        pointer.setSelectedActor( start );
     }
 
     @Override
@@ -94,7 +97,7 @@ public class Menu implements Screen {
 
         stage.act();
         stage.draw();
-
+        pointer.draw( delta );
     }
 
     @Override

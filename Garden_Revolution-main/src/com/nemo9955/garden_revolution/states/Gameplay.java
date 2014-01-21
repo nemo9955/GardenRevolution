@@ -4,7 +4,6 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -21,8 +20,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -143,7 +140,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         world.getCamera().translate( dolly );
         world.moveCamera( movex, movey );
 
-        if ( world.isInTower() &&cont.getButton( Vars.buton[0] ) ) {
+        if ( world.isInTower() &&cont !=null &&cont.getButton( Vars.buton[0] ) ) {
             Tower tower = world.getTower();
 
             if ( tower.getArma() instanceof FireHold )
@@ -320,11 +317,14 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( buttonCode ==Vars.buton[0] ) {
 
-            if ( isCurrentState( "Pause" ) ) {
-                // getActorInState( "resume" )
-                Actor temp = getActorInState( "resume" );
-                stage.touchDown( (int) ( temp.getX() + ( temp.getWidth() /2 ) ), (int) ( temp.getTop() - ( temp.getHeight() /2 ) ), 1, Buttons.LEFT );
-            }
+            // if ( isCurrentState( "Pause" ) ) {
+            // // getActorInState( "resume" )
+            // Actor temp = getActorInState( "resume" );
+            // tmp2.set( temp.getX() + ( temp.getWidth() /2 ), temp.getTop() - ( temp.getHeight() /2 ) );
+            // temp.localToStageCoordinates( tmp2 );
+            // stage.touchDown( (int) tmp2.x, (int) tmp2.y, 0, Buttons.LEFT );
+            // }
+
 
             if ( world.isInTower() &&world.getTower().getArma() instanceof Cannon ) {
                 weaponCharger.setColor( Color.CLEAR );
@@ -340,8 +340,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         }
 
         if ( buttonCode ==Vars.buton[1] ) {
-            if ( isCurrentState( "Tower Upgrade" ) )
-                getActorInState( "BASIC" ).fire( new Event() );
+            // if ( isCurrentState( "Tower Upgrade" ) )
+            // getActorInState( "BASIC" ).fire( new Event() );
             return false;
         }
 
@@ -415,14 +415,14 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     }
 
-    private Actor getActorInState(String name) {
-        for (Actor zone : stage.getActors() )
-            if ( zone.isVisible() )
-                for (Actor actor : ( (Group) zone ).getChildren() )
-                    if ( actor.getName() ==name )
-                        return actor;
-        return null;
-    }
+    // private Actor getActorInState(String name) {
+    // for (Actor zone : stage.getActors() )
+    // if ( zone.isVisible() )
+    // for (Actor actor : ( (Group) zone ).getChildren() )
+    // if ( actor.getName() ==name )
+    // return actor;
+    // return null;
+    // }
 
     private boolean isCurrentState(String name) {
         for (Actor actor : stage.getActors() )

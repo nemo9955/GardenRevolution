@@ -196,7 +196,6 @@ public class StageUtils {
             }
         };
 
-
         // pentru tot ce tine de upgradarea turnurilor
         ChangeListener turnButons = new ChangeListener() {
 
