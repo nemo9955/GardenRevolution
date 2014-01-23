@@ -2,7 +2,6 @@ package com.nemo9955.garden_revolution.states;
 
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -448,17 +447,16 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void hide() {
-        if ( Gdx.app.getType() ==ApplicationType.Desktop )
+        if ( Vars.isControllerUsable() )
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
     }
 
     @Override
     public void show() {
-        if ( Gdx.app.getType() ==ApplicationType.Desktop ) {
+        if ( Vars.isControllerUsable() ) {
             Controllers.addListener( this );
-            if ( Controllers.getControllers().size >0 )
-                cont = Controllers.getControllers().first();
+            cont = Controllers.getControllers().first();
         }
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );
     }

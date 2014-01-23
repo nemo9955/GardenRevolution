@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -21,8 +22,8 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class Menu implements Screen {
 
-    private StageActorPointer  pointer;
     private TweenManager       tweeger;
+    private StageActorPointer  pointer;
     private Stage              stage;
     private Skin               skin;
 
@@ -36,11 +37,12 @@ public class Menu implements Screen {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
+        final TextButton options = new TextButton( "Options", skin );
         final ImageButton start = new ImageButton( skin, "start" );
         final ImageButton exit = new ImageButton( skin, "exit" );
         final ImageButton test1 = new ImageButton( skin, "test" );
 
-        final CheckBox optiuni = new CheckBox( "EXTERN", skin );
+        final CheckBox mode = new CheckBox( "EXTERN", skin );
 
         final Table tab = new Table();
         tab.setFillParent( true );
@@ -55,15 +57,18 @@ public class Menu implements Screen {
                 if ( test1.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.test );
 
+                if ( options.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.options );
+
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
-                if ( optiuni.isPressed() ) {
-                    LevelSelector.internal = optiuni.isChecked();
+                if ( mode.isPressed() ) {
+                    LevelSelector.internal = mode.isChecked();
                     if ( LevelSelector.internal )
-                        optiuni.setText( "INTERN" );
+                        mode.setText( "INTERN" );
                     else
-                        optiuni.setText( "EXTERN" );
+                        mode.setText( "EXTERN" );
                 }
             }
         };
@@ -73,10 +78,12 @@ public class Menu implements Screen {
 
         tab.defaults().pad( 25 );
         tab.add( start );
-        tab.add( optiuni ).space( 10 );
+        tab.add( mode ).space( 10 );
         tab.row();
         tab.add( test1 );
         tab.add( exit );
+        tab.row();
+        tab.add( options );
 
         stage.addActor( tab );
         pointer = new StageActorPointer( stage );

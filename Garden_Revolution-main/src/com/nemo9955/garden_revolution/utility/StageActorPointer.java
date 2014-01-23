@@ -50,7 +50,7 @@ public class StageActorPointer {
         selected.localToStageCoordinates( out );
         stage.stageToScreenCoordinates( out );
 
-        System.out.println( out );
+        // System.out.println( out );
         return out;
     }
 }

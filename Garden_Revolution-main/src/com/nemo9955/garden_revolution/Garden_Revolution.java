@@ -25,6 +25,7 @@ public class Garden_Revolution extends Game {
     public static final String      TITLU    = "Garden Revolution";
     public static final String      VERSIUNE = "alfa 0.666";
 
+    public static Options           options;
     public static Gameplay          gameplay;
     public static Menu              menu;
     public static TestScene         test;
@@ -70,6 +71,7 @@ public class Garden_Revolution extends Game {
 
         Texture.setEnforcePotImages( false );
 
+        options = new Options();
         test = new TestScene();
         gameplay = new Gameplay();
         menu = new Menu();
@@ -99,6 +101,7 @@ public class Garden_Revolution extends Game {
         selecter.dispose();
         splash.dispose();
         test.dispose();
+        options.dispose();
 
 
         manager.dispose();
