@@ -43,11 +43,13 @@ public class StageActorPointer {
         getSelectedCenter( selCenter );
     }
 
-    public Vector2 getSelectedCenter(Vector2 out) {
+    public Vector2 getSelectedCenter(Vector2 out) {// FIXME
         // out.set( selected.getWidth() /2, selected.getHeight() /2 );
+
         out.set( selected.getX(), selected.getY() );
-      //  selected.localToStageCoordinates( out );
+        selected.localToStageCoordinates( out );
         stage.stageToScreenCoordinates( out );
+
         System.out.println( out );
         return out;
     }

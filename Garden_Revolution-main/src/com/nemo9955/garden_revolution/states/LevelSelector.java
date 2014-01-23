@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -22,20 +23,22 @@ public class LevelSelector implements Screen {
     private Stage              stage;
     private Skin               skin;
     private Table              table;
+    private StageActorPointer  pointer;
 
     public final static String levelsLocation = "harti/nivele";
-    public static boolean      internal = false;
+    public static boolean      internal       = false;
 
     private FileHandle         lvlLoc;
     private String             toAcces;
     private SplitPane          lista;
-    private static final float rap      = 1.5f;
+    private static final float rap            = 1.5f;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
+        pointer = new StageActorPointer( stage );
     }
 
     @Override
@@ -59,16 +62,16 @@ public class LevelSelector implements Screen {
         // else
         // lvlLoc = nivelLoc;
 
-      //  System.out.println( "Intern " +internal );
+        // System.out.println( "Intern " +internal );
 
         if ( internal ) {
-            lvlLoc = Gdx.files.internal(levelsLocation +"/" );
+            lvlLoc = Gdx.files.internal( levelsLocation +"/" );
         }
         else {
             lvlLoc = Gdx.files.local( levelsLocation );
         }
 
-      //  System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
+        // System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
 
         FileHandle nivele[] = lvlLoc.list();
         String harti[] = new String[nivele.length];
@@ -76,7 +79,7 @@ public class LevelSelector implements Screen {
         for (int i = 0 ; i <harti.length ; i ++ )
             harti[i] = nivele[i].nameWithoutExtension();
 
-        final TextButton play = new TextButton( "Start", skin );
+        final TextButton start = new TextButton( "Start", skin );
 
         List elem = new List( harti, skin );
 
@@ -90,7 +93,7 @@ public class LevelSelector implements Screen {
         } );
 
         table.add( "Select a LEVEL" ).expand().top().row();
-        table.add( play ).expand().row();
+        table.add( start ).expand().row();
         table.add( back ).bottom().expand().right();
 
         lista = new SplitPane( elem, table, false, skin );
@@ -110,7 +113,7 @@ public class LevelSelector implements Screen {
 
         toAcces = elem.getSelection();
 
-        play.addListener( new ChangeListener() {
+        start.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -120,6 +123,7 @@ public class LevelSelector implements Screen {
 
 
         stage.addActor( lista );
+        pointer.setSelectedActor( start );
 
         Gdx.input.setInputProcessor( stage );
     }
@@ -131,6 +135,7 @@ public class LevelSelector implements Screen {
 
         stage.act( delta );
         stage.draw();
+        pointer.draw( delta );
     }
 
     @Override

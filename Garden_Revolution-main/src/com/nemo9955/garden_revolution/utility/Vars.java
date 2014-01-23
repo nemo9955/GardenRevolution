@@ -27,12 +27,14 @@ public class Vars {
     public static boolean  showDebug           = true;
 
     // pentru controller
-    public static int      buton[]             = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-    public static String   butonName[]         = { "Fire", "2", "3", "4", "Previous camera", "Next Camera", "7", "8", "9", "10", "11", "12", };
-    public static float    deadZone            = 0.01f;
     public static float    invertControlletY   = 1;
     public static float    invertControlletX   = -1;
     public static float    multiplyControlletY = 1;
     public static float    multiplyControlletX = 1;
+    public static float    deadZone            = 0.01f;
+    public static int      buton[]             = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+    public static String   butonName[]         = { "Fire", "2", "3", "4", "Previous camera", "Next Camera", "7", "8", "9", "10", "11", "12", };
+    public static int      axis[]              = { 0, 1, 2, 3 };
+    public static String   axisName[]          = { "Y Acceleration", "X Acceleration", "Y Movement", "X Movement" };
 
 }

@@ -388,10 +388,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
 
-        if ( axisCode ==0 )
+        if ( axisCode ==Vars.axis[0] )
             Vars.multiplyControlletY = -value +1.5f;
 
-        if ( axisCode ==1 )
+        if ( axisCode ==Vars.axis[1] )
             if ( Math.abs( value ) >=Vars.deadZone )
                 Vars.multiplyControlletX = ( Math.abs( value ) +0.5f ) *2;
             else
@@ -400,14 +400,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( Math.abs( value ) <Vars.deadZone )
             value = 0f;
 
-        if ( axisCode ==1 &&Math.abs( controller.getAxis( 3 ) ) >Vars.deadZone &&controller.getAxis( 3 ) ==MathUtils.clamp( controller.getAxis( 3 ), -1, 1 ) )
-            movex = controller.getAxis( 3 ) *Vars.invertControlletX *Vars.multiplyControlletX /2;
-        if ( axisCode ==3 )
+        if ( axisCode ==Vars.axis[1] &&Math.abs( controller.getAxis( Vars.axis[3] ) ) >Vars.deadZone &&controller.getAxis( Vars.axis[3] ) ==MathUtils.clamp( controller.getAxis( Vars.axis[3] ), -1, 1 ) )
+            movex = controller.getAxis( Vars.axis[3] ) *Vars.invertControlletX *Vars.multiplyControlletX /2;
+        if ( axisCode ==Vars.axis[3] )
             movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
 
-        if ( axisCode ==0 &&Math.abs( controller.getAxis( 2 ) ) >Vars.deadZone &&controller.getAxis( 2 ) ==MathUtils.clamp( controller.getAxis( 2 ), -1, 1 ) )
-            movey = controller.getAxis( 2 ) *Vars.invertControlletY *Vars.multiplyControlletY;
-        if ( axisCode ==2 )
+        if ( axisCode ==Vars.axis[0] &&Math.abs( controller.getAxis( Vars.axis[2] ) ) >Vars.deadZone &&controller.getAxis( Vars.axis[2] ) ==MathUtils.clamp( controller.getAxis( Vars.axis[2] ), -1, 1 ) )
+            movey = controller.getAxis( Vars.axis[2] ) *Vars.invertControlletY *Vars.multiplyControlletY;
+        if ( axisCode ==Vars.axis[2] )
             movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
 
 
