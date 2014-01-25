@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl.jar" sourcepath="libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="D:/lib GDX/Garden Revolution/Garden_Revolution-desktop/libs/gdx-controllers-desktop-natives.jar"/>
-	<classpathentry kind="lib" path="D:/lib GDX/Garden Revolution/Garden_Revolution-desktop/libs/gdx-controllers-desktop.jar" sourcepath="D:/lib GDX/Garden Revolution/Garden_Revolution-desktop/libs/gdx-controllers-desktop-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-controllers-desktop-natives.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-controllers-desktop.jar" sourcepath="libs/gdx-controllers-desktop-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

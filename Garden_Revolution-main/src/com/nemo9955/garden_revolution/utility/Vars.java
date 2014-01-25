@@ -37,14 +37,16 @@ public class Vars {
     public static float        multiplyControlletX = 1;
     public static float        deadZone            = 0.01f;
     public static int          buton[]             = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-    public static final String butonName[]         = { "Fire", "2", "3", "4", "Previous camera", "Next Camera", "7", "8", "9", "10", "11" , "12"};
+    public static final String butonName[]         = { "Fire", "2", "3", "4", "Previous camera", "Next Camera", "7", "8", "9", "10", "11", "12" };
     public static int          axis[]              = { 0, 1, 2, 3 };
     public static final String axisName[]          = { "Y Acceleration", "X Acceleration", "Y Movement", "X Movement" };
     public static final int    noButtons           = buton.length, noAxis = axis.length;
 
 
     public static boolean isControllerUsable() {
-        if ( Gdx.app.getType() !=ApplicationType.Desktop &&Controllers.getControllers().size <=0 )
+        if ( Gdx.app.getType() !=ApplicationType.Desktop )
+            return false;
+        if ( Controllers.getControllers().size <=0 )
             return false;
         return true;
     }
