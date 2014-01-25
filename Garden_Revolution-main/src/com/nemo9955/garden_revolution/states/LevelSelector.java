@@ -2,6 +2,10 @@ package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,16 +18,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
-import com.nemo9955.garden_revolution.utility.StageActorPointer;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class LevelSelector implements Screen {
+public class LevelSelector extends ControllerAdapter implements Screen {
 
     private Stage              stage;
     private Skin               skin;
     private Table              table;
-    private StageActorPointer  pointer;
+    // private StageActorPointer pointer;
 
     public final static String levelsLocation = "harti/nivele";
     public static boolean      internal       = false;
@@ -32,13 +36,16 @@ public class LevelSelector implements Screen {
     private String             toAcces;
     private SplitPane          lista;
     private static final float rap            = 1.5f;
+    private TextButton         start;
+    private List               elem;
+    private TextButton         back;
 
     public LevelSelector() {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
-        pointer = new StageActorPointer( stage );
+        // pointer = new StageActorPointer( stage );
     }
 
     @Override
@@ -79,11 +86,11 @@ public class LevelSelector implements Screen {
         for (int i = 0 ; i <harti.length ; i ++ )
             harti[i] = nivele[i].nameWithoutExtension();
 
-        final TextButton start = new TextButton( "Start", skin );
+        start = new TextButton( "Start", skin );
 
-        List elem = new List( harti, skin );
+        elem = new List( harti, skin );
 
-        TextButton back = new TextButton( "Back", skin );
+        back = new TextButton( "Back", skin );
         back.addListener( new ChangeListener() {
 
             @Override
@@ -123,9 +130,43 @@ public class LevelSelector implements Screen {
 
 
         stage.addActor( lista );
-        pointer.setSelectedActor( start );
+        // pointer.setSelectedActor( start );
 
         Gdx.input.setInputProcessor( stage );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.addListener( this );
+        }
+    }
+
+    @Override
+    public boolean povMoved(Controller controller, int povIndex, PovDirection value) {
+        if ( value ==PovDirection.south ) {
+            int index = elem.getSelectedIndex() +1;
+            if ( index >=elem.getItems().length )
+                index = 0;
+            elem.setSelectedIndex( index );
+        }
+        if ( value ==PovDirection.north ) {
+            int index = elem.getSelectedIndex() -1;
+            if ( index <=0 )
+                index = elem.getItems().length -1;
+            elem.setSelectedIndex( index );
+        }
+        return false;
+
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonIndex) {
+
+        if ( Vars.buton[0] ==buttonIndex )
+            Functions.fire( start );
+        if ( Vars.buton[1] ==buttonIndex )
+            Functions.fire( back );
+
+
+        return false;
+
     }
 
     @Override
@@ -135,12 +176,15 @@ public class LevelSelector implements Screen {
 
         stage.act( delta );
         stage.draw();
-        pointer.draw( delta );
+        // pointer.draw( delta );
     }
 
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.removeListener( this );
+        }
     }
 
     @Override

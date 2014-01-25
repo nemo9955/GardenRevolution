@@ -5,6 +5,9 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,19 +19,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
-import com.nemo9955.garden_revolution.utility.StageActorPointer;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class Menu implements Screen {
+public class Menu extends ControllerAdapter implements Screen {
 
     private TweenManager       tweeger;
-    private StageActorPointer  pointer;
+    // private StageActorPointer pointer;
     private Stage              stage;
     private Skin               skin;
 
     private static final float rap = 1.3f;
 
+    private TextButton         options;
+    private ImageButton        play;
+    private ImageButton        exit;
+    private CheckBox           mode;
+    private ImageButton        test;
 
     public Menu() {
 
@@ -36,25 +44,26 @@ public class Menu implements Screen {
 
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
+        // stage = new Stage();
 
-        final TextButton options = new TextButton( "Options", skin );
-        final ImageButton start = new ImageButton( skin, "start" );
-        final ImageButton exit = new ImageButton( skin, "exit" );
-        final ImageButton test1 = new ImageButton( skin, "test" );
-
-        final CheckBox mode = new CheckBox( "EXTERN", skin );
+        options = new TextButton( "Options", skin );
+        play = new ImageButton( skin, "start" );
+        exit = new ImageButton( skin, "exit" );
+        mode = new CheckBox( "EXTERN", skin );
+        test = new ImageButton( skin, "test" );
 
         final Table tab = new Table();
         tab.setFillParent( true );
 
         ChangeListener asc = new ChangeListener() {
 
+
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if ( start.isPressed() )
+                if ( play.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
 
-                if ( test1.isPressed() )
+                if ( test.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.test );
 
                 if ( options.isPressed() )
@@ -77,22 +86,60 @@ public class Menu implements Screen {
         tab.addListener( asc );
 
         tab.defaults().pad( 25 );
-        tab.add( start );
+        tab.add( play );
         tab.add( mode ).space( 10 );
         tab.row();
-        tab.add( test1 );
-        tab.add( exit );
-        tab.row();
+        tab.add( test );
         tab.add( options );
+        tab.row();
+        tab.add( exit );
 
         stage.addActor( tab );
-        pointer = new StageActorPointer( stage );
-        pointer.setSelectedActor( start );
+        // pointer = new StageActorPointer( stage );
+        // pointer.setSelectedActor( exit );
     }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonIndex) {
+        if ( buttonIndex ==Vars.buton[2] )
+            Functions.fire( test );
+        
+        if ( buttonIndex ==Vars.buton[3] )
+            Functions.fire( options );
+        
+        if ( buttonIndex ==Vars.buton[4] )
+            Functions.fire( play );
+        
+        if ( buttonIndex ==Vars.buton[5] )
+            Functions.fire( mode );
+        
+        return false;
+
+    }
+
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor( stage );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.addListener( this );
+        }
+        // Gdx.input.setInputProcessor( new InputMultiplexer( stage, new InputAdapter() {
+        //
+        // Vector2 tmp = new Vector2();
+        //
+        // @Override
+        // public boolean mouseMoved(int screenX, int screenY) {
+        // stage.stageToScreenCoordinates( tmp.set( screenX, screenY ) );
+        // Actor hit = stage.hit( tmp.x, tmp.y, false );
+        // if ( hit !=null ){
+        // pointer.setSelectedActor( hit );
+        // System.out.println( hit );
+        // }
+        // return true;
+        // }
+        //
+        // } ) );
     }
 
     @Override
@@ -104,7 +151,7 @@ public class Menu implements Screen {
 
         stage.act();
         stage.draw();
-        pointer.draw( delta );
+        // pointer.draw( delta );
     }
 
     @Override
@@ -114,6 +161,9 @@ public class Menu implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.removeListener( this );
+        }
     }
 
     @Override

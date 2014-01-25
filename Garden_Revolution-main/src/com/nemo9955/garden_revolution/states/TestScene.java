@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,10 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class TestScene implements Screen, InputProcessor {
+public class TestScene extends ControllerAdapter implements Screen, InputProcessor {
 
     private SpriteBatch        batch;
     private ShapeRenderer      shape;
@@ -30,7 +34,7 @@ public class TestScene implements Screen, InputProcessor {
     private BitmapFont         font;
     private Stage              stage;
 
-    private TextButton         back    = new TextButton( "back", (Skin) Garden_Revolution.manager.get( Assets.SKIN_JSON.path() ) );
+    private TextButton         back;
 
     private float              pozitie = 0;
 
@@ -55,6 +59,7 @@ public class TestScene implements Screen, InputProcessor {
 
         stage = new Stage( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch );
 
+        back = new TextButton( "back", (Skin) Garden_Revolution.manager.get( Assets.SKIN_JSON.path() ) );
         back.addListener( new ChangeListener() {
 
             @Override
@@ -70,6 +75,9 @@ public class TestScene implements Screen, InputProcessor {
     public void show() {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         Gdx.input.setInputProcessor( new InputMultiplexer( this, stage ) );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.addListener( this );
+        }
     }
 
     @Override
@@ -113,12 +121,25 @@ public class TestScene implements Screen, InputProcessor {
     }
 
     @Override
+    public boolean buttonDown(Controller controller, int buttonIndex) {
+
+        if ( buttonIndex ==Vars.buton[1] )
+            Functions.fire( back );
+
+        return false;
+
+    }
+
+    @Override
     public void resize(int width, int height) {
     }
 
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
+        if ( Functions.isControllerUsable() ) {
+            Controllers.removeListener( this );
+        }
     }
 
     @Override

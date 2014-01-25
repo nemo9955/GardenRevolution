@@ -1,8 +1,5 @@
 package com.nemo9955.garden_revolution.utility;
 
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.Controllers;
 
 public class Vars {
 
@@ -41,14 +38,5 @@ public class Vars {
     public static int          axis[]              = { 0, 1, 2, 3 };
     public static final String axisName[]          = { "Y Acceleration", "X Acceleration", "Y Movement", "X Movement" };
     public static final int    noButtons           = buton.length, noAxis = axis.length;
-
-
-    public static boolean isControllerUsable() {
-        if ( Gdx.app.getType() !=ApplicationType.Desktop )
-            return false;
-        if ( Controllers.getControllers().size <=0 )
-            return false;
-        return true;
-    }
 
 }

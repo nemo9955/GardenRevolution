@@ -48,9 +48,11 @@ public class StageActorPointer {
 
         out.set( selected.getX(), selected.getY() );
         selected.localToStageCoordinates( out );
-        stage.stageToScreenCoordinates( out );
+        // stage.stageToScreenCoordinates( out );
 
-        // System.out.println( out );
+        // out.y = stage.getHeight() -out.y;
+
+        System.out.println( out );
         return out;
     }
 }

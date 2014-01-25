@@ -274,6 +274,7 @@ public class StageUtils {
         stage.addActor( pauseIG );
         stage.addActor( gameplay.fps );
 
+
         return stage;
     }
 

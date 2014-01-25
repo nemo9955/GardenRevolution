@@ -32,6 +32,7 @@ import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.StageUtils;
 import com.nemo9955.garden_revolution.utility.Vars;
 
@@ -42,7 +43,6 @@ public class Gameplay extends CustomAdapter implements Screen {
     private Shader         shader;
     private ModelBatch     modelBatch;
     public ShapeRenderer   shape;
-
 
     public float           movex          = 0;
     public float           movey          = 0;
@@ -65,6 +65,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     private Vector3        dolly          = new Vector3();
     private Controller     cont;
 
+
     public Gameplay() {
 
         gestures = new GestureDetector( this );
@@ -76,6 +77,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         shader = new CustShader();
         shader.init();
+
 
     }
 
@@ -447,14 +449,14 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void hide() {
-        if ( Vars.isControllerUsable() )
+        if ( Functions.isControllerUsable() )
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
     }
 
     @Override
     public void show() {
-        if ( Vars.isControllerUsable() ) {
+        if ( Functions.isControllerUsable() ) {
             Controllers.addListener( this );
             cont = Controllers.getControllers().first();
         }
