@@ -63,12 +63,12 @@ public class Shot extends Entity {
 
         life -= delta;
         if ( life <=0 ||poz.y <0 ) {
-            dead = true;
+            setDead( true );
         }
 
         for (BoundingBox col : world.colide )
             if ( col.intersects( box ) )
-                dead = true;
+                setDead( true );
 
         type.hitActivity( this, world );
     }
@@ -80,6 +80,16 @@ public class Shot extends Entity {
         World.toDispose.add( modelInstance.model );
         return modelInstance;
 
+    }
+
+    @Override
+    public void setDead(boolean dead) {
+        super.setDead( dead );
+
+        if ( isDead() ) {
+            world.shotPool.free( this );
+            world.shot.removeValue( this, false );
+        }
     }
 
 }

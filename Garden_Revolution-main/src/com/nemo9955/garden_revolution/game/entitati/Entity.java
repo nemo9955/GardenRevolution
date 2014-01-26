@@ -15,7 +15,7 @@ public abstract class Entity implements Poolable {
 
     protected ModelInstance model;
 
-    public boolean          dead;
+    private boolean         dead;
     public BoundingBox      box;
     public float            angle;
     public Vector3          poz;
@@ -37,7 +37,7 @@ public abstract class Entity implements Poolable {
         model = getModel( x, y, z );
         poz.set( x, y, z );
         setBox( x, y, z );
-        dead = false;
+        setDead( false );
         angle = 0;
     }
 
@@ -108,11 +108,11 @@ public abstract class Entity implements Poolable {
     }
 
     public void damage(Entity e) {
-        dead = true;
+        setDead( true );
     }
 
     public void damage(int dmg) {
-        dead = true;
+        setDead( true );
     }
 
 
@@ -122,6 +122,15 @@ public abstract class Entity implements Poolable {
 
     public static void addPoz(BoundingBox box, float x, float y, float z) {
         box.set( box.min.add( x, y, z ), box.max.add( x, y, z ) );
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+        
     }
 
 }

@@ -74,7 +74,7 @@ public class Enemy extends LifeForm {
             if ( percent >=1 ) {
                 world.addViata( -strenght );
                 speed = 0;
-                dead = true;
+                setDead( true );
             }
             path.valueAt( flag, percent +STEP );
             lookAt( path.valueAt( flag, percent +STEP ) );
@@ -82,5 +82,16 @@ public class Enemy extends LifeForm {
         }
     }
 
+    @Override
+    public void setDead(boolean dead) {
+        super.setDead( dead );
+
+
+        if ( isDead() ) {
+            world.inamicPool.free( this );
+            world.enemy.removeValue( this, false );
+        }
+
+    }
 
 }

@@ -31,7 +31,7 @@ public enum ShotType {
         public void hitActivity(Shot shot, World world) {
             super.hitActivity( shot, world );
 
-            if ( shot.dead ) {
+            if ( shot.isDead() ) {
                 for (Enemy fo : world.enemy )
                     if ( fo.poz.dst2( shot.poz ) <=range *range )
                         fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( shot.poz ) /range ) ) ) );
@@ -61,11 +61,11 @@ public enum ShotType {
     }
 
     public void hitActivity(Shot shot, World world) {
-        if ( !shot.dead )
+        if ( !shot.isDead() )
             for (Enemy fo : world.enemy )
                 if ( fo.box.intersects( shot.box ) ) {
                     fo.damage( shot );
-                    shot.dead = true;
+                    shot.setDead( true );
                     break;
                 }
     }

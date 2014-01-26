@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
@@ -109,31 +108,19 @@ public class World implements Disposable {
 
         for (Enemy fo : enemy ) {
             fo.update( delta );
-            if ( fo.dead ) {
-                inamicPool.free( fo );
-                enemy.removeValue( fo, false );
-            }
         }
         for (Ally al : ally ) {
             al.update( delta );
-            if ( al.dead ) {
-                aliatPool.free( al );
-                ally.removeValue( al, false );
-            }
         }
         for (Shot sh : shot ) {
             sh.update( delta );
-            if ( sh.dead ) {
-                shotPool.free( sh );
-                shot.removeValue( sh, false );
-            }
         }
 
     }
 
-    public void render(ModelBatch modelBatch, Environment light, Shader shader) {
+    public void render(ModelBatch modelBatch, Environment light) {
         for (ModelInstance nor : clouds )
-            modelBatch.render( nor, shader );
+            modelBatch.render( nor );
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
@@ -451,29 +438,29 @@ public class World implements Disposable {
         return -1;
     }
 
-    private Pool<Enemy> inamicPool = new Pool<Enemy>() {
+    public Pool<Enemy> inamicPool = new Pool<Enemy>() {
 
-                                       @Override
-                                       protected Enemy newObject() {
-                                           return new Enemy( World.this );
-                                       }
-                                   };
+                                      @Override
+                                      protected Enemy newObject() {
+                                          return new Enemy( World.this );
+                                      }
+                                  };
 
-    private Pool<Ally>  aliatPool  = new Pool<Ally>() {
+    public Pool<Ally>  aliatPool  = new Pool<Ally>() {
 
-                                       @Override
-                                       protected Ally newObject() {
-                                           return new Ally( World.this );
-                                       }
-                                   };
+                                      @Override
+                                      protected Ally newObject() {
+                                          return new Ally( World.this );
+                                      }
+                                  };
 
-    private Pool<Shot>  shotPool   = new Pool<Shot>() {
+    public Pool<Shot>  shotPool   = new Pool<Shot>() {
 
-                                       @Override
-                                       protected Shot newObject() {
-                                           return new Shot( World.this );
-                                       }
-                                   };
+                                      @Override
+                                      protected Shot newObject() {
+                                          return new Shot( World.this );
+                                      }
+                                  };
 
     public void isTouched(int screenX, int screenY) {
 

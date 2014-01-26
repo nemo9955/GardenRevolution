@@ -12,7 +12,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,7 +29,6 @@ import com.nemo9955.garden_revolution.game.mediu.Cannon;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
-import com.nemo9955.garden_revolution.utility.CustShader;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.StageUtils;
@@ -40,9 +38,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
     public GestureDetector gestures;
-    private Shader         shader;
     private ModelBatch     modelBatch;
-    public ShapeRenderer   shape;
+    public ShapeRenderer   shape;                 // TODO add a shader to blur the lines a little so they look a little better
 
     public float           movex          = 0;
     public float           movey          = 0;
@@ -74,9 +71,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         tweeger = new TweenManager();
         shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
-
-        shader = new CustShader();
-        shader.init();
 
 
     }
@@ -121,7 +115,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( world.getCamera() );
-        world.render( modelBatch, world.getEnvironment(), shader );
+        world.render( modelBatch, world.getEnvironment() );
         modelBatch.end();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) ) {
