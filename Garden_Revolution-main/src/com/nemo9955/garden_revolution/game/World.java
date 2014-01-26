@@ -365,13 +365,13 @@ public class World implements Disposable {
             }
     }
 
-    @SuppressWarnings("deprecation")
-    public CatmullRomSpline<Vector3> closestPath(final Vector3 location) {
+
+    public CatmullRomSpline<Vector3> getClosestStartPath(final Vector3 location) {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
 
         for (CatmullRomSpline<Vector3> path : paths ) {
-            tmp = path.controlPoints[0].tmp();
+            tmp.set( path.controlPoints[0] );
             if ( location.dst2( tmp ) <dist ) {
                 dist = location.dst2( tmp );
                 closest = path;
@@ -380,6 +380,29 @@ public class World implements Disposable {
         return closest;
     }
 
+    @SuppressWarnings("deprecation")
+    // FIXME either make it a lot more precise ( when proper locate will be added ) , or add mode control points and return a slightly altered position
+    public Vector3 getPointOnClosestPath(final Vector3 location) {
+        float dist = Float.MAX_VALUE;
+        float tmpDist;
+        Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
+
+        for (CatmullRomSpline<Vector3> path : paths ) {
+
+            // path.valueAt( temp, path.locate( location ) );// gives an aproximated point on the path
+            tmpDist = temp.set( path.controlPoints[path.nearest( location )] ).dst( location );// gives the nearest control ponit
+
+
+            if ( dist >tmpDist ) {
+
+                dist = tmpDist;
+                tmp2.set( temp );
+            }
+        }
+        return tmp2;
+    }
+
+
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
         Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
         enemy.add( inamicTemp );
@@ -387,19 +410,19 @@ public class World implements Disposable {
     }
 
     public Enemy addFoe(EnemyType type, float x, float y, float z) {
-        Enemy inamicTemp = inamicPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
+        Enemy inamicTemp = inamicPool.obtain().create( getClosestStartPath( tmp.set( x, y, z ) ), type, x, y, z );
         enemy.add( inamicTemp );
         return inamicTemp;
     }
 
     public Ally addAlly(AllyType type, float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
+        Ally aliatTemp = aliatPool.obtain().create( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
         ally.add( aliatTemp );
         return aliatTemp;
     }
 
-    public Ally addAlly(CatmullRomSpline<Vector3> path, AllyType type, float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( path, type, x, y, z );
+    public Ally addAlly(Vector3 duty, AllyType type, float x, float y, float z) {
+        Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
         ally.add( aliatTemp );
         return aliatTemp;
     }
@@ -564,8 +587,6 @@ public class World implements Disposable {
 
         float angle = (float) Math.toDegrees( Math.acos( cos ) );
         moveCamera( 0, -angle );
-
-        // TODO sa aproximez valoarea pt a folosi moveCamera(0 , valoare) sa se uite aproximativ la zona initiala
 
         cam.update();
     }
