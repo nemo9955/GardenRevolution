@@ -62,7 +62,6 @@ public class Enemy extends LifeForm {
     @Override
     public void update(float delta) {
         super.update( delta );
-        animation.update( delta );
         if ( Vars.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) )
             advance( delta );
     }

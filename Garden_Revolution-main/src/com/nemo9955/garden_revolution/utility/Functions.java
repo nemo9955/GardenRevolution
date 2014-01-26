@@ -1,12 +1,13 @@
 package com.nemo9955.garden_revolution.utility;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 public class Functions {
@@ -34,7 +35,7 @@ public class Functions {
     }
 
 
-    public static boolean isControllerUsable() {
+    public static boolean isControllerUsable() { 
         if ( Gdx.app.getType() !=ApplicationType.Desktop )
             return false;
         if ( Controllers.getControllers().size <=0 )
@@ -42,4 +43,11 @@ public class Functions {
         return true;
     }
 
+
+    public static boolean isCurrentState(Stage stage, String name) {
+        for (Actor actor : stage.getActors() )
+            if ( actor.isVisible() &&actor.getName() ==name )
+                return true;
+        return false;
+    }
 }

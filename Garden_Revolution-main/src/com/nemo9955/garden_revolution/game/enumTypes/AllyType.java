@@ -7,48 +7,29 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
 
 
-public enum EnemyType {
+public enum AllyType {
 
 
-    ALUNA("aluna") {
-
-        @Override
-        public void propEnemys() {
-            speed = 7;
-            life = 1;
-        }
-    },
-
-    ROSIE("rosie") {
+    SOLDIER("Suzanne") {
 
         @Override
-        public void propEnemys() {
-            speed = 4;
-            life = 100;
-        }
-    },
-
-    MORCOV("morcov") {
-
-        @Override
-        public void propEnemys() {
-            strenght = 5;
-            speed = 6;
-            life = 150;
+        protected void propAllys() {
         }
     };
 
-    ModelInstance model;
-    public int    strenght = 5;
-    public float  speed    = 8;
-    public String name     = "Plant";
-    public int    life     = 50;
 
-    EnemyType(String fileName) {
+    public ModelInstance model;
+    public int           strenght = 5;
+    public float         speed    = 8;
+    public String        name     = "Potato";
+    public int           life     = 100;
+
+
+    AllyType(String fileName) {
         name = name().charAt( 0 ) +"" +name().replaceFirst( name().charAt( 0 ) +"", "" ).toLowerCase();
-        propEnemys();
+        propAllys();
 
-        ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.ENEMYS ) );
+        ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.ALLIES ) );
         Array<Node> toRemove = new Array<Node>( false, 1 );
         for (int i = 0 ; i <tmp.nodes.size ; i ++ )
             if ( !tmp.nodes.get( i ).id.equalsIgnoreCase( fileName ) )
@@ -62,7 +43,6 @@ public enum EnemyType {
         return new ModelInstance( model );
     }
 
-    protected abstract void propEnemys();
-
+    protected abstract void propAllys();
 
 }

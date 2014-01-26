@@ -340,20 +340,15 @@ public class Gameplay extends CustomAdapter implements Screen {
             }
         }
 
-        if ( buttonCode ==Vars.buton[1] ) {
-            // if ( isCurrentState( "Tower Upgrade" ) )
-            // getActorInState( "BASIC" ).fire( new Event() );
-            return false;
-        }
 
         if ( buttonCode ==Vars.buton[4] ) {
-            if ( isCurrentState( "HUD" ) )
+            if ( Functions.isCurrentState( stage, "HUD" ) )
                 world.prevCamera();
             return false;
         }
 
         if ( buttonCode ==Vars.buton[5] ) {
-            if ( isCurrentState( "HUD" ) )
+            if ( Functions.isCurrentState( stage, "HUD" ) )
                 world.nextCamera();
             return false;
         }
@@ -424,13 +419,6 @@ public class Gameplay extends CustomAdapter implements Screen {
     // return actor;
     // return null;
     // }
-
-    private boolean isCurrentState(String name) {
-        for (Actor actor : stage.getActors() )
-            if ( actor.isVisible() &&actor.getName() ==name )
-                return true;
-        return false;
-    }
 
     @Override
     public void resize(int width, int height) {

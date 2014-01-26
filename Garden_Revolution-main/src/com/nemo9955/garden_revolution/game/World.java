@@ -39,6 +39,7 @@ import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Entity;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
@@ -391,8 +392,14 @@ public class World implements Disposable {
         return inamicTemp;
     }
 
-    public Ally addAlly(float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( x, y, z );
+    public Ally addAlly(AllyType type, float x, float y, float z) {
+        Ally aliatTemp = aliatPool.obtain().create( closestPath( tmp.set( x, y, z ) ), type, x, y, z );
+        ally.add( aliatTemp );
+        return aliatTemp;
+    }
+
+    public Ally addAlly(CatmullRomSpline<Vector3> path, AllyType type, float x, float y, float z) {
+        Ally aliatTemp = aliatPool.obtain().create( path, type, x, y, z );
         ally.add( aliatTemp );
         return aliatTemp;
     }
@@ -491,7 +498,7 @@ public class World implements Disposable {
                     }
             }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                addAlly( tmp.x, tmp.y, tmp.z );
+                addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
                 addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
 
@@ -555,7 +562,7 @@ public class World implements Disposable {
         float lenv = v.len();
         float cos = dot / ( Math.abs( lenv ) *Math.abs( lenu ) );
 
-        float angle = (float) Math.toDegrees( Math.acos( cos ));
+        float angle = (float) Math.toDegrees( Math.acos( cos ) );
         moveCamera( 0, -angle );
 
         // TODO sa aproximez valoarea pt a folosi moveCamera(0 , valoare) sa se uite aproximativ la zona initiala
