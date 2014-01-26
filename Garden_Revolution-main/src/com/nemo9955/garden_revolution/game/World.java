@@ -42,6 +42,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.mediu.Weapon;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
@@ -59,17 +60,17 @@ public class World implements Disposable {
     public Array<Ally>                      ally         = new Array<Ally>( false, 10 );
     public Array<Shot>                      shot         = new Array<Shot>( false, 10 );
     public Array<BoundingBox>               colide       = new Array<BoundingBox>( false, 10 );
+    public Array<FightZone>                 fightZones   = new Array<FightZone>( false, 0 );
     public Array<CatmullRomSpline<Vector3>> paths;
-    private int                             viata;
 
     private static Vector3                  tmp          = new Vector3();
     private static Vector3                  tmp2         = new Vector3();
     public final Vector3                    overview     = new Vector3();
 
+    private int                             viata;
     private Tower[]                         towers;
     public int                              currentTower = -1;
     protected boolean                       isOneToweUp  = false;
-
     public Waves                            waves;
 
     private PerspectiveCamera               cam;
@@ -140,35 +141,34 @@ public class World implements Disposable {
         shape.begin( ShapeType.Line );
 
         shape.setColor( 1, 0.5f, 0, 1 );
-
         for (BoundingBox box : colide )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
-
         for (Tower tower : towers )
             for (BoundingBox box : tower.coliders )
                 shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 0.5f, 0, 0.5f, 1 );
-
         for (Tower tower : towers )
             shape.box( tower.fundation.min.x, tower.fundation.min.y, tower.fundation.max.z, tower.fundation.getDimensions().x, tower.fundation.getDimensions().y, tower.fundation.getDimensions().z );
 
         shape.setColor( 1, 0, 0, 1 );
-
         for (Entity e : enemy )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0, 1, 1 );
-
         for (Entity e : ally )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 1, 1, 1 );
-
         for (Entity e : shot )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+
+        shape.setColor( 0, 0.5f, 0.5f, 1 );
+        for (FightZone e : fightZones )
+            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+
 
         int pts = paths.size;
         for (int i = 0 ; i <pts ; i ++ ) {
@@ -389,6 +389,11 @@ public class World implements Disposable {
         return tmp2;
     }
 
+    public Enemy addFoe(EnemyType type, float x, float y, float z) {
+        // Enemy inamicTemp = inamicPool.obtain().create( getClosestStartPath( tmp.set( x, y, z ) ), type, x, y, z );
+        // enemy.add( inamicTemp );
+        return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ), x, y, z );
+    }
 
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
         Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
@@ -396,21 +401,24 @@ public class World implements Disposable {
         return inamicTemp;
     }
 
-    public Enemy addFoe(EnemyType type, float x, float y, float z) {
-        Enemy inamicTemp = inamicPool.obtain().create( getClosestStartPath( tmp.set( x, y, z ) ), type, x, y, z );
-        enemy.add( inamicTemp );
-        return inamicTemp;
-    }
-
     public Ally addAlly(AllyType type, float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
-        ally.add( aliatTemp );
-        return aliatTemp;
+        // Ally aliatTemp = aliatPool.obtain().create( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
+        // ally.add( aliatTemp );
+        return addAlly( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
     }
 
     public Ally addAlly(Vector3 duty, AllyType type, float x, float y, float z) {
         Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
         ally.add( aliatTemp );
+
+        for (FightZone fz : fightZones ) {
+            if ( fz.box.getCenter().dst( tmp2.set( x, y, z ) ) <3 ) {
+                fz.addAlly( aliatTemp );
+                return aliatTemp;
+            }
+        }
+
+        addFightZone( duty ).addAlly( aliatTemp );
         return aliatTemp;
     }
 
@@ -426,6 +434,12 @@ public class World implements Disposable {
         return shotTemp;
     }
 
+    public FightZone addFightZone(Vector3 poz) {
+        FightZone fightZone = fzPool.obtain().create( poz );
+        fightZones.add( fightZone );
+        return fightZone;
+    }
+
     private void addMediu(ModelInstance med) {
         mediu.add( med );
     }
@@ -438,29 +452,37 @@ public class World implements Disposable {
         return -1;
     }
 
-    public Pool<Enemy> inamicPool = new Pool<Enemy>() {
+    public Pool<Enemy>     inamicPool = new Pool<Enemy>() {
 
-                                      @Override
-                                      protected Enemy newObject() {
-                                          return new Enemy( World.this );
-                                      }
-                                  };
+                                          @Override
+                                          protected Enemy newObject() {
+                                              return new Enemy( World.this );
+                                          }
+                                      };
 
-    public Pool<Ally>  aliatPool  = new Pool<Ally>() {
+    public Pool<Ally>      aliatPool  = new Pool<Ally>() {
 
-                                      @Override
-                                      protected Ally newObject() {
-                                          return new Ally( World.this );
-                                      }
-                                  };
+                                          @Override
+                                          protected Ally newObject() {
+                                              return new Ally( World.this );
+                                          }
+                                      };
 
-    public Pool<Shot>  shotPool   = new Pool<Shot>() {
+    public Pool<Shot>      shotPool   = new Pool<Shot>() {
 
-                                      @Override
-                                      protected Shot newObject() {
-                                          return new Shot( World.this );
-                                      }
-                                  };
+                                          @Override
+                                          protected Shot newObject() {
+                                              return new Shot( World.this );
+                                          }
+                                      };
+
+    public Pool<FightZone> fzPool     = new Pool<FightZone>() {
+
+                                          @Override
+                                          protected FightZone newObject() {
+                                              return new FightZone( World.this );
+                                          }
+                                      };
 
     public void isTouched(int screenX, int screenY) {
 

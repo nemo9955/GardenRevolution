@@ -22,19 +22,13 @@ public class Ally extends LifeForm {
         this.type = type;
         super.init( x, y, z );
 
-
         // this.strenght = type.strenght;
         this.speed = type.speed;
         this.life = type.life;
 
-
         this.duty.set( duty ).add( MathUtils.random( -3f, 3f ), 0, MathUtils.random( -3f, 3f ) );
+        
         return this;
-    }
-
-    @Override
-    protected void setBox(float x, float y, float z) {
-        box.set( new Vector3( x -2, y -1.3f, z -2 ), new Vector3( x +2, y +6.7f, z +2 ) );
     }
 
     @Override
