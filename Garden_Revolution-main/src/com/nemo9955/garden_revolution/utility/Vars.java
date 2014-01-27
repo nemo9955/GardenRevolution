@@ -39,4 +39,8 @@ public class Vars {
     public static final String axisName[]          = { "Y Acceleration", "X Acceleration", "Y Movement", "X Movement" };
     public static final int    noButtons           = buton.length, noAxis = axis.length;
 
+    // pentru comportamentul entitatilor
+    public static final long   enemyAttackInterval = 2037;
+    public static final long   allyAttackInterval  = 1956;
+
 }

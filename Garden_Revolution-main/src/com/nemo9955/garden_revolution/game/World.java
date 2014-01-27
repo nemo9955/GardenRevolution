@@ -60,7 +60,7 @@ public class World implements Disposable {
     public Array<Ally>                      ally         = new Array<Ally>( false, 10 );
     public Array<Shot>                      shot         = new Array<Shot>( false, 10 );
     public Array<BoundingBox>               colide       = new Array<BoundingBox>( false, 10 );
-    public Array<FightZone>                 fightZones   = new Array<FightZone>( false, 0 );
+    public Array<FightZone>                 fightZones   = new Array<FightZone>( false, 10 );
     public Array<CatmullRomSpline<Vector3>> paths;
 
     private static Vector3                  tmp          = new Vector3();
@@ -103,10 +103,12 @@ public class World implements Disposable {
         if ( isOneToweUp &&waves.finishedWaves() )
             waves.update( delta );
 
+        for (FightZone fz : fightZones ) {
+            fz.update( delta );
+        }
         for (Tower trn : towers ) {
             trn.update( delta );
         }
-
         for (Enemy fo : enemy ) {
             fo.update( delta );
         }
@@ -390,8 +392,6 @@ public class World implements Disposable {
     }
 
     public Enemy addFoe(EnemyType type, float x, float y, float z) {
-        // Enemy inamicTemp = inamicPool.obtain().create( getClosestStartPath( tmp.set( x, y, z ) ), type, x, y, z );
-        // enemy.add( inamicTemp );
         return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ), x, y, z );
     }
 
@@ -402,8 +402,6 @@ public class World implements Disposable {
     }
 
     public Ally addAlly(AllyType type, float x, float y, float z) {
-        // Ally aliatTemp = aliatPool.obtain().create( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
-        // ally.add( aliatTemp );
         return addAlly( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
     }
 
@@ -412,8 +410,9 @@ public class World implements Disposable {
         ally.add( aliatTemp );
 
         for (FightZone fz : fightZones ) {
-            if ( fz.box.getCenter().dst( tmp2.set( x, y, z ) ) <3 ) {
+            if ( fz.box.getCenter().dst( tmp.set( x, y, z ) ) <8 ) {
                 fz.addAlly( aliatTemp );
+                fz.aproximatePoz();
                 return aliatTemp;
             }
         }
@@ -468,7 +467,7 @@ public class World implements Disposable {
                                           }
                                       };
 
-    public Pool<Shot>      shotPool   = new Pool<Shot>() {
+    public Pool<Shot>      shotPool   = new Pool<Shot>( 100, 500 ) {
 
                                           @Override
                                           protected Shot newObject() {

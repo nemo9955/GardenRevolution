@@ -39,7 +39,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public GestureDetector gestures;
     private ModelBatch     modelBatch;
-    public ShapeRenderer   shape;                 // TODO add a shader to blur the lines a little so they look a little better
+    public ShapeRenderer   shape;                // TODO add a shader to blur the lines a little so they look a little better
 
     public float           movex          = 0;
     public float           movey          = 0;
@@ -118,9 +118,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         world.render( modelBatch, world.getEnvironment() );
         modelBatch.end();
 
-        if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) ) {
+        if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
             world.renderDebug( shape );
-        }
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 

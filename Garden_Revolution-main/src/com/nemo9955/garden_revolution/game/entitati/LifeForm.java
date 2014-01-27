@@ -10,7 +10,6 @@ import com.nemo9955.garden_revolution.game.World;
 public abstract class LifeForm extends Entity {
 
     public AnimationController animation;
-    public float               speed;
     public Vector3             direction;
 
     public int                 life;
@@ -24,7 +23,6 @@ public abstract class LifeForm extends Entity {
         super.init( x, y, z );
         animation = new AnimationController( model );
         direction = Vector3.Zero;
-        speed = 4;
         update( Gdx.graphics.getDeltaTime() );
     }
 

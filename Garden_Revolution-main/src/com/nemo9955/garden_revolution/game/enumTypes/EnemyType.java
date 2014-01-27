@@ -32,7 +32,7 @@ public enum EnemyType {
 
         @Override
         public void propEnemys() {
-            strenght = 5;
+            strenght = 4;
             speed = 6;
             life = 150;
         }

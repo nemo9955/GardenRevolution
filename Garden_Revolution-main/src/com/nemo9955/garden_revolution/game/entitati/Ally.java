@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
+import com.nemo9955.garden_revolution.utility.Vars;
 
 
 public class Ally extends LifeForm {
@@ -23,11 +24,10 @@ public class Ally extends LifeForm {
         super.init( x, y, z );
 
         // this.strenght = type.strenght;
-        this.speed = type.speed;
         this.life = type.life;
 
-        this.duty.set( duty ).add( MathUtils.random( -3f, 3f ), 0, MathUtils.random( -3f, 3f ) );
-        
+        this.duty.set( duty ).add( MathUtils.random( -6f, 6f ), 0, MathUtils.random( -6f, 6f ) );
+
         return this;
     }
 
@@ -40,8 +40,17 @@ public class Ally extends LifeForm {
     public void update(float delta) {
         super.update( delta );
         if ( !poz.epsilonEquals( duty, 1 ) ) {
-            direction.set( duty ).sub( poz ).nor().scl( speed *delta );
+            direction.set( duty ).sub( poz ).nor().scl( type.speed *delta );
             move( direction );
+        }
+    }
+
+    private long lastAtack = 0;
+
+    public void attack(Enemy enemy) {
+        if ( System.currentTimeMillis() -lastAtack >Vars.allyAttackInterval ) {
+            enemy.damage( type.strenght );
+            lastAtack = System.currentTimeMillis();
         }
     }
 
@@ -54,5 +63,4 @@ public class Ally extends LifeForm {
             world.ally.removeValue( this, false );
         }
     }
-
 }

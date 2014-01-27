@@ -18,9 +18,8 @@ public enum AllyType {
         }
     };
 
-
     public ModelInstance model;
-    public int           strenght = 5;
+    public int           strenght = 7;
     public float         speed    = 8;
     public String        name     = "Potato";
     public int           life     = 100;

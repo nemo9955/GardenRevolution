@@ -17,11 +17,12 @@ public class Enemy extends LifeForm {
 
     public Path<Vector3>      path;
     public float              percent;
-    public static final float STEP = 1f /50f;
+    public static final float STEP   = 1f /50f;
     public Vector3            flag;
     private Vector3           offset;
     private EnemyType         type;
-    private int               strenght;
+
+    public boolean            paused = false;
 
     public Enemy(World world) {
         super( world );
@@ -34,8 +35,6 @@ public class Enemy extends LifeForm {
 
         super.init( x, y, z );
 
-        this.strenght = type.strenght;
-        this.speed = type.speed;
         this.life = type.life;
 
         offset.set( MathUtils.random( -30, 30 ), 0, MathUtils.random( -30, 30 ) ).scl( 0.1f );
@@ -52,6 +51,7 @@ public class Enemy extends LifeForm {
     public void reset() {
         super.reset();
         path = null;
+        paused = false;
     }
 
     @Override
@@ -62,23 +62,31 @@ public class Enemy extends LifeForm {
     @Override
     public void update(float delta) {
         super.update( delta );
-        if ( Vars.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) )
+        if ( !paused && ( Vars.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) ) )
             advance( delta );
     }
 
     private void advance(float delta) {
-        direction.set( flag ).sub( poz ).nor().scl( speed *delta );
+        direction.set( flag ).sub( poz ).nor().scl( type.speed *delta );
         move( direction );
         if ( flag.epsilonEquals( poz, 1f ) ) {
             percent += STEP;
             if ( percent >=1 ) {
-                world.addViata( -strenght );
-                speed = 0;
+                world.addViata( -type.strenght );
                 setDead( true );
             }
             path.valueAt( flag, percent +STEP );
             lookAt( path.valueAt( flag, percent +STEP ) );
             flag.add( offset );
+        }
+    }
+
+    private long lastAtack = 0;
+
+    public void atack(Ally ally) {
+        if ( System.currentTimeMillis() -lastAtack >Vars.enemyAttackInterval ) {
+            ally.damage( type.strenght );
+            lastAtack = System.currentTimeMillis();
         }
     }
 
