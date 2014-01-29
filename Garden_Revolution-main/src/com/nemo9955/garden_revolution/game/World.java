@@ -2,9 +2,6 @@ package com.nemo9955.garden_revolution.game;
 
 import java.io.IOException;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -21,9 +18,9 @@ import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -41,55 +38,43 @@ import com.nemo9955.garden_revolution.game.entitati.Shot;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
-import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.game.mediu.Weapon;
-import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 
 public class World implements Disposable {
 
-    public static Array<Disposable>         toDispose    = new Array<Disposable>( false, 1 );
+    public static Array<Disposable>          toDispose      = new Array<Disposable>( false, 1 );
 
-    private Array<ModelInstance>            clouds       = new Array<ModelInstance>( false, 10 );
-    public Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>             clouds         = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>             mediu          = new Array<ModelInstance>( false, 10 );
 
-    public Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
-    public Array<Ally>                      ally         = new Array<Ally>( false, 10 );
-    public Array<Shot>                      shot         = new Array<Shot>( false, 10 );
-    public Array<BoundingBox>               colide       = new Array<BoundingBox>( false, 10 );
-    public Array<FightZone>                 fightZones   = new Array<FightZone>( false, 10 );
-    public Array<CatmullRomSpline<Vector3>> paths;
+    private Array<Enemy>                     enemy          = new Array<Enemy>( false, 10 );
+    private Array<Ally>                      ally           = new Array<Ally>( false, 10 );
+    private Array<Shot>                      shot           = new Array<Shot>( false, 10 );
+    private Array<BoundingBox>               colide         = new Array<BoundingBox>( false, 10 );
+    private Array<FightZone>                 fightZones     = new Array<FightZone>( false, 10 );
+    private Array<CatmullRomSpline<Vector3>> paths;
 
-    private static Vector3                  tmp          = new Vector3();
-    private static Vector3                  tmp2         = new Vector3();
-    public final Vector3                    overview     = new Vector3();
+    private static Vector3                   tmp            = new Vector3();
+    private static Vector3                   tmp2           = new Vector3();
+    public final Vector3                     overview       = new Vector3( 20, 10, 10 );
+    private int                              viata;
+    public Tower[]                           towers;
+    public boolean                           canWaveStart = false;
+    private Waves                            waves;
+    public final Plane                       ground         = new Plane( Vector3.Y, Vector3.Zero );
 
-    private int                             viata;
-    private Tower[]                         towers;
-    public int                              currentTower = -1;
-    protected boolean                       isOneToweUp  = false;
-    public Waves                            waves;
-
-    private PerspectiveCamera               cam;
-    private Environment                     environment  = new Environment();
+    private Environment                      environment    = new Environment();
 
 
     public World(FileHandle location) {
-
-
         // lights.
         environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
         environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
         // envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
         environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
-
-        cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-        cam.near = 0.1f;
-        cam.far = 300f;
-        cam.update();
 
 
         makeNori();
@@ -100,22 +85,22 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-        if ( isOneToweUp &&waves.finishedWaves() )
+        if ( canWaveStart &&waves.finishedWaves() )
             waves.update( delta );
 
-        for (FightZone fz : fightZones ) {
+        for (FightZone fz : getFightZones() ) {
             fz.update( delta );
         }
         for (Tower trn : towers ) {
             trn.update( delta );
         }
-        for (Enemy fo : enemy ) {
+        for (Enemy fo : getEnemy() ) {
             fo.update( delta );
         }
-        for (Ally al : ally ) {
+        for (Ally al : getAlly() ) {
             al.update( delta );
         }
-        for (Shot sh : shot ) {
+        for (Shot sh : getShot() ) {
             sh.update( delta );
         }
 
@@ -127,23 +112,23 @@ public class World implements Disposable {
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
-        for (Entity e : enemy )
+        for (Entity e : getEnemy() )
             e.render( modelBatch, light );
-        for (Entity e : ally )
+        for (Entity e : getAlly() )
             e.render( modelBatch, light );
-        for (Entity e : shot )
+        for (Entity e : getShot() )
             e.render( modelBatch );
         for (Tower tower : towers )
             tower.render( modelBatch, light );
     }
 
-    public void renderDebug(ShapeRenderer shape) {
+    public void renderDebug(PerspectiveCamera cam, ShapeRenderer shape) {
 
         shape.setProjectionMatrix( cam.combined );
         shape.begin( ShapeType.Line );
 
         shape.setColor( 1, 0.5f, 0, 1 );
-        for (BoundingBox box : colide )
+        for (BoundingBox box : getColide() )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
@@ -151,34 +136,30 @@ public class World implements Disposable {
             for (BoundingBox box : tower.coliders )
                 shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
-        shape.setColor( 0.5f, 0, 0.5f, 1 );
-        for (Tower tower : towers )
-            shape.box( tower.fundation.min.x, tower.fundation.min.y, tower.fundation.max.z, tower.fundation.getDimensions().x, tower.fundation.getDimensions().y, tower.fundation.getDimensions().z );
-
         shape.setColor( 1, 0, 0, 1 );
-        for (Entity e : enemy )
+        for (Entity e : getEnemy() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0, 1, 1 );
-        for (Entity e : ally )
+        for (Entity e : getAlly() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 1, 1, 1 );
-        for (Entity e : shot )
+        for (Entity e : getShot() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0.5f, 0.5f, 1 );
-        for (FightZone e : fightZones )
+        for (FightZone e : getFightZones() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
 
-        int pts = paths.size;
+        int pts = getPaths().size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
-            paths.get( i ).valueAt( tmp, val );
+            getPaths().get( i ).valueAt( tmp, val );
             while ( val <1f ) {
                 val += 1f /150f;
-                paths.get( i ).valueAt( tmp2, val );
+                getPaths().get( i ).valueAt( tmp2, val );
                 shape.setColor( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
                 shape.line( tmp, tmp2 );
                 tmp.set( tmp2 );
@@ -215,7 +196,7 @@ public class World implements Disposable {
         try {
             map = new XmlReader().parse( location );
             towers = new Tower[map.getInt( "turnuri" )];
-            paths = new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) );
+            setPaths( new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
 
             for (int k = 0 ; k <map.getInt( "drumuri" ) ; k ++ )
@@ -252,12 +233,12 @@ public class World implements Disposable {
             else if ( id.startsWith( "colider" ) ) {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
-                colide.add( box );
+                getColide().add( box );
             }
             else if ( id.endsWith( "solid" ) ) {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
-                colide.add( box );
+                getColide().add( box );
                 addMediu( instance );
             }
             else if ( id.startsWith( "camera" ) ) {
@@ -280,17 +261,8 @@ public class World implements Disposable {
             cps[0] = cps[1];
             cps[cps.length -1] = cps[cps.length -2];
 
-            paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
+            getPaths().add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
-
-        if ( overview.isZero() )
-            setCamera( 0 );
-        else {
-            cam.position.set( overview );
-            cam.lookAt( Vector3.Zero );
-            cam.update();
-        }
-
 
     }
 
@@ -334,32 +306,11 @@ public class World implements Disposable {
     }
 
 
-    public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() )
-            if ( getTower().upgradeTower( upgrade ) ) {
-                setCamera( currentTower );
-                isOneToweUp = true;
-            }
-    }
-
-    public void changeCurrentWeapon(Class<? extends Weapon> weapon) {
-        Tower tower = getTower();
-        if ( isInTower() &&tower.type !=null )
-            try {
-                if ( tower.changeWeapon( weapon.getDeclaredConstructor( Vector3.class ).newInstance( tower.place ) ) )
-                    setCamera( currentTower );
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-    }
-
-
     public CatmullRomSpline<Vector3> getClosestStartPath(final Vector3 location) {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
 
-        for (CatmullRomSpline<Vector3> path : paths ) {
+        for (CatmullRomSpline<Vector3> path : getPaths() ) {
             tmp.set( path.controlPoints[0] );
             if ( location.dst2( tmp ) <dist ) {
                 dist = location.dst2( tmp );
@@ -375,13 +326,9 @@ public class World implements Disposable {
         float dist = Float.MAX_VALUE;
         float tmpDist;
         Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
-
-        for (CatmullRomSpline<Vector3> path : paths ) {
-
+        for (CatmullRomSpline<Vector3> path : getPaths() ) {
             // path.valueAt( temp, path.locate( location ) );// gives an aproximated point on the path
             tmpDist = temp.set( path.controlPoints[path.nearest( location )] ).dst( location );// gives the nearest control ponit
-
-
             if ( dist >tmpDist ) {
 
                 dist = tmpDist;
@@ -397,7 +344,7 @@ public class World implements Disposable {
 
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
         Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
-        enemy.add( inamicTemp );
+        getEnemy().add( inamicTemp );
         return inamicTemp;
     }
 
@@ -407,9 +354,9 @@ public class World implements Disposable {
 
     public Ally addAlly(Vector3 duty, AllyType type, float x, float y, float z) {
         Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
-        ally.add( aliatTemp );
+        getAlly().add( aliatTemp );
 
-        for (FightZone fz : fightZones ) {
+        for (FightZone fz : getFightZones() ) {
             if ( fz.box.getCenter().dst( tmp.set( x, y, z ) ) <8 ) {
                 fz.addAlly( aliatTemp );
                 fz.aproximatePoz();
@@ -423,32 +370,24 @@ public class World implements Disposable {
 
     public Shot addShot(ShotType type, Vector3 position, Vector3 direction) {
         Shot shotTemp = shotPool.obtain().create( type, position, direction );
-        shot.add( shotTemp );
+        getShot().add( shotTemp );
         return shotTemp;
     }
 
     public Shot addShot(ShotType type, Vector3 position, Vector3 direction, float charge) {
         Shot shotTemp = shotPool.obtain().create( type, position, direction, charge );
-        shot.add( shotTemp );
+        getShot().add( shotTemp );
         return shotTemp;
     }
 
     public FightZone addFightZone(Vector3 poz) {
         FightZone fightZone = fzPool.obtain().create( poz );
-        fightZones.add( fightZone );
+        getFightZones().add( fightZone );
         return fightZone;
     }
 
     private void addMediu(ModelInstance med) {
         mediu.add( med );
-    }
-
-    private int getTowerIndex(Tower tower) {
-        for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i].equals( tower ) )
-                return i;
-
-        return -1;
     }
 
     public Pool<Enemy>     inamicPool = new Pool<Enemy>() {
@@ -483,14 +422,6 @@ public class World implements Disposable {
                                           }
                                       };
 
-    public void isTouched(int screenX, int screenY) {
-
-        if ( isInTower() &&getTower().getArma() instanceof FireHold &&screenX >Gdx.graphics.getWidth() /2 ) {
-            getTower().fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
-            // getTower().fireNormal( this, cam.getPickRay( screenX, screenY ) );
-        }
-
-    }
 
     public Tower getTowerHitByRay(Ray ray) {
         for (Tower tower : towers )
@@ -500,155 +431,58 @@ public class World implements Disposable {
         return null;
     }
 
-
-    public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
-        if ( !isInTower() ||count >=2 ) {
-            Ray ray = cam.getPickRay( x, y );
-            setCamera( getTowerHitByRay( ray ) );
-            return true;
-        }
-        else if ( isInTower() ) {
-            // Turn turn = getTower();
-            // if ( turn instanceof FireTaped )
-            // turn.fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
-        }
-        return false;
-    }
-
-    public boolean longPress(float x, float y, GestureDetector gestures) {
-
-        if ( isInTower() &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
-            Ray ray = cam.getPickRay( x, y );
-            float distance = -ray.origin.y /ray.direction.y;
-            Vector3 tmp = ray.getEndPoint( new Vector3(), distance );
-
-            if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
-                for (int i = 0 ; i <=20 ; i ++ )
-                    for (int j = 0 ; j <=20 ; j ++ ) {
-                        addFoe( EnemyType.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
-                    }
-            }
-            else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
-            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
-
-            gestures.invalidateTapSquare();
-            return true;
-        }
-        return false;
-    }
-
-    public void moveCamera(float amontX, float amontY) {
-
-        cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
-        if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
-            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
-            cam.rotateAround( getCameraRotAround(), tmp.nor(), amontY );
-        }
-
-        cam.update();
-    }
-
-
-    @SuppressWarnings("deprecation")
-    public void setCamera(int index) {
-
-        if ( index !=MathUtils.clamp( index, 0, towers.length -1 ) )
-            return;
-        currentTower = index;
-
-        Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        float distance = -ray.origin.y /ray.direction.y;
-        Vector3 look = ray.getEndPoint( Vector3.tmp3, distance );
-
-        // System.out.println( Vector3.dst( look.x, 0, look.z, cam.position.x, 0, cam.position.z ) );
-        // if ( Vector3.dst( look.x, 0, look.z, cam.position.x, 0, cam.position.z ) <3 )
-        // look.add( look.x -cam.position.x, 0, look.z -cam.position.z );
-
-
-        cam.position.set( towers[index].place );
-        look.y = cam.position.y;
-        cam.lookAt( look );
-        cam.up.set( Vector3.Y );
-
-        if ( getTower().type ==null ) {
-            cam.position.add( 0, 3, 0 );
-        }
-        else {
-            tmp2.set( cam.direction ).scl( 4 );
-            tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
-
-            cam.position.sub( tmp2 );
-            cam.position.sub( tmp );
-            cam.position.add( 0, 2, 0 );
-        }
-
-        Vector3 u = Vector3.tmp2.set( look.tmp().sub( cam.position ) );
-        look.y = 0;
-        Vector3 v = Vector3.tmp3.set( look.tmp().sub( cam.position ) );
-
-        float dot = u.tmp().dot( v );
-        float lenu = u.len();
-        float lenv = v.len();
-        float cos = dot / ( Math.abs( lenv ) *Math.abs( lenu ) );
-
-        float angle = (float) Math.toDegrees( Math.acos( cos ) );
-        moveCamera( 0, -angle );
-
-        cam.update();
-    }
-
-
-    public void setCamera(Tower tower) {
-        if ( tower !=null )
-            setCamera( getTowerIndex( tower ) );
-    }
-
-
-    public void nextCamera() {
-        currentTower ++;
-        if ( currentTower >=towers.length )
-            currentTower = 0;
-        setCamera( currentTower );
-    }
-
-
-    public void prevCamera() {
-        currentTower --;
-        if ( currentTower <0 )
-            currentTower = towers.length -1;
-        setCamera( currentTower );
-    }
-
-
-    public boolean isInTower() {
-        return getTower() !=null;
-    }
-
-
-    public Tower getTower() {
-        if ( towers.length ==0 ||currentTower ==-1 )
-            return null;
-        return towers[currentTower];
-    }
-
-
-    public Vector3 getCameraRotAround() {
-        if ( isInTower() )
-            return getTower().place;
-        return cam.position;
-
-    }
-
-
-    public PerspectiveCamera getCamera() {
-        return cam;
-    }
-
-
     public Environment getEnvironment() {
         return environment;
+    }
+
+
+    public Array<FightZone> getFightZones() {
+        return fightZones;
+    }
+
+
+    public void setFightZones(Array<FightZone> fightZones) {
+        this.fightZones = fightZones;
+    }
+
+
+    public Array<CatmullRomSpline<Vector3>> getPaths() {
+        return paths;
+    }
+
+
+    public void setPaths(Array<CatmullRomSpline<Vector3>> paths) {
+        this.paths = paths;
+    }
+
+
+    public Array<Ally> getAlly() {
+        return ally;
+    }
+
+
+    public void setAlly(Array<Ally> ally) {
+        this.ally = ally;
+    }
+
+
+    public Array<BoundingBox> getColide() {
+        return colide;
+    }
+
+
+    public void setColide(Array<BoundingBox> colide) {
+        this.colide = colide;
+    }
+
+
+    public Array<Enemy> getEnemy() {
+        return enemy;
+    }
+
+
+    public void setEnemy(Array<Enemy> enemy) {
+        this.enemy = enemy;
     }
 
 
@@ -668,6 +502,15 @@ public class World implements Disposable {
         Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
+    public Array<Shot> getShot() {
+        return shot;
+    }
+
+
+    public void setShot(Array<Shot> shot) {
+        this.shot = shot;
+    }
+
 
     @Override
     public void dispose() {
@@ -678,9 +521,9 @@ public class World implements Disposable {
             dis.dispose();
 
         toDispose.clear();
-        enemy.clear();
-        ally.clear();
-        shot.clear();
+        getEnemy().clear();
+        getAlly().clear();
+        getShot().clear();
         mediu.clear();
         clouds.clear();
 

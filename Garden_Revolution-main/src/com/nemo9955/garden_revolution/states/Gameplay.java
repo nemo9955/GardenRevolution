@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.mediu.Cannon;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
@@ -61,17 +62,16 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     private Vector3        dolly          = new Vector3();
     private Controller     cont;
-
+    public Player         player;
 
     public Gameplay() {
 
         gestures = new GestureDetector( this );
-        gestures.setLongPressSeconds( 1f );
+        gestures.setLongPressSeconds( 0.5f );
 
         tweeger = new TweenManager();
         shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
-
 
     }
 
@@ -89,6 +89,20 @@ public class Gameplay extends CustomAdapter implements Screen {
             world.dispose();
         world = new World( nivel );
 
+        player = new Player( world );
+
+        player.getCamera().position.set( world.overview );
+        player.getCamera().lookAt( Vector3.Zero );
+        player.getCamera().update();
+
+        return this;
+    }
+
+    public Gameplay initAsHost(FileHandle nivel) {
+        return this;
+    }
+
+    public Gameplay initAsClient(FileHandle nivel) {
         return this;
     }
 
@@ -114,12 +128,12 @@ public class Gameplay extends CustomAdapter implements Screen {
         else
             gestures.cancel();
 
-        modelBatch.begin( world.getCamera() );
+        modelBatch.begin( player.getCamera() );
         world.render( modelBatch, world.getEnvironment() );
         modelBatch.end();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
-            world.renderDebug( shape );
+            world.renderDebug( player.getCamera(), shape );
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
@@ -131,14 +145,14 @@ public class Gameplay extends CustomAdapter implements Screen {
     private void updateTheGame(float delta) {
 
 
-        world.getCamera().translate( dolly );
-        world.moveCamera( movex, movey );
+        player.getCamera().translate( dolly );
+        player.moveCamera( movex, movey );
 
-        if ( world.isInTower() &&cont !=null &&cont.getButton( Vars.buton[0] ) ) {
-            Tower tower = world.getTower();
+        if ( player.isInTower() &&cont !=null &&cont.getButton( Vars.buton[0] ) ) {
+            Tower tower = player.getTower();
 
             if ( tower.getArma() instanceof FireHold )
-                tower.fireNormal( world, world.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+                tower.fireNormal( player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
 
             if ( tower.getArma() instanceof FireCharged ) {
                 int time = (int) ( System.currentTimeMillis() -but0prs );
@@ -153,7 +167,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         world.update( delta );
         if ( isPressed )
-            world.isTouched( Gdx.input.getX(), Gdx.input.getY() );
+            player.isTouched( Gdx.input.getX(), Gdx.input.getY() );
     }
 
     private float charge  = -1;
@@ -167,7 +181,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         presDown.set( screenX, screenY );
         isPressed = true;
 
-        if ( updWorld &&world.isInTower() &&world.getTower().getArma() instanceof FireCharged &&screenX >scrw /2 ) {
+        if ( updWorld &&player.isInTower() &&player.getTower().getArma() instanceof FireCharged &&screenX >scrw /2 ) {
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
             charge = 0;
@@ -198,8 +212,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         isPressed = false;
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged ) {
-                world.getTower().fireCharged( world, world.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+            if ( player.isInTower() &&player.getTower().getArma() instanceof FireCharged ) {
+                player.getTower().fireCharged( player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 return true;
             }
         }
@@ -215,7 +229,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;
-            world.moveCamera( difX *Vars.invertDragX, difY *Vars.invertDragY );
+            player.moveCamera( difX *Vars.invertDragX, difY *Vars.invertDragY );
             return true;
         }
         return super.pan( x, y, deltaX, deltaY );
@@ -225,14 +239,14 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean tap(float x, float y, int count, int button) {
 
-        return world.tap( x, y, count, button, gestures );
+        return player.tap( x, y, count, button, gestures );
 
     }
 
     @Override
     public boolean longPress(float x, float y) {
 
-        return world.longPress( x, y, gestures );
+        return player.longPress( x, y, gestures );
 
     }
 
@@ -320,7 +334,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             // }
 
 
-            if ( world.isInTower() &&world.getTower().getArma() instanceof Cannon ) {
+            if ( player.isInTower() &&player.getTower().getArma() instanceof Cannon ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 charge = 0;
@@ -336,13 +350,13 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( buttonCode ==Vars.buton[4] ) {
             if ( Functions.isCurrentState( stage, "HUD" ) )
-                world.prevCamera();
+                player.prevTower();
             return false;
         }
 
         if ( buttonCode ==Vars.buton[5] ) {
             if ( Functions.isCurrentState( stage, "HUD" ) )
-                world.nextCamera();
+                player.nextTower();
             return false;
         }
 
@@ -365,8 +379,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( buttonCode ==Vars.buton[0] ) {
             if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                if ( world.isInTower() &&world.getTower().getArma() instanceof FireCharged )
-                    world.getTower().fireCharged( world, world.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                if ( player.isInTower() &&player.getTower().getArma() instanceof FireCharged )
+                    player.getTower().fireCharged( player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
             }
         }
         return false;

@@ -32,7 +32,7 @@ public class FightZone implements Poolable {
 
     public void update(float delta) {
 
-        for (Enemy enemy : world.enemy )
+        for (Enemy enemy : world.getEnemy() )
             if ( !enemy.paused &&box.contains( enemy.box ) ) {
                 addEnemy( enemy );
                 enemy.paused = true;
@@ -92,7 +92,7 @@ public class FightZone implements Poolable {
         for (Enemy enemy : enemies )
             enemy.paused = false;
         world.fzPool.free( this );
-        world.fightZones.removeValue( this, false );
+        world.getFightZones().removeValue( this, false );
     }
 
     public boolean hasAllies() {

@@ -41,7 +41,7 @@ public class Waves {
     }
 
     private CatmullRomSpline<Vector3> getPath(Monstru mo) {
-        return world.paths.get( mo.path );
+        return world.getPaths().get( mo.path );
     }
 
     private Array<Monstru> getMonsters() {
@@ -72,8 +72,8 @@ public class Waves {
 
 
         public Wave(float delay, float interval) {
-            monstrii = new Array<Array<Monstru>>( world.paths.size );
-            for (int i = 0 ; i <world.paths.size ; i ++ ) {
+            monstrii = new Array<Array<Monstru>>( world.getPaths().size );
+            for (int i = 0 ; i <world.getPaths().size ; i ++ ) {
                 monstrii.add( new Array<Monstru>( 1 ) );
             }
             this.delay = delay;

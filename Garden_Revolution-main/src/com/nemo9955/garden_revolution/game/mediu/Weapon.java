@@ -31,9 +31,12 @@ public abstract class Weapon implements Disposable {
     public String              name       = "weapon name";
     public String              details    = "weapon description";
 
+    protected World            world;
 
-    public Weapon(Vector3 poz) {
+
+    public Weapon(World world, Vector3 poz) {
         this.poz = poz;
+        this.world = world;
 
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
@@ -77,11 +80,11 @@ public abstract class Weapon implements Disposable {
 
     public static interface FireCharged {
 
-        public void fireCharged(World world, Ray ray, float charged);
+        public void fireCharged(Ray ray, float charged);
     }
 
     public static interface FireHold {
 
-        public void fireHold(World world, Ray ray);
+        public void fireHold(Ray ray);
     }
 }

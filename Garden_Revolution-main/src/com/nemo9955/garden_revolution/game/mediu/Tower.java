@@ -19,32 +19,34 @@ import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 
 public class Tower implements Disposable {
 
-    public BoundingBox           fundation = new BoundingBox();
+    @SuppressWarnings("unused")
+    private World                world;
     public Array<BoundingBox>    coliders  = new Array<BoundingBox>( false, 1 );
 
     private Array<ModelInstance> parts     = new Array<ModelInstance>( false, 1 );
-    public final Vector3         place;
-    public final Vector3         poz;
+    public final Vector3         poz       = new Vector3();
     public TowerType             type;
 
-
     private Weapon               weapon;
+    public final Vector3         place     = new Vector3();
+    public final Vector3         direction = new Vector3();
 
     public Tower(ModelInstance baza, World world, Vector3 poz) {
+        this.poz.set( poz );
+        this.world = world;
         parts.add( baza );
-        place = poz.cpy().add( 0, 10, 0 );
-        baza.calculateBoundingBox( this.fundation );
-        this.poz = poz.cpy();
+        place.set( poz ).add( 0, 10, 0 );
+        coliders.add( baza.calculateBoundingBox( new BoundingBox() ) );
     }
 
-    public void fireNormal(World world, Ray ray) {
+    public void fireNormal(Ray ray) {
         if ( hasArma() &&weapon instanceof FireHold )
-            ( (FireHold) weapon ).fireHold( world, ray );
+            ( (FireHold) weapon ).fireHold( ray );
     }
 
-    public void fireCharged(World world, Ray ray, float charged) {
+    public void fireCharged(Ray ray, float charged) {
         if ( hasArma() &&weapon instanceof FireCharged )
-            ( (FireCharged) weapon ).fireCharged( world, ray, charged );
+            ( (FireCharged) weapon ).fireCharged( ray, charged );
     }
 
     public boolean changeWeapon(Weapon toChange) {
@@ -120,8 +122,6 @@ public class Tower implements Disposable {
     }
 
     public boolean intersectsRay(Ray ray) {
-        if ( Intersector.intersectRayBoundsFast( ray, fundation ) )
-            return true;
         for (BoundingBox box : coliders )
             if ( Intersector.intersectRayBoundsFast( ray, box ) )
                 return true;

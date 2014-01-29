@@ -103,16 +103,16 @@ public class Menu extends ControllerAdapter implements Screen {
     public boolean buttonDown(Controller controller, int buttonIndex) {
         if ( buttonIndex ==Vars.buton[2] )
             Functions.fire( test );
-        
+
         if ( buttonIndex ==Vars.buton[3] )
             Functions.fire( options );
-        
+
         if ( buttonIndex ==Vars.buton[4] )
             Functions.fire( play );
-        
+
         if ( buttonIndex ==Vars.buton[5] )
             Functions.fire( mode );
-        
+
         return false;
 
     }

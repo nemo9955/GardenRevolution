@@ -38,8 +38,6 @@ public class StageUtils {
 
         final Board hud = new Board(); // aici e tot ce e legat de HUD ------------------------------------------------------------------------------
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
-        final ImageButton camLeft = new ImageButton( skin, "camLeft" );
-        final ImageButton camRight = new ImageButton( skin, "camRight" );
         final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
 
         Image tinta = new Image( skin, "tinta" );
@@ -51,20 +49,13 @@ public class StageUtils {
         gameplay.viataTurn.setFontScale( 0.6f );
         gameplay.viataTurn.setPosition( 10 *Vars.densitate, stage.getHeight() -gameplay.viataTurn.getHeight() -10 *Vars.densitate );
         pauseBut.setPosition( stage.getWidth() -pauseBut.getWidth(), stage.getHeight() -pauseBut.getHeight() );
-        camLeft.setName( "Left Camera" );
-        camLeft.setColor( 1, 1, 1, 0.6f );
-        camLeft.setPosition( 0, stage.getHeight() /2 -camLeft.getHeight() /2 );
-        camRight.setName( "Right Camera" );
-        camRight.setColor( 1, 1, 1, 0.6f );
-        camRight.setPosition( stage.getWidth() -camRight.getRight(), stage.getHeight() /2 -camRight.getHeight() /2 );
+
         gameplay.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
         gameplay.mover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
         tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gameplay.viataTurn );
         hud.addActor( pauseBut );
-        hud.addActor( camLeft );
-        hud.addActor( camRight );
         hud.addActor( tinta );
         hud.addActor( gameplay.mover );
         hud.addActor( turnIG );
@@ -151,12 +142,6 @@ public class StageUtils {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.updWorld = false;
                 }
-                else if ( camLeft.isPressed() ) {
-                    gameplay.world.prevCamera();
-                }
-                else if ( camRight.isPressed() ) {
-                    gameplay.world.nextCamera();
-                }
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -206,13 +191,13 @@ public class StageUtils {
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.updWorld = true;
                 }
-                else if ( gameplay.world.isInTower() ) {// TODO
+                else if ( gameplay.player.isInTower() ) {// TODO
                     if ( basicT.isPressed() )
-                        gameplay.world.upgradeCurentTower( TowerType.BASIC );
+                        gameplay.player.upgradeCurentTower( TowerType.BASIC );
                     else if ( miniGun.isPressed() )
-                        gameplay.world.changeCurrentWeapon( MiniGun.class );
+                        gameplay.player.changeCurrentWeapon( MiniGun.class );
                     else if ( cannon.isPressed() )
-                        gameplay.world.changeCurrentWeapon( Cannon.class );
+                        gameplay.player.changeCurrentWeapon( Cannon.class );
                 }
             }
         };

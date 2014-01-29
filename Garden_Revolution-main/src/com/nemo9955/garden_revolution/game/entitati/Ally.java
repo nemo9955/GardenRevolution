@@ -60,7 +60,7 @@ public class Ally extends LifeForm {
 
         if ( isDead() ) {
             world.aliatPool.free( this );
-            world.ally.removeValue( this, false );
+            world.getAlly().removeValue( this, false );
         }
     }
 }

@@ -16,20 +16,20 @@ import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
 
 public class Cannon extends Weapon implements FireCharged {
 
-    public Cannon(Vector3 poz) {
-        super( poz );
+    public Cannon(World world, Vector3 poz) {
+        super( world, poz );
         setFireDellay( 200 );
         name = "Cannon";
         details = "Slow but powerfull.";
     }
 
     @Override
-    public void fireCharged(World world, Ray ray, float charged) {
+    public void fireCharged(Ray ray, float charged) {
         if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
             fireTime = System.currentTimeMillis();
 
             float distance = -ray.origin.y /ray.direction.y;
-            tmp = ray.getEndPoint(tmp, distance );
+            tmp = ray.getEndPoint( tmp, distance );
             if ( distance >=0 )
                 world.addShot( ShotType.GHIULEA, poz, tmp.sub( poz ).nor(), charged );
             else
@@ -41,7 +41,7 @@ public class Cannon extends Weapon implements FireCharged {
     protected ModelInstance getModelInstance(Vector3 poz2) {
         ModelBuilder build = new ModelBuilder();
         Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-       World. toDispose.add( sfera );
+        World.toDispose.add( sfera );
 
         return new ModelInstance( sfera, poz2 );
 

@@ -17,8 +17,8 @@ import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 
 public class MiniGun extends Weapon implements FireHold {
 
-    public MiniGun(Vector3 poz) {
-        super( poz );
+    public MiniGun(World world,Vector3 poz) {
+        super(  world,poz );
         setFireDellay( 100 );
 
         name = "Mini Gun";
@@ -26,7 +26,7 @@ public class MiniGun extends Weapon implements FireHold {
     }
 
     @Override
-    public void fireHold(World world, Ray ray) {
+    public void fireHold( Ray ray) {
         if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
             fireTime = System.currentTimeMillis();
 

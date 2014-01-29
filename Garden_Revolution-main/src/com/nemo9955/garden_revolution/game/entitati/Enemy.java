@@ -97,7 +97,7 @@ public class Enemy extends LifeForm {
 
         if ( isDead() ) {
             world.inamicPool.free( this );
-            world.enemy.removeValue( this, false );
+            world.getEnemy().removeValue( this, false );
         }
 
     }

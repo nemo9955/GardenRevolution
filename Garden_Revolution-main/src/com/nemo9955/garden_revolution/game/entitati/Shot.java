@@ -67,7 +67,7 @@ public class Shot extends Entity {
             setDead( true );
         }
 
-        for (BoundingBox col : world.colide )
+        for (BoundingBox col : world.getColide() )
             if ( col.intersects( box ) )
                 setDead( true );
 
@@ -96,7 +96,7 @@ public class Shot extends Entity {
 
         if ( isDead() ) {
             world.shotPool.free( this );
-            world.shot.removeValue( this, false );
+            world.getShot().removeValue( this, false );
         }
     }
 

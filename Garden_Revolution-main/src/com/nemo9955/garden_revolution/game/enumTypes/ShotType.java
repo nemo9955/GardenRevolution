@@ -13,7 +13,7 @@ public enum ShotType {
         @Override
         protected void propShots() {
             damage = 35;
-            speed = 30;
+            speed = 50;
         }
 
     },
@@ -32,7 +32,7 @@ public enum ShotType {
             super.hitActivity( shot, world );
 
             if ( shot.isDead() ) {
-                for (Enemy fo : world.enemy )
+                for (Enemy fo : world.getEnemy() )
                     if ( fo.poz.dst2( shot.poz ) <=range *range )
                         fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( shot.poz ) /range ) ) ) );
             }
@@ -62,7 +62,7 @@ public enum ShotType {
 
     public void hitActivity(Shot shot, World world) {
         if ( !shot.isDead() )
-            for (Enemy fo : world.enemy )
+            for (Enemy fo : world.getEnemy() )
                 if ( fo.box.intersects( shot.box ) ) {
                     fo.damage( shot );
                     shot.setDead( true );

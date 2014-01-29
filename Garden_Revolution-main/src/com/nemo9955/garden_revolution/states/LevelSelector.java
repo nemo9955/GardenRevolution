@@ -87,20 +87,15 @@ public class LevelSelector extends ControllerAdapter implements Screen {
             harti[i] = nivele[i].nameWithoutExtension();
 
         start = new TextButton( "Start", skin );
-
         elem = new List( harti, skin );
+        final TextButton multy = new TextButton( "Multiplayer", skin );
 
         back = new TextButton( "Back", skin );
-        back.addListener( new ChangeListener() {
 
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.menu );
-            }
-        } );
 
         table.add( "Select a LEVEL" ).expand().top().row();
         table.add( start ).expand().row();
+        table.add( multy ).expand().row();
         table.add( back ).bottom().expand().right();
 
         lista = new SplitPane( elem, table, false, skin );
@@ -119,15 +114,18 @@ public class LevelSelector extends ControllerAdapter implements Screen {
 
 
         toAcces = elem.getSelection();
-
-        start.addListener( new ChangeListener() {
+        table.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.init( lvlLoc.child( toAcces +".xml" ) ) );
+                if ( multy.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.multyplayer.init( lvlLoc.child( toAcces +".xml" ) ) );
+                else if ( back.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                else if ( start.isPressed() )
+                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.init( lvlLoc.child( toAcces +".xml" ) ) );
             }
         } );
-
 
         stage.addActor( lista );
         // pointer.setSelectedActor( start );
