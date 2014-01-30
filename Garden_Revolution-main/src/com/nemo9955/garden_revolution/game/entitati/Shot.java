@@ -77,11 +77,12 @@ public class Shot extends Entity {
 
     private static Model model = createModel();
 
-    private static Model createModel() {
-        Model modelInstance = new ModelBuilder().createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
-        World.toDispose.add( modelInstance );
-        System.out.println("creat");
-        return modelInstance;
+    private static Model createModel() {//FIXME something is wrong with the model ... sometimes it creates a null one 
+        ModelBuilder modelBuilder = new ModelBuilder();
+        Model model = modelBuilder.createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
+        World.toDispose.add( model );
+        System.out.println( "creat" );
+        return model;
     }
 
     @Override

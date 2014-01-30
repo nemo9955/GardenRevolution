@@ -12,16 +12,18 @@ import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.mediu.Weapon;
-import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
 import com.nemo9955.garden_revolution.utility.Functions;
 
 
 public class Player {
 
-    private static final Vector3 tmp = new Vector3();
+    private static final Vector3 tmp             = new Vector3();
     private PerspectiveCamera    cam;
     private World                world;
     private Tower                tower;
+
+    private boolean              isFiringHold    = false;
+    public long                  fireChargedTime = 0;
 
     public Player(World world) {
         this.world = world;
@@ -33,13 +35,9 @@ public class Player {
     }
 
 
-    public void isTouched(int screenX, int screenY) {
-
-        if ( isInTower() &&getTower().getArma() instanceof FireHold &&screenX >Gdx.graphics.getWidth() /2 ) {
-            getTower().fireNormal( getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
-            // getTower().fireNormal( this, cam.getPickRay( screenX, screenY ) );
-        }
-
+    public void update(float delta) {
+        if ( isInTower() &&isFiringHold() )
+            fireHoldWeapon( getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
     }
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
@@ -78,27 +76,6 @@ public class Player {
             return true;
         }
         return false;
-    }
-
-
-    public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() )
-            if ( getTower().upgradeTower( upgrade ) ) {
-                setPlayerTower( tower );
-            }
-    }
-
-    public void changeCurrentWeapon(Class<? extends Weapon> weapon) {
-        Tower tower = getTower();
-        if ( isInTower() &&tower.type !=null )
-            try {
-                if ( tower.changeWeapon( weapon.getDeclaredConstructor( World.class, Vector3.class ).newInstance( world, tower.place ) ) )
-                    setPlayerTower( tower );
-                world.canWaveStart = true;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
     }
 
 
@@ -185,7 +162,7 @@ public class Player {
         Tower[] towers = world.towers;
         for (int i = 0 ; i <towers.length ; i ++ )
             if ( towers[i] ==tower )
-                if ( i ==towers.length -1 )
+                if ( i +1 ==towers.length )
                     setPlayerTower( towers[0] );
                 else
                     setPlayerTower( towers[i +1] );
@@ -201,6 +178,49 @@ public class Player {
                 else
                     setPlayerTower( towers[i -1] );
 
+    }
+
+
+    public boolean isFiringHold() {
+        return isFiringHold;
+    }
+
+    public void setFiringHold(boolean isFiring) {
+        if ( isInTower() )
+            this.isFiringHold = isFiring;
+    }
+
+    public void fireChargedWeapon(Ray ray, float charged) {
+        if ( isInTower() )
+            getTower().fireCharged( ray, charged );
+
+    }
+
+    public void fireHoldWeapon(Ray ray) {
+        if ( isInTower() )
+            getTower().fireHold( ray );
+
+    }
+
+    public void upgradeCurentTower(TowerType upgrade) {
+        if ( isInTower() )
+            if ( getTower().upgradeTower( upgrade ) ) {
+                setPlayerTower( tower );
+            }
+    }
+
+
+    public void changeCurrentWeapon(Class<? extends Weapon> weapon) {
+        Tower tower = getTower();
+        if ( isInTower() &&tower.type !=null )
+            try {
+                if ( tower.changeWeapon( weapon.getDeclaredConstructor( World.class, Vector3.class ).newInstance( world, tower.place ) ) )
+                    setPlayerTower( tower );
+                world.canWaveStart = true;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
 

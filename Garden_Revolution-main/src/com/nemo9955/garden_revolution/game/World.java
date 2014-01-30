@@ -45,28 +45,28 @@ import com.nemo9955.garden_revolution.utility.IndexedObject;
 
 public class World implements Disposable {
 
-    public static Array<Disposable>          toDispose      = new Array<Disposable>( false, 1 );
+    public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
 
-    private Array<ModelInstance>             clouds         = new Array<ModelInstance>( false, 10 );
-    private Array<ModelInstance>             mediu          = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>             clouds       = new Array<ModelInstance>( false, 10 );
+    private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
 
-    private Array<Enemy>                     enemy          = new Array<Enemy>( false, 10 );
-    private Array<Ally>                      ally           = new Array<Ally>( false, 10 );
-    private Array<Shot>                      shot           = new Array<Shot>( false, 10 );
-    private Array<BoundingBox>               colide         = new Array<BoundingBox>( false, 10 );
-    private Array<FightZone>                 fightZones     = new Array<FightZone>( false, 10 );
+    private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
+    private Array<Ally>                      ally         = new Array<Ally>( false, 10 );
+    private Array<Shot>                      shot         = new Array<Shot>( false, 10 );
+    private Array<BoundingBox>               colide       = new Array<BoundingBox>( false, 10 );
+    private Array<FightZone>                 fightZones   = new Array<FightZone>( false, 10 );
     private Array<CatmullRomSpline<Vector3>> paths;
 
-    private static Vector3                   tmp            = new Vector3();
-    private static Vector3                   tmp2           = new Vector3();
-    public final Vector3                     overview       = new Vector3( 20, 10, 10 );
+    private static Vector3                   tmp          = new Vector3();
+    private static Vector3                   tmp2         = new Vector3();
+    public final Vector3                     overview     = new Vector3( 20, 10, 10 );
     private int                              viata;
     public Tower[]                           towers;
     public boolean                           canWaveStart = false;
     private Waves                            waves;
-    public final Plane                       ground         = new Plane( Vector3.Y, Vector3.Zero );
+    public final Plane                       ground       = new Plane( Vector3.Y, Vector3.Zero );
 
-    private Environment                      environment    = new Environment();
+    private Environment                      environment  = new Environment();
 
 
     public World(FileHandle location) {
@@ -406,7 +406,7 @@ public class World implements Disposable {
                                           }
                                       };
 
-    public Pool<Shot>      shotPool   = new Pool<Shot>( 100, 500 ) {
+    public Pool<Shot>      shotPool   = new Pool<Shot>( 200, 500 ) {
 
                                           @Override
                                           protected Shot newObject() {

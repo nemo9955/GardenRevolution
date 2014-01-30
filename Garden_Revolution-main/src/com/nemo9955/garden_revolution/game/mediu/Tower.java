@@ -39,7 +39,7 @@ public class Tower implements Disposable {
         coliders.add( baza.calculateBoundingBox( new BoundingBox() ) );
     }
 
-    public void fireNormal(Ray ray) {
+    public void fireHold(Ray ray) {
         if ( hasArma() &&weapon instanceof FireHold )
             ( (FireHold) weapon ).fireHold( ray );
     }
@@ -56,7 +56,7 @@ public class Tower implements Disposable {
         return true;
     }
 
-    public boolean upgradeTower(TowerType upgrade) {
+    public boolean upgradeTower(TowerType upgrade) {// TODO call this method in the constructor after TowerType is removed
         if ( type !=null &&type.rank >=upgrade.rank )
             return false;
         type = upgrade;

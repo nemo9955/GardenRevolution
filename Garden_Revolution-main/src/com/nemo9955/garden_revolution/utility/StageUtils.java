@@ -191,14 +191,13 @@ public class StageUtils {
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gameplay.updWorld = true;
                 }
-                else if ( gameplay.player.isInTower() ) {// TODO
-                    if ( basicT.isPressed() )
-                        gameplay.player.upgradeCurentTower( TowerType.BASIC );
-                    else if ( miniGun.isPressed() )
-                        gameplay.player.changeCurrentWeapon( MiniGun.class );
-                    else if ( cannon.isPressed() )
-                        gameplay.player.changeCurrentWeapon( Cannon.class );
-                }
+                else if ( basicT.isPressed() )
+                    gameplay.player.upgradeCurentTower( TowerType.BASIC );
+                else if ( miniGun.isPressed() )
+                    gameplay.player.changeCurrentWeapon( MiniGun.class );
+                else if ( cannon.isPressed() )
+                    gameplay.player.changeCurrentWeapon( Cannon.class );
+
             }
         };
 
