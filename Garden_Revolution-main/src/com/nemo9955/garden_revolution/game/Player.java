@@ -28,7 +28,7 @@ public class Player {
     public Player(World world) {
         this.world = world;
 
-        cam = new PerspectiveCamera( 67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        cam = new PerspectiveCamera( 60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
@@ -52,9 +52,9 @@ public class Player {
     public boolean longPress(float x, float y, GestureDetector gestures) {
 
         if ( isInTower() &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
-            Ray ray = getCamera().getPickRay( x, y );
-            float distance = -ray.origin.y /ray.direction.y;
-            Vector3 tmp = ray.getEndPoint( new Vector3(), distance );
+
+            // Vector3 tmp = Player.tmp;
+            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tmp );
 
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
                 for (int i = 0 ; i <=20 ; i ++ )
@@ -96,7 +96,7 @@ public class Player {
         this.tower = tower;
 
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        Functions.intersectLinePlane( ray, world.ground, look );
+        Functions.intersectLinePlane( ray, look );
 
         cam.position.set( tower.place );
         look.y = cam.position.y;
@@ -119,15 +119,14 @@ public class Player {
         look.y = 0;
         Vector3 v = Vector3.tmp3.set( look.tmp().sub( cam.position ) );
 
-        float dot = u.tmp().dot( v );
+        float dot = u.dot( v );
         float lenu = u.len();
         float lenv = v.len();
         float cos = dot / ( Math.abs( lenv ) *Math.abs( lenu ) );
 
         float angle = (float) Math.toDegrees( Math.acos( cos ) );
-        moveCamera( 0, -angle );
 
-        cam.update();
+        moveCamera( 0, -angle );
     }
 
     public boolean isInTower() {

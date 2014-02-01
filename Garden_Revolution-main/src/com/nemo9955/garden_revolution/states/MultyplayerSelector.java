@@ -42,22 +42,23 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         final Table table = new Table( skin );
         back = new TextButton( "Back", skin );
         final TextButton start = new TextButton( "Start", skin );
-        final TextField ip = new TextField( "", skin );
+        final TextField ipInput = new TextField( "", skin );
         final CheckBox isHost = new CheckBox( "Is host", skin );
         final CheckBox isPublic = new CheckBox( "Is public", skin );
         final Label theIP = new Label( Functions.getIpAddress(), skin );
 
-        ip.setName( "The IP to connect to :" );
-        ip.setVisible( false );
-        ip.setMaxLength( 30 );
-        ip.setWidth( 1000);
+        theIP.setVisible( false );
+        ipInput.setVisible( true );
+        ipInput.setMessageText( "188.173.17.234" );
+        ipInput.setMaxLength( 30 );
+        ipInput.setWidth( 1000 );
 
         table.setFillParent( true );
         table.defaults().space( 50 );
         table.add( start ).row();
         table.add( isHost );
         table.add( "IP :" );
-        table.add( ip );
+        table.add( ipInput );
         table.add( theIP ).row();
         table.add( isPublic ).row();
         table.add( back ).row();
@@ -74,17 +75,19 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                         Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsHost( level ) );
                     }
                     else {
-                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsHost( level ) );
+                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsClient( level, ipInput.getMessageText() ) );
                     }
                 }
 
                 if ( isHost.isChecked() ) {
-                    ip.setVisible( true );
-                    theIP.setVisible( false );
+                    ipInput.setVisible( false );
+                    theIP.setVisible( true );
+                    table.swapActor( ipInput, theIP );
                 }
                 else {
-                    ip.setVisible( false );
-                    theIP.setVisible( true );
+                    ipInput.setVisible( true );
+                    theIP.setVisible( false );
+                    table.swapActor( ipInput, theIP );
                 }
 
             }

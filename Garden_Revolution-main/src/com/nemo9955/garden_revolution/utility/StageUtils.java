@@ -27,7 +27,7 @@ public class StageUtils {
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gameplay) {
         stage = new Stage( Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate, true );
-        Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
         gameplay.weaponCharger = new Image( skin, "mover-knob" );
         gameplay.weaponCharger.setVisible( false );

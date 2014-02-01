@@ -9,7 +9,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -75,27 +74,12 @@ public class Functions {
         return true;
     }
 
-    /**
-     * Convenience method for {@code Intersector.intersectLinePlane }
-     * 
-     */
-    public static float intersectLinePlane(Ray ray, Plane plane, Vector3 intersection) {
-        Vector3 direction = ray.direction;
-        Vector3 origin = ray.origin;
-        float denom = direction.dot( plane.getNormal() );
-        if ( denom !=0 ) {
-            float t = - ( origin.dot( plane.getNormal() ) +plane.getD() ) /denom;
-            if ( t >=0 &&t <=1 &&intersection !=null )
-                intersection.set( origin ).add( direction.scl( t ) );
-            return t;
-        }
-        else if ( plane.testPoint( origin ) ==Plane.PlaneSide.OnPlane ) {
-            if ( intersection !=null )
-                intersection.set( origin );
-            return 0;
-        }
 
-        return -1;
+    public static float intersectLinePlane(Ray ray, Vector3 intersection) {
+
+        float distance = -ray.origin.y /ray.direction.y;
+        intersection.set( ray.getEndPoint( new Vector3(), distance ) );
+        return distance;
     }
 
     public static boolean isCurrentState(Stage stage, String name) {

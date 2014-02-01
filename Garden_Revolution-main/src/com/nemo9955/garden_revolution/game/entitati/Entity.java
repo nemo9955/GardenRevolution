@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -62,7 +63,7 @@ public abstract class Entity implements Poolable {
         renderGeneral( modelBatch );
     }
 
-    public void render(ModelBatch modelBatch, Environment light) {
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         modelBatch.render( model, light );
         renderGeneral( modelBatch );
     }
@@ -130,7 +131,7 @@ public abstract class Entity implements Poolable {
 
     public void setDead(boolean dead) {
         this.dead = dead;
-        
+
     }
 
 }

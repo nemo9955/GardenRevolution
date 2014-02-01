@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game.mediu;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
@@ -30,6 +30,8 @@ public class Tower implements Disposable {
     private Weapon               weapon;
     public final Vector3         place     = new Vector3();
     public final Vector3         direction = new Vector3();
+
+    // private Decal pointer = Decal.newDecal( 5, 5, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
     public Tower(ModelInstance baza, World world, Vector3 poz) {
         this.poz.set( poz );
@@ -81,6 +83,9 @@ public class Tower implements Disposable {
         }
         model.nodes.removeAll( remove, false );
         parts.add( model );
+
+        // pointer.setPosition( place.x, place.y +5f, place.z );
+
         return true;
     }
 
@@ -88,25 +93,14 @@ public class Tower implements Disposable {
 
     }
 
-    public void render(ModelBatch modelBatch) {
-        for (ModelInstance model : parts )
-            modelBatch.render( model );
-        if ( hasArma() )
-            weapon.render( modelBatch );
-    }
-
-    public void render(ModelBatch modelBatch, Environment light) {
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         for (ModelInstance model : parts )
             modelBatch.render( model, light );
         if ( hasArma() )
             weapon.render( modelBatch, light );
-    }
+        // if ( type !=null )
+        // decalBatch.add( pointer );
 
-    public void render(ModelBatch modelBatch, Shader shader) {
-        for (ModelInstance model : parts )
-            modelBatch.render( model, shader );
-        if ( hasArma() )
-            weapon.render( modelBatch, shader );
     }
 
     public Weapon getArma() {

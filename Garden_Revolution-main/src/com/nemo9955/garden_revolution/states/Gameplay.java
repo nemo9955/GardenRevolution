@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -23,13 +22,18 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
+import com.nemo9955.garden_revolution.net.GameClient;
+import com.nemo9955.garden_revolution.net.Host;
+import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.StageUtils;
@@ -102,15 +106,49 @@ public class Gameplay extends CustomAdapter implements Screen {
         return this;
     }
 
+    private Dialog dialog = new Dialog( "titlu", Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
+
+                              protected void result(Object object) {
+                                  // TODO add something that clears all the buttons after one is pressed
+                              };
+                          };
+
+    public void showMessage(String mesaj) {
+
+        dialog.setTitle( "Mesaj" );
+
+        dialog.button( mesaj );
+
+        dialog.pad( 50 );
+
+        dialog.invalidate();
+
+
+        dialog.show( stage );
+    }
+
+    private Host       host;
+    private GameClient client;
+
     public Gameplay initAsHost(FileHandle nivel) {
+        init( nivel );
+        host = new Host( this );
+
+
+        showMessage( "Created as HOST" );
         return this;
     }
 
-    public Gameplay initAsClient(FileHandle nivel) {
+    public Gameplay initAsClient(FileHandle nivel, String ip) {
+        init( nivel );
+        client = new GameClient( this );
+        client.connect( ip );
+
+        showMessage( "Created as CLIENT" );
+
+
         return this;
     }
-
-    Decal test = Decal.newDecal( Garden_Revolution.getGameTexture( "pointer-1" ), true );
 
     @Override
     public void render(float delta) {
@@ -137,9 +175,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         modelBatch.begin( player.getCamera() );
         world.render( modelBatch, world.getEnvironment(), decalBatch );
         modelBatch.end();
-
-        decalBatch.add( test );
-
         decalBatch.flush();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
@@ -163,7 +198,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         }
 
         player.getCamera().translate( dolly );
-        if ( movex !=0 ||movey !=0 )
+        if ( movex !=0 ||movey !=0 ||!dolly.isZero() )
             player.moveCamera( movex, movey );
 
         player.update( delta );
@@ -289,6 +324,12 @@ public class Gameplay extends CustomAdapter implements Screen {
                 break;
             case Keys.ESCAPE:
                 Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                break;
+            case Keys.H:
+                if ( host !=null )
+                    host.brodcast( "HOST to all CLIENTS" );
+                else
+                    client.brodcast( "CLIENT to HOST" );
                 break;
         }
 
@@ -454,5 +495,10 @@ public class Gameplay extends CustomAdapter implements Screen {
         shape.dispose();
         camGRStr.dispose();
         decalBatch.dispose();
+        if ( client !=null )
+            client.stopClient();
+        if ( host !=null )
+            host.stopHost();
+        ;
     }
 }

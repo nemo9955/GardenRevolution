@@ -71,6 +71,9 @@
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle:{
 		default:{font:arial_32	, imageUp : mover-knob  , up: buton_up, down: buton_down, over:buton_over  }
-	}
+	},
 	
+	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle:{
+		default:{ titleFont : arial_32	, background: pix30  }
+	}
 }

@@ -3,6 +3,10 @@ package com.nemo9955.garden_revolution.utility;
 
 public class Vars {
 
+    // variabile multyplayer
+    public static final int    TCPport             = 29954;
+    public static final int    UDPport             = 39954;
+
     // densitatea ecranului
     public static float        densitate           = 1f;
 

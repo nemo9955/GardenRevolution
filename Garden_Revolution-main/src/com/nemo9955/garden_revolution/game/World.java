@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -65,7 +64,6 @@ public class World implements Disposable {
     public Tower[]                           towers;
     public boolean                           canWaveStart = false;
     private Waves                            waves;
-    public final Plane                       ground       = new Plane( Vector3.Y, Vector3.Zero );
 
     private Environment                      environment  = new Environment();
 
@@ -113,14 +111,14 @@ public class World implements Disposable {
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
-        for (Entity e : getEnemy() )
-            e.render( modelBatch, light );
-        for (Entity e : getAlly() )
-            e.render( modelBatch, light );
-        for (Entity e : getShot() )
+        for (Enemy e : getEnemy() )
+            e.render( modelBatch, light, decalBatch );
+        for (Ally e : getAlly() )
+            e.render( modelBatch, light, decalBatch );
+        for (Shot e : getShot() )
             e.render( modelBatch );
         for (Tower tower : towers )
-            tower.render( modelBatch, light );
+            tower.render( modelBatch, light, decalBatch );
     }
 
     public void renderDebug(PerspectiveCamera cam, ShapeRenderer shape) {
