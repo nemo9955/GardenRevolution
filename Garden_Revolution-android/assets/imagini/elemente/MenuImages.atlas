@@ -1,151 +1,102 @@
 
-UI_stuff.png
+MenuImages.png
 format: RGBA8888
-filter: Linear,Nearest
+filter: Linear,Linear
 repeat: none
 acorn
   rotate: false
-  xy: 1, 270
+  xy: 1, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 archery-target
   rotate: false
-  xy: 1, 117
+  xy: 1, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 aubergine
   rotate: false
-  xy: 154, 270
+  xy: 1, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 beam-wake
   rotate: false
-  xy: 154, 117
+  xy: 153, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 cannon
   rotate: false
-  xy: 307, 270
+  xy: 153, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 crossbow
   rotate: false
-  xy: 307, 117
+  xy: 153, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 lightning-bow
   rotate: false
-  xy: 460, 270
+  xy: 305, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 profit
   rotate: false
-  xy: 460, 117
+  xy: 305, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 radial-balance
   rotate: false
-  xy: 613, 270
+  xy: 305, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 shiny-apple
   rotate: false
-  xy: 766, 270
+  xy: 457, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 spotted-mushroom
   rotate: false
-  xy: 613, 117
+  xy: 457, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 targeting
   rotate: false
-  xy: 766, 117
+  xy: 457, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-back
-  rotate: false
-  xy: 1, 64
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-exit
-  rotate: false
-  xy: 1, 11
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-meniu
-  rotate: false
-  xy: 104, 64
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
 mover-bg
   rotate: false
-  xy: 207, 14
+  xy: 609, 355
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
-play
-  rotate: false
-  xy: 104, 11
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-test
-  rotate: false
-  xy: 310, 64
-  size: 100, 50
-  orig: 100, 50
-  offset: 0, 0
-  index: -1
-arrows-down-1
-  rotate: false
-  xy: 413, 34
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
-arrows-up-1
-  rotate: false
-  xy: 496, 34
-  size: 80, 80
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
 buton_down
   rotate: false
-  xy: 310, 1
+  xy: 711, 395
   size: 60, 60
   split: 14, 15, 11, 11
   orig: 60, 60
@@ -153,102 +104,137 @@ buton_down
   index: -1
 buton_over
   rotate: false
-  xy: 579, 54
+  xy: 711, 333
   size: 60, 60
   split: 14, 16, 13, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+back
+  rotate: false
+  xy: 609, 303
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 buton_up
   rotate: false
-  xy: 642, 54
+  xy: 711, 271
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+exit
+  rotate: false
+  xy: 609, 251
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+meniu
+  rotate: false
+  xy: 609, 199
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 element1
   rotate: false
-  xy: 705, 54
+  xy: 711, 209
   size: 60, 60
   split: 12, 14, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+play
+  rotate: false
+  xy: 609, 147
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 element2
   rotate: false
-  xy: 768, 54
+  xy: 711, 147
   size: 60, 60
   split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
+test
+  rotate: false
+  xy: 609, 95
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
 tower-upgrade
   rotate: false
-  xy: 831, 29
+  xy: 609, 8
   size: 54, 85
   orig: 54, 85
   offset: 0, 0
   index: -1
-arrows-left-1
+checked
   rotate: false
-  xy: 919, 220
-  size: 40, 200
-  orig: 40, 200
+  xy: 711, 95
+  size: 50, 50
+  orig: 50, 50
   offset: 0, 0
   index: -1
-arrows-right-1
+unchecked
   rotate: false
-  xy: 919, 17
-  size: 40, 200
-  orig: 40, 200
+  xy: 665, 43
+  size: 50, 50
+  orig: 50, 50
   offset: 0, 0
   index: -1
 tinta
   rotate: false
-  xy: 579, 11
+  xy: 665, 1
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 IGpause
   rotate: false
-  xy: 622, 11
+  xy: 707, 1
   size: 39, 40
   orig: 39, 40
   offset: 0, 0
   index: -1
 mover-knob
   rotate: false
-  xy: 373, 35
+  xy: 717, 67
   size: 26, 26
   orig: 26, 26
   offset: 0, 0
   index: -1
 pix100
   rotate: false
-  xy: 402, 60
+  xy: 763, 144
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix30
   rotate: false
-  xy: 406, 60
+  xy: 609, 5
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix50
   rotate: false
-  xy: 402, 56
+  xy: 717, 64
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 pix80
   rotate: false
-  xy: 406, 56
+  xy: 745, 92
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

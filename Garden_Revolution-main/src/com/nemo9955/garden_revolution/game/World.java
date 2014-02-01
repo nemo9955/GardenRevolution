@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
@@ -106,7 +107,7 @@ public class World implements Disposable {
 
     }
 
-    public void render(ModelBatch modelBatch, Environment light) {
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         for (ModelInstance nor : clouds )
             modelBatch.render( nor );
         for (ModelInstance e : mediu )

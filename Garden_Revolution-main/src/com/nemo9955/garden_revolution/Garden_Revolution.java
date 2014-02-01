@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
@@ -85,17 +87,17 @@ public class Garden_Revolution extends Game {
     }
 
     public static Model getModel(Assets model) {
-        if ( model.type().equals( Model.class ) )
-            return (Model) manager.get( model.path(), model.type() );
-        System.out.println( model.name() +" nu este Model" );
-        return null;
+        return manager.get( model.path(), Model.class );
     }
 
-    public static Texture getTexture(Assets texture) {
-        if ( texture.type().equals( Texture.class ) )
-            return (Texture) manager.get( texture.path(), texture.type() );
-        System.out.println( texture.name() +" nu este Texture" );
-        return null;
+
+    public static AtlasRegion getGameTexture(String name) {
+
+        return manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
+
+        // if ( texture.type().equals( Texture.class ) )
+        // return (Texture) manager.get( texture.path(), texture.type() );
+        // System.out.println( texture.name() +" nu este Texture" );
     }
 
     @Override

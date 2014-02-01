@@ -56,7 +56,7 @@ public class Tower implements Disposable {
         return true;
     }
 
-    public boolean upgradeTower(TowerType upgrade) {// TODO call this method in the constructor after TowerType is removed
+    public boolean upgradeTower(TowerType upgrade) {
         if ( type !=null &&type.rank >=upgrade.rank )
             return false;
         type = upgrade;

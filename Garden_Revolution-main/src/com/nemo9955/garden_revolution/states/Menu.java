@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -32,7 +32,7 @@ public class Menu extends ControllerAdapter implements Screen {
 
     private static final float rap = 1.3f;
 
-    private TextButton         options;
+    private ImageTextButton    options;
     private ImageButton        play;
     private ImageButton        exit;
     private CheckBox           mode;
@@ -46,7 +46,7 @@ public class Menu extends ControllerAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         // stage = new Stage();
 
-        options = new TextButton( "Options", skin );
+        options = new ImageTextButton( "Options", skin );
         play = new ImageButton( skin, "start" );
         exit = new ImageButton( skin, "exit" );
         mode = new CheckBox( "EXTERN", skin );

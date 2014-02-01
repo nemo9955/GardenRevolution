@@ -10,8 +10,11 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
@@ -35,29 +38,31 @@ import com.nemo9955.garden_revolution.utility.Vars;
 public class Gameplay extends CustomAdapter implements Screen {
 
 
-    public GestureDetector gestures;
-    private ModelBatch     modelBatch;
-    public ShapeRenderer   shape;
+    public GestureDetector      gestures;
+    private ModelBatch          modelBatch;
+    public ShapeRenderer        shape;
+    public DecalBatch           decalBatch;
+    private CameraGroupStrategy camGRStr;
 
-    public float           movex          = 0;
-    public float           movey          = 0;
-    public boolean         updWorld       = true;
-    private final int      scrw           = Gdx.graphics.getWidth(), scrh = Gdx.graphics.getHeight();
-    public static Vector2  tmp2           = new Vector2();
+    public float                movex          = 0;
+    public float                movey          = 0;
+    public boolean              updWorld       = true;
+    private final int           scrw           = Gdx.graphics.getWidth();
+    public static Vector2       tmp2           = new Vector2();
 
-    private Vector2        presDown       = new Vector2();
-    public Stage           stage;
-    public Label           viataTurn;
-    public Label           fps;
-    public Touchpad        mover;
-    public Image           weaponCharger;
+    private Vector2             presDown       = new Vector2();
+    public Stage                stage;
+    public Label                viataTurn;
+    public Label                fps;
+    public Touchpad             mover;
+    public Image                weaponCharger;
 
-    public World           world;
-    public float           touchPadTimmer = 0;
-    private TweenManager   tweeger;
+    public World                world;
+    public float                touchPadTimmer = 0;
+    private TweenManager        tweeger;
 
-    private Vector3        dolly          = new Vector3();
-    public Player          player;
+    private Vector3             dolly          = new Vector3();
+    public Player               player;
 
     public Gameplay() {
 
@@ -90,6 +95,10 @@ public class Gameplay extends CustomAdapter implements Screen {
         player.getCamera().lookAt( Vector3.Zero );
         player.getCamera().update();
 
+
+        camGRStr = new CameraGroupStrategy( player.getCamera() );
+        decalBatch = new DecalBatch( camGRStr );
+
         return this;
     }
 
@@ -101,12 +110,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         return this;
     }
 
+    Decal test = Decal.newDecal( Garden_Revolution.getGameTexture( "pointer-1" ), true );
+
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glViewport( 0, 0, scrw, scrh );
         Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
+        Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT |GL10.GL_DEPTH_BUFFER_BIT );
+        Gdx.gl.glEnable( GL10.GL_DEPTH_TEST );
 
         tweeger.update( delta );
 
@@ -124,8 +135,12 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( player.getCamera() );
-        world.render( modelBatch, world.getEnvironment() );
+        world.render( modelBatch, world.getEnvironment(), decalBatch );
         modelBatch.end();
+
+        decalBatch.add( test );
+
+        decalBatch.flush();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
             world.renderDebug( player.getCamera(), shape );
@@ -437,5 +452,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( world !=null )
             world.dispose();
         shape.dispose();
+        camGRStr.dispose();
+        decalBatch.dispose();
     }
 }

@@ -46,11 +46,6 @@ public class Player {
             setPlayerTower( world.getTowerHitByRay( ray ) );
             return true;
         }
-        // else if ( isInTower() ) {
-        // Turn turn = getTower();
-        // if ( turn instanceof FireTaped )
-        // turn.fireNormal( this, cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
-        // }
         return false;
     }
 

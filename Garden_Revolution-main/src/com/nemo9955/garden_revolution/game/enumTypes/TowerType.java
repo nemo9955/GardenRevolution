@@ -8,8 +8,6 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum TowerType {
 
 
-    // TODO scapa de enumul asta , trimitand clasa pentru a face o instanta noua
-
     BASIC(Assets.TURN_BASIC) {
 
         @Override

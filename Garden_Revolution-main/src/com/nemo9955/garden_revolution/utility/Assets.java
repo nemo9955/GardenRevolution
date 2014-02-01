@@ -18,8 +18,9 @@ public enum Assets {
     ENEMYS(LOC.MODEL, "inamici.g3db"), //
     TURN_BASIC(LOC.MODEL, "turn_basic.g3db"), //
 
-    ELEMENTS_PACK(LOC.ELEMENT, "UI_stuff.atlas", TextureAtlas.class), //
-    SKIN_JSON(LOC.ELEMENT, "UI_stuff.json", Skin.class); //
+    ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
+    GAME_PACK(LOC.ELEMENT, "GameImages.atlas", TextureAtlas.class), //
+    SKIN_JSON(LOC.ELEMENT, "MenuImages.json", Skin.class); //
 
 
     private String   path;

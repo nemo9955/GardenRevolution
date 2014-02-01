@@ -31,7 +31,7 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-		default : { font : arial_32 , checkboxOn : element1 , checkboxOff : element2 },
+		default : { font : arial_32 , checkboxOn : checked , checkboxOff : unchecked },
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
@@ -47,8 +47,6 @@
 		exit:     { imageUp: exit , pressedOffsetX: -2 , pressedOffsetY: -2},
 		optiuni:  { imageUp: buton_up , pressedOffsetX: -2 , pressedOffsetY: -2},
 		exit:     { imageUp: exit , pressedOffsetX: -2 , pressedOffsetY: -2},
-		camRight: { imageUp: arrows-right-1 , pressedOffsetX: 2 ,},
-		camLeft:  { imageUp: arrows-left-1 , pressedOffsetX: -2 ,},
 		towerUpgrade:  { imageUp: tower-upgrade , pressedOffsetX: -2 ,pressedOffsetY: 2 ,},
 		
 	},
@@ -69,6 +67,10 @@
 	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle:{
 		default:{ font:arial_32	, fontColor:white ,	focusedFontColor:blue , disabledFontColor:gray , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }
+	},
+	
+	com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle:{
+		default:{font:arial_32	, imageUp : mover-knob  , up: buton_up, down: buton_down, over:buton_over  }
 	}
 	
 }
