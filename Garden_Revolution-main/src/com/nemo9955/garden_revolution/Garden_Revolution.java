@@ -23,7 +23,6 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
-
 public class Garden_Revolution extends Game {
 
     public static final String        TITLU    = "Garden Revolution";
@@ -70,7 +69,6 @@ public class Garden_Revolution extends Game {
 
     public void postLoading() {
 
-
         Tween.registerAccessor( Sprite.class, new SpriteTween() );
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
@@ -89,7 +87,6 @@ public class Garden_Revolution extends Game {
     public static Model getModel(Assets model) {
         return manager.get( model.path(), Model.class );
     }
-
 
     public static AtlasRegion getGameTexture(String name) {
 

@@ -5,14 +5,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class Main {
 
-    public static void main(String[] args) {
-        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = Garden_Revolution.TITLU +" " +Garden_Revolution.VERSIUNE;
-        cfg.useGL20 = true;
-        cfg.resizable = false ;
-        cfg.width = 1280;
-        cfg.height = 720;
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		cfg.title = Garden_Revolution.TITLU + " " + Garden_Revolution.VERSIUNE;
+		cfg.useGL20 = true;
+		cfg.resizable = false;
+		cfg.width = 1280;
+		cfg.height = 720;
+		cfg.backgroundFPS = -1;
 
-        new LwjglApplication( new Garden_Revolution(), cfg );
-    }
+		new LwjglApplication(new Garden_Revolution(), cfg);
+	}
 }

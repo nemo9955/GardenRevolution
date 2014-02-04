@@ -75,7 +75,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                         Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsHost( level ) );
                     }
                     else {
-                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsClient( level, ipInput.getMessageText() ) );
+                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsClient( ipInput.getMessageText() ) );
                     }
                 }
 

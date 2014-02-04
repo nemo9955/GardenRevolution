@@ -1,5 +1,7 @@
 package com.nemo9955.garden_revolution.states;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
@@ -83,8 +85,10 @@ public class LevelSelector extends ControllerAdapter implements Screen {
         FileHandle nivele[] = lvlLoc.list();
         String harti[] = new String[nivele.length];
 
+
         for (int i = 0 ; i <harti.length ; i ++ )
             harti[i] = nivele[i].nameWithoutExtension();
+        Arrays.sort( harti );
 
         start = new TextButton( "Start", skin );
         elem = new List( harti, skin );

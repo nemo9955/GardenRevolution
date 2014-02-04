@@ -79,6 +79,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     }
 
+    public FileHandle mapLoc = null;
+
     public Gameplay init(FileHandle nivel) {
         updWorld = true;
 
@@ -123,7 +125,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         dialog.invalidate();
 
-
         dialog.show( stage );
     }
 
@@ -131,6 +132,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     private GameClient client;
 
     public Gameplay initAsHost(FileHandle nivel) {
+        // mapLoc = nivel;
+
+        mapLoc = new FileHandle( nivel.path() );
+
         init( nivel );
         host = new Host( this );
 
@@ -139,14 +144,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         return this;
     }
 
-    public Gameplay initAsClient(FileHandle nivel, String ip) {
-        init( nivel );
+    public Gameplay initAsClient(String ip) {
         client = new GameClient( this );
         client.connect( ip );
 
+        client.getServerMap();
+        init( mapLoc );
+
         showMessage( "Created as CLIENT" );
-
-
         return this;
     }
 
@@ -475,6 +480,15 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( Functions.isControllerUsable() )
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
+
+        if ( client !=null ) {
+            client.stopClient();
+            client = null;
+        }
+        if ( host !=null ) {
+            host.stopHost();
+            host = null;
+        }
     }
 
     @Override
@@ -495,10 +509,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         shape.dispose();
         camGRStr.dispose();
         decalBatch.dispose();
-        if ( client !=null )
-            client.stopClient();
-        if ( host !=null )
-            host.stopHost();
         ;
     }
 }
