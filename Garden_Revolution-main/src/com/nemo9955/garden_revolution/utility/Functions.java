@@ -9,7 +9,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.Packets.MapOfServer;
-
 
 public class Functions {
 
@@ -51,7 +49,6 @@ public class Functions {
     public static void setSerializedClasses(Kryo kryo) {
         kryo.register( String.class );
         kryo.register( MapOfServer.class );
-        kryo.register( FileHandle.class );
     }
 
     public static void fire(Actor actor) {

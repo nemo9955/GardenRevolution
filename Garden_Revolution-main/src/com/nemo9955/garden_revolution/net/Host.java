@@ -2,7 +2,6 @@ package com.nemo9955.garden_revolution.net;
 
 import java.io.IOException;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -21,7 +20,10 @@ public class Host extends Listener {
     public Host(Gameplay gp) {
         this.gp = gp;
         server = new Server();
+        Functions.setSerializedClasses( server.getKryo() );
         server.start();
+        server.addListener( this );
+
         try {
             server.bind( Vars.TCPport, Vars.UDPport );
         }
@@ -29,9 +31,6 @@ public class Host extends Listener {
             e.printStackTrace();
             System.out.println( "[H]Connection failed" );
         }
-        server.addListener( this );
-
-        Functions.setSerializedClasses( server.getKryo() );
     }
 
     public void brodcast(String mesaj) {
@@ -49,7 +48,9 @@ public class Host extends Listener {
             gp.showMessage( "[H] : " +object.toString() );
         }
         else if ( object instanceof MapOfServer ) {
-            FileHandle theMap = new FileHandle( gp.mapLoc.path() );
+            MapOfServer theMap = new MapOfServer();
+            // theMap = new FileHandle( gp.mapLoc.path() );
+            theMap.path = gp.mapLoc.path();
             gp.showMessage( "[S] sending map to client " );
             connection.sendTCP( theMap );
         }

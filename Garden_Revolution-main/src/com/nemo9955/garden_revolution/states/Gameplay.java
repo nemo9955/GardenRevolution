@@ -81,8 +81,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public FileHandle mapLoc = null;
 
-    public Gameplay init(FileHandle nivel) {
-        updWorld = true;
+
+    public void preInit() {
 
         if ( stage !=null ) {
             for (Actor actor : stage.getActors() )
@@ -90,6 +90,10 @@ public class Gameplay extends CustomAdapter implements Screen {
             stage.clear();
         }
         stage = StageUtils.makeGamePlayStage( stage, this );
+    }
+
+    public void postInit(FileHandle nivel) {
+        updWorld = true;
 
         if ( world !=null )
             world.dispose();
@@ -105,7 +109,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         camGRStr = new CameraGroupStrategy( player.getCamera() );
         decalBatch = new DecalBatch( camGRStr );
 
-        return this;
     }
 
     private Dialog dialog = new Dialog( "titlu", Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
@@ -116,6 +119,8 @@ public class Gameplay extends CustomAdapter implements Screen {
                           };
 
     public void showMessage(String mesaj) {
+
+        System.out.println( "Output : " +mesaj );
 
         dialog.setTitle( "Mesaj" );
 
@@ -131,12 +136,19 @@ public class Gameplay extends CustomAdapter implements Screen {
     private Host       host;
     private GameClient client;
 
+    public Gameplay initAsSinglePlayer(FileHandle nivel) {
+        preInit();
+        postInit( nivel );
+        return this;
+    }
+
     public Gameplay initAsHost(FileHandle nivel) {
-        // mapLoc = nivel;
+        preInit();
+        mapLoc = nivel;
 
-        mapLoc = new FileHandle( nivel.path() );
+        // mapLoc = new FileHandle( nivel.path() );
 
-        init( nivel );
+        postInit( nivel );
         host = new Host( this );
 
 
@@ -145,11 +157,11 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     public Gameplay initAsClient(String ip) {
+        preInit();
         client = new GameClient( this );
         client.connect( ip );
 
         client.getServerMap();
-        init( mapLoc );
 
         showMessage( "Created as CLIENT" );
         return this;
@@ -157,6 +169,9 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+
+        if ( world ==null )
+            return;
 
         Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
         Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT |GL10.GL_DEPTH_BUFFER_BIT );
@@ -509,6 +524,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         shape.dispose();
         camGRStr.dispose();
         decalBatch.dispose();
-        ;
+
+        if ( client !=null ) {
+            client.stopClient();
+            client = null;
+        }
+        if ( host !=null ) {
+            host.stopHost();
+            host = null;
+        }
     }
 }

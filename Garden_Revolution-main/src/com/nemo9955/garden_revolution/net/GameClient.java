@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.net;
 
 import java.io.IOException;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -17,14 +18,13 @@ public class GameClient extends Listener {
 
     public Client    client;
     private Gameplay gp;
-    private boolean  isWaiting = false;
 
     public GameClient(Gameplay gp) {
         this.gp = gp;
         client = new Client();
+        Functions.setSerializedClasses( client.getKryo() );
         client.start();
         client.addListener( this );
-        Functions.setSerializedClasses( client.getKryo() );
 
     }
 
@@ -47,24 +47,27 @@ public class GameClient extends Listener {
             gp.showMessage( "[C] : " +object.toString() );
 
         }
-        else if ( object instanceof FileHandle ) {
-            FileHandle theMap = (FileHandle) object;
-            System.out.println( "[C] writing pab from server : " +theMap.path() );
-            gp.mapLoc = new FileHandle( theMap.path() );
-            isWaiting = false;
+        else if ( object instanceof MapOfServer ) {
+            final MapOfServer map = (MapOfServer) object;
+            // gp.mapLoc = new FileHandle( theMap.path() );
+
+            Gdx.app.postRunnable( new Runnable() {
+
+                @Override
+                public void run() {
+                    gp.mapLoc = new FileHandle( map.path );
+                    gp.showMessage( "[C] writing path from server : " +map.path );
+                    gp.postInit( gp.mapLoc );
+
+                }
+            } );
         }
 
     }
 
     public void getServerMap() {
-        long time = System.currentTimeMillis();
-        isWaiting = true;
-
         client.sendTCP( new MapOfServer() );
 
-        while ( !isWaiting ||System.currentTimeMillis() -time >3000 ) {
-
-        }
     }
 
     public void brodcast(String string) {

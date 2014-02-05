@@ -127,7 +127,7 @@ public class LevelSelector extends ControllerAdapter implements Screen {
                 else if ( back.isPressed() )
                     Garden_Revolution.game.setScreen( Garden_Revolution.menu );
                 else if ( start.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.init( lvlLoc.child( toAcces +".xml" ) ) );
+                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsSinglePlayer( lvlLoc.child( toAcces +".xml" ) ) );
             }
         } );
 

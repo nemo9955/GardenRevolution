@@ -12,7 +12,6 @@ public class Main {
 		cfg.resizable = false;
 		cfg.width = 1280;
 		cfg.height = 720;
-		cfg.backgroundFPS = -1;
 
 		new LwjglApplication(new Garden_Revolution(), cfg);
 	}
