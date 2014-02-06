@@ -60,7 +60,7 @@ public class World implements Disposable {
     public final Vector3                     overview     = new Vector3( 20, 10, 10 );
     private int                              viata;
     public Tower[]                           towers;
-    public boolean                           canWaveStart = false;
+    private boolean                          canWaveStart = false;
     private Waves                            waves;
     public String                            mapPath;
 
@@ -81,7 +81,9 @@ public class World implements Disposable {
     }
 
     public World(StartingServerInfo info) {
+        // TODO convert the relative map path to the full path specific to the platform
         populateWorld( new FileHandle( info.path ) );
+        readData( new FileHandle( info.path ) );
 
         for (String str : info.turnuri ) {
             String[] separ = str.split( Vars.stringSeparator ).clone();
@@ -95,7 +97,7 @@ public class World implements Disposable {
     }
 
     public StartingServerInfo getWorldInfo(StartingServerInfo out) {
-        out.path = mapPath;
+        out.path = mapPath;// TODO make this sent the map relative to the assets
         int size = 0, nr = 0;
         for (Tower trn : towers )
             if ( trn.type !=null )
@@ -118,7 +120,7 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-        if ( canWaveStart &&waves.finishedWaves() )
+        if ( isCanWaveStart() &&waves.finishedWaves() )
             waves.update( delta );
 
         for (FightZone fz : getFightZones() ) {
@@ -207,10 +209,11 @@ public class World implements Disposable {
         try {
             map = new XmlReader().parse( location );
             towers = new Tower[map.getInt( "turnuri" )];
-            setPaths( new Array<CatmullRomSpline<Vector3>>( map.getInt( "drumuri" ) ) );
-            cp = new Array<Array<IndexedObject<Vector3>>>( 1 );
+            int noOfPaths = map.getInt( "drumuri" );
+            setPaths( new Array<CatmullRomSpline<Vector3>>( true, noOfPaths ) );
+            cp = new Array<Array<IndexedObject<Vector3>>>( noOfPaths );
 
-            for (int k = 0 ; k <map.getInt( "drumuri" ) ; k ++ )
+            for (int k = 0 ; k <noOfPaths ; k ++ )
                 cp.add( new Array<IndexedObject<Vector3>>( false, 1, IndexedObject.class ) );
         }
         catch (IOException e) {
@@ -237,7 +240,7 @@ public class World implements Disposable {
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
-                int pat = Integer.parseInt( sect[1] ) -1;
+                int pat = Integer.parseInt( sect[1] ) -1;// TODO get rid of the -1 so the paths can start from 0
                 int pct = Integer.parseInt( sect[2] );
                 cp.get( pat ).add( new IndexedObject<Vector3>( scena.nodes.get( i ).translation, pct ) );
             }
@@ -524,6 +527,14 @@ public class World implements Disposable {
 
     public void setShot(Array<Shot> shot) {
         this.shot = shot;
+    }
+
+    public boolean isCanWaveStart() {
+        return canWaveStart;
+    }
+
+    public void setCanWaveStart(boolean canWaveStart) {
+        this.canWaveStart = canWaveStart;
     }
 
 

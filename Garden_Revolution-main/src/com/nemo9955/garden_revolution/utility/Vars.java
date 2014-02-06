@@ -3,10 +3,6 @@ package com.nemo9955.garden_revolution.utility;
 
 public class Vars {
 
-    // variabile multyplayer
-    public static final int    TCPport             = 29955;
-    public static final int    UDPport             = 39955;
-
     // densitatea ecranului
     public static float        densitate           = 1f;
 
@@ -46,6 +42,14 @@ public class Vars {
     // pentru comportamentul entitatilor
     public static final long   enemyAttackInterval = 2037;
     public static final long   allyAttackInterval  = 1956;
-    public static final String stringSeparator     = "____";
+
+
+    // variabile multyplayer
+    public static final int    TCPport             = 29955;
+    public static final int    UDPport             = 39955;
+    public static final String stringSeparator     = "___";
+
+    protected static final String waitingMessage = "Waiting for others ..."; 
+
 
 }

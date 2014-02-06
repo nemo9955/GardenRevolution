@@ -9,4 +9,12 @@ public class Packets {
         public String[] turnuri;
     }
 
+    public static enum msClient {
+        IAmReady,
+    };
+
+    public static enum msHost {
+        YouCannotConnect, YouCanStartWaves,
+    };
+
 }

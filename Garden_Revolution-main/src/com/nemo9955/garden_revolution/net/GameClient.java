@@ -10,6 +10,7 @@ import com.esotericsoftware.minlog.Log;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.msHost;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -48,22 +49,33 @@ public class GameClient extends Listener {
 
 
     @Override
-    public void received(Connection connection, final Object object) {
-        if ( object instanceof String ) {
-            gp.showMessage( "[C] : " +object.toString() );
+    public void received(Connection connection, final Object obj) {
+        if ( obj instanceof String ) {
+            gp.showMessage( "[C] : " +obj.toString() );
 
         }
-        else if ( object instanceof StartingServerInfo ) {
+        else if ( obj instanceof StartingServerInfo ) {
             Gdx.app.postRunnable( new Runnable() {
 
                 @Override
                 public void run() {
-                    gp.postInit( new World((StartingServerInfo)object) );
+                    gp.postInit( new World( (StartingServerInfo) obj ) );
 
                     Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
 
                 }
             } );
+        }
+        else if ( obj instanceof msHost ) {
+            msHost message = (msHost) obj;
+            switch (message) {
+                case YouCanStartWaves:
+                    gp.world.setCanWaveStart( true );
+                    gp.ready.setVisible( false );
+                    break;
+                default:
+                    break;
+            }
         }
 
     }
@@ -79,6 +91,15 @@ public class GameClient extends Listener {
 
     public void stopClient() {
         client.stop();
+    }
+
+
+    public void sendTCP(Object obj) {
+        client.sendTCP( obj );
+    }
+
+    public void sendUDP(Object obj) {
+        client.sendUDP( obj );
     }
 
 }

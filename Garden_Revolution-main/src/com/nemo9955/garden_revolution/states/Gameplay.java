@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
@@ -63,6 +64,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public Label                fps;
     public Touchpad             mover;
     public Image                weaponCharger;
+    public TextButton           ready;
     private float               charge         = -1;
 
     public Host                 host;
@@ -183,6 +185,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         host = new Host( this );
 
 
+        ready.setText( "Ready!" );
         showMessage( "Created as HOST" );
         return this;
     }
@@ -193,7 +196,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         client.connect( ip );
 
         client.getServerMap();
-
+        ready.setText( "Ready!" );
         return this;
     }
 
@@ -507,14 +510,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void dispose() {
-        modelBatch.dispose();
-        if ( stage !=null )
-            stage.dispose();
-        if ( world !=null )
-            world.dispose();
-        shape.dispose();
-        camGRStr.dispose();
-        decalBatch.dispose();
 
         if ( client !=null ) {
             client.stopClient();
@@ -524,5 +519,17 @@ public class Gameplay extends CustomAdapter implements Screen {
             host.stopHost();
             host = null;
         }
+        if ( modelBatch !=null )
+            modelBatch.dispose();
+        if ( stage !=null )
+            stage.dispose();
+        if ( world !=null )
+            world.dispose();
+        if ( shape !=null )
+            shape.dispose();
+        if ( camGRStr !=null )
+            camGRStr.dispose();
+        if ( decalBatch !=null )
+            decalBatch.dispose();
     }
 }
