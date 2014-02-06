@@ -16,8 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
-import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
+import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 
 public class Functions {
 
@@ -25,12 +24,14 @@ public class Functions {
 
     public static void setSerializedClasses(Kryo kryo) {
         kryo.register( String.class );
-        kryo.register( MapOfServer.class );
-        kryo.register( World.class );
-        regDeclaredClasses( kryo, World.class.getClass() );
+        kryo.register( String[].class );
+        kryo.register( StartingServerInfo.class );
+        // kryo.register( World.class );
+        // regDeclaredClasses( kryo, World.class.getClass() );
         // Util.getElementClass( World.class ).getDeclaredClasses()
     }
 
+    @SuppressWarnings("unused")
     private static void regDeclaredClasses(Kryo kryo, Class<?> cls) {
         kryo.register( cls );
         for (Class<?> subcls : cls.getDeclaredClasses() ) {

@@ -34,9 +34,13 @@ import com.nemo9955.garden_revolution.game.entitati.Shot;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
+import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
+import com.nemo9955.garden_revolution.utility.Vars;
 
 
 public class World implements Disposable {
@@ -58,6 +62,7 @@ public class World implements Disposable {
     public Tower[]                           towers;
     public boolean                           canWaveStart = false;
     private Waves                            waves;
+    public String                            mapPath;
 
     private Environment                      environment  = new Environment();
 
@@ -70,9 +75,45 @@ public class World implements Disposable {
     }
 
     public World(FileHandle location) {
-
+        mapPath = location.path();
         populateWorld( location );
         readData( location );
+    }
+
+    public World(StartingServerInfo info) {
+        populateWorld( new FileHandle( info.path ) );
+
+        for (String str : info.turnuri ) {
+            String[] separ = str.split( Vars.stringSeparator ).clone();
+            // System.out.println( "[C] unu din turnuri-------------" );
+            Tower turn = towers[Integer.parseInt( separ[0] )];
+            turn.upgradeTower( TowerType.valueOf( separ[1] ) );
+            if ( separ.length ==3 )
+                turn.changeWeapon( WeaponType.valueOf( separ[2] ) );
+        }
+
+    }
+
+    public StartingServerInfo getWorldInfo(StartingServerInfo out) {
+        out.path = mapPath;
+        int size = 0, nr = 0;
+        for (Tower trn : towers )
+            if ( trn.type !=null )
+                size ++;
+
+        String[] formater = new String[size];
+        for (int i = 0 ; i <towers.length ; i ++ )
+            if ( towers[i].type !=null ) {
+                formater[nr] = "" +i +Vars.stringSeparator +towers[i].type.toString();
+                if ( towers[i].hasWeapon() )
+                    formater[nr] += Vars.stringSeparator +towers[i].getWeapon().type.toString();
+                // System.out.println("[S] : "+ formater[nr] );
+                nr ++;
+            }
+
+        out.turnuri = formater;
+
+        return out;
     }
 
     public void update(float delta) {

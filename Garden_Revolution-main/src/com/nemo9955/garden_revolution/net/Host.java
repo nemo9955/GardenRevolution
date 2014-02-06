@@ -6,7 +6,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
+import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -42,7 +42,7 @@ public class Host extends Listener {
 
     @Override
     public void connected(Connection connection) {
-        gp.showMessage( "Someone connected" );
+        gp.showMessage( "[H]Someone connected" );
     }
 
     @Override
@@ -50,9 +50,10 @@ public class Host extends Listener {
         if ( object instanceof String ) {
             gp.showMessage( "[H] : " +object.toString() );
         }
-        else if ( object instanceof MapOfServer ) {
-            gp.showMessage( "[S] sending map to client " );
-            connection.sendTCP( gp.world );
+        else if ( object instanceof StartingServerInfo ) {
+            StartingServerInfo srv = (StartingServerInfo) object;
+            connection.sendTCP( gp.world.getWorldInfo( srv ) );
+            gp.showMessage( "[H] sending map info to client " );
         }
     }
 

@@ -9,7 +9,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
+import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -37,11 +37,11 @@ public class GameClient extends Listener {
         try {
             client.connect( 10000, ip, Vars.TCPport, Vars.UDPport );
 
-            gp.showMessage( "Created as CLIENT" );
+            gp.showMessage( "[C] Created as CLIENT" );
         }
         catch (IOException e) {
             e.printStackTrace();
-            gp.showMessage( "Couldn't connect" );
+            gp.showMessage( "[C] Couldn't connect" );
         }
 
     }
@@ -53,12 +53,12 @@ public class GameClient extends Listener {
             gp.showMessage( "[C] : " +object.toString() );
 
         }
-        else if ( object instanceof World ) {
+        else if ( object instanceof StartingServerInfo ) {
             Gdx.app.postRunnable( new Runnable() {
 
                 @Override
                 public void run() {
-                    gp.postInit( (World) object );
+                    gp.postInit( new World((StartingServerInfo)object) );
 
                     Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
 
@@ -69,7 +69,7 @@ public class GameClient extends Listener {
     }
 
     public void getServerMap() {
-        client.sendTCP( new MapOfServer() );
+        client.sendTCP( new StartingServerInfo() );
 
     }
 

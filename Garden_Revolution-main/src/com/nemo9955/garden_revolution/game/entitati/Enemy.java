@@ -50,7 +50,6 @@ public class Enemy extends LifeForm {
     @Override
     public void reset() {
         super.reset();
-        path = null;
         paused = false;
     }
 

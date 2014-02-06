@@ -46,5 +46,6 @@ public class Vars {
     // pentru comportamentul entitatilor
     public static final long   enemyAttackInterval = 2037;
     public static final long   allyAttackInterval  = 1956;
+    public static final String stringSeparator     = "____";
 
 }
