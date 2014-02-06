@@ -13,15 +13,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
-import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
-import com.nemo9955.garden_revolution.game.mediu.Weapon.FireHold;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 
 
 public class Tower implements Disposable {
 
-    @SuppressWarnings("unused")
     private World                world;
-    public Array<BoundingBox>    coliders  = new Array<BoundingBox>( false, 1 );
+    private Array<BoundingBox>   coliders  = new Array<BoundingBox>( false, 1 );
 
     private Array<ModelInstance> parts     = new Array<ModelInstance>( false, 1 );
     public final Vector3         poz       = new Vector3();
@@ -38,23 +36,33 @@ public class Tower implements Disposable {
         this.world = world;
         parts.add( baza );
         place.set( poz ).add( 0, 10, 0 );
-        coliders.add( baza.calculateBoundingBox( new BoundingBox() ) );
+
+        this.world.addToColide( addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) ) );
     }
 
-    public void fireHold(Ray ray) {
-        if ( hasArma() &&weapon instanceof FireHold )
-            ( (FireHold) weapon ).fireHold( ray );
+    // public void fireHold(Ray ray) {
+    // if ( hasArma() &&weapon instanceof FireHold )
+    // ( (FireHold) weapon ).fireHold( ray );
+    // }
+    //
+    // public void fireCharged(Ray ray, float charged) {
+    // if ( hasArma() &&weapon instanceof FireCharged )
+    // ( (FireCharged) weapon ).fireCharged( ray, charged );
+    // }
+
+    public void fireWeapon(World world, Ray ray, float charge) {
+        weapon.fire( world, ray, charge );
     }
 
-    public void fireCharged(Ray ray, float charged) {
-        if ( hasArma() &&weapon instanceof FireCharged )
-            ( (FireCharged) weapon ).fireCharged( ray, charged );
-    }
-
-    public boolean changeWeapon(Weapon toChange) {
-        if ( hasArma() &&weapon.name ==toChange.name )
+    public boolean changeWeapon(WeaponType toChange) {
+        if(!hasWeapon()){
+            weapon = new Weapon(toChange , place) {
+            };
+            return true ;
+        }
+        if ( weapon.type ==toChange )
             return false;
-        weapon = toChange;
+        weapon.changeWeapon( toChange );
         return true;
     }
 
@@ -65,6 +73,9 @@ public class Tower implements Disposable {
         parts.clear();
 
         Array<Node> remove = new Array<Node>( false, 1 );
+
+        world.removeColiders( getTowerColiders() );
+        getTowerColiders().clear();
 
         ModelInstance model = new ModelInstance( upgrade.getModel(), poz );
         for (int i = 0 ; i <model.nodes.size ; i ++ ) {
@@ -77,7 +88,8 @@ public class Tower implements Disposable {
                 BoundingBox box = new BoundingBox();
                 model.getNode( id ).calculateBoundingBox( box );
                 box.set( box.min.add( poz ), box.max.add( poz ) );
-                coliders.add( box );
+                addToTowerColiders( box );
+                world.addToColide( box );
                 remove.add( model.nodes.get( i ) );
             }
         }
@@ -96,14 +108,14 @@ public class Tower implements Disposable {
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         for (ModelInstance model : parts )
             modelBatch.render( model, light );
-        if ( hasArma() )
+        if ( hasWeapon() )
             weapon.render( modelBatch, light );
         // if ( type !=null )
         // decalBatch.add( pointer );
 
     }
 
-    public Weapon getArma() {
+    public Weapon getWeapon() {
         return weapon;
     }
 
@@ -111,12 +123,12 @@ public class Tower implements Disposable {
         this.weapon = weapon;
     }
 
-    public boolean hasArma() {
+    public boolean hasWeapon() {
         return weapon !=null;
     }
 
     public boolean intersectsRay(Ray ray) {
-        for (BoundingBox box : coliders )
+        for (BoundingBox box : getTowerColiders() )
             if ( Intersector.intersectRayBoundsFast( ray, box ) )
                 return true;
         return false;
@@ -124,8 +136,21 @@ public class Tower implements Disposable {
 
     @Override
     public void dispose() {
-        if ( hasArma() )
+        if ( hasWeapon() )
             weapon.dispose();
+    }
+
+    public Array<BoundingBox> getTowerColiders() {
+        return coliders;
+    }
+
+    public BoundingBox addToTowerColiders(BoundingBox box) {
+        coliders.add( box );
+        return box;
+    }
+
+    public void setTowerColiders(Array<BoundingBox> coliders) {
+        this.coliders = coliders;
     }
 
 }

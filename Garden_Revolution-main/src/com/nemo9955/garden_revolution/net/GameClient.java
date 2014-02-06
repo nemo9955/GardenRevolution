@@ -3,11 +3,13 @@ package com.nemo9955.garden_revolution.net;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.nemo9955.garden_revolution.net.Packets.MapOfServer;
+import com.esotericsoftware.minlog.Log;
+import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -23,8 +25,10 @@ public class GameClient extends Listener {
         this.gp = gp;
         client = new Client();
         Functions.setSerializedClasses( client.getKryo() );
+        client.setKeepAliveTCP( 9000 );
         client.start();
         client.addListener( this );
+        Log.set( Log.LEVEL_DEBUG );
 
     }
 
@@ -32,6 +36,8 @@ public class GameClient extends Listener {
     public void connect(String ip) {
         try {
             client.connect( 10000, ip, Vars.TCPport, Vars.UDPport );
+
+            gp.showMessage( "Created as CLIENT" );
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -42,22 +48,19 @@ public class GameClient extends Listener {
 
 
     @Override
-    public void received(Connection connection, Object object) {
+    public void received(Connection connection, final Object object) {
         if ( object instanceof String ) {
             gp.showMessage( "[C] : " +object.toString() );
 
         }
-        else if ( object instanceof MapOfServer ) {
-            final MapOfServer map = (MapOfServer) object;
-            // gp.mapLoc = new FileHandle( theMap.path() );
-
+        else if ( object instanceof World ) {
             Gdx.app.postRunnable( new Runnable() {
 
                 @Override
                 public void run() {
-                    gp.mapLoc = new FileHandle( map.path );
-                    gp.showMessage( "[C] writing path from server : " +map.path );
-                    gp.postInit( gp.mapLoc );
+                    gp.postInit( (World) object );
+
+                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
 
                 }
             } );

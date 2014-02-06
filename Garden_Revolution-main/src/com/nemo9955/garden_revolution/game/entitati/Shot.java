@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 
@@ -18,7 +19,6 @@ public class Shot extends Entity {
     private Vector3 direction;
     private float   life;
     public ShotType type;
-
     private float   charge;
 
     public Shot(World world) {
@@ -26,34 +26,27 @@ public class Shot extends Entity {
         direction = new Vector3();
     }
 
-    public Shot create(ShotType type, Vector3 position, Vector3 direction) {
+    public Shot create(ShotType type, Ray ray, float charge) {
+
         this.type = type;
-        super.init( position );
-        this.direction.set( direction );
+        super.init( ray.origin );
+        this.direction.set( ray.direction );
 
         life = 5f;
-
-        return this;
-    }
-
-    public Shot create(ShotType type, Vector3 position, Vector3 direction, float charge) {
-        create( type, position, direction );
         this.charge = charge;
 
         if ( type ==ShotType.GHIULEA ) {
-            this.direction.y = 0;
-            this.direction.add( 0, 1f, 0 ).nor();
+            this.direction.y = 1;
+            this.direction.nor().scl( 1f +this.charge );
         }
-
-        this.direction.scl( 1f +this.charge );
-
         return this;
     }
 
     @Override
     public void reset() {
         super.reset();
-
+        charge = 0;
+        life = 0;
     }
 
     @Override
@@ -77,7 +70,7 @@ public class Shot extends Entity {
 
     private static Model model = createModel();
 
-    private static Model createModel() {//FIXME something is wrong with the model ... sometimes it creates a null one 
+    private static Model createModel() {// FIXME something is wrong with the model ... sometimes it creates a null one
         ModelBuilder modelBuilder = new ModelBuilder();
         Model model = modelBuilder.createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
         World.toDispose.add( model );

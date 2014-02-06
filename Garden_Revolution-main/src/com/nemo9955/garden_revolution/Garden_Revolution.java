@@ -89,12 +89,7 @@ public class Garden_Revolution extends Game {
     }
 
     public static AtlasRegion getGameTexture(String name) {
-
         return manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
-
-        // if ( texture.type().equals( Texture.class ) )
-        // return (Texture) manager.get( texture.path(), texture.type() );
-        // System.out.println( texture.name() +" nu este Texture" );
     }
 
     @Override

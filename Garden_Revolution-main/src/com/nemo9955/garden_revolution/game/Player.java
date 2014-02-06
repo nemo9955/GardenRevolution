@@ -10,8 +10,9 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.game.mediu.Weapon;
 import com.nemo9955.garden_revolution.utility.Functions;
 
 
@@ -37,7 +38,7 @@ public class Player {
 
     public void update(float delta) {
         if ( isInTower() &&isFiringHold() )
-            fireHoldWeapon( getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) );
+            fireWeapon( world, getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), 0 );
     }
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
@@ -180,20 +181,21 @@ public class Player {
     }
 
     public void setFiringHold(boolean isFiring) {
-        if ( isInTower() )
+        if ( isInTower() &&isWeaponType( FireType.FIREHOLD ) )
             this.isFiringHold = isFiring;
+        else
+            this.isFiringHold = false;
     }
 
-    public void fireChargedWeapon(Ray ray, float charged) {
-        if ( isInTower() )
-            getTower().fireCharged( ray, charged );
-
+    public boolean isWeaponType(FireType ft) {
+        if ( tower !=null &&tower.getWeapon() !=null )
+            if ( tower.getWeapon().type.getFireType() ==ft )
+                return true;
+        return false;
     }
 
-    public void fireHoldWeapon(Ray ray) {
-        if ( isInTower() )
-            getTower().fireHold( ray );
-
+    public void fireWeapon(World world, Ray ray, float charge) {
+        tower.fireWeapon( world, ray, charge );
     }
 
     public void upgradeCurentTower(TowerType upgrade) {
@@ -203,19 +205,11 @@ public class Player {
             }
     }
 
-
-    public void changeCurrentWeapon(Class<? extends Weapon> weapon) {
+    public void changeCurrentWeapon(WeaponType newWeapon) {
         Tower tower = getTower();
         if ( isInTower() &&tower.type !=null )
-            try {
-                if ( tower.changeWeapon( weapon.getDeclaredConstructor( World.class, Vector3.class ).newInstance( world, tower.place ) ) )
-                    setPlayerTower( tower );
-                world.canWaveStart = true;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            if ( tower.changeWeapon( newWeapon ) )
+                setPlayerTower( tower );
     }
-
 
 }

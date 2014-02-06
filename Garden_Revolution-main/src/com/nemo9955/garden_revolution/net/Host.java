@@ -5,7 +5,8 @@ import java.io.IOException;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.nemo9955.garden_revolution.net.Packets.MapOfServer;
+import com.esotericsoftware.minlog.Log;
+import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -31,6 +32,8 @@ public class Host extends Listener {
             e.printStackTrace();
             System.out.println( "[H]Connection failed" );
         }
+
+        Log.set( Log.LEVEL_DEBUG );
     }
 
     public void brodcast(String mesaj) {
@@ -48,11 +51,8 @@ public class Host extends Listener {
             gp.showMessage( "[H] : " +object.toString() );
         }
         else if ( object instanceof MapOfServer ) {
-            MapOfServer theMap = new MapOfServer();
-            // theMap = new FileHandle( gp.mapLoc.path() );
-            theMap.path = gp.mapLoc.path();
             gp.showMessage( "[S] sending map to client " );
-            connection.sendTCP( theMap );
+            connection.sendTCP( gp.world );
         }
     }
 

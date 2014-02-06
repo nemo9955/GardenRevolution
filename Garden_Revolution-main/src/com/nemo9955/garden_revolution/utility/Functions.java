@@ -16,11 +16,30 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
-import com.nemo9955.garden_revolution.net.Packets.MapOfServer;
+import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.net.packets.Packets.MapOfServer;
 
 public class Functions {
 
     public static InputEvent clickedEvent = newInputEvent();
+
+    public static void setSerializedClasses(Kryo kryo) {
+        kryo.register( String.class );
+        kryo.register( MapOfServer.class );
+        kryo.register( World.class );
+        regDeclaredClasses( kryo, World.class.getClass() );
+        // Util.getElementClass( World.class ).getDeclaredClasses()
+    }
+
+    private static void regDeclaredClasses(Kryo kryo, Class<?> cls) {
+        kryo.register( cls );
+        for (Class<?> subcls : cls.getDeclaredClasses() ) {
+            kryo.register( subcls );
+        }
+        for (Class<?> subcls : cls.getClasses() ) {
+            kryo.register( subcls );
+        }
+    }
 
     public static String getIpAddress() {
         Enumeration<NetworkInterface> nis;
@@ -44,11 +63,6 @@ public class Functions {
             e.printStackTrace();
         }
         return "Could not detect the IP.";
-    }
-
-    public static void setSerializedClasses(Kryo kryo) {
-        kryo.register( String.class );
-        kryo.register( MapOfServer.class );
     }
 
     public static void fire(Actor actor) {

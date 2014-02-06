@@ -17,8 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
-import com.nemo9955.garden_revolution.game.mediu.Cannon;
-import com.nemo9955.garden_revolution.game.mediu.MiniGun;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
 
@@ -194,9 +193,9 @@ public class StageUtils {
                 else if ( basicT.isPressed() )
                     gameplay.player.upgradeCurentTower( TowerType.BASIC );
                 else if ( miniGun.isPressed() )
-                    gameplay.player.changeCurrentWeapon( MiniGun.class );
+                    gameplay.player.changeCurrentWeapon( WeaponType.MINIGUN );
                 else if ( cannon.isPressed() )
-                    gameplay.player.changeCurrentWeapon( Cannon.class );
+                    gameplay.player.changeCurrentWeapon( WeaponType.CANNON );
 
             }
         };

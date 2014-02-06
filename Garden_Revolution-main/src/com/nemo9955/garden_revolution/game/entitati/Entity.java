@@ -44,7 +44,6 @@ public abstract class Entity implements Poolable {
 
     @Override
     public void reset() {
-        model = null;
     }
 
     protected abstract ModelInstance getModel(float x, float y, float z);
@@ -106,10 +105,6 @@ public abstract class Entity implements Poolable {
             angle -= 360;
         if ( angle <0 )
             angle += 360;
-    }
-
-    public void damage(Entity e) {
-        setDead( true );
     }
 
     public void damage(int dmg) {

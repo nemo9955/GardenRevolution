@@ -5,9 +5,7 @@ import java.io.IOException;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -16,11 +14,9 @@ import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.CatmullRomSpline;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -47,9 +43,7 @@ public class World implements Disposable {
 
     public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
 
-    private Array<ModelInstance>             clouds       = new Array<ModelInstance>( false, 10 );
     private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
-
     private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
     private Array<Ally>                      ally         = new Array<Ally>( false, 10 );
     private Array<Shot>                      shot         = new Array<Shot>( false, 10 );
@@ -67,20 +61,19 @@ public class World implements Disposable {
 
     private Environment                      environment  = new Environment();
 
-
-    public World(FileHandle location) {
+    {
         // lights.
         environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
         environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
         // envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
         environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
+    }
 
+    public World(FileHandle location) {
 
-        makeNori();
         populateWorld( location );
         readData( location );
     }
-
 
     public void update(float delta) {
 
@@ -106,8 +99,6 @@ public class World implements Disposable {
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-        for (ModelInstance nor : clouds )
-            modelBatch.render( nor );
         for (ModelInstance e : mediu )
             modelBatch.render( e, light );
 
@@ -130,10 +121,10 @@ public class World implements Disposable {
         for (BoundingBox box : getColide() )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
-        shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
-        for (Tower tower : towers )
-            for (BoundingBox box : tower.coliders )
-                shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
+        // shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
+        // for (Tower tower : towers )
+        // for (BoundingBox box : tower.getTowerColiders() )
+        // shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 1, 0, 0, 1 );
         for (Entity e : getEnemy() )
@@ -165,26 +156,6 @@ public class World implements Disposable {
             }
         }
         shape.end();
-    }
-
-    private void makeNori() {
-        clouds.clear();
-        ModelBuilder build = new ModelBuilder();
-        Model sfera = build.createSphere( 5, 5, 5, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        toDispose.add( sfera );
-        ModelInstance nor;
-
-        int norx, norz;
-
-        for (int i = 0 ; i <20 ; i ++ ) {
-            norx = MathUtils.random( -100, 100 );
-            norz = MathUtils.random( -100, 100 );
-            for (int j = 1 ; j <=5 ; j ++ ) {
-                nor = new ModelInstance( sfera );
-                nor.transform.translate( norx +MathUtils.random( 0f, 7f ), 50, norz +MathUtils.random( 0f, 7f ) );
-                clouds.add( nor );
-            }
-        }
     }
 
     private void populateWorld(FileHandle location) {
@@ -232,12 +203,12 @@ public class World implements Disposable {
             else if ( id.startsWith( "colider" ) ) {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
-                getColide().add( box );
+                addToColide( box );
             }
             else if ( id.endsWith( "solid" ) ) {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
-                getColide().add( box );
+                addToColide( box );
                 addMediu( instance );
             }
             else if ( id.startsWith( "camera" ) ) {
@@ -367,14 +338,8 @@ public class World implements Disposable {
         return aliatTemp;
     }
 
-    public Shot addShot(ShotType type, Vector3 position, Vector3 direction) {
-        Shot shotTemp = shotPool.obtain().create( type, position, direction );
-        getShot().add( shotTemp );
-        return shotTemp;
-    }
-
-    public Shot addShot(ShotType type, Vector3 position, Vector3 direction, float charge) {
-        Shot shotTemp = shotPool.obtain().create( type, position, direction, charge );
+    public Shot addShot(ShotType type, Ray ray, float charge) {
+        Shot shotTemp = shotPool.obtain().create( type, ray, charge );
         getShot().add( shotTemp );
         return shotTemp;
     }
@@ -470,6 +435,16 @@ public class World implements Disposable {
     }
 
 
+    public BoundingBox addToColide(BoundingBox box) {
+        colide.add( box );
+        return box;
+    }
+
+    public void removeColiders(Array<BoundingBox> box) {
+        colide.removeAll( box, false );
+    }
+
+
     public void setColide(Array<BoundingBox> colide) {
         this.colide = colide;
     }
@@ -524,8 +499,8 @@ public class World implements Disposable {
         getAlly().clear();
         getShot().clear();
         mediu.clear();
-        clouds.clear();
 
     }
+
 
 }

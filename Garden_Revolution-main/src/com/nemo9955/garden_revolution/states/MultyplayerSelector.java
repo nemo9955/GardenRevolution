@@ -32,6 +32,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
 
 
     private static final float rap = 1.3f;
+    private Table              table;
 
 
     public MultyplayerSelector() {
@@ -39,7 +40,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
-        final Table table = new Table( skin );
+        table = new Table( skin );
         back = new TextButton( "Back", skin );
         final TextButton start = new TextButton( "Start", skin );
         final TextField ipInput = new TextField( "", skin );
@@ -58,8 +59,8 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         table.add( start ).row();
         table.add( isHost );
         table.add( "IP :" );
-        table.add( ipInput );
-        table.add( theIP ).row();
+        table.add( theIP );
+        table.add( ipInput ).row();
         table.add( isPublic ).row();
         table.add( back ).row();
 
@@ -72,10 +73,10 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                     Garden_Revolution.game.setScreen( Garden_Revolution.menu );
                 else if ( start.isPressed() ) {
                     if ( isHost.isChecked() ) {
-                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsHost( level ) );
+                        startAsHost();
                     }
                     else {
-                        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsClient( ipInput.getMessageText() ) );
+                        startAsClient( ipInput.getMessageText() );
                     }
                 }
 
@@ -101,6 +102,14 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         this.level = level;
         return this;
 
+    }
+
+    private void startAsClient(String textIP) {
+        Garden_Revolution.gameplay.initAsClient( textIP );
+    }
+
+    private void startAsHost() {
+        Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsHost( level ) );
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.nemo9955.garden_revolution.net;
+package com.nemo9955.garden_revolution.net.packets;
 
 
 public class Packets {

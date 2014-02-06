@@ -1,52 +1,43 @@
 package com.nemo9955.garden_revolution.game.mediu;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 
 
 public abstract class Weapon implements Disposable {
 
-    protected static Vector3   tmp        = new Vector3();
-
     private ModelInstance      model;
     public AnimationController animation;
-    public Vector3             poz;
-
-    protected int              fireDellay = 100;
-    protected long             fireTime;
-
-    public String              name       = "weapon name";
-    public String              details    = "weapon description";
-
-    protected World            world;
+    public final Vector3       poz = new Vector3();
+    public WeaponType          type;
 
 
-    public Weapon(World world, Vector3 poz) {
-        this.poz = poz;
-        this.world = world;
+    public Weapon(WeaponType type, Vector3 poz) {
+        this.poz.set( poz );
+        this.type = type;
+        changeWeapon( type );
+    }
 
-        ModelBuilder build = new ModelBuilder();
-        Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-        World.toDispose.add( sfera );
+    public void changeWeapon(WeaponType toChange) {
 
         model = getModelInstance( poz );
         animation = new AnimationController( model );
     }
 
-    protected abstract ModelInstance getModelInstance(Vector3 poz2);
+    public void fire(World world, Ray ray, float charge) {
+        type.fireProjectile( world, ray, charge );
+    }
+
+    public ModelInstance getModelInstance(Vector3 poz) {
+        return type.getModelInstance( poz );
+    }
 
     public void update(float delta) {
         animation.update( delta );
@@ -60,31 +51,8 @@ public abstract class Weapon implements Disposable {
         modelBatch.render( model, light );
     }
 
-    public void render(ModelBatch modelBatch, Shader shader) {
-        modelBatch.render( model, shader );
-    }
-
-
-    public int getFireDellay() {
-        return fireDellay;
-    }
-
-    public void setFireDellay(int fireDellay) {
-        this.fireDellay = fireDellay;
-    }
-
     @Override
     public void dispose() {
 
-    }
-
-    public static interface FireCharged {
-
-        public void fireCharged(Ray ray, float charged);
-    }
-
-    public static interface FireHold {
-
-        public void fireHold(Ray ray);
     }
 }

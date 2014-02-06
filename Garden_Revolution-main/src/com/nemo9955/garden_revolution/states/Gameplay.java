@@ -30,7 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.World;
-import com.nemo9955.garden_revolution.game.mediu.Weapon.FireCharged;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -52,7 +52,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     public float                movey          = 0;
     public boolean              updWorld       = true;
     private final int           scrw           = Gdx.graphics.getWidth();
+    private Vector3             dolly          = new Vector3();
     public static Vector2       tmp2           = new Vector2();
+    public float                touchPadTimmer = 0;
+    private TweenManager        tweeger;
 
     private Vector2             presDown       = new Vector2();
     public Stage                stage;
@@ -60,12 +63,12 @@ public class Gameplay extends CustomAdapter implements Screen {
     public Label                fps;
     public Touchpad             mover;
     public Image                weaponCharger;
+    private float               charge         = -1;
+
+    public Host                 host;
+    public GameClient           client;
 
     public World                world;
-    public float                touchPadTimmer = 0;
-    private TweenManager        tweeger;
-
-    private Vector3             dolly          = new Vector3();
     public Player               player;
 
     public Gameplay() {
@@ -77,94 +80,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
 
-    }
-
-    public FileHandle mapLoc = null;
-
-
-    public void preInit() {
-
-        if ( stage !=null ) {
-            for (Actor actor : stage.getActors() )
-                actor.clear();
-            stage.clear();
-        }
-        stage = StageUtils.makeGamePlayStage( stage, this );
-    }
-
-    public void postInit(FileHandle nivel) {
-        updWorld = true;
-
-        if ( world !=null )
-            world.dispose();
-        world = new World( nivel );
-
-        player = new Player( world );
-
-        player.getCamera().position.set( world.overview );
-        player.getCamera().lookAt( Vector3.Zero );
-        player.getCamera().update();
-
-
-        camGRStr = new CameraGroupStrategy( player.getCamera() );
-        decalBatch = new DecalBatch( camGRStr );
-
-    }
-
-    private Dialog dialog = new Dialog( "titlu", Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
-
-                              protected void result(Object object) {
-                                  // TODO add something that clears all the buttons after one is pressed
-                              };
-                          };
-
-    public void showMessage(String mesaj) {
-
-        System.out.println( "Output : " +mesaj );
-
-        dialog.setTitle( "Mesaj" );
-
-        dialog.button( mesaj );
-
-        dialog.pad( 50 );
-
-        dialog.invalidate();
-
-        dialog.show( stage );
-    }
-
-    private Host       host;
-    private GameClient client;
-
-    public Gameplay initAsSinglePlayer(FileHandle nivel) {
-        preInit();
-        postInit( nivel );
-        return this;
-    }
-
-    public Gameplay initAsHost(FileHandle nivel) {
-        preInit();
-        mapLoc = nivel;
-
-        // mapLoc = new FileHandle( nivel.path() );
-
-        postInit( nivel );
-        host = new Host( this );
-
-
-        showMessage( "Created as HOST" );
-        return this;
-    }
-
-    public Gameplay initAsClient(String ip) {
-        preInit();
-        client = new GameClient( this );
-        client.connect( ip );
-
-        client.getServerMap();
-
-        showMessage( "Created as CLIENT" );
-        return this;
     }
 
     @Override
@@ -226,7 +141,61 @@ public class Gameplay extends CustomAdapter implements Screen {
         world.update( delta );
     }
 
-    private float charge = -1;
+    public void preInit() {
+
+        if ( stage !=null ) {
+            for (Actor actor : stage.getActors() )
+                actor.clear();
+            stage.clear();
+        }
+        stage = StageUtils.makeGamePlayStage( stage, this );
+    }
+
+    public void postInit(World newWorld) {
+        updWorld = true;
+
+        if ( world !=null )
+            world.dispose();
+        world = newWorld;
+
+        player = new Player( world );
+
+        player.getCamera().position.set( world.overview );
+        player.getCamera().lookAt( Vector3.Zero );
+        player.getCamera().update();
+
+
+        camGRStr = new CameraGroupStrategy( player.getCamera() );
+        decalBatch = new DecalBatch( camGRStr );
+
+    }
+
+    public Gameplay initAsSinglePlayer(FileHandle nivel) {
+        preInit();
+        postInit( new World( nivel ) );
+        return this;
+    }
+
+    public Gameplay initAsHost(FileHandle nivel) {
+        preInit();
+
+        postInit( new World( nivel ) );
+        host = new Host( this );
+
+
+        showMessage( "Created as HOST" );
+        return this;
+    }
+
+    public Gameplay initAsClient(String ip) {
+        preInit();
+        client = new GameClient( this );
+        client.connect( ip );
+
+        client.getServerMap();
+
+        return this;
+    }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -235,7 +204,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( updWorld &&screenX >scrw /2 ) {
             player.setFiringHold( true );
         }
-        if ( updWorld &&player.isInTower() &&player.getTower().getArma() instanceof FireCharged &&screenX >scrw /2 ) {
+        if ( updWorld &&player.isInTower() &&player.isWeaponType( FireType.FIRECHARGED ) &&screenX >scrw /2 ) {
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
             charge = 0;
@@ -271,7 +240,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( charge >0.01f ) {
-                player.fireChargedWeapon( player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world, player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 charge = -1;
                 return true;
             }
@@ -390,7 +359,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( buttonCode ==Vars.buton[0] ) {
 
-            if ( player.isInTower() &&player.getTower().getArma() instanceof FireCharged ) {
+            if ( player.isInTower() &&player.isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 charge = 0;
@@ -435,7 +404,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( buttonCode ==Vars.buton[0] ) {
             if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                player.fireChargedWeapon( player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world, player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 player.fireChargedTime = 0;
                 charge = -1;
             }
@@ -473,6 +442,28 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         return false;
 
+    }
+
+    private Dialog dialog = new Dialog( "titlu", Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
+
+                              protected void result(Object object) {
+                                  // TODO add something that clears all the buttons after one is pressed
+                              };
+                          };
+
+    public void showMessage(String mesaj) {
+
+        System.out.println( "Output : " +mesaj );
+
+        dialog.setTitle( "Mesaj" );
+
+        dialog.button( mesaj );
+
+        dialog.pad( 50 );
+
+        dialog.invalidate();
+
+        dialog.show( stage );
     }
 
     @Override
