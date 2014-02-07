@@ -17,8 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
-import com.nemo9955.garden_revolution.net.packets.Packets.msClient;
-import com.nemo9955.garden_revolution.net.packets.Packets.msHost;
+import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 
 public class Functions {
 
@@ -28,8 +27,7 @@ public class Functions {
         kryo.register( String.class );
         kryo.register( String[].class );
         kryo.register( StartingServerInfo.class );
-        kryo.register( msHost.class );
-        kryo.register( msClient.class );
+        kryo.register( msNetGR.class );
         // kryo.register( World.class );
         // regDeclaredClasses( kryo, World.class.getClass() );
         // Util.getElementClass( World.class ).getDeclaredClasses()

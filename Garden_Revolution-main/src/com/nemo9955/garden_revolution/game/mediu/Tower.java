@@ -55,10 +55,10 @@ public class Tower implements Disposable {
     }
 
     public boolean changeWeapon(WeaponType toChange) {
-        if(!hasWeapon()){
-            weapon = new Weapon(toChange , place) {
+        if ( !hasWeapon() ) {
+            weapon = new Weapon( toChange, place ) {
             };
-            return true ;
+            return true;
         }
         if ( weapon.type ==toChange )
             return false;

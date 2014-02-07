@@ -7,20 +7,19 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
-import com.nemo9955.garden_revolution.net.packets.Packets.msClient;
-import com.nemo9955.garden_revolution.net.packets.Packets.msHost;
+import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class Host extends Listener {
+public class Host extends Listener implements MultiplayerComponent {
 
-    public Server    server;
-    private Gameplay gp;
-    public int       clientsReady = 0;
+    public Server          server;
+    private final Gameplay gp;
+    public int             clientsReady = 0;
 
-    public Host(Gameplay gp) {
+    public Host(final Gameplay gp) {
         this.gp = gp;
         server = new Server();
         Functions.setSerializedClasses( server.getKryo() );
@@ -30,7 +29,7 @@ public class Host extends Listener {
         try {
             server.bind( Vars.TCPport, Vars.UDPport );
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             e.printStackTrace();
             System.out.println( "[H]Connection failed" );
         }
@@ -38,31 +37,30 @@ public class Host extends Listener {
         Log.set( Log.LEVEL_DEBUG );
     }
 
-    public void brodcast(String mesaj) {
-        server.sendToAllTCP( mesaj );
+    @Override
+    public void connected(final Connection connection) {
+        // gp.showMessage( "[H]Someone connected" );
     }
 
     @Override
-    public void connected(Connection connection) {
-        gp.showMessage( "[H]Someone connected" );
-        if ( gp.world.isCanWaveStart() ) {
-            connection.sendTCP( msHost.YouCannotConnect );
-            connection.close();
-        }
-    }
-
-    @Override
-    public void received(Connection connection, Object obj) {
+    public void received(final Connection connection, final Object obj) {
         if ( obj instanceof String ) {
             gp.showMessage( "[H] : " +obj.toString() );
         }
         else if ( obj instanceof StartingServerInfo ) {
-            StartingServerInfo srv = (StartingServerInfo) obj;
-            connection.sendTCP( gp.world.getWorldInfo( srv ) );
-//            gp.showMessage( "[H] sending map info to client " );
+
+            if ( gp.world.isCanWaveStart() ) {
+                connection.sendTCP( msNetGR.YouCannotConnect );
+                connection.close();
+            }
+            else {
+                final StartingServerInfo srv = (StartingServerInfo) obj;
+                connection.sendTCP( gp.world.getWorldInfo( srv ) );
+                // gp.showMessage( "[H] sending map info to client " );
+            }
         }
-        else if ( obj instanceof msClient ) {
-            msClient message = (msClient) obj;
+        else if ( obj instanceof msNetGR ) {
+            final msNetGR message = (msNetGR) obj;
             switch (message) {
                 case IAmReady:
                     addToReady();
@@ -73,15 +71,16 @@ public class Host extends Listener {
         }
     }
 
-    public void sendToAllTCP(Object obj) {
+    public void sendToAllTCP(final Object obj) {
         server.sendToAllTCP( obj );
     }
 
-    public void sendToAllUDP(Object obj) {
+    public void sendToAllUDP(final Object obj) {
         server.sendToAllTCP( obj );
     }
 
-    public void stopHost() {
+    @Override
+    public void stop() {
         server.stop();
     }
 
@@ -90,8 +89,27 @@ public class Host extends Listener {
         if ( clientsReady ==server.getConnections().length +1 ) {
             gp.world.setCanWaveStart( true );
             gp.ready.setVisible( false );
-            server.sendToAllTCP( msHost.YouCanStartWaves );
+            server.sendToAllTCP( msNetGR.YouCanStartWaves );
         }
+    }
+
+    @Override
+    public void sendTCP(final Object obj) {
+
+        switch ((msNetGR) obj) {
+            case IAmReady:
+                addToReady();
+                return;
+            default:
+                break;
+        }
+
+        server.sendToAllTCP( obj );
+    }
+
+    @Override
+    public void sendUDP(final Object obj) {
+        server.sendToAllUDP( obj );
     }
 
 }

@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
-import com.nemo9955.garden_revolution.net.packets.Packets.msClient;
+import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 
 
@@ -28,7 +28,7 @@ public class StageUtils {
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gp) {
         stage = new Stage( Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate, true );
-        Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class );
+        final Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
         gp.weaponCharger = new Image( skin, "mover-knob" );
         gp.weaponCharger.setVisible( false );
@@ -45,7 +45,7 @@ public class StageUtils {
         gp.ready.setTouchable( Touchable.enabled );
         gp.ready.setPosition( 0, stage.getHeight() /2 );
 
-        Image tinta = new Image( skin, "tinta" );
+        final Image tinta = new Image( skin, "tinta" );
         gp.viataTurn = new Label( "Life ", skin );
         gp.mover = new Touchpad( 1, skin );
         gp.mover.setVisible( true );
@@ -112,7 +112,7 @@ public class StageUtils {
         final ImageButton cannon = new ImageButton( IconType.TUN.getAsDrawable( skin, 70, 70 ) );
         final CircularGroup mainUpgrades = new CircularGroup( gp.shape );
 
-        float freeSpace = 25 *Vars.densitate;
+        final float freeSpace = 25 *Vars.densitate;
 
         backTowe1.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
         backTowe2.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
@@ -121,8 +121,9 @@ public class StageUtils {
         mainUpgrades.setAsCircle( 1000, 70 );
         mainUpgrades.setPosition( -mainUpgrades.getRadius() + ( freeSpace *2.1f ) +backTowe1.getWidth(), stage.getHeight() /2 );
         // mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
-        float i, treapta = CircularGroup.aprxOptAngl( mainUpgrades.getRadius(), basicT.getHeight() );
-        Rectangle zon = new Rectangle( 0, 0, stage.getWidth(), stage.getHeight() );
+        float i;
+        final float treapta = CircularGroup.aprxOptAngl( mainUpgrades.getRadius(), basicT.getHeight() );
+        final Rectangle zon = new Rectangle( 0, 0, stage.getWidth(), stage.getHeight() );
         i = mainUpgrades.minAngleInZon( zon, treapta, 2 );
         mainUpgrades.setActivInterval( i, 360 -i, true, treapta *1.4f, true );
         // mainUpgrades.setActivInterval( 30, -30, true, 30, false );
@@ -139,10 +140,10 @@ public class StageUtils {
         upgradeTower.setVisible( false );
 
         // pentru elementele din HUD +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        ChangeListener hudButons = new ChangeListener() {
+        final ChangeListener hudButons = new ChangeListener() {
 
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(final ChangeEvent event, final Actor actor) {
                 if ( pauseBut.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -154,19 +155,16 @@ public class StageUtils {
                     gp.updWorld = false;
                 }
                 else if ( gp.ready.isPressed() ) {
-                    if ( gp.host ==null &&gp.client ==null ) {// singleplayer part
+                    if ( gp.mp ==null ) {// singleplayer part
                         gp.ready.setVisible( false );
                         gp.world.setCanWaveStart( true );
                     }
                     else {// multyplayer part
                         gp.ready.setText( Vars.waitingMessage );
                         gp.ready.setTouchable( Touchable.disabled );
-                        if ( gp.host !=null ) {
-                            gp.host.addToReady();
-                        }
-                        else {
-                            gp.client.sendTCP( msClient.IAmReady );
-                        }
+                        
+                        gp.mp.sendTCP( msNetGR.IAmReady );
+
                     }
                 }
 
@@ -175,10 +173,10 @@ public class StageUtils {
 
 
         // pentru butoanele din pause
-        ChangeListener pauseButons = new ChangeListener() {
+        final ChangeListener pauseButons = new ChangeListener() {
 
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(final ChangeEvent event, final Actor actor) {
                 if ( optBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     optiuni.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -204,10 +202,10 @@ public class StageUtils {
         };
 
         // pentru tot ce tine de upgradarea turnurilor
-        ChangeListener turnButons = new ChangeListener() {
+        final ChangeListener turnButons = new ChangeListener() {
 
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(final ChangeEvent event, final Actor actor) {
                 if ( backTowe1.isPressed() ||backTowe2.isPressed() ) {
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -225,10 +223,10 @@ public class StageUtils {
 
 
         // pentru elementele din optiuni
-        ChangeListener optButons = new ChangeListener() {
+        final ChangeListener optButons = new ChangeListener() {
 
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(final ChangeEvent event, final Actor actor) {
                 if ( backBut.isPressed() ) {
                     optiuni.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
@@ -255,7 +253,7 @@ public class StageUtils {
         gp.mover.addListener( new ChangeListener() {
 
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(final ChangeEvent event, final Actor actor) {
                 gp.movex = Vars.invertPadX *gp.mover.getKnobPercentX() *Vars.modCamSpeedX;
                 gp.movey = Vars.invertPadY *gp.mover.getKnobPercentY() *Vars.modCamSpeedY;
                 gp.touchPadTimmer = Vars.tPadAlphaDellay;
@@ -294,7 +292,7 @@ public class StageUtils {
 
         public void pack() {
             float width = Float.NEGATIVE_INFINITY, height = Float.NEGATIVE_INFINITY, childXandWidth, childYandHeight;
-            for (Actor child : getChildren() ) {
+            for (final Actor child : getChildren() ) {
                 if ( ( childXandWidth = child.getX() +child.getWidth() ) >width )
                     width = childXandWidth;
 

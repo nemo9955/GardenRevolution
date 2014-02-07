@@ -17,6 +17,7 @@
 	
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	        default:   { font: arial_32, fontColor: white },
+	        def-black:   { font: arial_32, fontColor: black },
 	        big:       { font: arial_64, fontColor: white },
 	        big-green: { font: arial_64, fontColor: green},
 	        demon:     { font: demonized_32, fontColor: white },
@@ -74,6 +75,7 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle:{
-		default:{ titleFont : arial_32	, background: pix30  }
+		default:{ titleFont : arial_32	, background: pix30  },
+		error:{ titleFont : arial_32 , titleFontColor:black	, background: pix100  }
 	}
 }

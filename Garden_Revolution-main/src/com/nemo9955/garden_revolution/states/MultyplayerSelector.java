@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -33,6 +34,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
 
     private static final float rap = 1.3f;
     private Table              table;
+    public TextField           ipInput;
 
 
     public MultyplayerSelector() {
@@ -43,26 +45,27 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         table = new Table( skin );
         back = new TextButton( "Back", skin );
         final TextButton start = new TextButton( "Start", skin );
-        final TextField ipInput = new TextField( "", skin );
+        ipInput = new TextField( "", skin );
         final CheckBox isHost = new CheckBox( "Is host", skin );
         final CheckBox isPublic = new CheckBox( "Is public", skin );
         final Label theIP = new Label( Functions.getIpAddress(), skin );
 
+
         theIP.setVisible( false );
         ipInput.setVisible( true );
-        ipInput.setMessageText( "188.173.17.234" );
+        ipInput.setText( "188.173.17.234" );
         ipInput.setMaxLength( 30 );
         ipInput.setWidth( 1000 );
 
         table.setFillParent( true );
         table.defaults().space( 50 );
-        table.add( start ).row();
+        table.add( start ).colspan( 3 ).row();
         table.add( isHost );
         table.add( "IP :" );
-        table.add( theIP );
-        table.add( ipInput ).row();
-        table.add( isPublic ).row();
-        table.add( back ).row();
+        table.add( ipInput );
+        table.add( theIP ).row();
+        table.add( isPublic ).colspan( 3 ).row();
+        table.add( back ).colspan( 3 ).row();
 
         table.addListener( new ChangeListener() {
 
@@ -70,7 +73,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
 
                 if ( back.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                    Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
                 else if ( start.isPressed() ) {
                     if ( isHost.isChecked() ) {
                         startAsHost();
@@ -83,12 +86,16 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                 if ( isHost.isChecked() ) {
                     ipInput.setVisible( false );
                     theIP.setVisible( true );
+                    // placeHolder = (Actor) theIP;
                     table.swapActor( ipInput, theIP );
+                    table.invalidate();
                 }
                 else {
                     ipInput.setVisible( true );
                     theIP.setVisible( false );
-                    table.swapActor( ipInput, theIP );
+                    table.swapActor( theIP, ipInput );
+                    // placeHolder = (Actor) ipInput;
+                    table.invalidate();
                 }
 
             }
@@ -96,6 +103,20 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         } );
 
         stage.addActor( table );
+
+        dialog = new Dialog( "You cannot connect !", skin, "error" ) {
+
+            {
+                pad( 50 );
+                text( new Label( "The game has already started .", skin, "def-black" ) );
+                button( "OK" );
+            }
+
+            protected void result(Object object) {
+                // TODO add something that clears all the buttons after one is pressed
+            };
+        };
+
     }
 
     public MultyplayerSelector init(FileHandle level) {
@@ -128,6 +149,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         if ( Functions.isControllerUsable() ) {
             Controllers.addListener( this );
         }
+        ipInput.setText( "188.173.17.234" );
     }
 
 
@@ -147,6 +169,12 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         if ( Functions.isControllerUsable() ) {
             Controllers.removeListener( this );
         }
+    }
+
+    private Dialog dialog;
+
+    public void theGameStarted() {
+        dialog.show( stage );
     }
 
     @Override

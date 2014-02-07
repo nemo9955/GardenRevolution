@@ -34,6 +34,8 @@ import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
+import com.nemo9955.garden_revolution.net.MultiplayerComponent;
+import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -67,8 +69,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public TextButton           ready;
     private float               charge         = -1;
 
-    public Host                 host;
-    public GameClient           client;
+    public MultiplayerComponent mp;
 
     public World                world;
     public Player               player;
@@ -182,7 +183,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         preInit();
 
         postInit( new World( nivel ) );
-        host = new Host( this );
+        mp = new Host( this );
 
 
         ready.setText( "Ready!" );
@@ -192,10 +193,9 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public Gameplay initAsClient(String ip) {
         preInit();
-        client = new GameClient( this );
-        client.connect( ip );
+        mp = new GameClient( this, ip );
 
-        client.getServerMap();
+        mp.sendTCP( new StartingServerInfo() );
         ready.setText( "Ready!" );
         return this;
     }
@@ -318,10 +318,7 @@ public class Gameplay extends CustomAdapter implements Screen {
                 Garden_Revolution.game.setScreen( Garden_Revolution.menu );
                 break;
             case Keys.H:
-                if ( host !=null )
-                    host.brodcast( "HOST to all CLIENTS" );
-                else
-                    client.brodcast( "CLIENT to HOST" );
+                mp.sendTCP( "a random message" );
                 break;
         }
 
@@ -490,13 +487,9 @@ public class Gameplay extends CustomAdapter implements Screen {
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
 
-        if ( client !=null ) {
-            client.stopClient();
-            client = null;
-        }
-        if ( host !=null ) {
-            host.stopHost();
-            host = null;
+        if ( mp !=null ) {
+            mp.stop();
+            mp = null;
         }
     }
 
@@ -511,13 +504,9 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public void dispose() {
 
-        if ( client !=null ) {
-            client.stopClient();
-            client = null;
-        }
-        if ( host !=null ) {
-            host.stopHost();
-            host = null;
+        if ( mp !=null ) {
+            mp.stop();
+            mp = null;
         }
         if ( modelBatch !=null )
             modelBatch.dispose();
