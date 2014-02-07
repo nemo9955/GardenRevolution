@@ -199,17 +199,13 @@ public class Player {
     }
 
     public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() )
-            if ( getTower().upgradeTower( upgrade ) ) {
-                setPlayerTower( tower );
-            }
+        if ( isInTower() &&world.upgradeTower( tower.ID, upgrade ) )
+            setPlayerTower( tower );
     }
 
     public void changeCurrentWeapon(WeaponType newWeapon) {
-        Tower tower = getTower();
-        if ( isInTower() &&tower.type !=null )
-            if ( tower.changeWeapon( newWeapon ) )
-                setPlayerTower( tower );
+        if ( isInTower() &&world.changeWeapon( tower.ID, newWeapon ) )
+            setPlayerTower( tower );
     }
 
 }

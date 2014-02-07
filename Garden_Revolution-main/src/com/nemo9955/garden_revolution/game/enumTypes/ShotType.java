@@ -63,7 +63,7 @@ public enum ShotType {
     public void hitActivity(Shot shot, World world) {
         if ( !shot.isDead() )
             for (Enemy fo : world.getEnemy() )
-                if ( fo.box.contains( shot.box ) ) {
+                if ( fo.box.intersects( shot.box ) ) {
                     fo.damage( damage );
                     shot.setDead( true );
                     break;

@@ -108,7 +108,6 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
 
             {
                 pad( 50 );
-                text( new Label( "The game has already started .", skin, "def-black" ) );
                 button( "OK" );
             }
 
@@ -173,7 +172,8 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
 
     private Dialog dialog;
 
-    public void theGameStarted() {
+    public void showMessage(String message) {
+        dialog.setTitle( message );
         dialog.show( stage );
     }
 

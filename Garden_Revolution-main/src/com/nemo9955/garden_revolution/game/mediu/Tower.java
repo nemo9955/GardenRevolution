@@ -28,10 +28,12 @@ public class Tower implements Disposable {
     private Weapon               weapon;
     public final Vector3         place     = new Vector3();
     public final Vector3         direction = new Vector3();
+    public byte                  ID;
 
     // private Decal pointer = Decal.newDecal( 5, 5, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
-    public Tower(ModelInstance baza, World world, Vector3 poz) {
+    public Tower(ModelInstance baza, World world, Vector3 poz, int ID) {
+        this.ID = (byte) ID;
         this.poz.set( poz );
         this.world = world;
         parts.add( baza );
@@ -39,16 +41,6 @@ public class Tower implements Disposable {
 
         this.world.addToColide( addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) ) );
     }
-
-    // public void fireHold(Ray ray) {
-    // if ( hasArma() &&weapon instanceof FireHold )
-    // ( (FireHold) weapon ).fireHold( ray );
-    // }
-    //
-    // public void fireCharged(Ray ray, float charged) {
-    // if ( hasArma() &&weapon instanceof FireCharged )
-    // ( (FireCharged) weapon ).fireCharged( ray, charged );
-    // }
 
     public void fireWeapon(World world, Ray ray, float charge) {
         weapon.fire( world, ray, charge );

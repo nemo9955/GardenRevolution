@@ -45,6 +45,8 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class World implements Disposable {
 
+    public World                             root;
+
     public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
 
     private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
@@ -63,10 +65,11 @@ public class World implements Disposable {
     private boolean                          canWaveStart = false;
     private Waves                            waves;
     public String                            mapPath;
-
     private Environment                      environment  = new Environment();
 
+
     {
+        root = this;
         // lights.
         environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
         environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
@@ -82,12 +85,13 @@ public class World implements Disposable {
 
     public World(StartingServerInfo info) {
         // TODO convert the relative map path to the full path specific to the platform
-        populateWorld( new FileHandle( info.path ) );
-        readData( new FileHandle( info.path ) );
+        FileHandle location = new FileHandle( info.path );
+        populateWorld( location );
+        readData( location );
 
         for (String str : info.turnuri ) {
-            String[] separ = str.split( Vars.stringSeparator ).clone();
-            // System.out.println( "[C] unu din turnuri-------------" );
+            String[] separ = str.split( Vars.stringSeparator );
+            System.out.println( "[C] unu din turnuri " +str );
             Tower turn = towers[Integer.parseInt( separ[0] )];
             turn.upgradeTower( TowerType.valueOf( separ[1] ) );
             if ( separ.length ==3 )
@@ -109,7 +113,7 @@ public class World implements Disposable {
                 formater[nr] = "" +i +Vars.stringSeparator +towers[i].type.toString();
                 if ( towers[i].hasWeapon() )
                     formater[nr] += Vars.stringSeparator +towers[i].getWeapon().type.toString();
-                // System.out.println("[S] : "+ formater[nr] );
+                System.out.println( "[S] : " +formater[nr] );
                 nr ++;
             }
 
@@ -236,7 +240,8 @@ public class World implements Disposable {
 
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
-                towers[Integer.parseInt( sect[1] ) -1] = new Tower( instance, this, scena.nodes.get( i ).translation );
+                int no = Integer.parseInt( sect[1] ) -1;
+                towers[no] = new Tower( instance, this, scena.nodes.get( i ).translation, no );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -325,9 +330,9 @@ public class World implements Disposable {
         float dist = Float.MAX_VALUE;
 
         for (CatmullRomSpline<Vector3> path : getPaths() ) {
-            tmp.set( path.controlPoints[0] );
-            if ( location.dst2( tmp ) <dist ) {
-                dist = location.dst2( tmp );
+            tmp2.set( path.controlPoints[0] );
+            if ( location.dst2( tmp2 ) <dist ) {
+                dist = location.dst2( tmp2 );
                 closest = path;
             }
         }
@@ -552,6 +557,22 @@ public class World implements Disposable {
         getShot().clear();
         mediu.clear();
 
+    }
+
+    public boolean upgradeTower(byte id, TowerType upgrade) {
+        System.out.println( "World upgraded tower" );
+
+        if ( towers[id].upgradeTower( upgrade ) )
+            return true;
+        return false;
+    }
+
+    public boolean changeWeapon(byte id, WeaponType newWeapon) {
+        System.out.println( "World changed weapon" );
+        if ( towers[id].type !=null )
+            if ( towers[id].changeWeapon( newWeapon ) )
+                return true;
+        return false;
     }
 
 

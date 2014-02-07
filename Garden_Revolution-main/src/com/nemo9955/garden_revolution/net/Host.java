@@ -2,11 +2,16 @@ package com.nemo9955.garden_revolution.net;
 
 import java.io.IOException;
 
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
+import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -44,39 +49,48 @@ public class Host extends Listener implements MultiplayerComponent {
 
     @Override
     public void received(final Connection connection, final Object obj) {
-        if ( obj instanceof String ) {
-            gp.showMessage( "[H] : " +obj.toString() );
-        }
-        else if ( obj instanceof StartingServerInfo ) {
+        Gdx.app.postRunnable( new Runnable() {
 
-            if ( gp.world.isCanWaveStart() ) {
-                connection.sendTCP( msNetGR.YouCannotConnect );
-                connection.close();
-            }
-            else {
-                final StartingServerInfo srv = (StartingServerInfo) obj;
-                connection.sendTCP( gp.world.getWorldInfo( srv ) );
-                // gp.showMessage( "[H] sending map info to client " );
-            }
-        }
-        else if ( obj instanceof msNetGR ) {
-            final msNetGR message = (msNetGR) obj;
-            switch (message) {
-                case IAmReady:
-                    addToReady();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+            @Override
+            public void run() {
+                if ( obj instanceof String ) {
+                    gp.showMessage( "[H] : " +obj.toString() );
+                }
+                else if ( obj instanceof StartingServerInfo ) {
 
-    public void sendToAllTCP(final Object obj) {
-        server.sendToAllTCP( obj );
-    }
+                    if ( gp.world.isCanWaveStart() ) {
+                        connection.sendTCP( msNetGR.YouCannotConnect );
+                        connection.close();
+                    }
+                    else {
+                        final StartingServerInfo srv = (StartingServerInfo) obj;
+                        connection.sendTCP( gp.world.getWorldInfo( srv ) );
+                        // gp.showMessage( "[H] sending map info to client " );
+                    }
+                }
+                else if ( obj instanceof WeaponChangedPacket ) {
+                    WeaponChangedPacket weap = (WeaponChangedPacket) obj;
+                    gp.world.changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+                    server.sendToAllExceptTCP( connection.getID(), weap );
+                }
+                else if ( obj instanceof TowerChangedPacket ) {
+                    TowerChangedPacket twr = (TowerChangedPacket) obj;
+                    gp.world.upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
+                    server.sendToAllExceptTCP( connection.getID(), twr );
 
-    public void sendToAllUDP(final Object obj) {
-        server.sendToAllTCP( obj );
+                }
+                else if ( obj instanceof msNetGR ) {
+                    final msNetGR message = (msNetGR) obj;
+                    switch (message) {
+                        case IAmReady:
+                            addToReady();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } );
     }
 
     @Override
@@ -95,21 +109,31 @@ public class Host extends Listener implements MultiplayerComponent {
 
     @Override
     public void sendTCP(final Object obj) {
-
-        switch ((msNetGR) obj) {
-            case IAmReady:
-                addToReady();
-                return;
-            default:
-                break;
-        }
+        if ( precessRecived( obj ) )
+            return;
 
         server.sendToAllTCP( obj );
     }
 
     @Override
     public void sendUDP(final Object obj) {
+        if ( precessRecived( obj ) )
+            return;
+
         server.sendToAllUDP( obj );
+    }
+
+    private boolean precessRecived(final Object obj) {
+
+        if ( obj instanceof msNetGR )
+            switch ((msNetGR) obj) {
+                case IAmReady:
+                    addToReady();
+                    return true;
+                default:
+                    break;
+            }
+        return false;
     }
 
 }

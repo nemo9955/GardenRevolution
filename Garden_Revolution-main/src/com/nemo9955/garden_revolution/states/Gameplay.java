@@ -35,6 +35,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
 import com.nemo9955.garden_revolution.net.MultiplayerComponent;
+import com.nemo9955.garden_revolution.net.WorldMP;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
@@ -182,8 +183,8 @@ public class Gameplay extends CustomAdapter implements Screen {
     public Gameplay initAsHost(FileHandle nivel) {
         preInit();
 
-        postInit( new World( nivel ) );
         mp = new Host( this );
+        postInit( new WorldMP( nivel, mp ) );
 
 
         ready.setText( "Ready!" );

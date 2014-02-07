@@ -7,8 +7,11 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -36,52 +39,68 @@ public class GameClient extends Listener implements MultiplayerComponent {
             gp.showMessage( "[C] Created as CLIENT" );
         }
         catch (final IOException e) {
-            e.printStackTrace();
-            gp.showMessage( "[C] Couldn't connect" );
+            // e.printStackTrace();
+            // gp.showMessage( "[C] Couldn't connect" );
+            Gdx.app.postRunnable( new Runnable() {
+
+                public void run() {
+                    Garden_Revolution.multyplayer.showMessage( "Couldn't connect to server !" );
+                }
+            } );
+
         }
     }
 
 
     @Override
     public void received(final Connection connection, final Object obj) {
-        if ( obj instanceof String ) {
-            gp.showMessage( "[C] : " +obj.toString() );
+        Gdx.app.postRunnable( new Runnable() {
 
-        }
-        else if ( obj instanceof StartingServerInfo ) {
-            Gdx.app.postRunnable( new Runnable() {
+            @Override
+            public void run() {
+                if ( obj instanceof String ) {
+                    gp.showMessage( "[C] : " +obj.toString() );
 
-                @Override
-                public void run() {
-                    gp.postInit( new World( (StartingServerInfo) obj ) );
+                }
+                else if ( obj instanceof StartingServerInfo ) {
+                    gp.postInit( new WorldMP( (StartingServerInfo) obj, gp.mp ) );
 
                     Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
 
+
                 }
-            } );
-        }
-        else if ( obj instanceof msNetGR ) {
-            final msNetGR message = (msNetGR) obj;
-            switch (message) {
-                case YouCanStartWaves:
-                    gp.world.setCanWaveStart( true );
-                    gp.ready.setVisible( false );
-                    break;
-                case YouCannotConnect:
-                    Gdx.app.postRunnable( new Runnable() {
+                else if ( obj instanceof WeaponChangedPacket ) {
+                    final WeaponChangedPacket weap = (WeaponChangedPacket) obj;
 
-                        @Override
-                        public void run() {
-                            Garden_Revolution.multyplayer.theGameStarted();
+                    gp.world.root.changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+
+                }
+                else if ( obj instanceof TowerChangedPacket ) {
+                    final TowerChangedPacket twr = (TowerChangedPacket) obj;
+
+                    gp.world.root.upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
+
+                }
+                else if ( obj instanceof msNetGR ) {
+                    final msNetGR message = (msNetGR) obj;
+                    switch (message) {
+                        case YouCanStartWaves:
+                            gp.world.root.setCanWaveStart( true );
+                            gp.ready.setVisible( false );
+                            break;
+                        case YouCannotConnect:
+
+                            Garden_Revolution.multyplayer.showMessage( "The game already started !" );
                             ;
-                        }
-                    } );
-                    break;
-                default:
-                    break;
-            }
-        }
 
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        } );
     }
 
     @Override

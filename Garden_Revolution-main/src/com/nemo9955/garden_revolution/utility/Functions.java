@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 
 public class Functions {
@@ -24,24 +26,13 @@ public class Functions {
     public static InputEvent clickedEvent = newInputEvent();
 
     public static void setSerializedClasses(Kryo kryo) {
+        kryo.register( byte.class );
         kryo.register( String.class );
         kryo.register( String[].class );
         kryo.register( StartingServerInfo.class );
         kryo.register( msNetGR.class );
-        // kryo.register( World.class );
-        // regDeclaredClasses( kryo, World.class.getClass() );
-        // Util.getElementClass( World.class ).getDeclaredClasses()
-    }
-
-    @SuppressWarnings("unused")
-    private static void regDeclaredClasses(Kryo kryo, Class<?> cls) {
-        kryo.register( cls );
-        for (Class<?> subcls : cls.getDeclaredClasses() ) {
-            kryo.register( subcls );
-        }
-        for (Class<?> subcls : cls.getClasses() ) {
-            kryo.register( subcls );
-        }
+        kryo.register( WeaponChangedPacket.class );
+        kryo.register( TowerChangedPacket.class );
     }
 
     public static String getIpAddress() {
@@ -96,6 +87,17 @@ public class Functions {
         return true;
     }
 
+    private static WeaponChangedPacket wcp = new WeaponChangedPacket();
+
+    public static WeaponChangedPacket getWCP(int eOrdinal, int towerID) {
+        return wcp.getWCP( eOrdinal, towerID );
+    }
+
+    private static TowerChangedPacket tcp = new TowerChangedPacket();
+
+    public static TowerChangedPacket getTCP(int eOrdinal, int towerID) {
+        return tcp.getTCP( eOrdinal, towerID );
+    }
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {
 
