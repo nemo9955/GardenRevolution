@@ -70,7 +70,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public TextButton           ready;
     private float               charge         = -1;
 
-    public MultiplayerComponent mp;
+    public MultiplayerComponent mp = null;
 
     public World                world;
     public Player               player;
@@ -488,10 +488,9 @@ public class Gameplay extends CustomAdapter implements Screen {
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
 
-        if ( mp !=null ) {
+        if ( mp !=null )
             mp.stop();
-            mp = null;
-        }
+
     }
 
     @Override
@@ -505,10 +504,9 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public void dispose() {
 
-        if ( mp !=null ) {
+        if ( mp !=null )
             mp.stop();
-            mp = null;
-        }
+
         if ( modelBatch !=null )
             modelBatch.dispose();
         if ( stage !=null )

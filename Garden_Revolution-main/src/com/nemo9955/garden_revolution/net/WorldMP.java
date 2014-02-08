@@ -1,9 +1,11 @@
 package com.nemo9955.garden_revolution.net;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Functions;
 
@@ -33,12 +35,18 @@ public class WorldMP extends World {
     }
 
     @Override
+    public boolean canChangeTowers(Tower current, Tower next, Player player) {
+        mp.sendTCP( Functions.getPCT( ( current ==null ? -1 : current.ID ), next.ID, player.name ) );
+        return false;
+    }
+
+    @Override
     public boolean changeWeapon(byte towerID, WeaponType newWeapon) {
 
-        System.out.println( "MP world changed weapon" );
 
         if ( super.changeWeapon( towerID, newWeapon ) ) {
-            mp.sendTCP( Functions.getWCP( newWeapon.ordinal(), towerID ) );
+            System.out.println( "MP world changed weapon" );
+            mp.sendTCP( Functions.getWCP( towerID, newWeapon.ordinal() ) );
             return true;
         }
         return false;
@@ -46,9 +54,9 @@ public class WorldMP extends World {
 
     @Override
     public boolean upgradeTower(byte towerID, TowerType upgrade) {
-        System.out.println( "MP world upgraded tower" );
         if ( super.upgradeTower( towerID, upgrade ) ) {
-            mp.sendTCP( Functions.getTCP( upgrade.ordinal(), towerID ) );
+            System.out.println( "MP world upgraded tower" );
+            mp.sendTCP( Functions.getTCP( towerID, upgrade.ordinal() ) );
             return true;
         }
         return false;

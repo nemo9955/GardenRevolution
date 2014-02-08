@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -89,14 +90,20 @@ public class Functions {
 
     private static WeaponChangedPacket wcp = new WeaponChangedPacket();
 
-    public static WeaponChangedPacket getWCP(int eOrdinal, int towerID) {
+    public static WeaponChangedPacket getWCP(byte towerID, int eOrdinal) {
         return wcp.getWCP( eOrdinal, towerID );
     }
 
     private static TowerChangedPacket tcp = new TowerChangedPacket();
 
-    public static TowerChangedPacket getTCP(int eOrdinal, int towerID) {
+    public static TowerChangedPacket getTCP(byte towerID, int eOrdinal) {
         return tcp.getTCP( eOrdinal, towerID );
+    }
+
+    private static PlayerChangesTower pct = new PlayerChangesTower();
+
+    public static PlayerChangesTower getPCT(byte current, byte next, String name) {
+        return pct.getPCT( current, next, name );
     }
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {

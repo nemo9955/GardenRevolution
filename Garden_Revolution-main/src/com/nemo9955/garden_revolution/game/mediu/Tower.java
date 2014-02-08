@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game.mediu;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Intersector;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -30,7 +32,9 @@ public class Tower implements Disposable {
     public final Vector3         direction = new Vector3();
     public byte                  ID;
 
-    // private Decal pointer = Decal.newDecal( 5, 5, Garden_Revolution.getGameTexture( "pointer-2" ), true );
+    public String                ocupier   = null;
+
+    private Decal                pointer   = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
     public Tower(ModelInstance baza, World world, Vector3 poz, int ID) {
         this.ID = (byte) ID;
@@ -48,8 +52,7 @@ public class Tower implements Disposable {
 
     public boolean changeWeapon(WeaponType toChange) {
         if ( !hasWeapon() ) {
-            weapon = new Weapon( toChange, place ) {
-            };
+            weapon = new Weapon( toChange, place );
             return true;
         }
         if ( weapon.type ==toChange )
@@ -88,7 +91,7 @@ public class Tower implements Disposable {
         model.nodes.removeAll( remove, false );
         parts.add( model );
 
-        // pointer.setPosition( place.x, place.y +5f, place.z );
+        pointer.setPosition( place.x, place.y +5f, place.z );
 
         return true;
     }
@@ -102,8 +105,8 @@ public class Tower implements Disposable {
             modelBatch.render( model, light );
         if ( hasWeapon() )
             weapon.render( modelBatch, light );
-        // if ( type !=null )
-        // decalBatch.add( pointer );
+        if ( ocupier !=null )
+            decalBatch.add( pointer );
 
     }
 
@@ -144,5 +147,6 @@ public class Tower implements Disposable {
     public void setTowerColiders(Array<BoundingBox> coliders) {
         this.coliders = coliders;
     }
+
 
 }

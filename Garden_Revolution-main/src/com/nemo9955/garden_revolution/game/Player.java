@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
@@ -26,6 +27,8 @@ public class Player {
     private boolean              isFiringHold    = false;
     public long                  fireChargedTime = 0;
 
+    public String                name            = "Player " +MathUtils.random( 99 );
+
     public Player(World world) {
         this.world = world;
 
@@ -44,8 +47,7 @@ public class Player {
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
         if ( !isInTower() ||count >=2 ) {
             Ray ray = getCamera().getPickRay( x, y );
-            setPlayerTower( world.getTowerHitByRay( ray ) );
-            return true;
+            return canChangeTower( world.getTowerHitByRay( ray ) );
         }
         return false;
     }
@@ -87,19 +89,26 @@ public class Player {
     }
 
 
+    public boolean canChangeTower(Tower tower) {
+
+        if ( tower !=null &&world.canChangeTowers( this.getTower(), tower, this ) ) {
+            // this.tower = tower;
+            resetCamera();
+            return true;
+        }
+        return false;
+    }
+
     @SuppressWarnings("deprecation")
-    public void setPlayerTower(Tower tower) {
-        if ( tower ==null )
-            return;
+    private void resetCamera() {
+
         Vector3 tmp2 = Vector3.tmp2;
         Vector3 look = Vector3.tmp3;
-
-        this.tower = tower;
 
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         Functions.intersectLinePlane( ray, look );
 
-        cam.position.set( tower.place );
+        cam.position.set( getTower().place );
         look.y = cam.position.y;
         cam.lookAt( look );
         cam.up.set( Vector3.Y );
@@ -156,22 +165,22 @@ public class Player {
     public void nextTower() {
         Tower[] towers = world.towers;
         for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i] ==tower )
+            if ( towers[i] ==getTower() )
                 if ( i +1 ==towers.length )
-                    setPlayerTower( towers[0] );
+                    canChangeTower( towers[0] );
                 else
-                    setPlayerTower( towers[i +1] );
+                    canChangeTower( towers[i +1] );
     }
 
 
     public void prevTower() {
         Tower[] towers = world.towers;
         for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i] ==tower )
+            if ( towers[i] ==getTower() )
                 if ( i ==0 )
-                    setPlayerTower( towers[towers.length -1] );
+                    canChangeTower( towers[towers.length -1] );
                 else
-                    setPlayerTower( towers[i -1] );
+                    canChangeTower( towers[i -1] );
 
     }
 
@@ -188,24 +197,30 @@ public class Player {
     }
 
     public boolean isWeaponType(FireType ft) {
-        if ( tower !=null &&tower.getWeapon() !=null )
-            if ( tower.getWeapon().type.getFireType() ==ft )
+        if ( getTower() !=null &&getTower().getWeapon() !=null )
+            if ( getTower().getWeapon().type.getFireType() ==ft )
                 return true;
         return false;
     }
 
     public void fireWeapon(World world, Ray ray, float charge) {
-        tower.fireWeapon( world, ray, charge );
+        getTower().fireWeapon( world, ray, charge );
     }
 
     public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() &&world.upgradeTower( tower.ID, upgrade ) )
-            setPlayerTower( tower );
+        if ( isInTower() &&world.upgradeTower( getTower().ID, upgrade ) )
+            resetCamera();
     }
 
     public void changeCurrentWeapon(WeaponType newWeapon) {
-        if ( isInTower() &&world.changeWeapon( tower.ID, newWeapon ) )
-            setPlayerTower( tower );
+        if ( isInTower() &&world.changeWeapon( getTower().ID, newWeapon ) )
+            resetCamera();
+    }
+
+
+    public void setTower(Tower tower) {
+        this.tower = tower;
+        resetCamera();
     }
 
 }

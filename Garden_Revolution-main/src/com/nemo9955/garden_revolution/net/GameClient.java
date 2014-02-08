@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -81,6 +82,10 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     gp.world.root.upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
 
                 }
+                else if ( obj instanceof PlayerChangesTower ) {
+                    PlayerChangesTower plr = (PlayerChangesTower) obj;
+                    gp.world.root.canChangeTowers( plr.current, plr.next, plr.name );
+                }
                 else if ( obj instanceof msNetGR ) {
                     final msNetGR message = (msNetGR) obj;
                     switch (message) {
@@ -89,10 +94,14 @@ public class GameClient extends Listener implements MultiplayerComponent {
                             gp.ready.setVisible( false );
                             break;
                         case YouCannotConnect:
-
                             Garden_Revolution.multyplayer.showMessage( "The game already started !" );
-                            ;
-
+                            break;
+                        case YouCanChangeTowers:
+                            gp.world.canChangeTowers( gp.player.getTower(), gp.world.towers[towerToChange], gp.player );
+                            towerToChange = -1;
+                            break;
+                        case YouCanNOT_ChangeTowers:
+                            towerToChange = -1;
                             break;
                         default:
                             break;
@@ -111,12 +120,26 @@ public class GameClient extends Listener implements MultiplayerComponent {
 
     @Override
     public void sendTCP(final Object obj) {
+        if ( precessRecived( obj ) )
+            return;
         client.sendTCP( obj );
     }
 
     @Override
     public void sendUDP(final Object obj) {
+        if ( precessRecived( obj ) )
+            return;
         client.sendUDP( obj );
+    }
+
+    private byte towerToChange = -1;
+
+    private boolean precessRecived(final Object obj) {
+        if ( obj instanceof PlayerChangesTower &&towerToChange ==-1 ) {
+            PlayerChangesTower plr = (PlayerChangesTower) obj;
+            towerToChange = plr.next;
+        }
+        return false;
     }
 
 }

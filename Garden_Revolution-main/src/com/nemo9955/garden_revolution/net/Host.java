@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -68,6 +69,16 @@ public class Host extends Listener implements MultiplayerComponent {
                         // gp.showMessage( "[H] sending map info to client " );
                     }
                 }
+                else if ( obj instanceof PlayerChangesTower ) {
+                    PlayerChangesTower plr = (PlayerChangesTower) obj;
+                    if ( gp.world.root.canChangeTowers( plr.current, plr.next, plr.name ) ) {
+                        server.sendToAllExceptTCP( connection.getID(), plr );
+                        connection.sendTCP( msNetGR.YouCanChangeTowers );
+                    }
+                    else {
+                        connection.sendTCP( msNetGR.YouCanNOT_ChangeTowers );
+                    }
+                }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     WeaponChangedPacket weap = (WeaponChangedPacket) obj;
                     gp.world.changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
@@ -125,7 +136,13 @@ public class Host extends Listener implements MultiplayerComponent {
 
     private boolean precessRecived(final Object obj) {
 
-        if ( obj instanceof msNetGR )
+        if ( obj instanceof PlayerChangesTower ) {
+            PlayerChangesTower plr = (PlayerChangesTower) obj;
+            if ( gp.world.root.canChangeTowers( ( plr.current ==-1 ? null : gp.world.towers[plr.current] ), gp.world.towers[plr.next], gp.player ) ) {
+                server.sendToAllTCP( plr );
+            }
+        }
+        else if ( obj instanceof msNetGR )
             switch ((msNetGR) obj) {
                 case IAmReady:
                     addToReady();

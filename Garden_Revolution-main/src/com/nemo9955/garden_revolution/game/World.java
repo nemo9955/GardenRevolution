@@ -69,7 +69,7 @@ public class World implements Disposable {
 
 
     {
-        root = this;
+        root = World .this;
         // lights.
         environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
         environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
@@ -560,18 +560,41 @@ public class World implements Disposable {
     }
 
     public boolean upgradeTower(byte id, TowerType upgrade) {
-        System.out.println( "World upgraded tower" );
 
-        if ( towers[id].upgradeTower( upgrade ) )
+        if ( towers[id].upgradeTower( upgrade ) ) {
+            System.out.println( "World upgraded tower" );
             return true;
+        }
         return false;
     }
 
     public boolean changeWeapon(byte id, WeaponType newWeapon) {
-        System.out.println( "World changed weapon" );
         if ( towers[id].type !=null )
-            if ( towers[id].changeWeapon( newWeapon ) )
+            if ( towers[id].changeWeapon( newWeapon ) ) {
+                System.out.println( "World changed weapon" );
                 return true;
+            }
+        return false;
+    }
+
+    public boolean canChangeTowers(Tower current, Tower next, Player player) {
+        if ( next.ocupier ==null ) {
+            if ( current !=null )
+                current.ocupier = null;
+            next.ocupier = player.name;
+            player.setTower( next );
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canChangeTowers(byte current, byte next, String name) {
+        if ( towers[next].ocupier ==null ) {
+            if ( towers[current] !=null )
+                towers[current].ocupier = null;
+            towers[next].ocupier = name;
+            return true;
+        }
         return false;
     }
 

@@ -11,7 +11,7 @@ import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 
 
-public abstract class Weapon implements Disposable {
+public class Weapon implements Disposable {
 
     private ModelInstance      model;
     public AnimationController animation;
@@ -26,7 +26,7 @@ public abstract class Weapon implements Disposable {
     }
 
     public void changeWeapon(WeaponType toChange) {
-
+        this.type = toChange;
         model = getModelInstance( poz );
         animation = new AnimationController( model );
     }
