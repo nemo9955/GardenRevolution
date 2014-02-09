@@ -13,14 +13,14 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 
 
 public class Tower implements Disposable {
 
-    private World                world;
+    private IWorldModel          world;
     private Array<BoundingBox>   coliders  = new Array<BoundingBox>( false, 1 );
 
     private Array<ModelInstance> parts     = new Array<ModelInstance>( false, 1 );
@@ -36,7 +36,7 @@ public class Tower implements Disposable {
 
     private Decal                pointer   = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
-    public Tower(ModelInstance baza, World world, Vector3 poz, int ID) {
+    public Tower(ModelInstance baza, IWorldModel world, Vector3 poz, int ID) {
         this.ID = (byte) ID;
         this.poz.set( poz );
         this.world = world;
@@ -46,7 +46,7 @@ public class Tower implements Disposable {
         this.world.addToColide( addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) ) );
     }
 
-    public void fireWeapon(World world, Ray ray, float charge) {
+    public void fireWeapon(IWorldModel world, Ray ray, float charge) {
         weapon.fire( world, ray, charge );
     }
 
@@ -91,7 +91,11 @@ public class Tower implements Disposable {
         model.nodes.removeAll( remove, false );
         parts.add( model );
 
-        pointer.setPosition( place.x, place.y +5f, place.z );
+        if ( type !=null )
+            pointer.setPosition( place.x, place.y +5f, place.z );
+        else
+            pointer.setPosition( poz.x, poz.y +5f, poz.z );
+
 
         return true;
     }

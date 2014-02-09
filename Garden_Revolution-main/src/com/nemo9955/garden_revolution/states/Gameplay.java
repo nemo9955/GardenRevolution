@@ -30,12 +30,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
 import com.nemo9955.garden_revolution.net.MultiplayerComponent;
-import com.nemo9955.garden_revolution.net.WorldMP;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
@@ -70,9 +69,9 @@ public class Gameplay extends CustomAdapter implements Screen {
     public TextButton           ready;
     private float               charge         = -1;
 
-    public MultiplayerComponent mp = null;
+    public MultiplayerComponent mp             = null;
 
-    public World                world;
+    public WorldWrapper         world;
     public Player               player;
 
     public Gameplay() {
@@ -89,7 +88,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public void render(float delta) {
 
-        if ( world ==null )
+        if ( world.getDef() ==null )
             return;
 
         Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
@@ -112,12 +111,12 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( player.getCamera() );
-        world.render( modelBatch, world.getEnvironment(), decalBatch );
+        world.getDef().render( modelBatch, world.getDef().getEnvironment(), decalBatch );
         modelBatch.end();
         decalBatch.flush();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
-            world.renderDebug( player.getCamera(), shape );
+            world.getDef().renderDebug( player.getCamera(), shape );
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
@@ -142,7 +141,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         player.update( delta );
 
-        world.update( delta );
+        world.getDef().update( delta );
     }
 
     public void preInit() {
@@ -155,16 +154,16 @@ public class Gameplay extends CustomAdapter implements Screen {
         stage = StageUtils.makeGamePlayStage( stage, this );
     }
 
-    public void postInit(World newWorld) {
+    public void postInit(WorldWrapper newWorld) {
         updWorld = true;
 
         if ( world !=null )
-            world.dispose();
+            world.getDef().dispose();
         world = newWorld;
 
-        player = new Player( world );
+        player = new Player( world.getDef() );
 
-        player.getCamera().position.set( world.overview );
+        player.getCamera().position.set( world.getDef().getOverview() );
         player.getCamera().lookAt( Vector3.Zero );
         player.getCamera().update();
 
@@ -176,7 +175,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public Gameplay initAsSinglePlayer(FileHandle nivel) {
         preInit();
-        postInit( new World( nivel ) );
+        postInit( new WorldWrapper( nivel ) );
         return this;
     }
 
@@ -184,7 +183,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         preInit();
 
         mp = new Host( this );
-        postInit( new WorldMP( nivel, mp ) );
+        postInit( new WorldWrapper( nivel, mp ) );
 
 
         ready.setText( "Ready!" );
@@ -244,7 +243,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( charge >0.01f ) {
-                player.fireWeapon( world, player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world.getDef(), player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 charge = -1;
                 return true;
             }
@@ -405,7 +404,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( buttonCode ==Vars.buton[0] ) {
             if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                player.fireWeapon( world, player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world.getDef(), player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
                 player.fireChargedTime = 0;
                 charge = -1;
             }
@@ -512,7 +511,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( stage !=null )
             stage.dispose();
         if ( world !=null )
-            world.dispose();
+            world.getDef().dispose();
         if ( shape !=null )
             shape.dispose();
         if ( camGRStr !=null )

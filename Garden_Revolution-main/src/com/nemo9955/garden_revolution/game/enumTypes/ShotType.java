@@ -1,9 +1,9 @@
 package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 
 
 public enum ShotType {
@@ -28,7 +28,7 @@ public enum ShotType {
         }
 
         @Override
-        public void hitActivity(Shot shot, World world) {
+        public void hitActivity(Shot shot, IWorldModel world) {
             super.hitActivity( shot, world );
 
             if ( shot.isDead() ) {
@@ -60,7 +60,7 @@ public enum ShotType {
         return direction.tmp().scl( delta *speed );
     }
 
-    public void hitActivity(Shot shot, World world) {
+    public void hitActivity(Shot shot, IWorldModel world) {
         if ( !shot.isDead() )
             for (Enemy fo : world.getEnemy() )
                 if ( fo.box.intersects( shot.box ) ) {

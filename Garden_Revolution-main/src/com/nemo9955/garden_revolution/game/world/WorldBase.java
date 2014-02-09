@@ -1,4 +1,4 @@
-package com.nemo9955.garden_revolution.game;
+package com.nemo9955.garden_revolution.game.world;
 
 import java.io.IOException;
 
@@ -27,6 +27,8 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.game.Player;
+import com.nemo9955.garden_revolution.game.Waves;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Entity;
@@ -43,9 +45,7 @@ import com.nemo9955.garden_revolution.utility.IndexedObject;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class World implements Disposable {
-
-    public World                             root;
+public class WorldBase implements Disposable, IWorldModel {
 
     public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
 
@@ -59,17 +59,16 @@ public class World implements Disposable {
 
     private static Vector3                   tmp          = new Vector3();
     private static Vector3                   tmp2         = new Vector3();
-    public final Vector3                     overview     = new Vector3( 20, 10, 10 );
+    private final Vector3                    overview     = new Vector3( 20, 10, 10 );
     private int                              viata;
-    public Tower[]                           towers;
+    private Tower[]                          towers;
     private boolean                          canWaveStart = false;
     private Waves                            waves;
-    public String                            mapPath;
+    private String                           mapPath;
     private Environment                      environment  = new Environment();
 
 
     {
-        root = World .this;
         // lights.
         environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
         environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
@@ -77,13 +76,15 @@ public class World implements Disposable {
         environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
     }
 
-    public World(FileHandle location) {
-        mapPath = location.path();
+    public WorldBase(FileHandle location) {
+        // this.worldModel = worldModel;
+        setMapPath( location.path() );
         populateWorld( location );
         readData( location );
     }
 
-    public World(StartingServerInfo info) {
+    public WorldBase(StartingServerInfo info) {
+        // this.worldModel = worldModel;
         // TODO convert the relative map path to the full path specific to the platform
         FileHandle location = new FileHandle( info.path );
         populateWorld( location );
@@ -92,7 +93,7 @@ public class World implements Disposable {
         for (String str : info.turnuri ) {
             String[] separ = str.split( Vars.stringSeparator );
             System.out.println( "[C] unu din turnuri " +str );
-            Tower turn = towers[Integer.parseInt( separ[0] )];
+            Tower turn = getTowers()[Integer.parseInt( separ[0] )];
             turn.upgradeTower( TowerType.valueOf( separ[1] ) );
             if ( separ.length ==3 )
                 turn.changeWeapon( WeaponType.valueOf( separ[2] ) );
@@ -101,18 +102,18 @@ public class World implements Disposable {
     }
 
     public StartingServerInfo getWorldInfo(StartingServerInfo out) {
-        out.path = mapPath;// TODO make this sent the map relative to the assets
+        out.path = getMapPath();// TODO make this sent the map relative to the assets
         int size = 0, nr = 0;
-        for (Tower trn : towers )
+        for (Tower trn : getTowers() )
             if ( trn.type !=null )
                 size ++;
 
         String[] formater = new String[size];
-        for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i].type !=null ) {
-                formater[nr] = "" +i +Vars.stringSeparator +towers[i].type.toString();
-                if ( towers[i].hasWeapon() )
-                    formater[nr] += Vars.stringSeparator +towers[i].getWeapon().type.toString();
+        for (int i = 0 ; i <getTowers().length ; i ++ )
+            if ( getTowers()[i].type !=null ) {
+                formater[nr] = "" +i +Vars.stringSeparator +getTowers()[i].type.toString();
+                if ( getTowers()[i].hasWeapon() )
+                    formater[nr] += Vars.stringSeparator +getTowers()[i].getWeapon().type.toString();
                 System.out.println( "[S] : " +formater[nr] );
                 nr ++;
             }
@@ -124,13 +125,13 @@ public class World implements Disposable {
 
     public void update(float delta) {
 
-        if ( isCanWaveStart() &&waves.finishedWaves() )
+        if ( canWaveStart() &&waves.finishedWaves() )
             waves.update( delta );
 
         for (FightZone fz : getFightZones() ) {
             fz.update( delta );
         }
-        for (Tower trn : towers ) {
+        for (Tower trn : getTowers() ) {
             trn.update( delta );
         }
         for (Enemy fo : getEnemy() ) {
@@ -145,18 +146,18 @@ public class World implements Disposable {
 
     }
 
-    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+    public void render(ModelBatch modelBatch, Environment env, DecalBatch decalBatch) {
         for (ModelInstance e : mediu )
-            modelBatch.render( e, light );
+            modelBatch.render( e, env );
 
         for (Enemy e : getEnemy() )
-            e.render( modelBatch, light, decalBatch );
+            e.render( modelBatch, env, decalBatch );
         for (Ally e : getAlly() )
-            e.render( modelBatch, light, decalBatch );
+            e.render( modelBatch, env, decalBatch );
         for (Shot e : getShot() )
             e.render( modelBatch );
-        for (Tower tower : towers )
-            tower.render( modelBatch, light, decalBatch );
+        for (Tower tower : getTowers() )
+            tower.render( modelBatch, env, decalBatch );
     }
 
     public void renderDebug(PerspectiveCamera cam, ShapeRenderer shape) {
@@ -212,7 +213,7 @@ public class World implements Disposable {
         Element map = null;
         try {
             map = new XmlReader().parse( location );
-            towers = new Tower[map.getInt( "turnuri" )];
+            setTowers( new Tower[map.getInt( "turnuri" )] );
             int noOfPaths = map.getInt( "drumuri" );
             setPaths( new Array<CatmullRomSpline<Vector3>>( true, noOfPaths ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( noOfPaths );
@@ -241,7 +242,7 @@ public class World implements Disposable {
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
                 int no = Integer.parseInt( sect[1] ) -1;
-                towers[no] = new Tower( instance, this, scena.nodes.get( i ).translation, no );
+                getTowers()[no] = new Tower( instance, this, scena.nodes.get( i ).translation, no );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -261,7 +262,7 @@ public class World implements Disposable {
                 addMediu( instance );
             }
             else if ( id.startsWith( "camera" ) ) {
-                overview.set( scena.nodes.get( i ).translation );
+                getOverview().set( scena.nodes.get( i ).translation );
             }
             else {
                 addMediu( instance );
@@ -325,7 +326,7 @@ public class World implements Disposable {
     }
 
 
-    public CatmullRomSpline<Vector3> getClosestStartPath(final Vector3 location) {
+    private CatmullRomSpline<Vector3> getClosestStartPath(final Vector3 location) {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
 
@@ -341,7 +342,7 @@ public class World implements Disposable {
 
     @SuppressWarnings("deprecation")
     // FIXME either make it a lot more precise ( when proper locate will be added ) , or add mode control points and return a slightly altered position
-    public Vector3 getPointOnClosestPath(final Vector3 location) {
+    private Vector3 getPointOnClosestPath(final Vector3 location) {
         float dist = Float.MAX_VALUE;
         float tmpDist;
         Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
@@ -403,41 +404,60 @@ public class World implements Disposable {
         mediu.add( med );
     }
 
-    public Pool<Enemy>     inamicPool = new Pool<Enemy>() {
+    private Pool<Enemy>     inamicPool = new Pool<Enemy>() {
 
-                                          @Override
-                                          protected Enemy newObject() {
-                                              return new Enemy( World.this );
-                                          }
-                                      };
+                                           @Override
+                                           protected Enemy newObject() {
+                                               return new Enemy( WorldBase.this );
+                                           }
+                                       };
 
-    public Pool<Ally>      aliatPool  = new Pool<Ally>() {
+    private Pool<Ally>      aliatPool  = new Pool<Ally>() {
 
-                                          @Override
-                                          protected Ally newObject() {
-                                              return new Ally( World.this );
-                                          }
-                                      };
+                                           @Override
+                                           protected Ally newObject() {
+                                               return new Ally( WorldBase.this );
+                                           }
+                                       };
 
-    public Pool<Shot>      shotPool   = new Pool<Shot>( 200, 500 ) {
+    private Pool<Shot>      shotPool   = new Pool<Shot>() {
 
-                                          @Override
-                                          protected Shot newObject() {
-                                              return new Shot( World.this );
-                                          }
-                                      };
+                                           @Override
+                                           protected Shot newObject() {
+                                               return new Shot( WorldBase.this );
+                                           }
+                                       };
 
-    public Pool<FightZone> fzPool     = new Pool<FightZone>() {
+    private Pool<FightZone> fzPool     = new Pool<FightZone>() {
 
-                                          @Override
-                                          protected FightZone newObject() {
-                                              return new FightZone( World.this );
-                                          }
-                                      };
+                                           @Override
+                                           protected FightZone newObject() {
+                                               return new FightZone( WorldBase.this );
+                                           }
+                                       };
 
+
+    public Pool<Enemy> getEnemyPool() {
+        return inamicPool;
+    }
+
+
+    public Pool<Ally> getAliatPool() {
+        return aliatPool;
+    }
+
+
+    public Pool<Shot> getShotPool() {
+        return shotPool;
+    }
+
+
+    public Pool<FightZone> getFzPool() {
+        return fzPool;
+    }
 
     public Tower getTowerHitByRay(Ray ray) {
-        for (Tower tower : towers )
+        for (Tower tower : getTowers() )
             if ( tower.intersectsRay( ray ) ) {
                 return tower;
             }
@@ -534,7 +554,7 @@ public class World implements Disposable {
         this.shot = shot;
     }
 
-    public boolean isCanWaveStart() {
+    public boolean canWaveStart() {
         return canWaveStart;
     }
 
@@ -548,7 +568,7 @@ public class World implements Disposable {
 
         for (Disposable dis : toDispose )
             dis.dispose();
-        for (Disposable dis : towers )
+        for (Disposable dis : getTowers() )
             dis.dispose();
 
         toDispose.clear();
@@ -561,7 +581,7 @@ public class World implements Disposable {
 
     public boolean upgradeTower(byte id, TowerType upgrade) {
 
-        if ( towers[id].upgradeTower( upgrade ) ) {
+        if ( getTowers()[id].upgradeTower( upgrade ) ) {
             System.out.println( "World upgraded tower" );
             return true;
         }
@@ -569,8 +589,8 @@ public class World implements Disposable {
     }
 
     public boolean changeWeapon(byte id, WeaponType newWeapon) {
-        if ( towers[id].type !=null )
-            if ( towers[id].changeWeapon( newWeapon ) ) {
+        if ( getTowers()[id].type !=null )
+            if ( getTowers()[id].changeWeapon( newWeapon ) ) {
                 System.out.println( "World changed weapon" );
                 return true;
             }
@@ -589,13 +609,33 @@ public class World implements Disposable {
     }
 
     public boolean canChangeTowers(byte current, byte next, String name) {
-        if ( towers[next].ocupier ==null ) {
-            if ( towers[current] !=null )
-                towers[current].ocupier = null;
-            towers[next].ocupier = name;
+        if ( getTowers()[next].ocupier ==null ) {
+            if ( current >=0 &&current <towers.length )
+                getTowers()[current].ocupier = null;
+            getTowers()[next].ocupier = name;
             return true;
         }
         return false;
+    }
+
+    public String getMapPath() {
+        return mapPath;
+    }
+
+    public void setMapPath(String mapPath) {
+        this.mapPath = mapPath;
+    }
+
+    public Tower[] getTowers() {
+        return towers;
+    }
+
+    public void setTowers(Tower[] towers) {
+        this.towers = towers;
+    }
+
+    public Vector3 getOverview() {
+        return overview;
     }
 
 

@@ -4,16 +4,17 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 
 
 public class Waves {
 
-    private final World world;
+    private final IWorldModel world;
 
     private Array<Wave> wvs;
     private int         curent = 0;
 
-    public Waves(World world) {
+    public Waves(IWorldModel world) {
         this.world = world;
         wvs = new Array<Wave>( true, 1 );
     }

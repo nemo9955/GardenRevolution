@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Disposable;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 
 
 public class Weapon implements Disposable {
@@ -31,7 +31,7 @@ public class Weapon implements Disposable {
         animation = new AnimationController( model );
     }
 
-    public void fire(World world, Ray ray, float charge) {
+    public void fire(IWorldModel world, Ray ray, float charge) {
         type.fireProjectile( world, ray, charge );
     }
 

@@ -34,6 +34,7 @@ public class Functions {
         kryo.register( msNetGR.class );
         kryo.register( WeaponChangedPacket.class );
         kryo.register( TowerChangedPacket.class );
+        kryo.register( PlayerChangesTower.class );
     }
 
     public static String getIpAddress() {

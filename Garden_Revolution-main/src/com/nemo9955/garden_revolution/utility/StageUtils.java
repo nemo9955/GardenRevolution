@@ -157,12 +157,12 @@ public class StageUtils {
                 else if ( gp.ready.isPressed() ) {
                     if ( gp.mp ==null ) {// singleplayer part
                         gp.ready.setVisible( false );
-                        gp.world.setCanWaveStart( true );
+                        gp.world.getDef().setCanWaveStart( true );
                     }
                     else {// multyplayer part
                         gp.ready.setText( Vars.waitingMessage );
                         gp.ready.setTouchable( Touchable.disabled );
-                        
+
                         gp.mp.sendTCP( msNetGR.IAmReady );
 
                     }

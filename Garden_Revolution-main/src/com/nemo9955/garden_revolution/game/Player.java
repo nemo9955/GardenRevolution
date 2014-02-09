@@ -14,6 +14,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.utility.Functions;
 
 
@@ -21,7 +22,7 @@ public class Player {
 
     private static final Vector3 tmp             = new Vector3();
     private PerspectiveCamera    cam;
-    private World                world;
+    private IWorldModel                world;
     private Tower                tower;
 
     private boolean              isFiringHold    = false;
@@ -29,7 +30,7 @@ public class Player {
 
     public String                name            = "Player " +MathUtils.random( 99 );
 
-    public Player(World world) {
+    public Player(IWorldModel world) {
         this.world = world;
 
         cam = new PerspectiveCamera( 60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
@@ -163,7 +164,7 @@ public class Player {
 
 
     public void nextTower() {
-        Tower[] towers = world.towers;
+        Tower[] towers = world.getTowers();
         for (int i = 0 ; i <towers.length ; i ++ )
             if ( towers[i] ==getTower() )
                 if ( i +1 ==towers.length )
@@ -174,7 +175,7 @@ public class Player {
 
 
     public void prevTower() {
-        Tower[] towers = world.towers;
+        Tower[] towers = world.getTowers();
         for (int i = 0 ; i <towers.length ; i ++ )
             if ( towers[i] ==getTower() )
                 if ( i ==0 )
@@ -203,7 +204,7 @@ public class Player {
         return false;
     }
 
-    public void fireWeapon(World world, Ray ray, float charge) {
+    public void fireWeapon(IWorldModel world, Ray ray, float charge) {
         getTower().fireWeapon( world, ray, charge );
     }
 

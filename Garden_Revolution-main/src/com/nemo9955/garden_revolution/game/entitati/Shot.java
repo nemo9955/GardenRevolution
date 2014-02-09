@@ -10,8 +10,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 
 public class Shot extends Entity {
@@ -21,7 +22,7 @@ public class Shot extends Entity {
     public ShotType type;
     private float   charge;
 
-    public Shot(World world) {
+    public Shot(IWorldModel world) {
         super( world );
         direction = new Vector3();
     }
@@ -73,7 +74,7 @@ public class Shot extends Entity {
     private static Model createModel() {// FIXME something is wrong with the model ... sometimes it creates a null one
         ModelBuilder modelBuilder = new ModelBuilder();
         Model model = modelBuilder.createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
-        World.toDispose.add( model );
+        WorldBase.toDispose.add( model );
         System.out.println( "creat" );
         return model;
     }
@@ -89,7 +90,7 @@ public class Shot extends Entity {
         super.setDead( dead );
 
         if ( isDead() ) {
-            world.shotPool.free( this );
+            world.getShotPool().free( this );
             world.getShot().removeValue( this, false );
         }
     }

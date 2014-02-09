@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
@@ -59,19 +60,19 @@ public class Host extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof StartingServerInfo ) {
 
-                    if ( gp.world.isCanWaveStart() ) {
+                    if ( gp.world.getDef().canWaveStart() ) {
                         connection.sendTCP( msNetGR.YouCannotConnect );
                         connection.close();
                     }
                     else {
                         final StartingServerInfo srv = (StartingServerInfo) obj;
-                        connection.sendTCP( gp.world.getWorldInfo( srv ) );
+                        connection.sendTCP( gp.world.getDef().getWorldInfo( srv ) );
                         // gp.showMessage( "[H] sending map info to client " );
                     }
                 }
                 else if ( obj instanceof PlayerChangesTower ) {
                     PlayerChangesTower plr = (PlayerChangesTower) obj;
-                    if ( gp.world.root.canChangeTowers( plr.current, plr.next, plr.name ) ) {
+                    if ( gp.world.getSgPl().canChangeTowers( plr.current, plr.next, plr.name ) ) {
                         server.sendToAllExceptTCP( connection.getID(), plr );
                         connection.sendTCP( msNetGR.YouCanChangeTowers );
                     }
@@ -81,12 +82,12 @@ public class Host extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     WeaponChangedPacket weap = (WeaponChangedPacket) obj;
-                    gp.world.changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+                    gp.world.getDef().changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
                     server.sendToAllExceptTCP( connection.getID(), weap );
                 }
                 else if ( obj instanceof TowerChangedPacket ) {
                     TowerChangedPacket twr = (TowerChangedPacket) obj;
-                    gp.world.upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
+                    gp.world.getDef().upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
                     server.sendToAllExceptTCP( connection.getID(), twr );
 
                 }
@@ -112,7 +113,7 @@ public class Host extends Listener implements MultiplayerComponent {
     public void addToReady() {
         clientsReady ++;
         if ( clientsReady ==server.getConnections().length +1 ) {
-            gp.world.setCanWaveStart( true );
+            gp.world.getDef().setCanWaveStart( true );
             gp.ready.setVisible( false );
             server.sendToAllTCP( msNetGR.YouCanStartWaves );
         }
@@ -138,7 +139,11 @@ public class Host extends Listener implements MultiplayerComponent {
 
         if ( obj instanceof PlayerChangesTower ) {
             PlayerChangesTower plr = (PlayerChangesTower) obj;
-            if ( gp.world.root.canChangeTowers( ( plr.current ==-1 ? null : gp.world.towers[plr.current] ), gp.world.towers[plr.next], gp.player ) ) {
+
+            Tower current = plr.current ==-1 ? null : gp.world.getDef().getTowers()[plr.current];
+            Tower next = gp.world.getDef().getTowers()[plr.next];
+
+            if ( gp.world.getSgPl().canChangeTowers( current, next, gp.player ) ) {
                 server.sendToAllTCP( plr );
             }
         }

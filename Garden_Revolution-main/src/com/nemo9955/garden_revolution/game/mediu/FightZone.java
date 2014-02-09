@@ -4,14 +4,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 
 
 public class FightZone implements Poolable {
 
-    private World            world;
+    private IWorldModel      world;
     public Array<Ally>       allies   = new Array<Ally>( false, 10 );
     public Array<Enemy>      enemies  = new Array<Enemy>( false, 5 );
 
@@ -21,8 +21,8 @@ public class FightZone implements Poolable {
 
     private static final int halfSize = 8;
 
-    public FightZone(World world) {
-        this.world = world;
+    public FightZone(IWorldModel worldModel) {
+        this.world = worldModel;
     }
 
     public FightZone create(Vector3 poz) {
@@ -49,7 +49,7 @@ public class FightZone implements Poolable {
             else
                 break;
         }
-        
+
         for (Enemy enemy : enemies ) {
             Ally ally = allies.random();
             if ( ally !=null ) {
@@ -91,7 +91,7 @@ public class FightZone implements Poolable {
     public void removeFightZone() {
         for (Enemy enemy : enemies )
             enemy.paused = false;
-        world.fzPool.free( this );
+        world.getFzPool().free( this );
         world.getFightZones().removeValue( this, false );
     }
 

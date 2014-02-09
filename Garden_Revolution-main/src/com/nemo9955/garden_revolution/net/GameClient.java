@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
@@ -37,7 +38,6 @@ public class GameClient extends Listener implements MultiplayerComponent {
         try {
             client.connect( 10000, ip, Vars.TCPport, Vars.UDPport );
 
-            gp.showMessage( "[C] Created as CLIENT" );
         }
         catch (final IOException e) {
             // e.printStackTrace();
@@ -48,8 +48,9 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     Garden_Revolution.multyplayer.showMessage( "Couldn't connect to server !" );
                 }
             } );
-
         }
+
+        gp.showMessage( "[C] Created as CLIENT" );
     }
 
 
@@ -64,7 +65,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
 
                 }
                 else if ( obj instanceof StartingServerInfo ) {
-                    gp.postInit( new WorldMP( (StartingServerInfo) obj, gp.mp ) );
+                    gp.postInit( new WorldWrapper( (StartingServerInfo) obj, gp.mp ) );
 
                     Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
 
@@ -73,31 +74,31 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;
 
-                    gp.world.root.changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+                    gp.world.getSgPl().changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
 
                 }
                 else if ( obj instanceof TowerChangedPacket ) {
                     final TowerChangedPacket twr = (TowerChangedPacket) obj;
 
-                    gp.world.root.upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
+                    gp.world.getSgPl().upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
 
                 }
                 else if ( obj instanceof PlayerChangesTower ) {
                     PlayerChangesTower plr = (PlayerChangesTower) obj;
-                    gp.world.root.canChangeTowers( plr.current, plr.next, plr.name );
+                    gp.world.getSgPl().canChangeTowers( plr.current, plr.next, plr.name );
                 }
                 else if ( obj instanceof msNetGR ) {
                     final msNetGR message = (msNetGR) obj;
                     switch (message) {
                         case YouCanStartWaves:
-                            gp.world.root.setCanWaveStart( true );
+                            gp.world.getSgPl().setCanWaveStart( true );
                             gp.ready.setVisible( false );
                             break;
                         case YouCannotConnect:
                             Garden_Revolution.multyplayer.showMessage( "The game already started !" );
                             break;
                         case YouCanChangeTowers:
-                            gp.world.canChangeTowers( gp.player.getTower(), gp.world.towers[towerToChange], gp.player );
+                            gp.world.getSgPl().canChangeTowers( gp.player.getTower(), gp.world.getDef().getTowers()[towerToChange], gp.player );
                             towerToChange = -1;
                             break;
                         case YouCanNOT_ChangeTowers:

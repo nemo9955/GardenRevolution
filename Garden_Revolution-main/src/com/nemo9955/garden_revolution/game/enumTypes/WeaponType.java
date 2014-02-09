@@ -10,7 +10,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.nemo9955.garden_revolution.game.World;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 
 public enum WeaponType {
@@ -25,7 +26,7 @@ public enum WeaponType {
         }
 
         @Override
-        public void fireProjectile(World world, Ray ray, float charge) {
+        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
@@ -44,7 +45,7 @@ public enum WeaponType {
         public ModelInstance getModelInstance(Vector3 poz2) {
             ModelBuilder build = new ModelBuilder();
             Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.WHITE ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-            World.toDispose.add( sfera );
+            WorldBase.toDispose.add( sfera );
 
             return new ModelInstance( sfera, poz2 );
 
@@ -65,7 +66,7 @@ public enum WeaponType {
         }
 
         @Override
-        public void fireProjectile(World world, Ray ray, float charge) {
+        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
@@ -83,7 +84,7 @@ public enum WeaponType {
         public ModelInstance getModelInstance(Vector3 poz) {
             ModelBuilder build = new ModelBuilder();
             Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-            World.toDispose.add( sfera );
+            WorldBase.toDispose.add( sfera );
 
             return new ModelInstance( sfera, poz );
 
@@ -105,7 +106,7 @@ public enum WeaponType {
 
     protected abstract void propWeapons();
 
-    public abstract void fireProjectile(World world, Ray ray, float charge);
+    public abstract void fireProjectile(IWorldModel world, Ray ray, float charge);
 
     public abstract ModelInstance getModelInstance(Vector3 poz);
 

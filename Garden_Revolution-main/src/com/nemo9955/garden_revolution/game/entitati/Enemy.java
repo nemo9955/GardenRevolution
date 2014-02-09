@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.game.World;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -24,8 +24,8 @@ public class Enemy extends LifeForm {
 
     public boolean            paused = false;
 
-    public Enemy(World world) {
-        super( world );
+    public Enemy(IWorldModel worldModel) {
+        super( worldModel );
         offset = new Vector3();
         flag = new Vector3();
     }
@@ -95,7 +95,7 @@ public class Enemy extends LifeForm {
 
 
         if ( isDead() ) {
-            world.inamicPool.free( this );
+            world.getEnemyPool().free( this );
             world.getEnemy().removeValue( this, false );
         }
 
