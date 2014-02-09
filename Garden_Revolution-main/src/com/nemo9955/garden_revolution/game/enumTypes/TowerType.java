@@ -7,8 +7,16 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public enum TowerType {
 
+    FUNDATION(Assets.TOWER_BASIC) {
 
-    BASIC(Assets.TURN_BASIC) {
+        @Override
+        protected void propTowers() {
+            name = "Fundation";
+            rank = 0;
+        }
+    },
+
+    BASIC(Assets.TOWER_BASIC) {
 
         @Override
         protected void propTowers() {

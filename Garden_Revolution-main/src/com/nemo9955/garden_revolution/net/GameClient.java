@@ -41,16 +41,17 @@ public class GameClient extends Listener implements MultiplayerComponent {
         }
         catch (final IOException e) {
             // e.printStackTrace();
-            // gp.showMessage( "[C] Couldn't connect" );
+            // gp.showMessage( "[C] Couldn't connect" );TODO
+            client.close();
             Gdx.app.postRunnable( new Runnable() {
 
                 public void run() {
-                    Garden_Revolution.multyplayer.showMessage( "Couldn't connect to server !" );
+                    Garden_Revolution.multyplayer.showMessage( e.getMessage() );
                 }
             } );
         }
 
-        gp.showMessage( "[C] Created as CLIENT" );
+        // gp.showMessage( "[C] Created as CLIENT" );
     }
 
 
@@ -66,10 +67,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof StartingServerInfo ) {
                     gp.postInit( new WorldWrapper( (StartingServerInfo) obj, gp.mp ) );
-
                     Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
-
-
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;

@@ -16,7 +16,28 @@ import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 public enum WeaponType {
 
+    NONE {
 
+        @Override
+        protected void propWeapons() {
+            name = "None";
+            details = "You have no weapon equiped";
+        }
+
+        @Override
+        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
+        }
+
+        @Override
+        public ModelInstance getModelInstance(Vector3 poz) {
+            return null;
+        }
+
+        @Override
+        public FireType getFireType() {
+            return null;
+        }
+    },
     MINIGUN {
 
         @Override

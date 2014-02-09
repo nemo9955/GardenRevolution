@@ -25,7 +25,7 @@ public class Tower implements Disposable {
 
     private Array<ModelInstance> parts     = new Array<ModelInstance>( false, 1 );
     public final Vector3         poz       = new Vector3();
-    public TowerType             type;
+    public TowerType             type      = TowerType.FUNDATION;
 
     private Weapon               weapon;
     public final Vector3         place     = new Vector3();
@@ -44,6 +44,7 @@ public class Tower implements Disposable {
         place.set( poz ).add( 0, 10, 0 );
 
         this.world.addToColide( addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) ) );
+        pointer.setPosition( poz.x, poz.y +5f, poz.z );
     }
 
     public void fireWeapon(IWorldModel world, Ray ray, float charge) {
@@ -62,7 +63,7 @@ public class Tower implements Disposable {
     }
 
     public boolean upgradeTower(TowerType upgrade) {
-        if ( type !=null &&type.rank >=upgrade.rank )
+        if ( type !=TowerType.FUNDATION &&type.rank >=upgrade.rank )
             return false;
         type = upgrade;
         parts.clear();
@@ -91,7 +92,7 @@ public class Tower implements Disposable {
         model.nodes.removeAll( remove, false );
         parts.add( model );
 
-        if ( type !=null )
+        if ( type !=TowerType.FUNDATION )
             pointer.setPosition( place.x, place.y +5f, place.z );
         else
             pointer.setPosition( poz.x, poz.y +5f, poz.z );

@@ -14,9 +14,10 @@ public enum Assets {
     DEMON32(LOC.FONT, "demonized_32.fnt"), //
     DEMON64(LOC.FONT, "demonized_64.fnt"), //
 
-    ALLIES(LOC.MODEL, "aliati.g3db"), //
-    ENEMYS(LOC.MODEL, "inamici.g3db"), //
-    TURN_BASIC(LOC.MODEL, "turn_basic.g3db"), //
+    ALLIES(LOC.MODEL, "allies.g3db"), //
+    ENEMYS(LOC.MODEL, "enemies.g3db"), //
+    TOWER_BASIC(LOC.MODEL, "tower_basic.g3db"), //
+    TOWE_FUNDATION(LOC.MODEL, "tower_fundation.g3db"), //
 
     ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
     GAME_PACK(LOC.ELEMENT, "GameImages.atlas", TextureAtlas.class), //

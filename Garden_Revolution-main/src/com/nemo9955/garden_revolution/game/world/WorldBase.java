@@ -92,33 +92,48 @@ public class WorldBase implements Disposable, IWorldModel {
 
         for (String str : info.turnuri ) {
             String[] separ = str.split( Vars.stringSeparator );
-            System.out.println( "[C] unu din turnuri " +str );
+            // System.out.println( "[C] unu din turnuri " +str );
             Tower turn = getTowers()[Integer.parseInt( separ[0] )];
             turn.upgradeTower( TowerType.valueOf( separ[1] ) );
             if ( separ.length ==3 )
                 turn.changeWeapon( WeaponType.valueOf( separ[2] ) );
         }
 
+        for (String str : info.players ) {
+            String[] separ = str.split( Vars.stringSeparator );
+            towers[Integer.parseInt( separ[0] )].ocupier = separ[1];
+        }
+
     }
 
     public StartingServerInfo getWorldInfo(StartingServerInfo out) {
         out.path = getMapPath();// TODO make this sent the map relative to the assets
-        int size = 0, nr = 0;
-        for (Tower trn : getTowers() )
-            if ( trn.type !=null )
+        int size = 0, nrTrn = 0, ply = 0, nrPl = 0;
+        for (Tower trn : getTowers() ) {
+            if ( trn.type !=TowerType.FUNDATION )
                 size ++;
+            if ( trn.ocupier !=null )
+                ply ++;
+        }
+
 
         String[] formater = new String[size];
-        for (int i = 0 ; i <getTowers().length ; i ++ )
-            if ( getTowers()[i].type !=null ) {
-                formater[nr] = "" +i +Vars.stringSeparator +getTowers()[i].type.toString();
+        String[] players = new String[ply];
+        for (int i = 0 ; i <getTowers().length ; i ++ ) {
+            if ( towers[i].type !=TowerType.FUNDATION ) {
+                formater[nrTrn] = "" +i +Vars.stringSeparator +getTowers()[i].type.toString();
                 if ( getTowers()[i].hasWeapon() )
-                    formater[nr] += Vars.stringSeparator +getTowers()[i].getWeapon().type.toString();
-                System.out.println( "[S] : " +formater[nr] );
-                nr ++;
+                    formater[nrTrn] += Vars.stringSeparator +getTowers()[i].getWeapon().type.toString();
+                // System.out.println( "[S] : " +formater[nrTrn] );
+                nrTrn ++;
             }
-
+            if ( towers[i].ocupier !=null ) {
+                players[nrPl] = "" +i +Vars.stringSeparator +towers[i].ocupier;
+                nrPl ++;
+            }
+        }
         out.turnuri = formater;
+        out.players=players;
 
         return out;
     }
@@ -589,7 +604,7 @@ public class WorldBase implements Disposable, IWorldModel {
     }
 
     public boolean changeWeapon(byte id, WeaponType newWeapon) {
-        if ( getTowers()[id].type !=null )
+        if ( getTowers()[id].type !=TowerType.FUNDATION )
             if ( getTowers()[id].changeWeapon( newWeapon ) ) {
                 System.out.println( "World changed weapon" );
                 return true;

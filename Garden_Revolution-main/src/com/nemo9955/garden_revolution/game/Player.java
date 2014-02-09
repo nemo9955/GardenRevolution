@@ -114,7 +114,7 @@ public class Player {
         cam.lookAt( look );
         cam.up.set( Vector3.Y );
 
-        if ( getTower().type ==null ) {
+        if ( getTower().type ==TowerType.FUNDATION ) {
             cam.position.add( 0, 3, 0 );
         }
         else {

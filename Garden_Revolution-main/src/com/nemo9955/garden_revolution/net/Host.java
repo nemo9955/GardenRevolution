@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
@@ -35,13 +35,25 @@ public class Host extends Listener implements MultiplayerComponent {
 
         try {
             server.bind( Vars.TCPport, Vars.UDPport );
+            Gdx.app.postRunnable( new Runnable() {
+
+                public void run() {
+                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                }
+            } );
         }
         catch (final IOException e) {
-            e.printStackTrace();
-            System.out.println( "[H]Connection failed" );
-        }
+            // gp.showMessage( "Something went wrong" );
+            // e.printStackTrace();
+            // System.out.println( "[H]Connection failed" );
+            server.close();
+            Gdx.app.postRunnable( new Runnable() {
 
-        Log.set( Log.LEVEL_DEBUG );
+                public void run() {
+                    Garden_Revolution.multyplayer.showMessage( e.getMessage() );
+                }
+            } );
+        }
     }
 
     @Override

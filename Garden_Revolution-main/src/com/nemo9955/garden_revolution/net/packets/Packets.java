@@ -7,6 +7,7 @@ public class Packets {
 
         public String   path;
         public String[] turnuri;
+        public String[] players;
     }
 
     public static class WeaponChangedPacket {

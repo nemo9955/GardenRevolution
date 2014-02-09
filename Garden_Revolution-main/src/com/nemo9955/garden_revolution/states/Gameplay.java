@@ -187,7 +187,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
         ready.setText( "Ready!" );
-        showMessage( "Created as HOST" );
+//        showMessage( "Created as HOST" );
         return this;
     }
 
