@@ -243,7 +243,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( charge >0.01f ) {
-                player.fireWeapon( world.getDef(), player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world.getDef(),  charge );
                 charge = -1;
                 return true;
             }
@@ -404,7 +404,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( buttonCode ==Vars.buton[0] ) {
             if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                player.fireWeapon( world.getDef(), player.getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), charge );
+                player.fireWeapon( world.getDef(),  charge );
                 player.fireChargedTime = 0;
                 charge = -1;
             }

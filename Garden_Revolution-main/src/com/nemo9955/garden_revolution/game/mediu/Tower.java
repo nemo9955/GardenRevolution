@@ -29,7 +29,8 @@ public class Tower implements Disposable {
 
     private Weapon               weapon;
     public final Vector3         place     = new Vector3();
-    public final Vector3         direction = new Vector3();
+    private final Vector3        direction = new Vector3();
+    public final Ray             ray       = new Ray( place, direction );
     public byte                  ID;
 
     public String                ocupier   = null;
@@ -47,7 +48,7 @@ public class Tower implements Disposable {
         pointer.setPosition( poz.x, poz.y +5f, poz.z );
     }
 
-    public void fireWeapon(IWorldModel world, Ray ray, float charge) {
+    public void fireWeapon(IWorldModel world, float charge) {
         weapon.fire( world, ray, charge );
     }
 
@@ -79,6 +80,7 @@ public class Tower implements Disposable {
 
             if ( id.startsWith( "arma" ) ) {
                 place.set( model.nodes.get( i ).translation ).add( poz );
+                ray.set( place, direction );
             }
             else if ( id.startsWith( "colide" ) ) {
                 BoundingBox box = new BoundingBox();
@@ -153,5 +155,9 @@ public class Tower implements Disposable {
         this.coliders = coliders;
     }
 
+    public void setDirection(Vector3 dir) {
+        direction.set( dir );
+        ray.set( place, direction );
+    }
 
 }

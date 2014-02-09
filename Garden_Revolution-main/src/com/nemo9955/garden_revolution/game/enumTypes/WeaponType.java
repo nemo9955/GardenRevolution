@@ -51,14 +51,16 @@ public enum WeaponType {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
-                float distance = -ray.origin.y /ray.direction.y;
-                tmp.set( ray.getEndPoint( tmp, distance ) );
-                tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -1.5f, 3f ), MathUtils.random( -2f, 2f ) );
+                // -ray.origin.y /ray.direction.y;
+                // tmp.set( ray.getEndPoint( tmp, distance ) );
+                // tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -1.5f, 3f ), MathUtils.random( -2f, 2f ) );
+                // float distance = Functions.intersectLinePlane( ray, tmp );
 
-                if ( distance >=0 )
-                    world.addShot( ShotType.STANDARD, ray, 0 );
-                else
-                    world.addShot( ShotType.STANDARD, ray, 0 );
+                myray.set( ray );
+                tmp.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
+                myray.origin.add( tmp );
+
+                world.addShot( ShotType.STANDARD, myray, 0 );
             }
         }
 
@@ -91,13 +93,10 @@ public enum WeaponType {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
-                float distance = -ray.origin.y /ray.direction.y;
-                tmp.set( ray.getEndPoint( tmp, distance ) );
+                // float distance = -ray.origin.y /ray.direction.y;
+                // tmp.set( ray.getEndPoint( tmp, distance ) );
 
-                if ( distance >=0 )
-                    world.addShot( ShotType.GHIULEA, ray, charge );
-                else
-                    world.addShot( ShotType.GHIULEA, ray, charge );
+                world.addShot( ShotType.GHIULEA, ray, charge );
             }
         }
 
@@ -118,6 +117,7 @@ public enum WeaponType {
     };
 
     private static final Vector3 tmp        = new Vector3();
+    private static final Ray     myray      = new Ray( new Vector3(), new Vector3() );
 
     public String                name       = "weapon name";
     public String                details    = "weapon description";

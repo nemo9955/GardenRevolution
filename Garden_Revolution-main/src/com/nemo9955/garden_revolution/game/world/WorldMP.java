@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
@@ -30,7 +29,7 @@ import com.nemo9955.garden_revolution.utility.Functions;
 public class WorldMP implements IWorldModel {
 
     private MultiplayerComponent mp;
-    private WorldBase                world;
+    private WorldBase            world;
 
     public WorldMP(WorldBase world, MultiplayerComponent mp) {
         this.mp = mp;
@@ -79,14 +78,16 @@ public class WorldMP implements IWorldModel {
 
     @Override
     public boolean canChangeTowers(byte current, byte next, String name) {
-        return world.canChangeTowers( current, next, name );
-    }
-
-    @Override
-    public boolean canChangeTowers(Tower current, Tower next, Player player) {
-        mp.sendTCP( Functions.getPCT( ( current ==null ? -1 : current.ID ), next.ID, player.name ) );
+        mp.sendTCP( Functions.getPCT( current, next, name ) );
+        // return world.canChangeTowers( current, next, name );
         return false;
     }
+
+    // @Override
+    // public boolean canChangeTowers(Tower current, Tower next, Player player) {
+    // mp.sendTCP( Functions.getPCT( ( current ==null ? -1 : current.ID ), next.ID, player.name ) );
+    // return false;
+    // }
 
     @Override
     public boolean canWaveStart() {

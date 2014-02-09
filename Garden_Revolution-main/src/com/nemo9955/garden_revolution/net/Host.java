@@ -152,10 +152,11 @@ public class Host extends Listener implements MultiplayerComponent {
         if ( obj instanceof PlayerChangesTower ) {
             PlayerChangesTower plr = (PlayerChangesTower) obj;
 
-            Tower current = plr.current ==-1 ? null : gp.world.getDef().getTowers()[plr.current];
+            // Tower current = plr.current ==-1 ? null : gp.world.getDef().getTowers()[plr.current];
             Tower next = gp.world.getDef().getTowers()[plr.next];
 
-            if ( gp.world.getSgPl().canChangeTowers( current, next, gp.player ) ) {
+            // if ( gp.world.getSgPl().canChangeTowers( current, next, gp.player ) ) {
+            if ( gp.world.getSgPl().changePlayerTower( gp.player, next.ID ) ) {
                 server.sendToAllTCP( plr );
             }
         }

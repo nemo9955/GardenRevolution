@@ -79,10 +79,10 @@ public class WorldSP implements IWorldModel {
         return world.canChangeTowers( current, next, name );
     }
 
-    @Override
-    public boolean canChangeTowers(Tower current, Tower next, Player player) {
-        return world.canChangeTowers( current, next, player );
-    }
+    // @Override
+    // public boolean canChangeTowers(Tower current, Tower next, Player player) {
+    // return world.canChangeTowers( current, next, player );
+    // }
 
     @Override
     public boolean canWaveStart() {
@@ -230,5 +230,17 @@ public class WorldSP implements IWorldModel {
         return world.getFzPool();
     }
 
+    public boolean changePlayerTower(Player player, byte next) {
+        Tower tower = world.getTowers()[next];
+
+        if ( tower.ocupier ==null ) {
+            if ( player.isInTower() )
+                player.getTower().ocupier = null;
+            tower.ocupier = player.name;
+            player.setTower( tower );
+            return true;
+        }
+        return false;
+    }
 
 }

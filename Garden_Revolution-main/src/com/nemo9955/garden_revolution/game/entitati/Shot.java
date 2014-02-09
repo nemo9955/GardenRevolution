@@ -17,10 +17,10 @@ import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 public class Shot extends Entity {
 
-    private Vector3 direction;
-    private float   life;
-    public ShotType type;
-    private float   charge;
+    private final Vector3 direction;
+    private float         life;
+    public ShotType       type;
+    private float         charge;
 
     public Shot(IWorldModel world) {
         super( world );
@@ -31,13 +31,13 @@ public class Shot extends Entity {
 
         this.type = type;
         super.init( ray.origin );
-        this.direction.set( ray.direction );
+        this.direction.set( ray.direction ).nor();
 
         life = 5f;
         this.charge = charge;
 
         if ( type ==ShotType.GHIULEA ) {
-            this.direction.y = 1;
+            this.direction.y = 0.5f;
             this.direction.nor().scl( 1f +this.charge );
         }
         return this;
@@ -71,11 +71,11 @@ public class Shot extends Entity {
 
     private static Model model = createModel();
 
-    private static Model createModel() {// FIXME something is wrong with the model ... sometimes it creates a null one
+    private static Model createModel() {
         ModelBuilder modelBuilder = new ModelBuilder();
         Model model = modelBuilder.createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
         WorldBase.toDispose.add( model );
-        System.out.println( "creat" );
+        // System.out.println( "creat" );
         return model;
     }
 

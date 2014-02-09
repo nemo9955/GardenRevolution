@@ -22,7 +22,7 @@ public class Player {
 
     private static final Vector3 tmp             = new Vector3();
     private PerspectiveCamera    cam;
-    private IWorldModel                world;
+    private IWorldModel          world;
     private Tower                tower;
 
     private boolean              isFiringHold    = false;
@@ -42,7 +42,7 @@ public class Player {
 
     public void update(float delta) {
         if ( isInTower() &&isFiringHold() )
-            fireWeapon( world, getCamera().getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ), 0 );
+            fireWeapon( world, 0 );
     }
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
@@ -85,19 +85,10 @@ public class Player {
             tmp.set( cam.direction ).crs( cam.up ).y = 0f;
             cam.rotateAround( getCameraRotAround(), tmp.nor(), amontY );
         }
+        if ( isInTower() )
+            tower.setDirection( cam.direction );
 
         cam.update();
-    }
-
-
-    public boolean canChangeTower(Tower tower) {
-
-        if ( tower !=null &&world.canChangeTowers( this.getTower(), tower, this ) ) {
-            // this.tower = tower;
-            resetCamera();
-            return true;
-        }
-        return false;
     }
 
     @SuppressWarnings("deprecation")
@@ -204,8 +195,8 @@ public class Player {
         return false;
     }
 
-    public void fireWeapon(IWorldModel world, Ray ray, float charge) {
-        getTower().fireWeapon( world, ray, charge );
+    public void fireWeapon(IWorldModel world, float charge) {
+        getTower().fireWeapon( world, charge );
     }
 
     public void upgradeCurentTower(TowerType upgrade) {
@@ -219,9 +210,18 @@ public class Player {
     }
 
 
+    public boolean canChangeTower(Tower tower) {
+
+        if ( tower !=null &&world.canChangeTowers( isInTower() ? getTower().ID : -1, tower.ID, name ) ) {
+            setTower( tower );
+            return true;
+        }
+        return false;
+    }
+
+
     public void setTower(Tower tower) {
         this.tower = tower;
         resetCamera();
     }
-
 }

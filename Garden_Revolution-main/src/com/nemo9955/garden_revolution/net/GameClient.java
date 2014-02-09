@@ -96,7 +96,10 @@ public class GameClient extends Listener implements MultiplayerComponent {
                             Garden_Revolution.multyplayer.showMessage( "The game already started !" );
                             break;
                         case YouCanChangeTowers:
-                            gp.world.getSgPl().canChangeTowers( gp.player.getTower(), gp.world.getDef().getTowers()[towerToChange], gp.player );
+                            // gp.world.getSgPl().canChangeTowers( gp.player.getTower(), gp.world.getDef().getTowers()[towerToChange], gp.player );
+                            // gp.player.canChangeTower( gp.world.getDef().getTowers()[towerToChange] );
+                            // gp.player.changeTower( towerToChange );
+                            gp.world.getSgPl().changePlayerTower( gp.player, towerToChange );
                             towerToChange = -1;
                             break;
                         case YouCanNOT_ChangeTowers:

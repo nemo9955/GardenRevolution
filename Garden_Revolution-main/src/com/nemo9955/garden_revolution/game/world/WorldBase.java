@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.Waves;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
@@ -49,7 +48,7 @@ public class WorldBase implements Disposable, IWorldModel {
 
     public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
 
-    private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
+    private final Array<ModelInstance>       mediu        = new Array<ModelInstance>( false, 10 );
     private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
     private Array<Ally>                      ally         = new Array<Ally>( false, 10 );
     private Array<Shot>                      shot         = new Array<Shot>( false, 10 );
@@ -65,7 +64,7 @@ public class WorldBase implements Disposable, IWorldModel {
     private boolean                          canWaveStart = false;
     private Waves                            waves;
     private String                           mapPath;
-    private Environment                      environment  = new Environment();
+    private final Environment                environment  = new Environment();
 
 
     {
@@ -76,40 +75,41 @@ public class WorldBase implements Disposable, IWorldModel {
         environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
     }
 
-    public WorldBase(FileHandle location) {
+    public WorldBase(final FileHandle location) {
         // this.worldModel = worldModel;
         setMapPath( location.path() );
         populateWorld( location );
         readData( location );
     }
 
-    public WorldBase(StartingServerInfo info) {
+    public WorldBase(final StartingServerInfo info) {
         // this.worldModel = worldModel;
         // TODO convert the relative map path to the full path specific to the platform
-        FileHandle location = new FileHandle( info.path );
+        final FileHandle location = new FileHandle( info.path );
         populateWorld( location );
         readData( location );
 
-        for (String str : info.turnuri ) {
-            String[] separ = str.split( Vars.stringSeparator );
+        for (final String str : info.turnuri ) {
+            final String[] separ = str.split( Vars.stringSeparator );
             // System.out.println( "[C] unu din turnuri " +str );
-            Tower turn = getTowers()[Integer.parseInt( separ[0] )];
+            final Tower turn = getTowers()[Integer.parseInt( separ[0] )];
             turn.upgradeTower( TowerType.valueOf( separ[1] ) );
             if ( separ.length ==3 )
                 turn.changeWeapon( WeaponType.valueOf( separ[2] ) );
         }
 
-        for (String str : info.players ) {
-            String[] separ = str.split( Vars.stringSeparator );
+        for (final String str : info.players ) {
+            final String[] separ = str.split( Vars.stringSeparator );
             towers[Integer.parseInt( separ[0] )].ocupier = separ[1];
         }
 
     }
 
-    public StartingServerInfo getWorldInfo(StartingServerInfo out) {
+    @Override
+    public StartingServerInfo getWorldInfo(final StartingServerInfo out) {
         out.path = getMapPath();// TODO make this sent the map relative to the assets
         int size = 0, nrTrn = 0, ply = 0, nrPl = 0;
-        for (Tower trn : getTowers() ) {
+        for (final Tower trn : getTowers() ) {
             if ( trn.type !=TowerType.FUNDATION )
                 size ++;
             if ( trn.ocupier !=null )
@@ -117,8 +117,8 @@ public class WorldBase implements Disposable, IWorldModel {
         }
 
 
-        String[] formater = new String[size];
-        String[] players = new String[ply];
+        final String[] formater = new String[size];
+        final String[] players = new String[ply];
         for (int i = 0 ; i <getTowers().length ; i ++ ) {
             if ( towers[i].type !=TowerType.FUNDATION ) {
                 formater[nrTrn] = "" +i +Vars.stringSeparator +getTowers()[i].type.toString();
@@ -133,55 +133,58 @@ public class WorldBase implements Disposable, IWorldModel {
             }
         }
         out.turnuri = formater;
-        out.players=players;
+        out.players = players;
 
         return out;
     }
 
-    public void update(float delta) {
+    @Override
+    public void update(final float delta) {
 
         if ( canWaveStart() &&waves.finishedWaves() )
             waves.update( delta );
 
-        for (FightZone fz : getFightZones() ) {
+        for (final FightZone fz : getFightZones() ) {
             fz.update( delta );
         }
-        for (Tower trn : getTowers() ) {
+        for (final Tower trn : getTowers() ) {
             trn.update( delta );
         }
-        for (Enemy fo : getEnemy() ) {
+        for (final Enemy fo : getEnemy() ) {
             fo.update( delta );
         }
-        for (Ally al : getAlly() ) {
+        for (final Ally al : getAlly() ) {
             al.update( delta );
         }
-        for (Shot sh : getShot() ) {
+        for (final Shot sh : getShot() ) {
             sh.update( delta );
         }
 
     }
 
-    public void render(ModelBatch modelBatch, Environment env, DecalBatch decalBatch) {
-        for (ModelInstance e : mediu )
+    @Override
+    public void render(final ModelBatch modelBatch, final Environment env, final DecalBatch decalBatch) {
+        for (final ModelInstance e : mediu )
             modelBatch.render( e, env );
 
-        for (Enemy e : getEnemy() )
+        for (final Enemy e : getEnemy() )
             e.render( modelBatch, env, decalBatch );
-        for (Ally e : getAlly() )
+        for (final Ally e : getAlly() )
             e.render( modelBatch, env, decalBatch );
-        for (Shot e : getShot() )
+        for (final Shot e : getShot() )
             e.render( modelBatch );
-        for (Tower tower : getTowers() )
+        for (final Tower tower : getTowers() )
             tower.render( modelBatch, env, decalBatch );
     }
 
-    public void renderDebug(PerspectiveCamera cam, ShapeRenderer shape) {
+    @Override
+    public void renderDebug(final PerspectiveCamera cam, final ShapeRenderer shape) {
 
         shape.setProjectionMatrix( cam.combined );
         shape.begin( ShapeType.Line );
 
         shape.setColor( 1, 0.5f, 0, 1 );
-        for (BoundingBox box : getColide() )
+        for (final BoundingBox box : getColide() )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         // shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
@@ -190,23 +193,23 @@ public class WorldBase implements Disposable, IWorldModel {
         // shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         shape.setColor( 1, 0, 0, 1 );
-        for (Entity e : getEnemy() )
+        for (final Entity e : getEnemy() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0, 1, 1 );
-        for (Entity e : getAlly() )
+        for (final Entity e : getAlly() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 1, 1, 1 );
-        for (Entity e : getShot() )
+        for (final Entity e : getShot() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0.5f, 0.5f, 1 );
-        for (FightZone e : getFightZones() )
+        for (final FightZone e : getFightZones() )
             shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
 
-        int pts = getPaths().size;
+        final int pts = getPaths().size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
             getPaths().get( i ).valueAt( tmp, val );
@@ -221,7 +224,7 @@ public class WorldBase implements Disposable, IWorldModel {
         shape.end();
     }
 
-    private void populateWorld(FileHandle location) {
+    private void populateWorld(final FileHandle location) {
         Array<Array<IndexedObject<Vector3>>> cp = null;
         String[] sect;
 
@@ -229,24 +232,24 @@ public class WorldBase implements Disposable, IWorldModel {
         try {
             map = new XmlReader().parse( location );
             setTowers( new Tower[map.getInt( "turnuri" )] );
-            int noOfPaths = map.getInt( "drumuri" );
+            final int noOfPaths = map.getInt( "drumuri" );
             setPaths( new Array<CatmullRomSpline<Vector3>>( true, noOfPaths ) );
             cp = new Array<Array<IndexedObject<Vector3>>>( noOfPaths );
 
             for (int k = 0 ; k <noOfPaths ; k ++ )
                 cp.add( new Array<IndexedObject<Vector3>>( false, 1, IndexedObject.class ) );
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             e.printStackTrace();
         }
 
-        Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
+        final Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
 
         toDispose.add( scena );
 
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
-            String id = scena.nodes.get( i ).id;
-            ModelInstance instance = new ModelInstance( scena, id );
+            final String id = scena.nodes.get( i ).id;
+            final ModelInstance instance = new ModelInstance( scena, id );
             // Node node = instance.getNode( id );
             // instance.transform.set( node.globalTransform );
             // node.translation.set( 0, 0, 0 );
@@ -256,22 +259,22 @@ public class WorldBase implements Disposable, IWorldModel {
 
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
-                int no = Integer.parseInt( sect[1] ) -1;
+                final int no = Integer.parseInt( sect[1] ) -1;
                 getTowers()[no] = new Tower( instance, this, scena.nodes.get( i ).translation, no );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
-                int pat = Integer.parseInt( sect[1] ) -1;// TODO get rid of the -1 so the paths can start from 0
-                int pct = Integer.parseInt( sect[2] );
+                final int pat = Integer.parseInt( sect[1] ) -1;// TODO get rid of the -1 so the paths can start from 0
+                final int pct = Integer.parseInt( sect[2] );
                 cp.get( pat ).add( new IndexedObject<Vector3>( scena.nodes.get( i ).translation, pct ) );
             }
             else if ( id.startsWith( "colider" ) ) {
-                BoundingBox box = new BoundingBox();
+                final BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
                 addToColide( box );
             }
             else if ( id.endsWith( "solid" ) ) {
-                BoundingBox box = new BoundingBox();
+                final BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
                 addToColide( box );
                 addMediu( instance );
@@ -285,12 +288,12 @@ public class WorldBase implements Disposable, IWorldModel {
 
         }
 
-        for (Array<IndexedObject<Vector3>> pat : cp )
+        for (final Array<IndexedObject<Vector3>> pat : cp )
             pat.sort();
 
-        for (Array<IndexedObject<Vector3>> pat : cp ) {
+        for (final Array<IndexedObject<Vector3>> pat : cp ) {
 
-            Vector3 cps[] = new Vector3[pat.size +2];
+            final Vector3 cps[] = new Vector3[pat.size +2];
             for (int j = 0 ; j <pat.size ; j ++ )
                 cps[j +1] = pat.get( j ).object;
             cps[0] = cps[1];
@@ -301,37 +304,37 @@ public class WorldBase implements Disposable, IWorldModel {
 
     }
 
-    private void readData(FileHandle location) {
+    private void readData(final FileHandle location) {
 
         Element map = null;
         try {
             map = new XmlReader().parse( location );
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
         }
         waves = new Waves( this );
 
         setViata( map.getInt( "viata", 100 ) );
 
-        Array<Element> tmpWaves = map.getChildrenByName( "wave" );
+        final Array<Element> tmpWaves = map.getChildrenByName( "wave" );
         tmpWaves.shrink();
-        Array<IndexedObject<Element>> sortedWaves = new Array<IndexedObject<Element>>( tmpWaves.size );
+        final Array<IndexedObject<Element>> sortedWaves = new Array<IndexedObject<Element>>( tmpWaves.size );
         for (int i = 0 ; i <tmpWaves.size ; i ++ )
             sortedWaves.add( new IndexedObject<Element>( tmpWaves.get( i ), tmpWaves.get( i ).getInt( "index" ) -1 ) );
         sortedWaves.sort();
         tmpWaves.clear();
 
-        for (IndexedObject<Element> wav : sortedWaves ) {
+        for (final IndexedObject<Element> wav : sortedWaves ) {
             waves.addWave( wav.object.getFloat( "delay", 5 ), wav.object.getFloat( "interval", 0.5f ) );
-            Array<Element> tmpPaths = wav.object.getChildrenByName( "path" );
+            final Array<Element> tmpPaths = wav.object.getChildrenByName( "path" );
 
-            for (Element pat : tmpPaths ) {
+            for (final Element pat : tmpPaths ) {
 
-                int numar = pat.getInt( "nr" );
+                final int numar = pat.getInt( "nr" );
                 for (int i = 0 ; i <pat.getChildCount() ; i ++ ) {
 
-                    Element monstru = pat.getChild( i );
+                    final Element monstru = pat.getChild( i );
                     waves.populate( numar -1, EnemyType.valueOf( monstru.getName().toUpperCase() ), monstru.getInt( "amount", 1 ) );
 
                 }
@@ -345,7 +348,7 @@ public class WorldBase implements Disposable, IWorldModel {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
 
-        for (CatmullRomSpline<Vector3> path : getPaths() ) {
+        for (final CatmullRomSpline<Vector3> path : getPaths() ) {
             tmp2.set( path.controlPoints[0] );
             if ( location.dst2( tmp2 ) <dist ) {
                 dist = location.dst2( tmp2 );
@@ -360,8 +363,8 @@ public class WorldBase implements Disposable, IWorldModel {
     private Vector3 getPointOnClosestPath(final Vector3 location) {
         float dist = Float.MAX_VALUE;
         float tmpDist;
-        Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
-        for (CatmullRomSpline<Vector3> path : getPaths() ) {
+        final Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
+        for (final CatmullRomSpline<Vector3> path : getPaths() ) {
             // path.valueAt( temp, path.locate( location ) );// gives an aproximated point on the path
             tmpDist = temp.set( path.controlPoints[path.nearest( location )] ).dst( location );// gives the nearest control ponit
             if ( dist >tmpDist ) {
@@ -373,25 +376,29 @@ public class WorldBase implements Disposable, IWorldModel {
         return tmp2;
     }
 
-    public Enemy addFoe(EnemyType type, float x, float y, float z) {
+    @Override
+    public Enemy addFoe(final EnemyType type, final float x, final float y, final float z) {
         return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ), x, y, z );
     }
 
-    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
-        Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
+    @Override
+    public Enemy addFoe(final EnemyType type, final CatmullRomSpline<Vector3> path, final float x, final float y, final float z) {
+        final Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
         getEnemy().add( inamicTemp );
         return inamicTemp;
     }
 
-    public Ally addAlly(AllyType type, float x, float y, float z) {
+    @Override
+    public Ally addAlly(final AllyType type, final float x, final float y, final float z) {
         return addAlly( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
     }
 
-    public Ally addAlly(Vector3 duty, AllyType type, float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
+    @Override
+    public Ally addAlly(final Vector3 duty, final AllyType type, final float x, final float y, final float z) {
+        final Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
         getAlly().add( aliatTemp );
 
-        for (FightZone fz : getFightZones() ) {
+        for (final FightZone fz : getFightZones() ) {
             if ( fz.box.getCenter().dst( tmp.set( x, y, z ) ) <8 ) {
                 fz.addAlly( aliatTemp );
                 fz.aproximatePoz();
@@ -403,177 +410,198 @@ public class WorldBase implements Disposable, IWorldModel {
         return aliatTemp;
     }
 
-    public Shot addShot(ShotType type, Ray ray, float charge) {
-        Shot shotTemp = shotPool.obtain().create( type, ray, charge );
+    @Override
+    public Shot addShot(final ShotType type, final Ray ray, final float charge) {
+        final Shot shotTemp = shotPool.obtain().create( type, ray, charge );
         getShot().add( shotTemp );
         return shotTemp;
     }
 
-    public FightZone addFightZone(Vector3 poz) {
-        FightZone fightZone = fzPool.obtain().create( poz );
+    @Override
+    public FightZone addFightZone(final Vector3 poz) {
+        final FightZone fightZone = fzPool.obtain().create( poz );
         getFightZones().add( fightZone );
         return fightZone;
     }
 
-    private void addMediu(ModelInstance med) {
+    private void addMediu(final ModelInstance med) {
         mediu.add( med );
     }
 
-    private Pool<Enemy>     inamicPool = new Pool<Enemy>() {
+    private final Pool<Enemy>     inamicPool = new Pool<Enemy>() {
 
-                                           @Override
-                                           protected Enemy newObject() {
-                                               return new Enemy( WorldBase.this );
-                                           }
-                                       };
+                                                 @Override
+                                                 protected Enemy newObject() {
+                                                     return new Enemy( WorldBase.this );
+                                                 }
+                                             };
 
-    private Pool<Ally>      aliatPool  = new Pool<Ally>() {
+    private final Pool<Ally>      aliatPool  = new Pool<Ally>() {
 
-                                           @Override
-                                           protected Ally newObject() {
-                                               return new Ally( WorldBase.this );
-                                           }
-                                       };
+                                                 @Override
+                                                 protected Ally newObject() {
+                                                     return new Ally( WorldBase.this );
+                                                 }
+                                             };
 
-    private Pool<Shot>      shotPool   = new Pool<Shot>() {
+    private final Pool<Shot>      shotPool   = new Pool<Shot>() {
 
-                                           @Override
-                                           protected Shot newObject() {
-                                               return new Shot( WorldBase.this );
-                                           }
-                                       };
+                                                 @Override
+                                                 protected Shot newObject() {
+                                                     return new Shot( WorldBase.this );
+                                                 }
+                                             };
 
-    private Pool<FightZone> fzPool     = new Pool<FightZone>() {
+    private final Pool<FightZone> fzPool     = new Pool<FightZone>() {
 
-                                           @Override
-                                           protected FightZone newObject() {
-                                               return new FightZone( WorldBase.this );
-                                           }
-                                       };
+                                                 @Override
+                                                 protected FightZone newObject() {
+                                                     return new FightZone( WorldBase.this );
+                                                 }
+                                             };
 
 
+    @Override
     public Pool<Enemy> getEnemyPool() {
         return inamicPool;
     }
 
 
+    @Override
     public Pool<Ally> getAliatPool() {
         return aliatPool;
     }
 
 
+    @Override
     public Pool<Shot> getShotPool() {
         return shotPool;
     }
 
 
+    @Override
     public Pool<FightZone> getFzPool() {
         return fzPool;
     }
 
-    public Tower getTowerHitByRay(Ray ray) {
-        for (Tower tower : getTowers() )
+    @Override
+    public Tower getTowerHitByRay(final Ray ray) {
+        for (final Tower tower : getTowers() )
             if ( tower.intersectsRay( ray ) ) {
                 return tower;
             }
         return null;
     }
 
+    @Override
     public Environment getEnvironment() {
         return environment;
     }
 
 
+    @Override
     public Array<FightZone> getFightZones() {
         return fightZones;
     }
 
 
-    public void setFightZones(Array<FightZone> fightZones) {
+    public void setFightZones(final Array<FightZone> fightZones) {
         this.fightZones = fightZones;
     }
 
 
+    @Override
     public Array<CatmullRomSpline<Vector3>> getPaths() {
         return paths;
     }
 
 
-    public void setPaths(Array<CatmullRomSpline<Vector3>> paths) {
+    public void setPaths(final Array<CatmullRomSpline<Vector3>> paths) {
         this.paths = paths;
     }
 
 
+    @Override
     public Array<Ally> getAlly() {
         return ally;
     }
 
 
-    public void setAlly(Array<Ally> ally) {
+    public void setAlly(final Array<Ally> ally) {
         this.ally = ally;
     }
 
 
+    @Override
     public Array<BoundingBox> getColide() {
         return colide;
     }
 
 
-    public BoundingBox addToColide(BoundingBox box) {
+    @Override
+    public BoundingBox addToColide(final BoundingBox box) {
         colide.add( box );
         return box;
     }
 
-    public void removeColiders(Array<BoundingBox> box) {
+    @Override
+    public void removeColiders(final Array<BoundingBox> box) {
         colide.removeAll( box, false );
     }
 
 
-    public void setColide(Array<BoundingBox> colide) {
+    public void setColide(final Array<BoundingBox> colide) {
         this.colide = colide;
     }
 
 
+    @Override
     public Array<Enemy> getEnemy() {
         return enemy;
     }
 
 
-    public void setEnemy(Array<Enemy> enemy) {
+    public void setEnemy(final Array<Enemy> enemy) {
         this.enemy = enemy;
     }
 
 
-    public void addViata(int amount) {
-        this.viata += amount;
+    @Override
+    public void addViata(final int amount) {
+        viata += amount;
         Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
 
+    @Override
     public int getViata() {
         return viata;
     }
 
 
-    public void setViata(int viata) {
+    @Override
+    public void setViata(final int viata) {
         this.viata = viata;
         Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
     }
 
+    @Override
     public Array<Shot> getShot() {
         return shot;
     }
 
 
-    public void setShot(Array<Shot> shot) {
+    public void setShot(final Array<Shot> shot) {
         this.shot = shot;
     }
 
+    @Override
     public boolean canWaveStart() {
         return canWaveStart;
     }
 
-    public void setCanWaveStart(boolean canWaveStart) {
+    @Override
+    public void setCanWaveStart(final boolean canWaveStart) {
         this.canWaveStart = canWaveStart;
     }
 
@@ -581,9 +609,9 @@ public class WorldBase implements Disposable, IWorldModel {
     @Override
     public void dispose() {
 
-        for (Disposable dis : toDispose )
+        for (final Disposable dis : toDispose )
             dis.dispose();
-        for (Disposable dis : getTowers() )
+        for (final Disposable dis : getTowers() )
             dis.dispose();
 
         toDispose.clear();
@@ -594,7 +622,8 @@ public class WorldBase implements Disposable, IWorldModel {
 
     }
 
-    public boolean upgradeTower(byte id, TowerType upgrade) {
+    @Override
+    public boolean upgradeTower(final byte id, final TowerType upgrade) {
 
         if ( getTowers()[id].upgradeTower( upgrade ) ) {
             System.out.println( "World upgraded tower" );
@@ -603,7 +632,8 @@ public class WorldBase implements Disposable, IWorldModel {
         return false;
     }
 
-    public boolean changeWeapon(byte id, WeaponType newWeapon) {
+    @Override
+    public boolean changeWeapon(final byte id, final WeaponType newWeapon) {
         if ( getTowers()[id].type !=TowerType.FUNDATION )
             if ( getTowers()[id].changeWeapon( newWeapon ) ) {
                 System.out.println( "World changed weapon" );
@@ -612,18 +642,20 @@ public class WorldBase implements Disposable, IWorldModel {
         return false;
     }
 
-    public boolean canChangeTowers(Tower current, Tower next, Player player) {
-        if ( next.ocupier ==null ) {
-            if ( current !=null )
-                current.ocupier = null;
-            next.ocupier = player.name;
-            player.setTower( next );
-            return true;
-        }
-        return false;
-    }
+    // public boolean canChangeTowers(Tower current, Tower next, Player player) {
+    // if ( next.ocupier ==null ) {
+    // if ( current !=null )
+    // current.ocupier = null;
+    // next.ocupier = player.name;
+    // player.setTower( next );
+    // return true;
+    // }
+    // return false;
+    // } //s s s
 
-    public boolean canChangeTowers(byte current, byte next, String name) {
+  
+    @Override
+    public boolean canChangeTowers(final byte current, final byte next, final String name) {
         if ( getTowers()[next].ocupier ==null ) {
             if ( current >=0 &&current <towers.length )
                 getTowers()[current].ocupier = null;
@@ -633,22 +665,26 @@ public class WorldBase implements Disposable, IWorldModel {
         return false;
     }
 
+    @Override
     public String getMapPath() {
         return mapPath;
     }
 
-    public void setMapPath(String mapPath) {
+    @Override
+    public void setMapPath(final String mapPath) {
         this.mapPath = mapPath;
     }
 
+    @Override
     public Tower[] getTowers() {
         return towers;
     }
 
-    public void setTowers(Tower[] towers) {
+    public void setTowers(final Tower[] towers) {
         this.towers = towers;
     }
 
+    @Override
     public Vector3 getOverview() {
         return overview;
     }

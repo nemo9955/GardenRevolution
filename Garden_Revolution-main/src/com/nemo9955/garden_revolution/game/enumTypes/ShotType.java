@@ -38,8 +38,8 @@ public enum ShotType {
             }
         }
 
-        @Override
         @SuppressWarnings("deprecation")
+        @Override
         public Vector3 getMove(Vector3 direction, float delta) {
             return direction.sub( 0, 0.7f *delta, 0 ).tmp().scl( delta *speed );
         }

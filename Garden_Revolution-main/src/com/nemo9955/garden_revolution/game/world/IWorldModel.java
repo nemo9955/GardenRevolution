@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
@@ -83,8 +82,7 @@ public interface IWorldModel {
 
     public boolean changeWeapon(byte id, WeaponType newWeapon);
 
-    public boolean canChangeTowers(Tower current, Tower next, Player player);
-
+    // public boolean canChangeTowers(Tower current, Tower next, Player player);
     public boolean canChangeTowers(byte current, byte next, String name);
 
     public String getMapPath();
