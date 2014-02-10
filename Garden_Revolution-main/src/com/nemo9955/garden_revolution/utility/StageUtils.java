@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
@@ -28,7 +28,7 @@ public class StageUtils {
 
     public static Stage makeGamePlayStage(Stage stage, final Gameplay gp) {
         stage = new Stage( Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate, true );
-        final Skin skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class );
+        final Skin skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
         gp.weaponCharger = new Image( skin, "mover-knob" );
         gp.weaponCharger.setVisible( false );
@@ -194,7 +194,7 @@ public class StageUtils {
 
                         @Override
                         public void run() {
-                            Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                            GR.game.setScreen( GR.menu );
                         }
                     } ) ) );
                 }

@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireActivity;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -34,6 +35,7 @@ public class Functions {
         kryo.register( msNetGR.class );
         kryo.register( WeaponChangedPacket.class );
         kryo.register( TowerChangedPacket.class );
+        kryo.register( PlayerFireActivity.class );
         kryo.register( PlayerChangesTower.class );
     }
 
@@ -89,11 +91,13 @@ public class Functions {
         return true;
     }
 
+
     private static WeaponChangedPacket wcp = new WeaponChangedPacket();
 
     public static WeaponChangedPacket getWCP(byte towerID, int eOrdinal) {
         return wcp.getWCP( eOrdinal, towerID );
     }
+
 
     private static TowerChangedPacket tcp = new TowerChangedPacket();
 
@@ -101,10 +105,18 @@ public class Functions {
         return tcp.getTCP( eOrdinal, towerID );
     }
 
+
     private static PlayerChangesTower pct = new PlayerChangesTower();
 
     public static PlayerChangesTower getPCT(byte current, byte next, String name) {
         return pct.getPCT( current, next, name );
+    }
+
+
+    private static PlayerFireActivity pfa = new PlayerFireActivity();
+
+    public static PlayerFireActivity getPFA(byte towerID, byte weaponOrd, float info) {
+        return pfa.getPFA( towerID, weaponOrd, info );
     }
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {

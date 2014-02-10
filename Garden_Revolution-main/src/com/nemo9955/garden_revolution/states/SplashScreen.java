@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 
 
@@ -54,16 +55,16 @@ public class SplashScreen implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
         // if ( Garden_Revolution.manager.getProgress() <0.8f )
-        if ( Garden_Revolution.manager.update() ) {
+        if ( GR.manager.update() ) {
             game.postLoading();
-            game.setScreen( Garden_Revolution.menu );
+            game.setScreen( GR.menu );
         }
         font.setScale( 0.8f );
 
         batch.begin();
         fundal.draw( batch );
-        batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), Garden_Revolution.manager.getProgress() *bara.getWidth(), bara.getHeight() +5 );
-        font.draw( batch, String.format( "%d%% Completed", (int) ( Garden_Revolution.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -95, Gdx.graphics.getHeight() /2 +12 );
+        batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), GR.manager.getProgress() *bara.getWidth(), bara.getHeight() +5 );
+        font.draw( batch, String.format( "%d%% Completed", (int) ( GR.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -95, Gdx.graphics.getHeight() /2 +12 );
         font.draw( batch, mesaj, Gdx.graphics.getWidth() /2 - ( mesMar.width /2 ), mesMar.height *2 );
         batch.end();
     }

@@ -79,11 +79,6 @@ public class WorldSP implements IWorldModel {
         return world.canChangeTowers( current, next, name );
     }
 
-    // @Override
-    // public boolean canChangeTowers(Tower current, Tower next, Player player) {
-    // return world.canChangeTowers( current, next, player );
-    // }
-
     @Override
     public boolean canWaveStart() {
         return world.canWaveStart();
@@ -155,7 +150,7 @@ public class WorldSP implements IWorldModel {
 
     @Override
     public Tower[] getTowers() {
-        return getTowers();
+        return world.getTowers();
     }
 
 
@@ -241,6 +236,11 @@ public class WorldSP implements IWorldModel {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void fireFromTower(Tower tower, float charge) {
+        world.fireFromTower( tower, charge );
     }
 
 }

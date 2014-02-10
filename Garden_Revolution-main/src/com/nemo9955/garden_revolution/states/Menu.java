@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -42,7 +42,7 @@ public class Menu extends ControllerAdapter implements Screen {
 
         tweeger = new TweenManager();
 
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         // stage = new Stage();
 
@@ -61,13 +61,13 @@ public class Menu extends ControllerAdapter implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( play.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
+                    GR.game.setScreen( GR.selecter );
 
                 if ( test.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.test );
+                    GR.game.setScreen( GR.test );
 
                 if ( options.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.options );
+                    GR.game.setScreen( GR.options );
 
                 if ( exit.isPressed() )
                     Gdx.app.exit();

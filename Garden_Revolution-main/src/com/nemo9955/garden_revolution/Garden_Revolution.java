@@ -25,24 +25,24 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
 
-    public static final String        TITLU    = "Garden Revolution";
-    public static final String        VERSIUNE = "alfa 0.666";
-
-    public static Options             options;
-    public static Gameplay            gameplay;
-    public static Menu                menu;
-    public static TestScene           test;
-    public static SplashScreen        splash;
-    public static LevelSelector       selecter;
-    public static MultyplayerSelector multyplayer;
-
-    public static Garden_Revolution   game;
-    public static AssetManager        manager;
+    // public static final String TITLU = "Garden Revolution";
+    // public static final String VERSIUNE = "alfa 0.666";
+    //
+    // public static Options options;
+    // public static Gameplay gameplay;
+    // public static Menu menu;
+    // public static TestScene test;
+    // public static SplashScreen splash;
+    // public static LevelSelector selecter;
+    // public static MultyplayerSelector multyplayer;
+    //
+    // public static Garden_Revolution game;
+    // public static AssetManager manager;
 
     @Override
     public void create() {
 
-        manager = new AssetManager();
+        GR.manager = new AssetManager();
 
         Texture.setEnforcePotImages( false );
 
@@ -53,17 +53,17 @@ public class Garden_Revolution extends Game {
         for (Assets aset : Assets.values() ) {
             try {
                 if ( aset.type() ==Texture.class )
-                    manager.load( aset.path(), Texture.class, param );
+                    GR.manager.load( aset.path(), Texture.class, param );
                 else
-                    manager.load( aset.path(), aset.type() );
+                    GR.manager.load( aset.path(), aset.type() );
             }
             catch (Exception e) {
                 System.out.println( "problema la incarcarea assetului : " +aset.name() );
             }
         }
 
-        splash = new SplashScreen( this );
-        setScreen( splash );
+        GR.splash = new SplashScreen( this );
+        setScreen( GR.splash );
 
     }
 
@@ -74,35 +74,35 @@ public class Garden_Revolution extends Game {
 
         Texture.setEnforcePotImages( false );
 
-        multyplayer = new MultyplayerSelector();
-        options = new Options();
-        test = new TestScene();
-        gameplay = new Gameplay();
-        menu = new Menu();
-        selecter = new LevelSelector();
+        GR.multyplayer = new MultyplayerSelector();
+        GR.options = new Options();
+        GR.test = new TestScene();
+        GR.gameplay = new Gameplay();
+        GR.menu = new Menu();
+        GR.selecter = new LevelSelector();
 
-        game = this;
+        GR.game = this;
     }
 
     public static Model getModel(Assets model) {
-        return manager.get( model.path(), Model.class );
+        return GR.manager.get( model.path(), Model.class );
     }
 
     public static AtlasRegion getGameTexture(String name) {
-        return manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
+        return GR.manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
     }
 
     @Override
     public void dispose() {
-        gameplay.dispose();
-        menu.dispose();
-        selecter.dispose();
-        splash.dispose();
-        test.dispose();
-        options.dispose();
-        multyplayer.dispose();
+        GR.gameplay.dispose();
+        GR.menu.dispose();
+        GR.selecter.dispose();
+        GR.splash.dispose();
+        GR.test.dispose();
+        GR.options.dispose();
+        GR.multyplayer.dispose();
 
-        manager.dispose();
+        GR.manager.dispose();
 
         System.out.println( "Toate resursele au fost eliminate cu succes !" );
     }

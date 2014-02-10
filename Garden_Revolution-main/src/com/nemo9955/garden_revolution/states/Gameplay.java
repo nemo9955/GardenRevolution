@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.states;
 
 import aurelienribon.tweenengine.TweenManager;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -28,7 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -127,8 +128,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     private void updateTheGame(float delta) {
 
-        if ( player.isInTower() &&weaponCharger.isVisible() &&player.fireChargedTime !=0 ) {
-            int time = (int) ( System.currentTimeMillis() -player.fireChargedTime );
+        if ( player.isInTower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {
+            int time = (int) ( System.currentTimeMillis() -player.getTower().fireChargedTime );
             time = MathUtils.clamp( time, 0, 2000 );
             charge = time /2000f;
             weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
@@ -187,7 +188,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
         ready.setText( "Ready!" );
-//        showMessage( "Created as HOST" );
+        // showMessage( "Created as HOST" );
         return this;
     }
 
@@ -204,10 +205,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         presDown.set( screenX, screenY );
 
-        if ( updWorld &&screenX >scrw /2 ) {
-            player.setFiringHold( true );
+        if ( player.isInTower() &&updWorld &&screenX >scrw /2 ) {
+            player.getTower().setFiringHold( true );
         }
-        if ( updWorld &&player.isInTower() &&player.isWeaponType( FireType.FIRECHARGED ) &&screenX >scrw /2 ) {
+        if ( updWorld &&player.isInTower() &&player.getTower().isWeaponType( FireType.FIRECHARGED ) &&screenX >scrw /2 ) {
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
             charge = 0;
@@ -236,27 +237,25 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if ( updWorld &&player.isFiringHold() ) {
-            player.setFiringHold( false );
+        if ( updWorld &&player.isInTower() &&player.getTower().isFiringHold ) {
+            player.getTower().setFiringHold( false );
         }
 
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( charge >0.01f ) {
-                player.fireWeapon( world.getDef(),  charge );
+                player.getTower().fireWeapon( world.getDef(), charge );
                 charge = -1;
                 return true;
             }
         }
-
         return false;
-
     }
 
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( updWorld &&!weaponCharger.isVisible() &&x <scrw /2 ) {
+        if ( ( updWorld &&!weaponCharger.isVisible() &&x <scrw /2 ) || ( Gdx.app.getType() ==ApplicationType.Desktop &&Gdx.input.isCursorCatched() ) ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;
@@ -315,7 +314,7 @@ public class Gameplay extends CustomAdapter implements Screen {
                 dolly.y = -0.3f;
                 break;
             case Keys.ESCAPE:
-                Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                GR.game.setScreen( GR.menu );
                 break;
             case Keys.H:
                 mp.sendTCP( "a random message" );
@@ -359,11 +358,11 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( buttonCode ==Vars.buton[0] ) {
 
-            if ( player.isInTower() &&player.isWeaponType( FireType.FIRECHARGED ) ) {
+            if ( player.isInTower() &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 charge = 0;
-                player.fireChargedTime = System.currentTimeMillis();
+                player.getTower().fireChargedTime = System.currentTimeMillis();
 
                 tmp2.set( stage.screenToStageCoordinates( tmp2.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
                 weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
@@ -404,8 +403,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( buttonCode ==Vars.buton[0] ) {
             if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                player.fireWeapon( world.getDef(),  charge );
-                player.fireChargedTime = 0;
+                player.getTower().fireWeapon( world.getDef(), charge );
+                player.getTower().fireChargedTime = 0;
                 charge = -1;
             }
         }
@@ -444,7 +443,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     }
 
-    private Dialog dialog = new Dialog( "titlu", Garden_Revolution.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
+    private Dialog dialog = new Dialog( "titlu", GR.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
 
                               protected void result(Object object) {
                                   // TODO add something that clears all the buttons after one is pressed

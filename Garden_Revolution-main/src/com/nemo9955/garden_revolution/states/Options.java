@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -35,15 +35,15 @@ public class Options extends ControllerAdapter implements Screen {
 
     public Options() {
 
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
-        back = new TextButton( "back", (Skin) Garden_Revolution.manager.get( Assets.SKIN_JSON.path() ) );
+        back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
         back.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                GR.game.setScreen( GR.menu );
             }
 
         } );

@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -39,7 +39,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
 
     public MultyplayerSelector() {
 
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
         table = new Table( skin );
@@ -73,7 +73,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
 
                 if ( back.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.selecter );
+                    GR.game.setScreen( GR.selecter );
                 else if ( start.isPressed() ) {
                     if ( isHost.isChecked() ) {
                         startAsHost();
@@ -125,11 +125,11 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
     }
 
     private void startAsClient(String textIP) {
-        Garden_Revolution.gameplay.initAsClient( textIP );
+        GR.gameplay.initAsClient( textIP );
     }
 
     private void startAsHost() {
-        Garden_Revolution.gameplay.initAsHost( level );
+        GR.gameplay.initAsHost( level );
     }
 
     @Override

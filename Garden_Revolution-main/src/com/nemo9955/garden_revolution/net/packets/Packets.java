@@ -10,6 +10,21 @@ public class Packets {
         public String[] players;
     }
 
+    public static class PlayerFireActivity {
+
+        public byte  towerID;
+        public  byte  weaponOrd;
+        public float info;
+
+        public PlayerFireActivity getPFA(byte towerID, byte weaponOrd, float info) {
+            this.towerID = towerID;
+            this.weaponOrd = weaponOrd;
+            this.info = info;
+            return this;
+        }
+
+    }
+
     public static class WeaponChangedPacket {
 
         public byte eOrdinal;

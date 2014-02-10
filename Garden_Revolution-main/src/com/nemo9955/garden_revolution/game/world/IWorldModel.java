@@ -101,4 +101,7 @@ public interface IWorldModel {
 
     public Pool<FightZone> getFzPool();
 
+    public void fireFromTower(Tower tower, float charge);
+
+
 }

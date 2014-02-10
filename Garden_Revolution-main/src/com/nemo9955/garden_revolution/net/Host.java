@@ -6,11 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireActivity;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -38,19 +39,16 @@ public class Host extends Listener implements MultiplayerComponent {
             Gdx.app.postRunnable( new Runnable() {
 
                 public void run() {
-                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                    GR.game.setScreen( GR.gameplay );
                 }
             } );
         }
         catch (final IOException e) {
-            // gp.showMessage( "Something went wrong" );
-            // e.printStackTrace();
-            // System.out.println( "[H]Connection failed" );
             server.close();
             Gdx.app.postRunnable( new Runnable() {
 
                 public void run() {
-                    Garden_Revolution.multyplayer.showMessage( e.getMessage() );
+                    GR.multyplayer.showMessage( e.getMessage() );
                 }
             } );
         }
@@ -81,6 +79,22 @@ public class Host extends Listener implements MultiplayerComponent {
                         connection.sendTCP( gp.world.getDef().getWorldInfo( srv ) );
                         // gp.showMessage( "[H] sending map info to client " );
                     }
+                }
+                else if ( obj instanceof PlayerFireActivity ) {
+                    PlayerFireActivity pfa = (PlayerFireActivity) obj;
+
+                    switch (WeaponType.values()[pfa.weaponOrd]) {
+                        case MINIGUN:
+                            gp.world.getSgPl().getTowers()[pfa.towerID].isFiringHold = pfa.info ==1 ? true : false;
+                            break;
+                        case CANNON:
+                            gp.world.getSgPl().getTowers()[pfa.towerID].fireWeapon( gp.world.getSgPl(), pfa.info );
+                            break;
+                        default:
+                            break;
+                    }
+
+                    server.sendToAllExceptTCP( connection.getID(), pfa );
                 }
                 else if ( obj instanceof PlayerChangesTower ) {
                     PlayerChangesTower plr = (PlayerChangesTower) obj;

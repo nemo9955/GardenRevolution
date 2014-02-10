@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.game.mediu;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -12,30 +13,37 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.utility.Functions;
 
 
 public class Tower implements Disposable {
 
     private IWorldModel          world;
-    private Array<BoundingBox>   coliders  = new Array<BoundingBox>( false, 1 );
+    private Array<BoundingBox>   coliders        = new Array<BoundingBox>( false, 1 );
 
-    private Array<ModelInstance> parts     = new Array<ModelInstance>( false, 1 );
-    public final Vector3         poz       = new Vector3();
-    public TowerType             type      = TowerType.FUNDATION;
+    private Array<ModelInstance> parts           = new Array<ModelInstance>( false, 1 );
+    public final Vector3         poz             = new Vector3();
+    public TowerType             type            = TowerType.FUNDATION;
 
     private Weapon               weapon;
-    public final Vector3         place     = new Vector3();
-    private final Vector3        direction = new Vector3();
-    public final Ray             ray       = new Ray( place, direction );
+    public final Vector3         place           = new Vector3();
+    private final Vector3        direction       = new Vector3();
+    public final Ray             ray             = new Ray( place, direction );
     public byte                  ID;
 
-    public String                ocupier   = null;
+    public String                ocupier         = null;
 
-    private Decal                pointer   = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
+    public boolean               isFiringHold    = false;
+    public long                  fireChargedTime = 0;
+
+
+    private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
     public Tower(ModelInstance baza, IWorldModel world, Vector3 poz, int ID) {
         this.ID = (byte) ID;
@@ -49,7 +57,8 @@ public class Tower implements Disposable {
     }
 
     public void fireWeapon(IWorldModel world, float charge) {
-        weapon.fire( world, ray, charge );
+        if ( hasWeapon() )
+            weapon.fire( world, ray, charge );
     }
 
     public boolean changeWeapon(WeaponType toChange) {
@@ -105,6 +114,8 @@ public class Tower implements Disposable {
 
     public void update(float delta) {
 
+        if ( ocupier !=null &&isFiringHold )
+            fireWeapon( world, 0 );
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
@@ -153,6 +164,28 @@ public class Tower implements Disposable {
 
     public void setTowerColiders(Array<BoundingBox> coliders) {
         this.coliders = coliders;
+    }
+
+    public void setFiringHold(boolean isFiring) {
+        if ( !hasWeapon() )
+            return;
+        if ( !isWeaponType( FireType.FIREHOLD ) )
+            isFiring = false;
+
+        isFiringHold = isFiring;
+        Gdx.input.setCursorCatched( isFiring );
+
+        if ( GR.gameplay.mp !=null &&hasWeapon() ) {// TODO move this in a world method
+            GR.gameplay.mp.sendTCP( Functions.getPFA( ID, (byte) getWeapon().type.ordinal(), isFiring ? 1 : 0 ) );
+        }
+
+    }
+
+    public boolean isWeaponType(FireType ft) {
+        if ( getWeapon() !=null )
+            if ( getWeapon().type.getFireType() ==ft )
+                return true;
+        return false;
     }
 
     public void setDirection(Vector3 dir) {

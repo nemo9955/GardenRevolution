@@ -6,11 +6,12 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireActivity;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
@@ -46,7 +47,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
             Gdx.app.postRunnable( new Runnable() {
 
                 public void run() {
-                    Garden_Revolution.multyplayer.showMessage( e.getMessage() );
+                    GR.multyplayer.showMessage( e.getMessage() );
                 }
             } );
         }
@@ -67,12 +68,27 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof StartingServerInfo ) {
                     gp.postInit( new WorldWrapper( (StartingServerInfo) obj, gp.mp ) );
-                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay );
+                    GR.game.setScreen( GR.gameplay );
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;
 
                     gp.world.getSgPl().changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+
+                }
+                else if ( obj instanceof PlayerFireActivity ) {
+                    PlayerFireActivity pfa = (PlayerFireActivity) obj;
+
+                    switch (WeaponType.values()[pfa.weaponOrd]) {
+                        case MINIGUN:
+                            gp.world.getSgPl().getTowers()[pfa.towerID].isFiringHold = pfa.info ==1 ? true : false;
+                            break;
+                        case CANNON:
+                            gp.world.getSgPl().getTowers()[pfa.towerID].fireWeapon( gp.world.getSgPl(), pfa.info );
+                            break;
+                        default:
+                            break;
+                    }
 
                 }
                 else if ( obj instanceof TowerChangedPacket ) {
@@ -93,7 +109,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                             gp.ready.setVisible( false );
                             break;
                         case YouCannotConnect:
-                            Garden_Revolution.multyplayer.showMessage( "The game already started !" );
+                            GR.multyplayer.showMessage( "The game already started !" );
                             break;
                         case YouCanChangeTowers:
                             // gp.world.getSgPl().canChangeTowers( gp.player.getTower(), gp.world.getDef().getTowers()[towerToChange], gp.player );

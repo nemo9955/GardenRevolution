@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.Waves;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
@@ -569,7 +569,7 @@ public class WorldBase implements Disposable, IWorldModel {
     @Override
     public void addViata(final int amount) {
         viata += amount;
-        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
+        GR.gameplay.viataTurn.setText( "Life " +viata );
     }
 
 
@@ -582,7 +582,7 @@ public class WorldBase implements Disposable, IWorldModel {
     @Override
     public void setViata(final int viata) {
         this.viata = viata;
-        Garden_Revolution.gameplay.viataTurn.setText( "Life " +viata );
+        GR.gameplay.viataTurn.setText( "Life " +viata );
     }
 
     @Override
@@ -653,7 +653,7 @@ public class WorldBase implements Disposable, IWorldModel {
     // return false;
     // } //s s s
 
-  
+
     @Override
     public boolean canChangeTowers(final byte current, final byte next, final String name) {
         if ( getTowers()[next].ocupier ==null ) {
@@ -687,6 +687,11 @@ public class WorldBase implements Disposable, IWorldModel {
     @Override
     public Vector3 getOverview() {
         return overview;
+    }
+
+    @Override
+    public void fireFromTower(Tower tower, float charge) {
+        tower.fireWeapon( this, charge );
     }
 
 

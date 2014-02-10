@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -46,7 +46,7 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
     }
 
     public TestScene() {
-        font = Garden_Revolution.manager.get( Assets.ARIAL32.path() );
+        font = GR.manager.get( Assets.ARIAL32.path() );
 
         batch = new SpriteBatch();
         shape = new ShapeRenderer();
@@ -59,12 +59,12 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
 
         stage = new Stage( Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, batch );
 
-        back = new TextButton( "back", (Skin) Garden_Revolution.manager.get( Assets.SKIN_JSON.path() ) );
+        back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
         back.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                GR.game.setScreen( GR.menu );
             }
 
         } );

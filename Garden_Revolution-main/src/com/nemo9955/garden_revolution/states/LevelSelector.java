@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.nemo9955.garden_revolution.Garden_Revolution;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -43,7 +43,7 @@ public class LevelSelector extends ControllerAdapter implements Screen {
     private TextButton         back;
 
     public LevelSelector() {
-        skin = Garden_Revolution.manager.get( Assets.SKIN_JSON.path() );
+        skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
@@ -123,11 +123,11 @@ public class LevelSelector extends ControllerAdapter implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( multy.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.multyplayer.init( lvlLoc.child( toAcces +".xml" ) ) );
+                    GR.game.setScreen( GR.multyplayer.init( lvlLoc.child( toAcces +".xml" ) ) );
                 else if ( back.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.menu );
+                    GR.game.setScreen( GR.menu );
                 else if ( start.isPressed() )
-                    Garden_Revolution.game.setScreen( Garden_Revolution.gameplay.initAsSinglePlayer( lvlLoc.child( toAcces +".xml" ) ) );
+                    GR.game.setScreen( GR.gameplay.initAsSinglePlayer( lvlLoc.child( toAcces +".xml" ) ) );
             }
         } );
 

@@ -7,7 +7,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = Garden_Revolution.TITLU + " " + Garden_Revolution.VERSIUNE;
+		cfg.title = GR.TITLU + " " + GR.VERSIUNE;
 		cfg.useGL20 = true;
 		cfg.resizable = false;
 		cfg.width = 800;

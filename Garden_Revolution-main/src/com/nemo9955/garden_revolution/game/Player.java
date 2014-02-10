@@ -12,7 +12,6 @@ import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
-import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -20,15 +19,12 @@ import com.nemo9955.garden_revolution.utility.Functions;
 
 public class Player {
 
-    private static final Vector3 tmp             = new Vector3();
+    private static final Vector3 tmp  = new Vector3();
     private PerspectiveCamera    cam;
     private IWorldModel          world;
     private Tower                tower;
 
-    private boolean              isFiringHold    = false;
-    public long                  fireChargedTime = 0;
-
-    public String                name            = "Player " +MathUtils.random( 99 );
+    public String                name = "Player " +MathUtils.random( 99 );
 
     public Player(IWorldModel world) {
         this.world = world;
@@ -41,8 +37,6 @@ public class Player {
 
 
     public void update(float delta) {
-        if ( isInTower() &&isFiringHold() )
-            fireWeapon( world, 0 );
     }
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
@@ -173,31 +167,9 @@ public class Player {
                     canChangeTower( towers[towers.length -1] );
                 else
                     canChangeTower( towers[i -1] );
-
     }
 
 
-    public boolean isFiringHold() {
-        return isFiringHold;
-    }
-
-    public void setFiringHold(boolean isFiring) {
-        if ( isInTower() &&isWeaponType( FireType.FIREHOLD ) )
-            this.isFiringHold = isFiring;
-        else
-            this.isFiringHold = false;
-    }
-
-    public boolean isWeaponType(FireType ft) {
-        if ( getTower() !=null &&getTower().getWeapon() !=null )
-            if ( getTower().getWeapon().type.getFireType() ==ft )
-                return true;
-        return false;
-    }
-
-    public void fireWeapon(IWorldModel world, float charge) {
-        getTower().fireWeapon( world, charge );
-    }
 
     public void upgradeCurentTower(TowerType upgrade) {
         if ( isInTower() &&world.upgradeTower( getTower().ID, upgrade ) )
@@ -208,7 +180,6 @@ public class Player {
         if ( isInTower() &&world.changeWeapon( getTower().ID, newWeapon ) )
             resetCamera();
     }
-
 
     public boolean canChangeTower(Tower tower) {
 

@@ -97,6 +97,8 @@ public enum WeaponType {
                 // tmp.set( ray.getEndPoint( tmp, distance ) );
 
                 world.addShot( ShotType.GHIULEA, ray, charge );
+
+               
             }
         }
 

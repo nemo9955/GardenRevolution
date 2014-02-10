@@ -17,7 +17,7 @@ import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 public class Shot extends Entity {
 
-    private final Vector3 direction;
+    private Vector3 direction;
     private float         life;
     public ShotType       type;
     private float         charge;

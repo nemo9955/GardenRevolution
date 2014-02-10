@@ -79,15 +79,8 @@ public class WorldMP implements IWorldModel {
     @Override
     public boolean canChangeTowers(byte current, byte next, String name) {
         mp.sendTCP( Functions.getPCT( current, next, name ) );
-        // return world.canChangeTowers( current, next, name );
         return false;
     }
-
-    // @Override
-    // public boolean canChangeTowers(Tower current, Tower next, Player player) {
-    // mp.sendTCP( Functions.getPCT( ( current ==null ? -1 : current.ID ), next.ID, player.name ) );
-    // return false;
-    // }
 
     @Override
     public boolean canWaveStart() {
@@ -248,5 +241,10 @@ public class WorldMP implements IWorldModel {
         return world.getFzPool();
     }
 
+    @Override
+    public void fireFromTower(Tower tower, float charge) {
+        world.fireFromTower( tower, charge );
+        mp.sendTCP( Functions.getPFA( tower.ID, (byte) tower.getWeapon().type.ordinal(), charge ) );
+    }
 
 }
