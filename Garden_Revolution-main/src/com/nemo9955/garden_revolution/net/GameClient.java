@@ -84,7 +84,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                             gp.world.getSgPl().getTowers()[pfa.towerID].isFiringHold = pfa.info ==1 ? true : false;
                             break;
                         case CANNON:
-                            gp.world.getSgPl().getTowers()[pfa.towerID].fireWeapon( gp.world.getSgPl(), pfa.info );
+                            gp.world.getSgPl().fireFromTower( gp.world.getSgPl().getTowers()[pfa.towerID], pfa.info );
                             break;
                         default:
                             break;

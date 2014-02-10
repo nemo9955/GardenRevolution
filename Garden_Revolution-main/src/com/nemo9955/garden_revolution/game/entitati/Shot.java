@@ -15,12 +15,14 @@ import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
 
 
+// FIXME major problem with this class ... bullets are more accelerated at launch and sometimes disappear
 public class Shot extends Entity {
 
+
     private Vector3 direction;
-    private float         life;
-    public ShotType       type;
-    private float         charge;
+    private float   life;
+    public ShotType type;
+    private float   charge;
 
     public Shot(IWorldModel world) {
         super( world );

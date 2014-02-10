@@ -244,7 +244,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( charge >0.01f ) {
-                player.getTower().fireWeapon( world.getDef(), charge );
+                // player.getTower().fireWeapon( world.getDef(), charge );
+                world.getDef().fireFromTower( player.getTower(), charge );
                 charge = -1;
                 return true;
             }
@@ -401,9 +402,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
         if ( buttonCode ==Vars.buton[0] ) {
-            if ( weaponCharger.isVisible() ) {
+            if ( player.isInTower() &&weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
-                player.getTower().fireWeapon( world.getDef(), charge );
+                // player.getTower().fireWeapon( world.getDef(), charge );
+                world.getDef().fireFromTower( player.getTower(), charge );
                 player.getTower().fireChargedTime = 0;
                 charge = -1;
             }
