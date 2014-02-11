@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.game.mediu;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -13,18 +12,16 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public class Tower implements Disposable {
 
-    private IWorldModel          world;
+    private WorldWrapper         world;
     private Array<BoundingBox>   coliders        = new Array<BoundingBox>( false, 1 );
 
     private Array<ModelInstance> parts           = new Array<ModelInstance>( false, 1 );
@@ -32,9 +29,9 @@ public class Tower implements Disposable {
     public TowerType             type            = TowerType.FUNDATION;
 
     private Weapon               weapon;
-    public final Vector3         place           = new Vector3();
-    private final Vector3        direction       = new Vector3();
-    public final Ray             ray             = new Ray( place, direction );
+    public Vector3               place           = new Vector3();
+    private Vector3              direction       = new Vector3();
+    public Ray                   ray             = new Ray( place, direction );
     public byte                  ID;
 
     public String                ocupier         = null;
@@ -45,20 +42,23 @@ public class Tower implements Disposable {
 
     private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
-    public Tower(ModelInstance baza, IWorldModel world, Vector3 poz, int ID) {
+    public Tower(ModelInstance baza, WorldWrapper world, Vector3 poz, int ID) {
         this.ID = (byte) ID;
         this.poz.set( poz );
         this.world = world;
-        parts.add( baza );
+        if ( baza !=null ) {
+            parts.add( baza );
+            addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) );
+        }
+        pointer.setPosition( poz.x, poz.y +5f, poz.z );
         place.set( poz ).add( 0, 10, 0 );
 
-        this.world.addToColide( addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) ) );
-        pointer.setPosition( poz.x, poz.y +5f, poz.z );
     }
 
-    public void fireWeapon(IWorldModel world, float charge) {
+    public boolean fireWeapon(float charge) {
         if ( hasWeapon() )
-            weapon.fire( world, ray, charge );
+         return   weapon.fire( world, ray, charge ); 
+        return false ;
     }
 
     public boolean changeWeapon(WeaponType toChange) {
@@ -80,7 +80,7 @@ public class Tower implements Disposable {
 
         Array<Node> remove = new Array<Node>( false, 1 );
 
-        world.removeColiders( getTowerColiders() );
+        world.getDef().removeColiders( getTowerColiders() );
         getTowerColiders().clear();
 
         ModelInstance model = new ModelInstance( upgrade.getModel(), poz );
@@ -96,7 +96,6 @@ public class Tower implements Disposable {
                 model.getNode( id ).calculateBoundingBox( box );
                 box.set( box.min.add( poz ), box.max.add( poz ) );
                 addToTowerColiders( box );
-                world.addToColide( box );
                 remove.add( model.nodes.get( i ) );
             }
         }
@@ -115,7 +114,7 @@ public class Tower implements Disposable {
     public void update(float delta) {
 
         if ( ocupier !=null &&isFiringHold )
-            fireWeapon( world, 0 );
+            fireWeapon( 0);
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
@@ -159,26 +158,12 @@ public class Tower implements Disposable {
 
     public BoundingBox addToTowerColiders(BoundingBox box) {
         coliders.add( box );
+        world.getDef().addToColide( box );
         return box;
     }
 
-    public void setTowerColiders(Array<BoundingBox> coliders) {
-        this.coliders = coliders;
-    }
-
     public void setFiringHold(boolean isFiring) {
-        if ( !hasWeapon() )
-            return;
-        if ( !isWeaponType( FireType.FIREHOLD ) )
-            isFiring = false;
-
-        isFiringHold = isFiring;
-        Gdx.input.setCursorCatched( isFiring );
-
-        if ( GR.gameplay.mp !=null &&hasWeapon() ) {// TODO move this in a world method
-            GR.gameplay.mp.sendTCP( Functions.getPFA( ID, (byte) getWeapon().type.ordinal(), isFiring ? 1 : 0 ) );
-        }
-
+        world.getDef().setTowerFireHold( this, isFiring );
     }
 
     public boolean isWeaponType(FireType ft) {
@@ -188,8 +173,13 @@ public class Tower implements Disposable {
         return false;
     }
 
+
     public void setDirection(Vector3 dir) {
-        direction.set( dir );
+        setDirection( dir.x, dir.y, dir.z );
+    }
+
+    public void setDirection(float x, float y, float z) {
+        direction.set( x, y, z );
         ray.set( place, direction );
     }
 

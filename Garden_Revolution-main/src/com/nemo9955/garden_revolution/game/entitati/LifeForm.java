@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public abstract class LifeForm extends Entity {
@@ -14,7 +14,7 @@ public abstract class LifeForm extends Entity {
 
     public int                 life;
 
-    public LifeForm(IWorldModel world) {
+    public LifeForm(WorldWrapper world) {
         super( world );
         direction = new Vector3();
     }

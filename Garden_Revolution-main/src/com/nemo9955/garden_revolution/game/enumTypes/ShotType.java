@@ -3,7 +3,7 @@ package com.nemo9955.garden_revolution.game.enumTypes;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public enum ShotType {
@@ -13,7 +13,7 @@ public enum ShotType {
         @Override
         protected void propShots() {
             damage = 35;
-            speed = 30;
+            speed = 50;
         }
 
     },
@@ -28,11 +28,11 @@ public enum ShotType {
         }
 
         @Override
-        public void hitActivity(Shot shot, IWorldModel world) {
+        public void hitActivity(Shot shot, WorldWrapper world) {
             super.hitActivity( shot, world );
 
             if ( shot.isDead() ) {
-                for (Enemy fo : world.getEnemy() )
+                for (Enemy fo : world.getWorld().getEnemy() )
                     if ( fo.poz.dst2( shot.poz ) <=range *range )
                         fo.damage( (int) ( damage - ( damage * ( fo.poz.dst( shot.poz ) /range ) ) ) );
             }
@@ -60,9 +60,9 @@ public enum ShotType {
         return direction.tmp().scl( delta *speed );
     }
 
-    public void hitActivity(Shot shot, IWorldModel world) {
+    public void hitActivity(Shot shot, WorldWrapper world) {
         if ( !shot.isDead() )
-            for (Enemy fo : world.getEnemy() )
+            for (Enemy fo : world.getWorld().getEnemy() )
                 if ( fo.box.intersects( shot.box ) ) {
                     fo.damage( damage );
                     shot.setDead( true );

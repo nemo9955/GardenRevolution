@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public abstract class Entity implements Poolable {
@@ -20,9 +20,9 @@ public abstract class Entity implements Poolable {
     public BoundingBox      box;
     public float            angle;
     public Vector3          poz;
-    protected final IWorldModel   world;
+    protected final WorldWrapper   world;
 
-    public Entity(IWorldModel world) {
+    public Entity(WorldWrapper world) {
         this.world = world;
         poz = new Vector3();
         box = new BoundingBox();

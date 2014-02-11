@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public enum WeaponType {
@@ -25,7 +25,8 @@ public enum WeaponType {
         }
 
         @Override
-        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
+        public boolean fireProjectile(WorldWrapper world, Ray ray, float charge) {
+            return false;
         }
 
         @Override
@@ -47,21 +48,18 @@ public enum WeaponType {
         }
 
         @Override
-        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
+        public boolean fireProjectile(WorldWrapper world, Ray ray, float charge) {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
-
-                // -ray.origin.y /ray.direction.y;
-                // tmp.set( ray.getEndPoint( tmp, distance ) );
-                // tmp.add( MathUtils.random( -2f, 2f ), MathUtils.random( -1.5f, 3f ), MathUtils.random( -2f, 2f ) );
-                // float distance = Functions.intersectLinePlane( ray, tmp );
 
                 myray.set( ray );
                 tmp.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
                 myray.origin.add( tmp );
 
-                world.addShot( ShotType.STANDARD, myray, 0 );
+                world.getWorld().addShot( ShotType.STANDARD, myray, 0 );
+                return true;
             }
+            return false;
         }
 
         @Override
@@ -83,23 +81,23 @@ public enum WeaponType {
 
         @Override
         protected void propWeapons() {
-            fireDellay = 200;
+            fireDellay = 1000;
             name = "Cannon";
             details = "Slow but powerfull.";
         }
 
         @Override
-        public void fireProjectile(IWorldModel world, Ray ray, float charge) {
+        public boolean fireProjectile(WorldWrapper world, Ray ray, float charge) {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
                 // float distance = -ray.origin.y /ray.direction.y;
                 // tmp.set( ray.getEndPoint( tmp, distance ) );
 
-                world.addShot( ShotType.GHIULEA, ray, charge );
-
-               
+                world.getWorld().addShot( ShotType.GHIULEA, ray, charge );
+                return true;
             }
+            return false;
         }
 
         @Override
@@ -118,18 +116,22 @@ public enum WeaponType {
         }
     };
 
-    private static final Vector3 tmp        = new Vector3();
-    private static final Ray     myray      = new Ray( new Vector3(), new Vector3() );
+    private static Vector3 tmp        = new Vector3();
+    private static Ray     myray      = new Ray( new Vector3(), new Vector3() );
 
-    public String                name       = "weapon name";
-    public String                details    = "weapon description";
-    protected int                fireDellay = 100;
-    protected long               fireTime   = 100;
+    public String          name       = "weapon name";
+    public String          details    = "weapon description";
+    protected int          fireDellay = 100;
+    protected long         fireTime   = 0;
 
+
+    {
+        propWeapons();
+    }
 
     protected abstract void propWeapons();
 
-    public abstract void fireProjectile(IWorldModel world, Ray ray, float charge);
+    public abstract boolean fireProjectile(WorldWrapper world, Ray ray, float charge);
 
     public abstract ModelInstance getModelInstance(Vector3 poz);
 

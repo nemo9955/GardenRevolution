@@ -1,5 +1,7 @@
 package com.nemo9955.garden_revolution.net.packets;
 
+import com.badlogic.gdx.math.Vector3;
+
 
 public class Packets {
 
@@ -10,19 +12,48 @@ public class Packets {
         public String[] players;
     }
 
-    public static class PlayerFireActivity {
+    public static class PlayerFireCharged {
 
         public byte  towerID;
-        public  byte  weaponOrd;
-        public float info;
+        public float charge;
 
-        public PlayerFireActivity getPFA(byte towerID, byte weaponOrd, float info) {
+        public PlayerFireCharged getPFC(byte towerID, float charge) {
             this.towerID = towerID;
-            this.weaponOrd = weaponOrd;
-            this.info = info;
+            this.charge = charge;
             return this;
         }
 
+    }
+
+    public static class PlayerFireHold {
+
+        public byte    towerID;
+        public boolean isFiring;
+
+        public PlayerFireHold getPFH(byte towerID, boolean isFiring) {
+            this.towerID = towerID;
+            this.isFiring = isFiring;
+            return this;
+        }
+
+    }
+
+    public static class TowerDirectionChange {
+
+        public byte ID;
+        public float x, y, z;
+
+        public TowerDirectionChange getTDC(byte iD, float x, float y, float z) {
+            ID = iD;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            return this;
+        }
+
+        public TowerDirectionChange getTDC(byte iD, Vector3 dir) {
+            return getTDC( ID, dir.x, dir.y, dir.z );
+        }
     }
 
     public static class WeaponChangedPacket {

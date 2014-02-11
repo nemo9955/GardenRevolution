@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -14,7 +14,7 @@ public class Ally extends LifeForm {
     private AllyType type;
 
 
-    public Ally(IWorldModel worldModel) {
+    public Ally(WorldWrapper worldModel) {
         super( worldModel );
         duty = new Vector3();
     }
@@ -59,8 +59,8 @@ public class Ally extends LifeForm {
         super.setDead( dead );
 
         if ( isDead() ) {
-            world.getAliatPool().free( this );
-            world.getAlly().removeValue( this, false );
+            world.getWorld().getAliatPool().free( this );
+            world.getWorld().getAlly().removeValue( this, false );
         }
     }
 }

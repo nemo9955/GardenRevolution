@@ -9,11 +9,14 @@ import com.esotericsoftware.kryonet.Server;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
-import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireActivity;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
@@ -70,7 +73,7 @@ public class Host extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof StartingServerInfo ) {
 
-                    if ( gp.world.getDef().canWaveStart() ) {
+                    if ( gp.world.getWorld().canWaveStart() ) {
                         connection.sendTCP( msNetGR.YouCannotConnect );
                         connection.close();
                     }
@@ -80,22 +83,28 @@ public class Host extends Listener implements MultiplayerComponent {
                         // gp.showMessage( "[H] sending map info to client " );
                     }
                 }
-                else if ( obj instanceof PlayerFireActivity ) {
-                    PlayerFireActivity pfa = (PlayerFireActivity) obj;
+                else if ( obj instanceof TowerDirectionChange ) {
+                    TowerDirectionChange tdr = (TowerDirectionChange) obj;
+                    gp.world.getWorld().getTowers()[tdr.ID].setDirection( tdr.x, tdr.y, tdr.z );
+                    // System.out.println( "[H] mod dir turn " +tdr.x +" " +tdr.y +" " +tdr.z );
+                    server.sendToAllExceptTCP( connection.getID(), tdr );
+                }
+                else if ( obj instanceof PlayerFireCharged ) {
+                    PlayerFireCharged pfa = (PlayerFireCharged) obj;
 
-                    switch (WeaponType.values()[pfa.weaponOrd]) {
-                        case MINIGUN:
-                            gp.world.getSgPl().getTowers()[pfa.towerID].isFiringHold = pfa.info ==1 ? true : false;
-                            break;
-                        case CANNON:
-                            // gp.world.getSgPl().getTowers()[pfa.towerID].fireWeapon( gp.world.getSgPl(), pfa.info );
-                            gp.world.getSgPl().fireFromTower( gp.world.getSgPl().getTowers()[pfa.towerID], pfa.info );
-                            break;
-                        default:
-                            break;
-                    }
+                    Tower tower = gp.world.getWorld().getTowers()[pfa.towerID];
+                    if ( tower.isWeaponType( FireType.FIRECHARGED ) )
+                        gp.world.getSgPl().fireFromTower( tower, pfa.charge );
 
                     server.sendToAllExceptTCP( connection.getID(), pfa );
+                }
+                else if ( obj instanceof PlayerFireHold ) {
+                    PlayerFireHold pfh = (PlayerFireHold) obj;
+
+                    Tower tower = gp.world.getWorld().getTowers()[pfh.towerID];
+                    if ( tower.isWeaponType( FireType.FIREHOLD ) )
+                        gp.world.getSgPl().setTowerFireHold( tower, pfh.isFiring );
+                    server.sendToAllExceptTCP( connection.getID(), pfh );
                 }
                 else if ( obj instanceof PlayerChangesTower ) {
                     PlayerChangesTower plr = (PlayerChangesTower) obj;
@@ -109,12 +118,12 @@ public class Host extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     WeaponChangedPacket weap = (WeaponChangedPacket) obj;
-                    gp.world.getDef().changeWeapon( weap.towerID, WeaponType.values()[weap.eOrdinal] );
+                    gp.world.getDef().changeWeapon( gp.world.getWorld().getTowers()[weap.towerID], WeaponType.values()[weap.eOrdinal] );
                     server.sendToAllExceptTCP( connection.getID(), weap );
                 }
                 else if ( obj instanceof TowerChangedPacket ) {
                     TowerChangedPacket twr = (TowerChangedPacket) obj;
-                    gp.world.getDef().upgradeTower( twr.towerID, TowerType.values()[twr.eOrdinal] );
+                    gp.world.getDef().upgradeTower( gp.world.getWorld().getTowers()[twr.towerID], TowerType.values()[twr.eOrdinal] );
                     server.sendToAllExceptTCP( connection.getID(), twr );
 
                 }
@@ -166,11 +175,8 @@ public class Host extends Listener implements MultiplayerComponent {
 
         if ( obj instanceof PlayerChangesTower ) {
             PlayerChangesTower plr = (PlayerChangesTower) obj;
+            Tower next = gp.world.getWorld().getTowers()[plr.next];
 
-            // Tower current = plr.current ==-1 ? null : gp.world.getDef().getTowers()[plr.current];
-            Tower next = gp.world.getDef().getTowers()[plr.next];
-
-            // if ( gp.world.getSgPl().canChangeTowers( current, next, gp.player ) ) {
             if ( gp.world.getSgPl().changePlayerTower( gp.player, next.ID ) ) {
                 server.sendToAllTCP( plr );
             }

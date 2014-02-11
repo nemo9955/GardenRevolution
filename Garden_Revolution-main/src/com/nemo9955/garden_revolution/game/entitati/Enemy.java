@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -24,7 +24,7 @@ public class Enemy extends LifeForm {
 
     public boolean            paused = false;
 
-    public Enemy(IWorldModel worldModel) {
+    public Enemy(WorldWrapper worldModel) {
         super( worldModel );
         offset = new Vector3();
         flag = new Vector3();
@@ -71,7 +71,7 @@ public class Enemy extends LifeForm {
         if ( flag.epsilonEquals( poz, 1f ) ) {
             percent += STEP;
             if ( percent >=1 ) {
-                world.addViata( -type.strenght );
+                world.getDef().addViata( -type.strenght );
                 setDead( true );
             }
             path.valueAt( flag, percent +STEP );
@@ -95,8 +95,8 @@ public class Enemy extends LifeForm {
 
 
         if ( isDead() ) {
-            world.getEnemyPool().free( this );
-            world.getEnemy().removeValue( this, false );
+            world.getWorld().getEnemyPool().free( this );
+            world.getWorld().getEnemy().removeValue( this, false );
         }
 
     }

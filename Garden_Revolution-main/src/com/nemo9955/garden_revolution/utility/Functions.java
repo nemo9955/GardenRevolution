@@ -17,9 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
-import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireActivity;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 
@@ -35,8 +37,10 @@ public class Functions {
         kryo.register( msNetGR.class );
         kryo.register( WeaponChangedPacket.class );
         kryo.register( TowerChangedPacket.class );
-        kryo.register( PlayerFireActivity.class );
+        kryo.register( PlayerFireCharged.class );
         kryo.register( PlayerChangesTower.class );
+        kryo.register( PlayerFireHold.class );
+        kryo.register( TowerDirectionChange.class );
     }
 
     public static String getIpAddress() {
@@ -92,6 +96,13 @@ public class Functions {
     }
 
 
+    private static TowerDirectionChange tdc = new TowerDirectionChange();
+
+    public static TowerDirectionChange getTDC(byte iD, Vector3 dir) {
+        return tdc.getTDC( iD, dir );
+    }
+
+
     private static WeaponChangedPacket wcp = new WeaponChangedPacket();
 
     public static WeaponChangedPacket getWCP(byte towerID, int eOrdinal) {
@@ -113,10 +124,16 @@ public class Functions {
     }
 
 
-    private static PlayerFireActivity pfa = new PlayerFireActivity();
+    private static PlayerFireCharged pfc = new PlayerFireCharged();
 
-    public static PlayerFireActivity getPFA(byte towerID, byte weaponOrd, float info) {
-        return pfa.getPFA( towerID, weaponOrd, info );
+    public static PlayerFireCharged getPFC(byte towerID, float info) {
+        return pfc.getPFC( towerID, info );
+    } 
+
+    private static PlayerFireHold pfh = new PlayerFireHold();
+
+    public static PlayerFireHold getPFH(byte towerID, boolean isFiring) {
+        return pfh.getPFH( towerID, isFiring );
     }
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {

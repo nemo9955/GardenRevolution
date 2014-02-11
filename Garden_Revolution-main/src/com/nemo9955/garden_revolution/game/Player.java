@@ -8,12 +8,13 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Functions;
 
 
@@ -21,12 +22,12 @@ public class Player {
 
     private static final Vector3 tmp  = new Vector3();
     private PerspectiveCamera    cam;
-    private IWorldModel          world;
+    private WorldWrapper         world;
     private Tower                tower;
 
     public String                name = "Player " +MathUtils.random( 99 );
 
-    public Player(IWorldModel world) {
+    public Player(WorldWrapper world) {
         this.world = world;
 
         cam = new PerspectiveCamera( 60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
@@ -42,7 +43,7 @@ public class Player {
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
         if ( !isInTower() ||count >=2 ) {
             Ray ray = getCamera().getPickRay( x, y );
-            return canChangeTower( world.getTowerHitByRay( ray ) );
+            return canChangeTower( world.getWorld().getTowerHitByRay( ray ) );
         }
         return false;
     }
@@ -57,13 +58,13 @@ public class Player {
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        world.addFoe( EnemyType.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
+                        world.getWorld().addFoe( EnemyType.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
                     }
             }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
+                world.getWorld().addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
+                world.getWorld().addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
 
             gestures.invalidateTapSquare();
             return true;
@@ -72,6 +73,8 @@ public class Player {
     }
 
 
+    private long dirTime = 0;
+
     public void moveCamera(float amontX, float amontY) {
 
         cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
@@ -79,8 +82,15 @@ public class Player {
             tmp.set( cam.direction ).crs( cam.up ).y = 0f;
             cam.rotateAround( getCameraRotAround(), tmp.nor(), amontY );
         }
-        if ( isInTower() )
+        cam.direction.nor();
+        if ( isInTower() ) {
             tower.setDirection( cam.direction );
+
+            if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >1000 ) {
+                dirTime = System.currentTimeMillis();
+                GR.gameplay.mp.sendTCP( Functions.getTDC( tower.ID, cam.direction ) );
+            }
+        }
 
         cam.update();
     }
@@ -94,12 +104,12 @@ public class Player {
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         Functions.intersectLinePlane( ray, look );
 
-        cam.position.set( getTower().place );
+        cam.position.set( tower.place );
         look.y = cam.position.y;
         cam.lookAt( look );
         cam.up.set( Vector3.Y );
 
-        if ( getTower().type ==TowerType.FUNDATION ) {
+        if ( tower.type ==TowerType.FUNDATION ) {
             cam.position.add( 0, 3, 0 );
         }
         else {
@@ -126,7 +136,7 @@ public class Player {
     }
 
     public boolean isInTower() {
-        return getTower() !=null;
+        return true;
     }
 
 
@@ -137,7 +147,7 @@ public class Player {
 
     public Vector3 getCameraRotAround() {
         if ( isInTower() )
-            return getTower().place;
+            return tower.place;
         return cam.position;
 
     }
@@ -149,41 +159,36 @@ public class Player {
 
 
     public void nextTower() {
-        Tower[] towers = world.getTowers();
-        for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i] ==getTower() )
-                if ( i +1 ==towers.length )
-                    canChangeTower( towers[0] );
-                else
-                    canChangeTower( towers[i +1] );
+        Tower[] towers = world.getWorld().getTowers();
+        if ( tower.ID +1 ==towers.length )
+            canChangeTower( towers[0] );
+        else
+            canChangeTower( towers[tower.ID +1] );
     }
 
 
     public void prevTower() {
-        Tower[] towers = world.getTowers();
-        for (int i = 0 ; i <towers.length ; i ++ )
-            if ( towers[i] ==getTower() )
-                if ( i ==0 )
-                    canChangeTower( towers[towers.length -1] );
-                else
-                    canChangeTower( towers[i -1] );
+        Tower[] towers = world.getWorld().getTowers();
+        if ( tower.ID ==0 )
+            canChangeTower( towers[towers.length -1] );
+        else
+            canChangeTower( towers[tower.ID -1] );
     }
 
 
-
     public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() &&world.upgradeTower( getTower().ID, upgrade ) )
+        if ( isInTower() &&world.getDef().upgradeTower( tower, upgrade ) )
             resetCamera();
     }
 
     public void changeCurrentWeapon(WeaponType newWeapon) {
-        if ( isInTower() &&world.changeWeapon( getTower().ID, newWeapon ) )
+        if ( isInTower() &&world.getDef().changeWeapon( tower, newWeapon ) )
             resetCamera();
     }
 
     public boolean canChangeTower(Tower tower) {
 
-        if ( tower !=null &&world.canChangeTowers( isInTower() ? getTower().ID : -1, tower.ID, name ) ) {
+        if ( tower !=null &&world.getDef().canChangeTowers( ( isInTower() ? this.tower.ID : -1 ), tower.ID, name ) ) {
             setTower( tower );
             return true;
         }

@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 // FIXME major problem with this class ... bullets are more accelerated at launch and sometimes disappear
@@ -24,7 +24,7 @@ public class Shot extends Entity {
     public ShotType type;
     private float   charge;
 
-    public Shot(IWorldModel world) {
+    public Shot(WorldWrapper world) {
         super( world );
         direction = new Vector3();
     }
@@ -63,7 +63,7 @@ public class Shot extends Entity {
             setDead( true );
         }
 
-        for (BoundingBox col : world.getColide() )
+        for (BoundingBox col : world.getWorld().getColide() )
             if ( col.intersects( box ) )
                 setDead( true );
 
@@ -92,8 +92,8 @@ public class Shot extends Entity {
         super.setDead( dead );
 
         if ( isDead() ) {
-            world.getShotPool().free( this );
-            world.getShot().removeValue( this, false );
+            world.getWorld().getShotPool().free( this );
+            world.getWorld().getShot().removeValue( this, false );
         }
     }
 

@@ -72,7 +72,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public MultiplayerComponent mp             = null;
 
-    public WorldWrapper         world;
+    public WorldWrapper         world          = new WorldWrapper();
     public Player               player;
 
     public Gameplay() {
@@ -88,9 +88,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void render(float delta) {
-
-        if ( world.getDef() ==null )
-            return;
 
         Gdx.gl.glClearColor( .1f, .5f, .9f, 1 );
         Gdx.gl.glClear( GL10.GL_COLOR_BUFFER_BIT |GL10.GL_DEPTH_BUFFER_BIT );
@@ -112,12 +109,12 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( player.getCamera() );
-        world.getDef().render( modelBatch, world.getDef().getEnvironment(), decalBatch );
+        world.getWorld().render( modelBatch, world.getWorld().getEnvironment(), decalBatch );
         modelBatch.end();
         decalBatch.flush();
 
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
-            world.getDef().renderDebug( player.getCamera(), shape );
+            world.getWorld().renderDebug( player.getCamera(), shape );
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
@@ -142,7 +139,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         player.update( delta );
 
-        world.getDef().update( delta );
+        world.getWorld().update( delta );
     }
 
     public void preInit() {
@@ -158,13 +155,12 @@ public class Gameplay extends CustomAdapter implements Screen {
     public void postInit(WorldWrapper newWorld) {
         updWorld = true;
 
-        if ( world !=null )
-            world.getDef().dispose();
         world = newWorld;
 
-        player = new Player( world.getDef() );
+        player = new Player( world );
 
-        player.getCamera().position.set( world.getDef().getOverview() );
+        // player.getCamera().position.set( world.getWorld().getOverview() );
+        player.setTower( world.getWorld().getTowers()[0] );
         player.getCamera().lookAt( Vector3.Zero );
         player.getCamera().update();
 
@@ -175,16 +171,18 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     public Gameplay initAsSinglePlayer(FileHandle nivel) {
+        Gdx.graphics.setTitle( GR.TITLU +" " +GR.VERSIUNE );
         preInit();
-        postInit( new WorldWrapper( nivel ) );
+        postInit( world.init( nivel ) );
         return this;
     }
 
     public Gameplay initAsHost(FileHandle nivel) {
+        Gdx.graphics.setTitle( "[H] " +GR.TITLU +" " +GR.VERSIUNE );
         preInit();
 
         mp = new Host( this );
-        postInit( new WorldWrapper( nivel, mp ) );
+        postInit( world.init( nivel, mp ) );
 
 
         ready.setText( "Ready!" );
@@ -193,6 +191,8 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     public Gameplay initAsClient(String ip) {
+        Gdx.graphics.setTitle( "[C] " +GR.TITLU +" " +GR.VERSIUNE );
+        preInit();
         preInit();
         mp = new GameClient( this, ip );
 
@@ -512,7 +512,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( stage !=null )
             stage.dispose();
         if ( world !=null )
-            world.getDef().dispose();
+            world.getDef().reset();
         if ( shape !=null )
             shape.dispose();
         if ( camGRStr !=null )

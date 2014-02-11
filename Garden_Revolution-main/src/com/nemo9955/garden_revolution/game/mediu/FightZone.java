@@ -6,12 +6,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public class FightZone implements Poolable {
 
-    private IWorldModel      world;
+    private WorldWrapper     world;
     public Array<Ally>       allies   = new Array<Ally>( false, 10 );
     public Array<Enemy>      enemies  = new Array<Enemy>( false, 5 );
 
@@ -21,7 +21,7 @@ public class FightZone implements Poolable {
 
     private static final int halfSize = 8;
 
-    public FightZone(IWorldModel worldModel) {
+    public FightZone(WorldWrapper worldModel) {
         this.world = worldModel;
     }
 
@@ -32,7 +32,7 @@ public class FightZone implements Poolable {
 
     public void update(float delta) {
 
-        for (Enemy enemy : world.getEnemy() )
+        for (Enemy enemy : world.getWorld().getEnemy() )
             if ( !enemy.paused &&box.contains( enemy.box ) ) {
                 addEnemy( enemy );
                 enemy.paused = true;
@@ -91,8 +91,8 @@ public class FightZone implements Poolable {
     public void removeFightZone() {
         for (Enemy enemy : enemies )
             enemy.paused = false;
-        world.getFzPool().free( this );
-        world.getFightZones().removeValue( this, false );
+        world.getWorld().getFzPool().free( this );
+        world.getWorld().getFightZones().removeValue( this, false );
     }
 
     public boolean hasAllies() {

@@ -4,17 +4,17 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
-import com.nemo9955.garden_revolution.game.world.IWorldModel;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public class Waves {
 
-    private final IWorldModel world;
+    private final WorldWrapper world;
 
-    private Array<Wave> wvs;
-    private int         curent = 0;
+    private Array<Wave>        wvs;
+    private int                curent = 0;
 
-    public Waves(IWorldModel world) {
+    public Waves(WorldWrapper world) {
         this.world = world;
         wvs = new Array<Wave>( true, 1 );
     }
@@ -28,7 +28,7 @@ public class Waves {
                 Array<Monstru> add = getMonsters();
                 for (Monstru mo : add ) {
                     Vector3 location = new Vector3( getPath( mo ).controlPoints[0] );
-                    world.addFoe( mo.type, getPath( mo ), location.x, location.y, location.z );
+                    world.getWorld().addFoe( mo.type, getPath( mo ), location.x, location.y, location.z );
                 }
             }
 
@@ -42,7 +42,7 @@ public class Waves {
     }
 
     private CatmullRomSpline<Vector3> getPath(Monstru mo) {
-        return world.getPaths().get( mo.path );
+        return world.getWorld().getPaths().get( mo.path );
     }
 
     private Array<Monstru> getMonsters() {
@@ -73,8 +73,8 @@ public class Waves {
 
 
         public Wave(float delay, float interval) {
-            monstrii = new Array<Array<Monstru>>( world.getPaths().size );
-            for (int i = 0 ; i <world.getPaths().size ; i ++ ) {
+            monstrii = new Array<Array<Monstru>>( world.getWorld().getPaths().size );
+            for (int i = 0 ; i <world.getWorld().getPaths().size ; i ++ ) {
                 monstrii.add( new Array<Monstru>( 1 ) );
             }
             this.delay = delay;
