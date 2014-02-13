@@ -43,16 +43,20 @@ public class Packets {
         public byte ID;
         public float x, y, z;
 
-        public TowerDirectionChange getTDC(byte iD, float x, float y, float z) {
-            ID = iD;
+        public TowerDirectionChange getTDC(byte ID, float x, float y, float z) {
+            this.ID = ID;
             this.x = x;
             this.y = y;
             this.z = z;
             return this;
         }
 
-        public TowerDirectionChange getTDC(byte iD, Vector3 dir) {
-            return getTDC( ID, dir.x, dir.y, dir.z );
+        public TowerDirectionChange getTDC(byte ID, Vector3 dir) {
+            this.ID = ID;
+            this.x = dir.x;
+            this.y = dir.y;
+            this.z = dir.z;
+            return this;
         }
     }
 

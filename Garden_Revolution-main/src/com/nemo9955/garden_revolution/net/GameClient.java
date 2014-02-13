@@ -75,9 +75,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;
-
                     gp.world.getSgPl().changeWeapon( gp.world.getWorld().getTowers()[weap.towerID], WeaponType.values()[weap.eOrdinal] );
-
                 }
                 else if ( obj instanceof PlayerFireCharged ) {
                     PlayerFireCharged pfa = (PlayerFireCharged) obj;
@@ -96,12 +94,15 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof TowerChangedPacket ) {
                     final TowerChangedPacket twr = (TowerChangedPacket) obj;
                     gp.world.getSgPl().upgradeTower( gp.world.getWorld().getTowers()[twr.towerID], TowerType.values()[twr.eOrdinal] );
-
                 }
                 else if ( obj instanceof TowerDirectionChange ) {
+
+
                     final TowerDirectionChange tdr = (TowerDirectionChange) obj;
                     gp.world.getWorld().getTowers()[tdr.ID].setDirection( tdr.x, tdr.y, tdr.z );
-                    // System.out.println( "[C] modificat dir turn " +tdr.x +" " +tdr.y +" " +tdr.z );
+                    System.out.println( "[C] modificat dir turn    " +tdr.ID +"      " +tdr.x +" " +tdr.y +" " +tdr.z );
+
+
                 }
                 else if ( obj instanceof PlayerChangesTower ) {
                     final PlayerChangesTower plr = (PlayerChangesTower) obj;

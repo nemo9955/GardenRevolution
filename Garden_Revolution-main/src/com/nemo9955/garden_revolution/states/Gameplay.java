@@ -109,7 +109,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( player.getCamera() );
-        world.getWorld().render( modelBatch, world.getWorld().getEnvironment(), decalBatch );
+        world.getWorld().render( modelBatch, decalBatch );
         modelBatch.end();
         decalBatch.flush();
 

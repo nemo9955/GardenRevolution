@@ -86,9 +86,10 @@ public class Player {
         if ( isInTower() ) {
             tower.setDirection( cam.direction );
 
-            if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >1000 ) {
+            if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >300 ) {
                 dirTime = System.currentTimeMillis();
                 GR.gameplay.mp.sendTCP( Functions.getTDC( tower.ID, cam.direction ) );
+                System.out.println( "Sending directional info : " +tower.ID +" " +cam.direction );
             }
         }
 

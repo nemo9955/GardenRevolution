@@ -86,7 +86,7 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof TowerDirectionChange ) {
                     TowerDirectionChange tdr = (TowerDirectionChange) obj;
                     gp.world.getWorld().getTowers()[tdr.ID].setDirection( tdr.x, tdr.y, tdr.z );
-                    // System.out.println( "[H] mod dir turn " +tdr.x +" " +tdr.y +" " +tdr.z );
+                    System.out.println( "[H] mod dir turn        " +tdr.ID +"        " +tdr.x +" " +tdr.y +" " +tdr.z );
                     server.sendToAllExceptTCP( connection.getID(), tdr );
                 }
                 else if ( obj instanceof PlayerFireCharged ) {

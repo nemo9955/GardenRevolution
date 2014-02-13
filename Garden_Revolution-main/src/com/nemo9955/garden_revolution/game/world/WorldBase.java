@@ -6,15 +6,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -71,10 +73,11 @@ public class WorldBase {
     private WorldWrapper                     superior;
 
     { // lights.
-        environment.set( ColorAttribute.createAmbient( 1, 1, 0, 1 ) );
-        environment.add( new PointLight().set( Color.BLUE, new Vector3( 5, -10, 5 ), 100 ) );
+        environment.set( ColorAttribute.createAmbient( 1f, 1f, 1f, 1f ) );
+        // environment.add( new PointLight().set( Color.WHITE, new Vector3( 0, 1, 0 ), 1000 ) );
         // envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
         environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
+        environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, 1, 0 ) ) );
     }
 
     public void init(FileHandle location, WorldWrapper superior) {
@@ -161,18 +164,18 @@ public class WorldBase {
     }
 
 
-    public void render(ModelBatch modelBatch, Environment env, DecalBatch decalBatch) {
+    public void render(ModelBatch modelBatch, DecalBatch decalBatch) {
         for (ModelInstance e : mediu )
-            modelBatch.render( e, env );
+            modelBatch.render( e, environment );
 
         for (Enemy e : getEnemy() )
-            e.render( modelBatch, env, decalBatch );
+            e.render( modelBatch, environment, decalBatch );
         for (Ally e : getAlly() )
-            e.render( modelBatch, env, decalBatch );
+            e.render( modelBatch, environment, decalBatch );
         for (Shot e : getShot() )
             e.render( modelBatch );
         for (Tower tower : towers )
-            tower.render( modelBatch, env, decalBatch );
+            tower.render( modelBatch, environment, decalBatch );
     }
 
 
@@ -301,7 +304,12 @@ public class WorldBase {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        towers[0] = new ViewPlace( null, superior, overview, 0 );
+        Model temp = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
+        toDispose.add( temp );
+        ModelInstance baza = new ModelInstance( temp, overview );
+        baza.transform.setToTranslation( overview );
+        baza.calculateTransforms();
+        towers[0] = new ViewPlace( baza, superior, overview, 0 );
     }
 
     private void readData(FileHandle location) {
@@ -494,7 +502,7 @@ public class WorldBase {
     }
 
 
-    public Environment getEnvironment() {
+    public Environment getEnvironment1() {
         return environment;
     }
 
@@ -614,7 +622,7 @@ public class WorldBase {
 
 
     public boolean fireFromTower(Tower tower, float charge) {
-       return tower.fireWeapon( charge );
+        return tower.fireWeapon( charge );
     }
 
 

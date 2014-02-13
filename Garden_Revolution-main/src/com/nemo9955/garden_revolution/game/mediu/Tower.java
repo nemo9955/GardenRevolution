@@ -52,13 +52,13 @@ public class Tower implements Disposable {
         }
         pointer.setPosition( poz.x, poz.y +5f, poz.z );
         place.set( poz ).add( 0, 10, 0 );
-
+        direction.set( -1, 0, 0 );
     }
 
     public boolean fireWeapon(float charge) {
         if ( hasWeapon() )
-         return   weapon.fire( world, ray, charge ); 
-        return false ;
+            return weapon.fire( world, ray, charge );
+        return false;
     }
 
     public boolean changeWeapon(WeaponType toChange) {
@@ -114,7 +114,7 @@ public class Tower implements Disposable {
     public void update(float delta) {
 
         if ( ocupier !=null &&isFiringHold )
-            fireWeapon( 0);
+            fireWeapon( 0 );
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
