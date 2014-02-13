@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -90,7 +91,8 @@ public class StageUtils {
         final Table optContinut = new Table();// aici e tot ce tine de optiunile in-game ---------------------------------------------------------------------------------
         final ScrollPane optiuni = new ScrollPane( optContinut, skin );
         final TextButton backBut = new TextButton( "Back", skin, "demon" );
-        final TextButton updWaves = new TextButton( "Activate Wave", skin );
+        final CheckBox updWaves = new CheckBox( "Auto-Update Wave", skin );
+        updWaves.setChecked( Vars.updateUave );
         final TextButton debug = new TextButton( "Hide Debug", skin );
 
         optiuni.setVisible( false );
@@ -157,7 +159,7 @@ public class StageUtils {
                 else if ( gp.ready.isPressed() ) {
                     if ( gp.mp ==null ) {// singleplayer part
                         gp.ready.setVisible( false );
-                        gp.world.getDef().setCanWaveStart( true );
+                        gp.world.getSgPl().setCanWaveStart( true );
                     }
                     else {// multyplayer part
                         gp.ready.setText( Vars.waitingMessage );
@@ -232,12 +234,12 @@ public class StageUtils {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
                 else if ( updWaves.isPressed() ) {
-                    if ( updWaves.isChecked() )
-                        updWaves.setText( "Dezactivate Wave" );
-                    else
-                        updWaves.setText( "Activate Wave" );
-                    updWaves.pack();
-                    Vars.updateUave = !Vars.updateUave;
+                    // if ( updWaves.isChecked() )
+                    // updWaves.setText( "Dezactivate Wave" );
+                    // else
+                    // updWaves.setText( "Activate Wave" );
+                    // updWaves.pack();
+                    Vars.updateUave = updWaves.isChecked();
                 }
                 else if ( debug.isPressed() ) {
                     if ( debug.isChecked() )

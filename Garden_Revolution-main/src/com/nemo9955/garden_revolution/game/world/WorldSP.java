@@ -1,9 +1,12 @@
 package com.nemo9955.garden_revolution.game.world;
 
+import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.game.Player;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
@@ -37,7 +40,7 @@ public class WorldSP implements IWorldModel {
     }
 
     @Override
-    public boolean changeWeapon(Tower tower,WeaponType newWeapon) {
+    public boolean changeWeapon(Tower tower, WeaponType newWeapon) {
         return world.changeWeapon( tower, newWeapon );
     }
 
@@ -76,7 +79,7 @@ public class WorldSP implements IWorldModel {
         return world.canChangeTowers( current, next, name );
     }
 
-    public boolean changePlayerTower(Player player, byte next) {///////////////////////////////////////////
+    public boolean changePlayerTower(Player player, byte next) {// /////////////////////////////////////////
         Tower nxt = world.getTowers()[next];
 
         if ( nxt.ocupier ==null ) {
@@ -102,5 +105,15 @@ public class WorldSP implements IWorldModel {
     @Override
     public void reset() {
         world.reset();
+    }
+
+    @Override
+    public Enemy addFoe(EnemyType type, Vector3 poz) {
+        return world.addFoe( type, poz );
+    }
+
+    @Override
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
+        return world.addFoe( type, path );
     }
 }

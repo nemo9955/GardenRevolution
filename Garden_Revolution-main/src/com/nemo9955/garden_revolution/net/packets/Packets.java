@@ -25,6 +25,38 @@ public class Packets {
 
     }
 
+    public static class WorldAddEnemyOnPath {
+
+        public byte ordinal;
+        public byte pathNo;
+        public byte ofsX, ofsZ;
+
+        public WorldAddEnemyOnPath getEOnPath(byte ordinal, byte pathNo, byte ofsX, byte ofsZ) {
+            this.ordinal = ordinal;
+            this.pathNo = pathNo;
+            this.ofsX = ofsX;
+            this.ofsZ = ofsZ;
+            return this;
+        }
+    }
+
+    public static class WorldAddEnemyOnPoz {
+
+        public byte ordinal;
+        public float x, y, z;
+        public byte  ofsX, ofsZ;
+
+        public WorldAddEnemyOnPoz getEOnPoz(byte ordinal, float x, float y, float z, byte ofsX, byte ofsZ) {
+            this.ordinal = ordinal;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.ofsX = ofsX;
+            this.ofsZ = ofsZ;
+            return this;
+        }
+    }
+
     public static class PlayerFireHold {
 
         public byte    towerID;

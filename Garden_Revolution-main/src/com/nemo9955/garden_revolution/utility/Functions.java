@@ -9,6 +9,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -23,6 +25,8 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 
 public class Functions {
@@ -41,6 +45,8 @@ public class Functions {
         kryo.register( PlayerChangesTower.class );
         kryo.register( PlayerFireHold.class );
         kryo.register( TowerDirectionChange.class );
+        kryo.register( WorldAddEnemyOnPath.class );
+        kryo.register( WorldAddEnemyOnPoz.class );
     }
 
     public static String getIpAddress() {
@@ -95,6 +101,17 @@ public class Functions {
         return true;
     }
 
+    private static WorldAddEnemyOnPath eOnPath = new WorldAddEnemyOnPath();
+
+    public static WorldAddEnemyOnPath getEOnPath(EnemyType type, byte pathNo, Vector3 offset) {
+        return eOnPath.getEOnPath( (byte) type.ordinal(), pathNo, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
+    }
+
+    private static WorldAddEnemyOnPoz eOnPoz = new WorldAddEnemyOnPoz();
+
+    public static WorldAddEnemyOnPoz getEOnPox(EnemyType type, Vector3 poz, Vector3 offset) {
+        return eOnPoz.getEOnPoz( (byte) type.ordinal(), poz.x, poz.y, poz.z, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
+    }
 
     private static TowerDirectionChange tdc = new TowerDirectionChange();
 
@@ -128,7 +145,7 @@ public class Functions {
 
     public static PlayerFireCharged getPFC(byte towerID, float info) {
         return pfc.getPFC( towerID, info );
-    } 
+    }
 
     private static PlayerFireHold pfh = new PlayerFireHold();
 
@@ -148,5 +165,15 @@ public class Functions {
             if ( actor.isVisible() &&actor.getName() ==name )
                 return true;
         return false;
+    }
+
+    public static float getOffset(byte ofs) {
+        return ofs *0.1f;
+        // return 0;
+    }
+
+    public static float getRandOffset() {
+        return MathUtils.random( -30, 30 ) *0.1f;
+        // return 0;
     }
 }

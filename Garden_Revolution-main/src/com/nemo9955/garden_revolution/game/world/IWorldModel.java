@@ -1,8 +1,11 @@
 package com.nemo9955.garden_revolution.game.world;
 
+import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
@@ -38,4 +41,7 @@ public interface IWorldModel {
 
     public void setTowerFireHold(Tower tower, boolean hold);
 
+    public Enemy addFoe(EnemyType type, Vector3 poz);
+
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) ;
 }

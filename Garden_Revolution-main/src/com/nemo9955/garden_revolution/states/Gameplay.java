@@ -488,8 +488,10 @@ public class Gameplay extends CustomAdapter implements Screen {
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
 
-        if ( mp !=null )
+        if ( mp !=null ) {
             mp.stop();
+            mp = null;
+        }
 
     }
 
@@ -504,9 +506,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public void dispose() {
 
-        if ( mp !=null )
+        if ( mp !=null ) {
             mp.stop();
-
+            mp = null;
+        }
         if ( modelBatch !=null )
             modelBatch.dispose();
         if ( stage !=null )

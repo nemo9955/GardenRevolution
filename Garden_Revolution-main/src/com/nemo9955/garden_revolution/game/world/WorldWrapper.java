@@ -57,4 +57,12 @@ public class WorldWrapper {
         return world;
     }
 
+    public boolean isMultiplayer() {
+        return defWorld ==mpWorld;
+    }
+
+    public boolean isSinglelayer() {
+        return defWorld ==spWorld;
+    }
+
 }

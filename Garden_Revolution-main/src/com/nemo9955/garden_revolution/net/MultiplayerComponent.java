@@ -9,4 +9,6 @@ public interface MultiplayerComponent {
 
     public void stop();
 
+    public boolean isHost(); 
+
 }

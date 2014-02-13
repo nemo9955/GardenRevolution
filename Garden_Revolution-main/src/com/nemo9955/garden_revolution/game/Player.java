@@ -56,15 +56,17 @@ public class Player {
             Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tmp );
 
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
+                Vector3 temp = new Vector3();
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        world.getWorld().addFoe( EnemyType.ROSIE, i +tmp.x -10f, tmp.y, j +tmp.z -10f );
+                        temp.set( i +tmp.x -10f, tmp.y, j +tmp.z -10f );
+                        world.getDef().addFoe( EnemyType.ROSIE, temp );
                     }
             }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 world.getWorld().addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.getWorld().addFoe( EnemyType.MORCOV, tmp.x, tmp.y, tmp.z );
+                world.getDef().addFoe( EnemyType.MORCOV, tmp );
 
             gestures.invalidateTapSquare();
             return true;
@@ -86,10 +88,10 @@ public class Player {
         if ( isInTower() ) {
             tower.setDirection( cam.direction );
 
-            if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >300 ) {
+            if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >100 ) {
                 dirTime = System.currentTimeMillis();
                 GR.gameplay.mp.sendTCP( Functions.getTDC( tower.ID, cam.direction ) );
-                System.out.println( "Sending directional info : " +tower.ID +" " +cam.direction );
+                // System.out.println( "Sending directional info : " +tower.ID +" " +cam.direction );
             }
         }
 

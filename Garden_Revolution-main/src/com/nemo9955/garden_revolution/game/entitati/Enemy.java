@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.CatmullRomSpline;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -19,7 +19,7 @@ public class Enemy extends LifeForm {
     public float              percent;
     public static final float STEP   = 1f /50f;
     public Vector3            flag;
-    private Vector3           offset;
+    public Vector3            offset;
     private EnemyType         type;
 
     public boolean            paused = false;
@@ -30,15 +30,30 @@ public class Enemy extends LifeForm {
         flag = new Vector3();
     }
 
-    public Enemy create(CatmullRomSpline<Vector3> path, EnemyType type, float x, float y, float z) {
+    public Enemy create(CatmullRomSpline<Vector3> path, EnemyType type) {
         this.type = type;
 
-        super.init( x, y, z );
+        super.init( path.valueAt( poz, 0 ) );
 
         this.life = type.life;
 
-        offset.set( MathUtils.random( -30, 30 ), 0, MathUtils.random( -30, 30 ) ).scl( 0.1f );
+        offset.set( Functions.getRandOffset(), 0, Functions.getRandOffset() );
         this.path = path;
+        percent = -STEP;
+
+        lookAt( path.valueAt( flag, percent +STEP ) );
+        flag.add( offset );
+
+        return this;
+    }
+
+    public Enemy create(EnemyType type, Vector3 poz) {
+        this.type = type;
+        super.init( poz );
+        this.life = type.life;
+
+        offset.set( Functions.getRandOffset(), 0, Functions.getRandOffset() );
+        this.path = world.getWorld().getClosestStartPath( poz );
         percent = -STEP;
 
         lookAt( path.valueAt( flag, percent +STEP ) );

@@ -1,8 +1,11 @@
 package com.nemo9955.garden_revolution.game.world;
 
+import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
@@ -96,7 +99,7 @@ public class WorldMP implements IWorldModel {
         if ( world.fireFromTower( tower, charge ) )
             mp.sendTCP( Functions.getPFC( tower.ID, charge ) );
     }
- 
+
     @Override
     public void setTowerFireHold(Tower tower, boolean hold) {
         if ( world.setTowerFireHold( tower, hold ) )
@@ -106,6 +109,22 @@ public class WorldMP implements IWorldModel {
     @Override
     public void reset() {
         world.reset();
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public Enemy addFoe(EnemyType type, Vector3 poz) {
+
+        mp.sendTCP( Functions.getEOnPox( type, poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) ) );
+
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
+        mp.sendTCP( Functions.getEOnPath( type, (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) ) );
+        return null;
     }
 
 }

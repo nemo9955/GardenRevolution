@@ -14,13 +14,13 @@ import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 public abstract class Entity implements Poolable {
 
-    protected ModelInstance model;
+    protected ModelInstance      model;
 
-    private boolean         dead;
-    public BoundingBox      box;
-    public float            angle;
-    public Vector3          poz;
-    protected final WorldWrapper   world;
+    private boolean              dead;
+    public BoundingBox           box;
+    public float                 angle;
+    public Vector3               poz;
+    protected final WorldWrapper world;
 
     public Entity(WorldWrapper world) {
         this.world = world;
@@ -49,6 +49,7 @@ public abstract class Entity implements Poolable {
     protected abstract ModelInstance getModel(float x, float y, float z);
 
     protected void setBox(float x, float y, float z) {
+        // FIXME when i go from a host to sa sp game , and i double-tap on a tower fundation while a minigun is equiped it crashes , probabli due to the cursor catched ...
         model.calculateBoundingBox( box );
         addPoz( box, x, y, z );
     }

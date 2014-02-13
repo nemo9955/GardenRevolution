@@ -142,7 +142,7 @@ public class WorldBase {
 
     public void update(float delta) {
 
-        if ( canWaveStart() &&waves.finishedWaves() )
+        if ( canWaveStart() &&waves.finishedWaves() && ( superior.isSinglelayer() ||GR.gameplay.mp.isHost() ) )
             waves.update( delta );
 
         for (FightZone fz : getFightZones() ) {
@@ -352,7 +352,7 @@ public class WorldBase {
     }
 
 
-    private CatmullRomSpline<Vector3> getClosestStartPath(Vector3 location) {
+    public CatmullRomSpline<Vector3> getClosestStartPath(Vector3 location) {
         CatmullRomSpline<Vector3> closest = null;
         float dist = Float.MAX_VALUE;
 
@@ -385,13 +385,16 @@ public class WorldBase {
     }
 
 
-    public Enemy addFoe(EnemyType type, float x, float y, float z) {
-        return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ), x, y, z );
+    public Enemy addFoe(EnemyType type, Vector3 poz) {
+        // return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ));
+        Enemy inamicTemp = inamicPool.obtain().create( type, poz );
+        getEnemy().add( inamicTemp );
+        return inamicTemp;
     }
 
 
-    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path, float x, float y, float z) {
-        Enemy inamicTemp = inamicPool.obtain().create( path, type, x, y, z );
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
+        Enemy inamicTemp = inamicPool.obtain().create( path, type );
         getEnemy().add( inamicTemp );
         return inamicTemp;
     }
@@ -655,6 +658,8 @@ public class WorldBase {
         mediu.clear();
         if ( paths !=null )
             paths.clear();
+
+        shotPool.clear();
 
         overview.set( 0, 0, 0 );
         canWaveStart = false;

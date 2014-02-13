@@ -27,8 +27,7 @@ public class Waves {
 
                 Array<Monstru> add = getMonsters();
                 for (Monstru mo : add ) {
-                    Vector3 location = new Vector3( getPath( mo ).controlPoints[0] );
-                    world.getWorld().addFoe( mo.type, getPath( mo ), location.x, location.y, location.z );
+                    world.getDef().addFoe( mo.type, getPath( mo ) );
                 }
             }
 

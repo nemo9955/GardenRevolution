@@ -3,10 +3,13 @@ package com.nemo9955.garden_revolution.net;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
@@ -18,6 +21,8 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -71,6 +76,19 @@ public class Host extends Listener implements MultiplayerComponent {
                 if ( obj instanceof String ) {
                     gp.showMessage( "[H] : " +obj.toString() );
                 }
+                else if ( obj instanceof WorldAddEnemyOnPath ) {
+                    WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
+                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    server.sendToAllExceptTCP( connection.getID(), ent );
+                }
+                else if ( obj instanceof WorldAddEnemyOnPoz ) {
+                    WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
+                    @SuppressWarnings("deprecation")
+                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    server.sendToAllExceptTCP( connection.getID(), ent );
+                }
                 else if ( obj instanceof StartingServerInfo ) {
 
                     if ( gp.world.getWorld().canWaveStart() ) {
@@ -86,16 +104,14 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof TowerDirectionChange ) {
                     TowerDirectionChange tdr = (TowerDirectionChange) obj;
                     gp.world.getWorld().getTowers()[tdr.ID].setDirection( tdr.x, tdr.y, tdr.z );
-                    System.out.println( "[H] mod dir turn        " +tdr.ID +"        " +tdr.x +" " +tdr.y +" " +tdr.z );
+                    // System.out.println( "[H] mod dir turn        " +tdr.ID +"        " +tdr.x +" " +tdr.y +" " +tdr.z );
                     server.sendToAllExceptTCP( connection.getID(), tdr );
                 }
                 else if ( obj instanceof PlayerFireCharged ) {
                     PlayerFireCharged pfa = (PlayerFireCharged) obj;
-
                     Tower tower = gp.world.getWorld().getTowers()[pfa.towerID];
                     if ( tower.isWeaponType( FireType.FIRECHARGED ) )
                         gp.world.getSgPl().fireFromTower( tower, pfa.charge );
-
                     server.sendToAllExceptTCP( connection.getID(), pfa );
                 }
                 else if ( obj instanceof PlayerFireHold ) {
@@ -171,6 +187,7 @@ public class Host extends Listener implements MultiplayerComponent {
         server.sendToAllUDP( obj );
     }
 
+    @SuppressWarnings("deprecation")
     private boolean precessRecived(final Object obj) {
 
         if ( obj instanceof PlayerChangesTower ) {
@@ -181,6 +198,16 @@ public class Host extends Listener implements MultiplayerComponent {
                 server.sendToAllTCP( plr );
             }
         }
+        else if ( obj instanceof WorldAddEnemyOnPath ) {
+            WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
+            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
+            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        }
+        else if ( obj instanceof WorldAddEnemyOnPoz ) {
+            WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
+            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        }
         else if ( obj instanceof msNetGR )
             switch ((msNetGR) obj) {
                 case IAmReady:
@@ -190,6 +217,11 @@ public class Host extends Listener implements MultiplayerComponent {
                     break;
             }
         return false;
+    }
+
+    @Override
+    public boolean isHost() {
+        return true;
     }
 
 }
