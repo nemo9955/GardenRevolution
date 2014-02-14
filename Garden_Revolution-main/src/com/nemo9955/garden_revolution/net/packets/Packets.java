@@ -57,6 +57,20 @@ public class Packets {
         }
     }
 
+    public static class WorldAddAlly {
+
+        public byte ordinal;
+        public float x, y, z;
+
+        public WorldAddAlly getAddAl(byte ordinal, float x, float y, float z) {
+            this.ordinal = ordinal;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            return this;
+        }
+    }
+
     public static class PlayerFireHold {
 
         public byte    towerID;

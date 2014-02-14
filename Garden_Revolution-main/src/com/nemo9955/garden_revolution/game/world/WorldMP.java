@@ -4,7 +4,9 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -124,6 +126,12 @@ public class WorldMP implements IWorldModel {
     @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
         mp.sendTCP( Functions.getEOnPath( type, (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) ) );
+        return null;
+    }
+
+    @Override
+    public Ally addAlly(Vector3 duty, AllyType type) {
+        mp.sendTCP( Functions.getAddAl( (byte) type.ordinal(), duty ) );
         return null;
     }
 

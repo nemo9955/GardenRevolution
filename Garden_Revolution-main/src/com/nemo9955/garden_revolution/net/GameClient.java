@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -21,6 +22,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
@@ -69,6 +71,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
         Gdx.app.postRunnable( new Runnable() {
 
             @Override
+            @SuppressWarnings("deprecation")
             public void run() {
                 if ( obj instanceof String ) {
                     gp.showMessage( "[C] : " +obj.toString() );
@@ -81,13 +84,16 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-                    @SuppressWarnings("deprecation")
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
                 }
                 else if ( obj instanceof StartingServerInfo ) {
                     gp.postInit( gp.world.init( (StartingServerInfo) obj, gp.mp ) );
                     GR.game.setScreen( GR.gameplay );
+                }
+                else if ( obj instanceof WorldAddAlly ) {
+                    WorldAddAlly waa = (WorldAddAlly) obj;
+                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;
@@ -168,6 +174,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
 
     private byte towerToChange = -1;
 
+    @SuppressWarnings("deprecation")
     private boolean precessRecived(final Object obj) {
         if ( obj instanceof PlayerChangesTower &&towerToChange ==-1 ) {
             PlayerChangesTower plr = (PlayerChangesTower) obj;
@@ -180,9 +187,12 @@ public class GameClient extends Listener implements MultiplayerComponent {
         }
         else if ( obj instanceof WorldAddEnemyOnPoz ) {
             WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-            @SuppressWarnings("deprecation")
             Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
             addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        }
+        else if ( obj instanceof WorldAddAlly ) {
+            WorldAddAlly waa = (WorldAddAlly) obj;
+            gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
         }
         return false;
     }

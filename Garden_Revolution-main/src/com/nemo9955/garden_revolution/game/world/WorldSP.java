@@ -5,7 +5,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.game.Player;
+import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -115,5 +117,10 @@ public class WorldSP implements IWorldModel {
     @Override
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
         return world.addFoe( type, path );
+    }
+
+    @Override
+    public Ally addAlly(Vector3 duty, AllyType type) {
+        return world.addAlly( duty, type );
     }
 }

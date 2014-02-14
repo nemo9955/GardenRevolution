@@ -367,26 +367,27 @@ public class WorldBase {
     }
 
     @SuppressWarnings("deprecation")
-    // FIXME either make it a lot more precise ( when proper locate will be added ) , or add mode control points and return a slightly altered position
-    private Vector3 getPointOnClosestPath(Vector3 location) {
-        float dist = Float.MAX_VALUE;
-        float tmpDist;
+    public Vector3 getOnPath(Vector3 point, Vector3 out) {// TODO use this to set the position of an ally on the path
+        float tmpDist, t;
+        final float step = 1 /40f, minDist = 5f;
         Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
-        for (CatmullRomSpline<Vector3> path : getPaths() ) {
-            // path.valueAt( temp, path.locate( location ) );// gives an aproximated point on the path
-            tmpDist = temp.set( path.controlPoints[path.nearest( location )] ).dst( location );// gives the nearest control ponit
-            if ( dist >tmpDist ) {
+        for (CatmullRomSpline<Vector3> path : paths ) {
+            t = 0;
+            while ( t <=1 ) {
+                path.valueAt( temp, t );
+                tmpDist = temp.dst( point );
 
-                dist = tmpDist;
-                tmp2.set( temp );
+                if ( tmpDist <=minDist )
+                    if ( out !=null )
+                        out.set( temp );
+                t += step;
             }
         }
-        return tmp2;
+        return out;
     }
 
 
     public Enemy addFoe(EnemyType type, Vector3 poz) {
-        // return addFoe( type, getClosestStartPath( tmp.set( x, y, z ) ));
         Enemy inamicTemp = inamicPool.obtain().create( type, poz );
         getEnemy().add( inamicTemp );
         return inamicTemp;
@@ -400,17 +401,12 @@ public class WorldBase {
     }
 
 
-    public Ally addAlly(AllyType type, float x, float y, float z) {
-        return addAlly( getPointOnClosestPath( tmp.set( x, y, z ) ), type, x, y, z );
-    }
-
-
-    public Ally addAlly(Vector3 duty, AllyType type, float x, float y, float z) {
-        Ally aliatTemp = aliatPool.obtain().create( duty, type, x, y, z );
+    public Ally addAlly(Vector3 duty, AllyType type) {
+        Ally aliatTemp = aliatPool.obtain().create( duty, type );
         getAlly().add( aliatTemp );
 
         for (FightZone fz : getFightZones() ) {
-            if ( fz.box.getCenter().dst( tmp.set( x, y, z ) ) <8 ) {
+            if ( fz.box.intersects( aliatTemp.box ) ) {
                 fz.addAlly( aliatTemp );
                 fz.aproximatePoz();
                 return aliatTemp;
@@ -656,6 +652,7 @@ public class WorldBase {
         shot.clear();
         colide.clear();
         mediu.clear();
+        fightZones.clear();
         if ( paths !=null )
             paths.clear();
 

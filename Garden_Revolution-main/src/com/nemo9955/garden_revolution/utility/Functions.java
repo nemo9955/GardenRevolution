@@ -25,6 +25,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
@@ -47,6 +48,7 @@ public class Functions {
         kryo.register( TowerDirectionChange.class );
         kryo.register( WorldAddEnemyOnPath.class );
         kryo.register( WorldAddEnemyOnPoz.class );
+        kryo.register( WorldAddAlly.class );
     }
 
     public static String getIpAddress() {
@@ -151,6 +153,12 @@ public class Functions {
 
     public static PlayerFireHold getPFH(byte towerID, boolean isFiring) {
         return pfh.getPFH( towerID, isFiring );
+    }
+
+    private static WorldAddAlly wAddAl = new WorldAddAlly();
+
+    public static WorldAddAlly getAddAl(byte ordinal, Vector3 duty) {
+        return wAddAl.getAddAl( ordinal, duty.x, duty.y, duty.z );
     }
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {

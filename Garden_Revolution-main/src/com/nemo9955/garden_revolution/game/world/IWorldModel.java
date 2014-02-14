@@ -4,7 +4,9 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -33,7 +35,7 @@ public interface IWorldModel {
 
     public boolean upgradeTower(Tower tower, TowerType upgrade);
 
-    public boolean changeWeapon(Tower tower,WeaponType newWeapon);
+    public boolean changeWeapon(Tower tower, WeaponType newWeapon);
 
     public boolean canChangeTowers(byte current, byte next, String name);
 
@@ -43,5 +45,7 @@ public interface IWorldModel {
 
     public Enemy addFoe(EnemyType type, Vector3 poz);
 
-    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) ;
+    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path);
+
+    public Ally addAlly(Vector3 duty, AllyType type);
 }

@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -19,15 +18,11 @@ public class Ally extends LifeForm {
         duty = new Vector3();
     }
 
-    public Ally create(Vector3 duty, AllyType type, float x, float y, float z) {
+    public Ally create(Vector3 duty, AllyType type) {
         this.type = type;
-        super.init( x, y, z );
-
-        // this.strenght = type.strenght;
+        super.init( duty);
         this.life = type.life;
-
-        this.duty.set( duty ).add( MathUtils.random( -6f, 6f ), 0, MathUtils.random( -6f, 6f ) );
-
+        this.duty.set( duty );
         return this;
     }
 
@@ -37,12 +32,12 @@ public class Ally extends LifeForm {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(float delta) {// TODO make this more efficient
         super.update( delta );
-        if ( !poz.epsilonEquals( duty, 1 ) ) {
-            direction.set( duty ).sub( poz ).nor().scl( type.speed *delta );
-            move( direction );
-        }
+//        if ( !poz.epsilonEquals( duty, 1 ) ) {
+//            direction.set( duty ).sub( poz ).nor().scl( type.speed *delta );
+//            move( direction );
+//        }
     }
 
     private long lastAtack = 0;

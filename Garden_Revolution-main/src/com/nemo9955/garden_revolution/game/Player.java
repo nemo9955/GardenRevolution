@@ -64,7 +64,7 @@ public class Player {
                     }
             }
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.getWorld().addAlly( AllyType.SOLDIER, tmp.x, tmp.y, tmp.z );
+                world.getDef().addAlly( tmp, AllyType.SOLDIER );
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
                 world.getDef().addFoe( EnemyType.MORCOV, tmp );
 

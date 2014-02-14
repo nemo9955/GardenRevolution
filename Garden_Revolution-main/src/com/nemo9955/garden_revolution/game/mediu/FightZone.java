@@ -38,7 +38,7 @@ public class FightZone implements Poolable {
                 enemy.paused = true;
             }
 
-
+        // TODO make this not random and dependent of the attack speed
         for (Ally ally : allies ) {
             Enemy enemy = enemies.random();
             if ( enemy !=null ) {
@@ -50,6 +50,7 @@ public class FightZone implements Poolable {
                 break;
         }
 
+        // TODO make this not random and dependent of the attack speed
         for (Enemy enemy : enemies ) {
             Ally ally = allies.random();
             if ( ally !=null ) {
@@ -111,9 +112,14 @@ public class FightZone implements Poolable {
 
     public void aproximatePoz() {
         tmp.set( 0, 0, 0 );
+
         for (Ally ally : allies )
             tmp.add( ally.duty );
-        tmp.scl( 1f /allies.size );
+
+        for (int i = 0 ; i <5 ; i ++ )
+            tmp.add( box.getCenter() );
+
+        tmp.scl( 1f / ( allies.size +5 ) );
         setPoz( tmp );
 
     }
