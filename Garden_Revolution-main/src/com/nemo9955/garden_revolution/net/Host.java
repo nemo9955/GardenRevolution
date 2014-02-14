@@ -15,6 +15,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -78,6 +79,11 @@ public class Host extends Listener implements MultiplayerComponent {
             public void run() {
                 if ( obj instanceof String ) {
                     gp.showMessage( "[H] : " +obj.toString() );
+                }
+                else if ( obj instanceof ChangeWorldLife ) {
+                    ChangeWorldLife lf = (ChangeWorldLife) obj;
+                    gp.world.getSgPl().setLife( lf.life );
+                    server.sendToAllExceptTCP( connection.getID(), lf );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
@@ -194,7 +200,6 @@ public class Host extends Listener implements MultiplayerComponent {
         server.sendToAllUDP( obj );
     }
 
-    @SuppressWarnings("deprecation")
     private boolean precessRecived(final Object obj) {
 
         if ( obj instanceof PlayerChangesTower ) {
@@ -205,20 +210,20 @@ public class Host extends Listener implements MultiplayerComponent {
                 server.sendToAllTCP( plr );
             }
         }
-        else if ( obj instanceof WorldAddEnemyOnPath ) {
-            WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
-            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        }
-        else if ( obj instanceof WorldAddEnemyOnPoz ) {
-            WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
-            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        }
-        else if ( obj instanceof WorldAddAlly ) {
-            WorldAddAlly waa = (WorldAddAlly) obj;
-            gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
-        }
+        // else if ( obj instanceof WorldAddEnemyOnPath ) {
+        // WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
+        // Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
+        // addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        // }
+        // else if ( obj instanceof WorldAddEnemyOnPoz ) {
+        // WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
+        // Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+        // addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        // }
+        // else if ( obj instanceof WorldAddAlly ) {
+        // WorldAddAlly waa = (WorldAddAlly) obj;
+        // gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
+        // }
         else if ( obj instanceof msNetGR )
             switch ((msNetGR) obj) {
                 case IAmReady:

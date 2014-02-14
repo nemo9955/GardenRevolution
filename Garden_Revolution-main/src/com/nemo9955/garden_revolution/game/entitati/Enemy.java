@@ -86,7 +86,7 @@ public class Enemy extends LifeForm {
         if ( flag.epsilonEquals( poz, 1f ) ) {
             percent += STEP;
             if ( percent >=1 ) {
-                world.getDef().addViata( -type.strenght );
+                world.getDef().addLife( -type.strenght );
                 setDead( true );
             }
             path.valueAt( flag, percent +STEP );

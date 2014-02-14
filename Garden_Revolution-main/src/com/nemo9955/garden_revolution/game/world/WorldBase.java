@@ -323,7 +323,7 @@ public class WorldBase {
         }
         waves = new Waves( superior );
 
-        setViata( map.getInt( "viata", 100 ) );
+        setLife( map.getInt( "viata", 100 ) );
 
         Array<Element> tmpWaves = map.getChildrenByName( "wave" );
         tmpWaves.shrink();
@@ -542,20 +542,19 @@ public class WorldBase {
     }
 
 
-    public void addViata(int amount) {
-        viata += amount;
-        GR.gameplay.viataTurn.setText( "Life " +viata );
+    public void addLife(int amount) {
+        setLife( getLife() +amount );
     }
 
 
-    public int getViata() {
-        return viata;
-    }
-
-
-    public void setViata(int viata) {
+    public void setLife(int viata) {
         this.viata = viata;
         GR.gameplay.viataTurn.setText( "Life " +viata );
+    }
+
+
+    public int getLife() {
+        return viata;
     }
 
 

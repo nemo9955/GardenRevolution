@@ -15,6 +15,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -76,6 +77,10 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 if ( obj instanceof String ) {
                     gp.showMessage( "[C] : " +obj.toString() );
 
+                }
+                else if ( obj instanceof ChangeWorldLife ) {
+                    ChangeWorldLife lf = (ChangeWorldLife) obj;
+                    gp.world.getSgPl().setLife( lf.life );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
@@ -174,26 +179,12 @@ public class GameClient extends Listener implements MultiplayerComponent {
 
     private byte towerToChange = -1;
 
-    @SuppressWarnings("deprecation")
     private boolean precessRecived(final Object obj) {
         if ( obj instanceof PlayerChangesTower &&towerToChange ==-1 ) {
             PlayerChangesTower plr = (PlayerChangesTower) obj;
             towerToChange = plr.next;
         }
-        else if ( obj instanceof WorldAddEnemyOnPath ) {
-            WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
-            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        }
-        else if ( obj instanceof WorldAddEnemyOnPoz ) {
-            WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-            Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
-            addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        }
-        else if ( obj instanceof WorldAddAlly ) {
-            WorldAddAlly waa = (WorldAddAlly) obj;
-            gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
-        }
+
         return false;
     }
 

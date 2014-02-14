@@ -25,6 +25,16 @@ public class Packets {
 
     }
 
+    public static class ChangeWorldLife {
+
+        public int life;
+
+        public ChangeWorldLife getLife(int life) {
+            this.life = life;
+            return this;
+        }
+    }
+
     public static class WorldAddEnemyOnPath {
 
         public byte ordinal;

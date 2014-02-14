@@ -37,8 +37,8 @@ public class WorldSP implements IWorldModel {
     }
 
     @Override
-    public void addViata(int amount) {
-        world.addViata( amount );
+    public void addLife(int amount) {
+        world.addLife( amount );
     }
 
     @Override
@@ -65,8 +65,8 @@ public class WorldSP implements IWorldModel {
 
 
     @Override
-    public void setViata(int viata) {
-        world.setViata( viata );
+    public void setLife(int viata) {
+        world.setLife( viata );
     }
 
 
@@ -123,4 +123,5 @@ public class WorldSP implements IWorldModel {
     public Ally addAlly(Vector3 duty, AllyType type) {
         return world.addAlly( duty, type );
     }
+
 }

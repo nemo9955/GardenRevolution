@@ -31,6 +31,7 @@ public class StageUtils {
         stage = new Stage( Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate, true );
         final Skin skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
+
         gp.weaponCharger = new Image( skin, "mover-knob" );
         gp.weaponCharger.setVisible( false );
 
@@ -75,6 +76,7 @@ public class StageUtils {
         final TextButton meniuBut = new TextButton( "Main menu", skin );
 
         resumeBut.setName( "resume" );
+        // pauseIG.setTouchable( Touchable. );
 
         pauseIG.setVisible( false );
         pauseIG.setFillParent( true );
@@ -203,6 +205,7 @@ public class StageUtils {
             }
         };
 
+
         // pentru tot ce tine de upgradarea turnurilor
         final ChangeListener turnButons = new ChangeListener() {
 
@@ -263,10 +266,10 @@ public class StageUtils {
             }
         } );
 
+        pauseIG.addListener( pauseButons );
 
         upgradeTower.addListener( turnButons );
         hud.addListener( hudButons );
-        pauseIG.addListener( pauseButons );
         optiuni.addListener( optButons );
 
         hud.setName( "HUD" );

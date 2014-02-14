@@ -25,9 +25,9 @@ public interface IWorldModel {
 
     public void removeColiders(Array<BoundingBox> box);
 
-    public void addViata(int amount);
+    public void addLife(int amount);
 
-    public void setViata(int viata);
+    public void setLife(int viata);
 
     public void setCanWaveStart(boolean canWaveStart);
 
@@ -48,4 +48,5 @@ public interface IWorldModel {
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path);
 
     public Ally addAlly(Vector3 duty, AllyType type);
+
 }

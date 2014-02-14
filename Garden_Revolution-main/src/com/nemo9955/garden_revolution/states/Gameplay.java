@@ -103,7 +103,7 @@ public class Gameplay extends CustomAdapter implements Screen {
                 mover.addAction( Actions.alpha( touchPadTimmer ) );
         }
 
-        if ( updWorld )
+        if ( updWorld ||mp !=null )
             updateTheGame( delta );
         else
             gestures.cancel();

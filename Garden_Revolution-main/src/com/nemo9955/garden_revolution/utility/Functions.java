@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -49,6 +50,7 @@ public class Functions {
         kryo.register( WorldAddEnemyOnPath.class );
         kryo.register( WorldAddEnemyOnPoz.class );
         kryo.register( WorldAddAlly.class );
+        kryo.register( ChangeWorldLife.class );
     }
 
     public static String getIpAddress() {
@@ -160,6 +162,14 @@ public class Functions {
     public static WorldAddAlly getAddAl(byte ordinal, Vector3 duty) {
         return wAddAl.getAddAl( ordinal, duty.x, duty.y, duty.z );
     }
+
+
+    private static ChangeWorldLife cwl = new ChangeWorldLife();
+
+    public static ChangeWorldLife getCWL(int life) {
+        return cwl.getLife( life );
+    }
+
 
     public static float intersectLinePlane(Ray ray, Vector3 intersection) {
 

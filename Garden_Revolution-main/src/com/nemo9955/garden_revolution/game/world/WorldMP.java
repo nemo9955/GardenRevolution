@@ -14,6 +14,8 @@ import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.utility.Functions;
 
 
@@ -39,8 +41,8 @@ public class WorldMP implements IWorldModel {
     }
 
     @Override
-    public void addViata(int amount) {
-        world.addViata( amount );
+    public void addLife(int amount) {
+        setLife( world.getLife() +amount );
     }
 
     @Override
@@ -81,8 +83,9 @@ public class WorldMP implements IWorldModel {
 
 
     @Override
-    public void setViata(int viata) {
-        world.setViata( viata );
+    public void setLife(int viata) {
+        world.setLife( viata );
+        mp.sendTCP( Functions.getCWL( viata ) );
     }
 
 
@@ -117,22 +120,39 @@ public class WorldMP implements IWorldModel {
     @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, Vector3 poz) {
 
-        mp.sendTCP( Functions.getEOnPox( type, poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) ) );
-
-        return null;
+        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        mp.sendTCP( ent );
+        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+        addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        return addFoe;
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
-        mp.sendTCP( Functions.getEOnPath( type, (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) ) );
-        return null;
+
+        // else if ( obj instanceof WorldAddEnemyOnPath ) {
+        // WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
+        // }
+
+
+        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        mp.sendTCP( ent );
+
+        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], world.getPaths().get( ent.pathNo ) );
+        addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        return addFoe;
     }
 
     @Override
     public Ally addAlly(Vector3 duty, AllyType type) {
+
+        // else if ( obj instanceof WorldAddAlly ) {
+        // WorldAddAlly waa = (WorldAddAlly) obj;
+        // gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
+        // }
         mp.sendTCP( Functions.getAddAl( (byte) type.ordinal(), duty ) );
-        return null;
+        return world.addAlly( duty, type );
     }
 
 }
