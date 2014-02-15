@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Packets {
 
-    public static class StartingServerInfo{
+    public static class StartingServerInfo {
 
         public String   path;
         public String[] turnuri;
@@ -35,13 +35,36 @@ public class Packets {
         }
     }
 
+    public static class AllyKilled {
+
+        public short ID;
+
+        public AllyKilled getID(short ID) {
+            this.ID = ID;
+            return this;
+        }
+    }
+
+    public static class EnemyKilled {
+
+        public short ID;
+
+        public EnemyKilled getID(short ID) {
+            this.ID = ID;
+            return this;
+        }
+    }
+
+
     public static class WorldAddEnemyOnPath {
 
-        public byte ordinal;
-        public byte pathNo;
-        public byte ofsX, ofsZ;
+        public short ID;
+        public byte  ordinal;
+        public byte  pathNo;
+        public byte  ofsX, ofsZ;
 
-        public WorldAddEnemyOnPath getEOnPath(byte ordinal, byte pathNo, byte ofsX, byte ofsZ) {
+        public WorldAddEnemyOnPath getEOnPath(short ID, byte ordinal, byte pathNo, byte ofsX, byte ofsZ) {
+            this.ID = ID;
             this.ordinal = ordinal;
             this.pathNo = pathNo;
             this.ofsX = ofsX;
@@ -52,11 +75,13 @@ public class Packets {
 
     public static class WorldAddEnemyOnPoz {
 
-        public byte ordinal;
+        public short ID;
+        public byte  ordinal;
         public float x, y, z;
         public byte  ofsX, ofsZ;
 
-        public WorldAddEnemyOnPoz getEOnPoz(byte ordinal, float x, float y, float z, byte ofsX, byte ofsZ) {
+        public WorldAddEnemyOnPoz getEOnPoz(short ID, byte ordinal, float x, float y, float z, byte ofsX, byte ofsZ) {
+            this.ID = ID;
             this.ordinal = ordinal;
             this.x = x;
             this.y = y;
@@ -69,11 +94,13 @@ public class Packets {
 
     public static class WorldAddAlly {
 
-        public byte ordinal;
+        public short ID;
+        public byte  ordinal;
         public float x, y, z;
 
-        public WorldAddAlly getAddAl(byte ordinal, float x, float y, float z) {
+        public WorldAddAlly getAddAl(short ID, byte ordinal, float x, float y, float z) {
             this.ordinal = ordinal;
+            this.ID = ID;
             this.x = x;
             this.y = y;
             this.z = z;

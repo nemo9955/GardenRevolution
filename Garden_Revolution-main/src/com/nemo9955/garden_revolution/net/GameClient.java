@@ -15,7 +15,9 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
+import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -131,6 +133,14 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof PlayerChangesTower ) {
                     final PlayerChangesTower plr = (PlayerChangesTower) obj;
                     gp.world.getSgPl().canChangeTowers( plr.current, plr.next, plr.name );
+                }
+                else if ( obj instanceof AllyKilled ) {
+                    AllyKilled aly = (AllyKilled) obj;
+                    gp.world.getSgPl().killAlly( aly.ID );
+                }
+                else if ( obj instanceof EnemyKilled ) {
+                    EnemyKilled enmy = (EnemyKilled) obj;
+                    gp.world.getSgPl().killEnemy( enmy.ID );
                 }
                 else if ( obj instanceof msNetGR ) {
                     final msNetGR message = (msNetGR) obj;

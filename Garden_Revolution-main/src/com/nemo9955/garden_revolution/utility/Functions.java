@@ -17,8 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.esotericsoftware.kryo.Kryo;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
+import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -37,6 +40,8 @@ public class Functions {
 
     public static void setSerializedClasses(Kryo kryo) {
         kryo.register( byte.class );
+        kryo.register( short.class );
+        kryo.register( float.class );
         kryo.register( String.class );
         kryo.register( String[].class );
         kryo.register( StartingServerInfo.class );
@@ -51,6 +56,8 @@ public class Functions {
         kryo.register( WorldAddEnemyOnPoz.class );
         kryo.register( WorldAddAlly.class );
         kryo.register( ChangeWorldLife.class );
+        kryo.register( EnemyKilled.class );
+        kryo.register( AllyKilled.class );
     }
 
     public static String getIpAddress() {
@@ -107,14 +114,14 @@ public class Functions {
 
     private static WorldAddEnemyOnPath eOnPath = new WorldAddEnemyOnPath();
 
-    public static WorldAddEnemyOnPath getEOnPath(EnemyType type, byte pathNo, Vector3 offset) {
-        return eOnPath.getEOnPath( (byte) type.ordinal(), pathNo, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
+    public static WorldAddEnemyOnPath getEOnPath(EnemyType type, short ID, byte pathNo, Vector3 offset) {
+        return eOnPath.getEOnPath( ID, (byte) type.ordinal(), pathNo, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
     }
 
     private static WorldAddEnemyOnPoz eOnPoz = new WorldAddEnemyOnPoz();
 
-    public static WorldAddEnemyOnPoz getEOnPox(EnemyType type, Vector3 poz, Vector3 offset) {
-        return eOnPoz.getEOnPoz( (byte) type.ordinal(), poz.x, poz.y, poz.z, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
+    public static WorldAddEnemyOnPoz getEOnPox(EnemyType type, short ID, Vector3 poz, Vector3 offset) {
+        return eOnPoz.getEOnPoz( ID, (byte) type.ordinal(), poz.x, poz.y, poz.z, (byte) ( offset.x *10 ), (byte) ( offset.z *10 ) );
     }
 
     private static TowerDirectionChange tdc = new TowerDirectionChange();
@@ -123,6 +130,17 @@ public class Functions {
         return tdc.getTDC( iD, dir );
     }
 
+    private static AllyKilled allk = new AllyKilled();
+
+    public static AllyKilled getAllyK(short ID) {
+        return allk.getID( ID );
+    }
+
+    private static EnemyKilled enmyk = new EnemyKilled();
+
+    public static EnemyKilled getEnmyyK(short ID) {
+        return enmyk.getID( ID );
+    }
 
     private static WeaponChangedPacket wcp = new WeaponChangedPacket();
 
@@ -159,8 +177,8 @@ public class Functions {
 
     private static WorldAddAlly wAddAl = new WorldAddAlly();
 
-    public static WorldAddAlly getAddAl(byte ordinal, Vector3 duty) {
-        return wAddAl.getAddAl( ordinal, duty.x, duty.y, duty.z );
+    public static WorldAddAlly getAddAl(AllyType type, short ID, Vector3 duty) {
+        return wAddAl.getAddAl( ID, (byte) type.ordinal(), duty.x, duty.y, duty.z );
     }
 
 

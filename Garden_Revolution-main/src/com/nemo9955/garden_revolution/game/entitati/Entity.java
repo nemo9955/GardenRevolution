@@ -129,5 +129,5 @@ public abstract class Entity implements Poolable {
         this.dead = dead;
 
     }
-
+ 
 }

@@ -15,7 +15,9 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
+import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
+import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
@@ -101,6 +103,16 @@ public class Host extends Listener implements MultiplayerComponent {
                     WorldAddAlly waa = (WorldAddAlly) obj;
                     gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
                     server.sendToAllExceptTCP( connection.getID(), waa );
+                }
+                else if ( obj instanceof AllyKilled ) {
+                    AllyKilled aly = (AllyKilled) obj;
+                    gp.world.getSgPl().killAlly( aly.ID );
+                    server.sendToAllExceptTCP( connection.getID(), aly );
+                }
+                else if ( obj instanceof EnemyKilled ) {
+                    EnemyKilled enmy = (EnemyKilled) obj;
+                    gp.world.getSgPl().killEnemy( enmy.ID );
+                    server.sendToAllExceptTCP( connection.getID(), enmy );
                 }
                 else if ( obj instanceof StartingServerInfo ) {
 

@@ -120,10 +120,11 @@ public class WorldMP implements IWorldModel {
     @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, Vector3 poz) {
 
-        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, Enemy.newGlobalID(), poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
         mp.sendTCP( ent );
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        addFoe.ID = Enemy.getGlobalID();
         return addFoe;
     }
 
@@ -131,28 +132,37 @@ public class WorldMP implements IWorldModel {
     @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
 
-        // else if ( obj instanceof WorldAddEnemyOnPath ) {
-        // WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
-        // }
-
-
-        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
         mp.sendTCP( ent );
 
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], world.getPaths().get( ent.pathNo ) );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        addFoe.ID = Enemy.getGlobalID();
         return addFoe;
     }
 
     @Override
     public Ally addAlly(Vector3 duty, AllyType type) {
+        mp.sendTCP( Functions.getAddAl( type, Ally.newGlobalID(), duty ) );
+        Ally addAlly = world.addAlly( duty, type );
+        addAlly.ID = Ally.getGlobalID();
+        return addAlly;
+    }
 
-        // else if ( obj instanceof WorldAddAlly ) {
-        // WorldAddAlly waa = (WorldAddAlly) obj;
-        // gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
-        // }
-        mp.sendTCP( Functions.getAddAl( (byte) type.ordinal(), duty ) );
-        return world.addAlly( duty, type );
+
+    @Override
+    public void enemyKilled(Enemy enemy) {
+        mp.sendTCP( Functions.getEnmyyK( enemy.ID ) );
+        world.getEnemyPool().free( enemy );
+        world.getEnemy().removeValue( enemy, false );
+    }
+
+    @Override
+    public void allyKilled(Ally ally) {
+        mp.sendTCP( Functions.getAllyK( ally.ID ) );
+        world.getAliatPool().free( ally );
+        world.getAlly().removeValue( ally, false );
+
     }
 
 }

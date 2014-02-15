@@ -49,4 +49,8 @@ public interface IWorldModel {
 
     public Ally addAlly(Vector3 duty, AllyType type);
 
+    public void enemyKilled(Enemy enemy);
+
+    public void allyKilled(Ally ally);
+
 }

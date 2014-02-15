@@ -125,4 +125,31 @@ public class WorldSP implements IWorldModel {
         return world.addAlly( duty, type );
     }
 
+    @Override
+    public void enemyKilled(Enemy enemy) {
+        world.getEnemyPool().free( enemy );
+        world.getEnemy().removeValue( enemy, false );
+    }
+
+    @Override
+    public void allyKilled(Ally ally) {
+        world.getAliatPool().free( ally );
+        world.getAlly().removeValue( ally, false );
+
+    }
+
+    public void killAlly(short ID) {
+        for (Ally aly : world.getAlly() )
+            if ( aly.ID ==ID )
+                allyKilled( aly );
+
+    }
+
+    public void killEnemy(short ID) {
+        for (Enemy enmy : world.getEnemy() )
+            if ( enmy.ID ==ID )
+                enemyKilled( enmy );
+    }
+
+
 }
