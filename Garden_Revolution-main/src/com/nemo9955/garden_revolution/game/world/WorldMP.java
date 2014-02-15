@@ -123,7 +123,7 @@ public class WorldMP implements IWorldModel {
 
         WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, Enemy.newGlobalID(), poz, temp.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
         mp.sendTCP( ent );
-        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], temp );
+        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], poz );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
         addFoe.ID = ent.ID;
 

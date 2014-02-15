@@ -135,7 +135,8 @@ public class WorldSP implements IWorldModel {
     public void allyKilled(Ally ally) {
         world.getAliatPool().free( ally );
         world.getAlly().removeValue( ally, false );
-
+        if ( ally.zone !=null )
+            ally.zone.removeAlly( ally );
     }
 
     public void killAlly(short ID) {

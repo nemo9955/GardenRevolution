@@ -50,26 +50,28 @@ public class Player {
         return false;
     }
 
+    private static Vector3 tempSpawner = new Vector3();
+    
     public boolean longPress(float x, float y, GestureDetector gestures) {
 
         if ( isInTower() &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
 
             // Vector3 tmp = Player.tmp;
-            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), temp1 );
+            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
 
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        temp2.set( i +temp1.x -10f, temp1.y, j +temp1.z -10f );
+                        temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
                         world.getDef().addFoe( EnemyType.ROSIE, temp2 );
                     }
             }
 
             else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.getDef().addFoe( EnemyType.MORCOV, temp1 );
+                world.getDef().addFoe( EnemyType.MORCOV, tempSpawner );
 
             else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.getDef().addAlly( temp1, AllyType.SOLDIER );
+                world.getDef().addAlly( tempSpawner, AllyType.SOLDIER );
             gestures.invalidateTapSquare();
             return true;
         }

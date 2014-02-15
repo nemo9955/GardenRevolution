@@ -411,11 +411,14 @@ public class WorldBase {
             if ( fz.box.intersects( aliatTemp.box ) ) {
                 fz.addAlly( aliatTemp );
                 fz.aproximatePoz();
+                aliatTemp.zone = fz;
                 return aliatTemp;
             }
         }
 
-        addFightZone( duty ).addAlly( aliatTemp );
+        FightZone zone = addFightZone( duty );
+        zone.addAlly( aliatTemp );
+        aliatTemp.zone = zone;
         return aliatTemp;
     }
 
