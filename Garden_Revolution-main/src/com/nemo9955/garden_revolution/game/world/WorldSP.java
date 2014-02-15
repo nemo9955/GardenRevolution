@@ -106,7 +106,8 @@ public class WorldSP implements IWorldModel {
 
     @Override
     public void reset() {
-        world.reset();
+        if ( world !=null )
+            world.reset();
     }
 
     @Override

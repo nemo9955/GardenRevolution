@@ -93,7 +93,8 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
                 }
                 else if ( obj instanceof StartingServerInfo ) {
-                    gp.postInit( gp.world.init( (StartingServerInfo) obj, gp.mp ) );
+                    StartingServerInfo ssi = (StartingServerInfo) obj;
+                    gp.postInit( gp.world.init( ssi, gp.mp ) );
                     GR.game.setScreen( GR.gameplay );
                 }
                 else if ( obj instanceof WorldAddAlly ) {

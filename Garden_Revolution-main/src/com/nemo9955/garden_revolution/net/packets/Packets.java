@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Packets {
 
-    public static class StartingServerInfo {
+    public static class StartingServerInfo{
 
         public String   path;
         public String[] turnuri;

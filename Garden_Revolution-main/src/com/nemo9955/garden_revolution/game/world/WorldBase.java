@@ -68,7 +68,7 @@ public class WorldBase {
     private Tower[]                          towers;
     private boolean                          canWaveStart = false;
     private Waves                            waves;
-    private String                           mapPath;
+    private String                           mapName;
     private Environment                      environment  = new Environment();
     private WorldWrapper                     superior;
 
@@ -83,14 +83,13 @@ public class WorldBase {
     public void init(FileHandle location, WorldWrapper superior) {
         reset();
         this.superior = superior;
-        setMapPath( location.path() );
+        mapName = location.path();
         populateWorld( location );
         readData( location );
-
     }
 
     public void init(StartingServerInfo info, WorldWrapper superior) {
-        init( new FileHandle( info.path ), superior ); // TODO convert the relative map path to the full path specific to the platform
+        init( Gdx.files.internal( info.path ), superior );
 
         for (String str : info.turnuri ) {
             String[] separ = str.split( Vars.stringSeparator );
@@ -108,7 +107,7 @@ public class WorldBase {
     }
 
     public StartingServerInfo getWorldInfo(StartingServerInfo out) {
-        out.path = getMapPath();// TODO make this sent the map relative to the assets
+        out.path = mapName;
         int size = 0, nrTrn = 0, ply = 0, nrPl = 0;
         for (Tower trn : towers ) {
             if ( trn.type !=TowerType.FUNDATION )
@@ -138,7 +137,6 @@ public class WorldBase {
 
         return out;
     }
-
 
     public void update(float delta) {
 
@@ -600,12 +598,12 @@ public class WorldBase {
 
 
     public String getMapPath() {
-        return mapPath;
+        return mapName;
     }
 
 
     public void setMapPath(String mapPath) {
-        this.mapPath = mapPath;
+        this.mapName = mapPath;
     }
 
 

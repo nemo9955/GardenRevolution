@@ -112,7 +112,6 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
             }
 
             protected void result(Object object) {
-                // TODO add something that clears all the buttons after one is pressed
             };
         };
 

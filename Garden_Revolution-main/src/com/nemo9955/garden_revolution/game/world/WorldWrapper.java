@@ -7,11 +7,11 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 
 public class WorldWrapper {
 
-    private WorldBase   world   = new WorldBase();
+    private WorldBase   world    = new WorldBase();
 
-    private IWorldModel defWorld;
-    private WorldSP     spWorld = new WorldSP();
-    private WorldMP     mpWorld = new WorldMP();
+    private WorldSP     spWorld  = new WorldSP();
+    private WorldMP     mpWorld  = new WorldMP();
+    private IWorldModel defWorld = spWorld;
 
 
     public WorldWrapper init(FileHandle location) {

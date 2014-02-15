@@ -25,5 +25,6 @@ public class GR {
 
     public static Garden_Revolution   game;
     public static AssetManager        manager;
+    public final static String levelsLocation = "harti/nivele";
 
 }

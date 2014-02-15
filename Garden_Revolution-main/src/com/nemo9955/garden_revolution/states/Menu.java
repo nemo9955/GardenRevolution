@@ -11,7 +11,6 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -35,7 +34,7 @@ public class Menu extends ControllerAdapter implements Screen {
     private ImageTextButton    options;
     private ImageButton        play;
     private ImageButton        exit;
-    private CheckBox           mode;
+    // private CheckBox mode;
     private ImageButton        test;
 
     public Menu() {
@@ -49,8 +48,10 @@ public class Menu extends ControllerAdapter implements Screen {
         options = new ImageTextButton( "Options", skin );
         play = new ImageButton( skin, "start" );
         exit = new ImageButton( skin, "exit" );
-        mode = new CheckBox( "EXTERN", skin );
+        // mode = new CheckBox( "Use intern", skin );
         test = new ImageButton( skin, "test" );
+
+        // mode.setChecked( LevelSelector.internal );
 
         final Table tab = new Table();
         tab.setFillParent( true );
@@ -72,13 +73,9 @@ public class Menu extends ControllerAdapter implements Screen {
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
-                if ( mode.isPressed() ) {
-                    LevelSelector.internal = mode.isChecked();
-                    if ( LevelSelector.internal )
-                        mode.setText( "INTERN" );
-                    else
-                        mode.setText( "EXTERN" );
-                }
+                // if ( mode.isPressed() ) {
+                // LevelSelector.internal = mode.isChecked();
+                // }
             }
         };
 
@@ -87,7 +84,7 @@ public class Menu extends ControllerAdapter implements Screen {
 
         tab.defaults().pad( 25 );
         tab.add( play );
-        tab.add( mode ).space( 10 );
+        // tab.add( mode ).space( 10 );
         tab.row();
         tab.add( test );
         tab.add( options );
@@ -110,8 +107,8 @@ public class Menu extends ControllerAdapter implements Screen {
         if ( buttonIndex ==Vars.buton[4] )
             Functions.fire( play );
 
-        if ( buttonIndex ==Vars.buton[5] )
-            Functions.fire( mode );
+        // if ( buttonIndex ==Vars.buton[5] )
+        // Functions.fire( mode );
 
         return false;
 

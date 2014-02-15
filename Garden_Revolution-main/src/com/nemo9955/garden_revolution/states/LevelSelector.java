@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.states;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
@@ -26,18 +27,16 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class LevelSelector extends ControllerAdapter implements Screen {
 
+    // public static boolean internal = true;
     private Stage              stage;
     private Skin               skin;
     private Table              table;
     // private StageActorPointer pointer;
 
-    public final static String levelsLocation = "harti/nivele";
-    public static boolean      internal       = false;
-
-    private FileHandle         lvlLoc;
+    // private FileHandle lvlLoc;
     private String             toAcces;
     private SplitPane          lista;
-    private static final float rap            = 1.5f;
+    private static final float rap = 1.5f;
     private TextButton         start;
     private List               elem;
     private TextButton         back;
@@ -57,38 +56,23 @@ public class LevelSelector extends ControllerAdapter implements Screen {
         if ( lista !=null )
             lista.clear();
 
-        // if ( internal )
-        // nivelLoc = Gdx.files.internal( "harti/nivele" );
-        // else
-        // nivelLoc = Gdx.files.local( "harti/nivele" );
-        //
-        // System.out.println( nivelLoc );
-        //
-        // if ( Gdx.app.getType() ==ApplicationType.Desktop &&internal )
-        // lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
-        // else if ( Gdx.app.getType() ==ApplicationType.Android &&!internal )
-        // lvlLoc = Gdx.files.internal( "./bin/" +nivelLoc.path() );
-        // else
-        // lvlLoc = nivelLoc;
+        String harti[] = null;
 
-        // System.out.println( "Intern " +internal );
+        if ( Gdx.app.getType() ==ApplicationType.Desktop ) {
 
-        if ( internal ) {
-            lvlLoc = Gdx.files.internal( levelsLocation +"/" );
+            String lista = Gdx.files.classpath( GR.levelsLocation ).readString();
+            harti = lista.split( ".xml\n" );
+
+
         }
-        else {
-            lvlLoc = Gdx.files.local( levelsLocation );
+        else if ( Gdx.app.getType() ==ApplicationType.Android ) {
+            FileHandle[] nivele;
+            nivele = Gdx.files.internal( GR.levelsLocation ).list();
+            harti = new String[nivele.length];
+            for (int i = 0 ; i <harti.length ; i ++ )
+                harti[i] = nivele[i].nameWithoutExtension();
+            Arrays.sort( harti );
         }
-
-        // System.out.println( Gdx.files.getLocalStoragePath() +"     " +lvlLoc +"\n" );
-
-        FileHandle nivele[] = lvlLoc.list();
-        String harti[] = new String[nivele.length];
-
-
-        for (int i = 0 ; i <harti.length ; i ++ )
-            harti[i] = nivele[i].nameWithoutExtension();
-        Arrays.sort( harti );
 
         start = new TextButton( "Start", skin );
         elem = new List( harti, skin );
@@ -123,11 +107,11 @@ public class LevelSelector extends ControllerAdapter implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if ( multy.isPressed() )
-                    GR.game.setScreen( GR.multyplayer.init( lvlLoc.child( toAcces +".xml" ) ) );
+                    GR.game.setScreen( GR.multyplayer.init( Gdx.files.internal( GR.levelsLocation ).child( toAcces +".xml" ) ) );
                 else if ( back.isPressed() )
                     GR.game.setScreen( GR.menu );
                 else if ( start.isPressed() )
-                    GR.game.setScreen( GR.gameplay.initAsSinglePlayer( lvlLoc.child( toAcces +".xml" ) ) );
+                    GR.game.setScreen( GR.gameplay.initAsSinglePlayer( Gdx.files.internal( GR.levelsLocation ).child( toAcces +".xml" ) ) );
             }
         } );
 
