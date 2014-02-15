@@ -12,8 +12,8 @@ import com.nemo9955.garden_revolution.states.TestScene;
 
 public class GR {
 
-    public static final String        TITLU    = "Garden Revolution";
-    public static final String        VERSIUNE = "alfa 0.666";
+    public static final String        TITLU          = "Garden Revolution";
+    public static final String        VERSIUNE       = "alfa 0.666";
 
     public static Options             options;
     public static Gameplay            gameplay;
@@ -25,6 +25,7 @@ public class GR {
 
     public static Garden_Revolution   game;
     public static AssetManager        manager;
-    public final static String levelsLocation = "harti/nivele";
+    public final static String        levelsLocation = "harti/nivele";
+
 
 }

@@ -19,7 +19,7 @@ public class CircularGroup extends WidgetGroup {
     private int                  radius;
     private int                  stroke;
     private ShapeRenderer        shape;
-    private static final Vector2 tmp           = new Vector2();
+    private static final Vector2 tmp1          = new Vector2();
 
     private float                minAngle      = 0, maxAngle = 359;
     private float                interval      = 20;
@@ -34,14 +34,14 @@ public class CircularGroup extends WidgetGroup {
     private InputListener        inputListener = new InputListener() {
 
                                                    private float   inAngle;
-                                                   private Vector2 temp = new Vector2();
+                                                   private Vector2 tmp2 = new Vector2();
                                                    private float   initianRot;
 
                                                    @Override
                                                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                                       inAngle = temp.set( x, y ).sub( center ).angle();
+                                                       inAngle = tmp2.set( x, y ).sub( center ).angle();
                                                        initianRot = rotation;
-                                                       float distCenter = temp.dst2( 0, 0 );
+                                                       float distCenter = tmp2.dst2( 0, 0 );
                                                        if ( distCenter >radius *radius &&distCenter < ( radius +stroke ) * ( radius +stroke ) )
                                                            return true;
                                                        return false;
@@ -49,8 +49,8 @@ public class CircularGroup extends WidgetGroup {
 
                                                    @Override
                                                    public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                                                       temp.set( x, y ).sub( center );
-                                                       setRotationMenu( formatAngle( initianRot + ( temp.angle() -inAngle ) ) );
+                                                       tmp2.set( x, y ).sub( center );
+                                                       setRotationMenu( formatAngle( initianRot + ( tmp2.angle() -inAngle ) ) );
                                                    }
                                                };
 
@@ -101,8 +101,8 @@ public class CircularGroup extends WidgetGroup {
         float direction = clockwise ? -interval : interval;
         unghi = unghi - ( ( clockwise ? -lungimea : lungimea ) /2 );
         for (Actor actor : getChildren() ) {
-            tmp.set( getPositionbyAngle( tmp, unghi ) );
-            actor.setPosition( tmp.x -actor.getWidth() /2, tmp.y -actor.getHeight() /2 );
+            tmp1.set( getPositionbyAngle( tmp1, unghi ) );
+            actor.setPosition( tmp1.x -actor.getWidth() /2, tmp1.y -actor.getHeight() /2 );
 
             if ( modifyAlpha )
                 actor.addAction( Actions.alpha( getAlphaByDistance( unghi ) ) );
@@ -249,11 +249,11 @@ public class CircularGroup extends WidgetGroup {
      * @return
      */
     public float minAngleInZon(final Rectangle zon, final float angle, final float padding) {
-        tmp.set( zon.x +1, zon.y +1 );
+        tmp1.set( zon.x +1, zon.y +1 );
         float i = 0;
-        while ( zon.contains( tmp ) &&i <=180 ) {
+        while ( zon.contains( tmp1 ) &&i <=180 ) {
             i += angle;
-            getPositionbyAngle( tmp, i ).add( getX(), getY() );
+            getPositionbyAngle( tmp1, i ).add( getX(), getY() );
         }
         return i -angle *padding;
     }
@@ -268,8 +268,8 @@ public class CircularGroup extends WidgetGroup {
      */
 
     public static float aprxOptAngl(float distance, float height) {
-        tmp.set( distance, height );
-        return getDifference( tmp.angle(), 0 );
+        tmp1.set( distance, height );
+        return getDifference( tmp1.angle(), 0 );
     }
 
 }

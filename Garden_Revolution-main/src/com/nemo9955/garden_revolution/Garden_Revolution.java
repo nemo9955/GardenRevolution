@@ -92,6 +92,10 @@ public class Garden_Revolution extends Game {
         return GR.manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
     }
 
+    public static AtlasRegion getMenuTexture(String name) {
+        return GR.manager.get( Assets.ELEMENTS_PACK.path(), TextureAtlas.class ).findRegion( name );
+    }
+
     @Override
     public void dispose() {
         GR.gameplay.dispose();

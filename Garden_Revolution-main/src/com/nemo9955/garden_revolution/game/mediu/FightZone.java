@@ -11,15 +11,17 @@ import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 public class FightZone implements Poolable {
 
-    private WorldWrapper     world;
-    public Array<Ally>       allies   = new Array<Ally>( false, 10 );
-    public Array<Enemy>      enemies  = new Array<Enemy>( false, 5 );
+    private static final Vector3 temp1    = new Vector3();
+    private static final Vector3 temp2    = new Vector3();
+    private static final Vector3 temp     = new Vector3();
+    private WorldWrapper         world;
+    public Array<Ally>           allies   = new Array<Ally>( false, 10 );
+    public Array<Enemy>          enemies  = new Array<Enemy>( false, 5 );
 
-    private static Vector3   tmp      = new Vector3();
-    public final Vector3     poz      = new Vector3();
-    public BoundingBox       box      = new BoundingBox();
+    public final Vector3         poz      = new Vector3();
+    public BoundingBox           box      = new BoundingBox();
 
-    private static final int halfSize = 8;
+    private static final int     halfSize = 8;
 
     public FightZone(WorldWrapper worldModel) {
         this.world = worldModel;
@@ -62,6 +64,8 @@ public class FightZone implements Poolable {
                 break;
         }
 
+        if ( allies.size <=0 )
+            removeFightZone();
 
     }
 
@@ -85,8 +89,6 @@ public class FightZone implements Poolable {
 
     public void removeAlly(Ally ally) {
         allies.removeValue( ally, false );
-        if ( allies.size <=0 )
-            removeFightZone();
     }
 
     public void removeFightZone() {
@@ -104,23 +106,22 @@ public class FightZone implements Poolable {
         return ! ( enemies.size ==0 );
     }
 
-    @SuppressWarnings("deprecation")
     public void setPoz(Vector3 poz) {
         this.poz.set( poz );
-        box.set( poz.tmp().add( halfSize ), poz.tmp2().sub( halfSize ) );
+        box.set( temp1.set( poz ).add( halfSize ), temp2.set( poz ).sub( halfSize ) );
     }
 
     public void aproximatePoz() {
-        tmp.set( 0, 0, 0 );
+        temp.set( 0, 0, 0 );
 
         for (Ally ally : allies )
-            tmp.add( ally.duty );
+            temp.add( ally.duty );
 
         for (int i = 0 ; i <5 ; i ++ )
-            tmp.add( box.getCenter() );
+            temp.add( box.getCenter() );
 
-        tmp.scl( 1f / ( allies.size +5 ) );
-        setPoz( tmp );
+        temp.scl( 1f / ( allies.size +5 ) );
+        setPoz( temp );
 
     }
 

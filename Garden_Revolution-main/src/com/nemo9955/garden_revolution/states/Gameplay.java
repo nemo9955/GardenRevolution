@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -57,7 +59,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean              updWorld       = true;
     private final int           scrw           = Gdx.graphics.getWidth();
     private Vector3             dolly          = new Vector3();
-    public static Vector2       tmp2           = new Vector2();
+    public static Vector2       tmp1           = new Vector2();
     public float                touchPadTimmer = 0;
     private TweenManager        tweeger;
 
@@ -68,7 +70,11 @@ public class Gameplay extends CustomAdapter implements Screen {
     public Touchpad             mover;
     public Image                weaponCharger;
     public TextButton           ready;
+    public Image                allyPlacer;
     private float               charge         = -1;
+
+    public boolean              showASA        = false;
+    public Decal                allySpawnArea  = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
 
     public MultiplayerComponent mp             = null;
 
@@ -83,6 +89,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         tweeger = new TweenManager();
         shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
+
+        allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
 
     }
 
@@ -110,6 +118,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         modelBatch.begin( player.getCamera() );
         world.getWorld().render( modelBatch, decalBatch );
+        if ( showASA )
+            decalBatch.add( allySpawnArea );
         modelBatch.end();
         decalBatch.flush();
 
@@ -213,9 +223,9 @@ public class Gameplay extends CustomAdapter implements Screen {
             weaponCharger.setVisible( true );
             charge = 0;
 
-            tmp2.set( presDown );
-            stage.screenToStageCoordinates( tmp2 );
-            weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
+            tmp1.set( presDown );
+            stage.screenToStageCoordinates( tmp1 );
+            weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
         }
         return false;
     }
@@ -365,8 +375,8 @@ public class Gameplay extends CustomAdapter implements Screen {
                 charge = 0;
                 player.getTower().fireChargedTime = System.currentTimeMillis();
 
-                tmp2.set( stage.screenToStageCoordinates( tmp2.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
-                weaponCharger.setPosition( tmp2.x - ( weaponCharger.getWidth() /2 ), tmp2.y - ( weaponCharger.getHeight() /2 ) );
+                tmp1.set( stage.screenToStageCoordinates( tmp1.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
+                weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
 
                 return false;
             }

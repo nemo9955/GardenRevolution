@@ -29,7 +29,6 @@ public abstract class LifeForm extends Entity {
     @Override
     public void reset() {
         super.reset();
-        animation = null;
     }
 
     @Override

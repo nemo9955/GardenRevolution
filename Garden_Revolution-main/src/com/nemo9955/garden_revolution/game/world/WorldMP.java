@@ -22,6 +22,7 @@ import com.nemo9955.garden_revolution.utility.Functions;
 
 public class WorldMP implements IWorldModel {
 
+    private static final Vector3 temp = new Vector3();
     private MultiplayerComponent mp;
     private WorldBase            world;
 
@@ -118,12 +119,11 @@ public class WorldMP implements IWorldModel {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, Vector3 poz) {
 
-        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, Enemy.newGlobalID(), poz, Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, Enemy.newGlobalID(), poz, temp.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
         mp.sendTCP( ent );
-        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+        Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], temp );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
         addFoe.ID = ent.ID;
 
@@ -131,10 +131,9 @@ public class WorldMP implements IWorldModel {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
 
-        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf( path, false ), Vector3.tmp3.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf( path, false ), temp.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
         mp.sendTCP( ent );
 
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], world.getPaths().get( ent.pathNo ) );

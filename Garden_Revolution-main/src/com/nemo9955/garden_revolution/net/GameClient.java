@@ -37,8 +37,9 @@ import com.nemo9955.garden_revolution.utility.Vars;
 public class GameClient extends Listener implements MultiplayerComponent {
 
 
-    public Client          client;
-    private final Gameplay gp;
+    private static final Vector3 temp = new Vector3();
+    public Client                client;
+    private final Gameplay       gp;
 
     public GameClient(final Gameplay gp, final String ip) {
         this.gp = gp;
@@ -74,7 +75,6 @@ public class GameClient extends Listener implements MultiplayerComponent {
         Gdx.app.postRunnable( new Runnable() {
 
             @Override
-            @SuppressWarnings("deprecation")
             public void run() {
                 if ( obj instanceof String ) {
                     gp.showMessage( "[C] : " +obj.toString() );
@@ -92,7 +92,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
+                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], temp.set( ent.x, ent.y, ent.z ) );
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
                     addFoe.ID = ent.ID;
                 }
@@ -103,7 +103,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WorldAddAlly ) {
                     WorldAddAlly waa = (WorldAddAlly) obj;
-                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
+                    gp.world.getSgPl().addAlly( temp.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;

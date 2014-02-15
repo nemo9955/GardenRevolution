@@ -20,12 +20,14 @@ import com.nemo9955.garden_revolution.utility.Functions;
 
 public class Player {
 
-    private static final Vector3 tmp  = new Vector3();
+    private static final Vector3 temp2 = new Vector3();
+    private static final Vector3 temp3 = new Vector3();
+    private static final Vector3 temp1 = new Vector3();
     private PerspectiveCamera    cam;
     private WorldWrapper         world;
     private Tower                tower;
 
-    public String                name = "Player " +MathUtils.random( 99 );
+    public String                name  = "Player " +MathUtils.random( 99 );
 
     public Player(WorldWrapper world) {
         this.world = world;
@@ -53,21 +55,21 @@ public class Player {
         if ( isInTower() &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
 
             // Vector3 tmp = Player.tmp;
-            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tmp );
+            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), temp1 );
 
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
-                Vector3 temp = new Vector3();
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        temp.set( i +tmp.x -10f, tmp.y, j +tmp.z -10f );
-                        world.getDef().addFoe( EnemyType.ROSIE, temp );
+                        temp2.set( i +temp1.x -10f, temp1.y, j +temp1.z -10f );
+                        world.getDef().addFoe( EnemyType.ROSIE, temp2 );
                     }
             }
-            else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.getDef().addAlly( tmp, AllyType.SOLDIER );
-            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.getDef().addFoe( EnemyType.MORCOV, tmp );
 
+            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
+                world.getDef().addFoe( EnemyType.MORCOV, temp1 );
+
+            else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
+                world.getDef().addAlly( temp1, AllyType.SOLDIER );
             gestures.invalidateTapSquare();
             return true;
         }
@@ -81,8 +83,8 @@ public class Player {
 
         cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
         if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
-            tmp.set( cam.direction ).crs( cam.up ).y = 0f;
-            cam.rotateAround( getCameraRotAround(), tmp.nor(), amontY );
+            temp3.set( cam.direction ).crs( cam.up ).y = 0f;
+            cam.rotateAround( getCameraRotAround(), temp3.nor(), amontY );
         }
         cam.direction.nor();
         if ( isInTower() ) {
@@ -98,11 +100,10 @@ public class Player {
         cam.update();
     }
 
-    @SuppressWarnings("deprecation")
+    private static Vector3 look = new Vector3();
+
     private void resetCamera() {
 
-        Vector3 tmp2 = Vector3.tmp2;
-        Vector3 look = Vector3.tmp3;
 
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         Functions.intersectLinePlane( ray, look );
@@ -116,17 +117,17 @@ public class Player {
             cam.position.add( 0, 3, 0 );
         }
         else {
-            tmp2.set( cam.direction ).scl( 4 );
-            tmp.set( cam.up ).crs( cam.direction ).scl( 3 );
+            temp2.set( cam.direction ).scl( 4 );
+            temp1.set( cam.up ).crs( cam.direction ).scl( 3 );
 
-            cam.position.sub( tmp2 );
-            cam.position.sub( tmp );
+            cam.position.sub( temp2 );
+            cam.position.sub( temp1 );
             cam.position.add( 0, 2, 0 );
         }
 
-        Vector3 u = Vector3.tmp2.set( look.tmp().sub( cam.position ) );
+        Vector3 u = temp2.set( temp3.set( look ).sub( cam.position ) );
         look.y = 0;
-        Vector3 v = Vector3.tmp3.set( look.tmp().sub( cam.position ) );
+        Vector3 v = temp1.set( temp3.set( look ).sub( cam.position ) );
 
         float dot = u.dot( v );
         float lenu = u.len();

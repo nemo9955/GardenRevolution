@@ -53,8 +53,8 @@ public enum WeaponType {
                 fireTime = System.currentTimeMillis();
 
                 myray.set( ray );
-                tmp.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
-                myray.origin.add( tmp );
+                temp.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
+                myray.origin.add( temp );
 
                 world.getWorld().addShot( ShotType.STANDARD, myray, 0 );
                 return true;
@@ -116,13 +116,13 @@ public enum WeaponType {
         }
     };
 
-    private static Vector3 tmp        = new Vector3();
-    private static Ray     myray      = new Ray( new Vector3(), new Vector3() );
+    private static final Vector3 temp       = new Vector3();
+    private static final Ray     myray      = new Ray( new Vector3(), new Vector3() );
 
-    public String          name       = "weapon name";
-    public String          details    = "weapon description";
-    protected int          fireDellay = 100;
-    protected long         fireTime   = 0;
+    public String                name       = "weapon name";
+    public String                details    = "weapon description";
+    protected int                fireDellay = 100;
+    protected long               fireTime   = 0;
 
 
     {

@@ -38,16 +38,17 @@ public enum ShotType {
             }
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public Vector3 getMove(Vector3 direction, float delta) {
-            return direction.sub( 0, 0.7f *delta, 0 ).tmp().scl( delta *speed );
+            return temp.set( direction ).sub( 0, 0.7f *delta, 0 ).scl( delta *speed );
         }
     };
 
-    public int range  = 0;
-    public int damage = 10;
-    public int speed  = 20;
+    public int             range  = 0;
+    public int             damage = 10;
+    public int             speed  = 20;
+
+    private static final Vector3 temp    = new Vector3();
 
     ShotType() {
         propShots();
@@ -55,9 +56,8 @@ public enum ShotType {
 
     protected abstract void propShots();
 
-    @SuppressWarnings("deprecation")
     public Vector3 getMove(Vector3 direction, float delta) {
-        return direction.tmp().scl( delta *speed );
+        return temp.set( direction ).scl( delta *speed );
     }
 
     public void hitActivity(Shot shot, WorldWrapper world) {

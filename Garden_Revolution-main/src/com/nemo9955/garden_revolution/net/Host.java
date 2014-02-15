@@ -36,9 +36,10 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class Host extends Listener implements MultiplayerComponent {
 
-    public Server          server;
-    private final Gameplay gp;
-    public int             clientsReady = 0;
+    private static final Vector3 temp         = new Vector3();
+    public Server                server;
+    private final Gameplay       gp;
+    public int                   clientsReady = 0;
 
     public Host(final Gameplay gp) {
         this.gp = gp;
@@ -76,7 +77,6 @@ public class Host extends Listener implements MultiplayerComponent {
     public void received(final Connection connection, final Object obj) {
         Gdx.app.postRunnable( new Runnable() {
 
-            @SuppressWarnings("deprecation")
             @Override
             public void run() {
                 if ( obj instanceof String ) {
@@ -90,19 +90,21 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) ); addFoe.ID = ent.ID;
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) ); addFoe.ID = ent.ID;
+                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], temp.set( ent.x, ent.y, ent.z ) );
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddAlly ) {
                     WorldAddAlly waa = (WorldAddAlly) obj;
-                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID=waa.ID;
-                    
+                    gp.world.getSgPl().addAlly( temp.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
+
                     server.sendToAllExceptTCP( connection.getID(), waa );
                 }
                 else if ( obj instanceof AllyKilled ) {
@@ -223,20 +225,6 @@ public class Host extends Listener implements MultiplayerComponent {
                 server.sendToAllTCP( plr );
             }
         }
-        // else if ( obj instanceof WorldAddEnemyOnPath ) {
-        // WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
-        // Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-        // addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        // }
-        // else if ( obj instanceof WorldAddEnemyOnPoz ) {
-        // WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-        // Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
-        // addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        // }
-        // else if ( obj instanceof WorldAddAlly ) {
-        // WorldAddAlly waa = (WorldAddAlly) obj;
-        // gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
-        // }
         else if ( obj instanceof msNetGR )
             switch ((msNetGR) obj) {
                 case IAmReady:

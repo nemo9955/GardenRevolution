@@ -1,9 +1,14 @@
 package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -18,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
@@ -42,6 +48,8 @@ public class StageUtils {
         final Board hud = new Board(); // aici e tot ce e legat de HUD ------------------------------------------------------------------------------
         final ImageButton pauseBut = new ImageButton( skin, "IGpause" );
         final ImageButton turnIG = new ImageButton( skin, "towerUpgrade" );
+        gp.allyPlacer = new Image( IconType.TINTA.getAsDrawable( skin, 60f, 60f ) );
+        gp.allyPlacer.setPosition( stage.getWidth() *0.25f, 0 );
 
         gp.ready = new TextButton( "Start Wave!", skin );
         gp.ready.setTouchable( Touchable.enabled );
@@ -68,6 +76,7 @@ public class StageUtils {
         hud.addActor( gp.mover );
         hud.addActor( turnIG );
         hud.addActor( gp.weaponCharger );
+        hud.addActor( gp.allyPlacer );
 
 
         final Table pauseIG = new Table( skin ); // aici e tot ce are legatura cu meniul de pauza --------------------------------------------------------------------
@@ -175,6 +184,55 @@ public class StageUtils {
             }
         };
 
+        gp.allyPlacer.addListener( new InputListener() {
+
+            private final Vector2 tmp   = new Vector2();
+            private final Vector3 temp1 = new Vector3();
+            private final Vector3 temp2 = new Vector3();
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                gp.showASA = true;
+                updatePoz( x, y );
+                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                updatePoz( x, y );
+
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                gp.showASA = false;
+                gp.allyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
+
+                // tmp.set( x, y );
+                // gp.allyPlacer.localToParentCoordinates( tmp );
+                if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
+                    temp2.y = 0;
+                    for (int i = 0 ; i <3 ; i ++ ) {
+                        temp1.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
+                        gp.world.getDef().addAlly( temp1.add( temp2 ), AllyType.SOLDIER );
+                    }
+                }
+                System.out.println( tmp.x +" " +tmp.y );
+            }
+
+            private void updatePoz(float x, float y) {
+                tmp.set( x, y );
+                gp.allyPlacer.localToParentCoordinates( tmp );
+                tmp.sub( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
+                gp.allyPlacer.setPosition( tmp.x, tmp.y );
+
+                tmp.add( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
+                gp.stage.stageToScreenCoordinates( tmp );
+                Functions.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), temp1 );
+                gp.world.getWorld().getOnPath( temp1, temp2, 150 );
+                gp.allySpawnArea.setPosition( temp2.x, 2, temp2.z );
+            }
+        } );
 
         // pentru butoanele din pause
         final ChangeListener pauseButons = new ChangeListener() {

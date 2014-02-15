@@ -29,13 +29,13 @@ public enum AllyType {
         name = name().charAt( 0 ) +"" +name().replaceFirst( name().charAt( 0 ) +"", "" ).toLowerCase();
         propAllys();
 
-        ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.ALLIES ) );
+        ModelInstance tmpModI = new ModelInstance( Garden_Revolution.getModel( Assets.ALLIES ) );
         Array<Node> toRemove = new Array<Node>( false, 1 );
-        for (int i = 0 ; i <tmp.nodes.size ; i ++ )
-            if ( !tmp.nodes.get( i ).id.equalsIgnoreCase( fileName ) )
-                toRemove.add( tmp.nodes.get( i ) );
-        tmp.nodes.removeAll( toRemove, false );
-        model = tmp;
+        for (int i = 0 ; i <tmpModI.nodes.size ; i ++ )
+            if ( !tmpModI.nodes.get( i ).id.equalsIgnoreCase( fileName ) )
+                toRemove.add( tmpModI.nodes.get( i ) );
+        tmpModI.nodes.removeAll( toRemove, false );
+        model = tmpModI;
     }
 
     public ModelInstance getModel(float x, float y, float z) {

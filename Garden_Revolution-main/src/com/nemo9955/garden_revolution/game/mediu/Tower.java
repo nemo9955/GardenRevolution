@@ -39,7 +39,6 @@ public class Tower implements Disposable {
     public boolean               isFiringHold    = false;
     public long                  fireChargedTime = 0;
 
-
     private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
     public Tower(ModelInstance baza, WorldWrapper world, Vector3 poz, int ID) {

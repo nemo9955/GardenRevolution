@@ -61,8 +61,9 @@ public class WorldBase {
     private Array<FightZone>                 fightZones   = new Array<FightZone>( false, 10 );
     private Array<CatmullRomSpline<Vector3>> paths;
 
-    private static Vector3                   tmp          = new Vector3();
-    private static Vector3                   tmp2         = new Vector3();
+    private static final Vector3             temp1        = new Vector3();
+    private static final Vector3             temp2        = new Vector3();
+    private static final Vector3             temp3        = new Vector3();
     private Vector3                          overview     = new Vector3( 20, 10, 10 );
     private int                              viata;
     private Tower[]                          towers;
@@ -211,13 +212,13 @@ public class WorldBase {
         int pts = getPaths().size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
-            getPaths().get( i ).valueAt( tmp, val );
+            getPaths().get( i ).valueAt( temp3, val );
             while ( val <1f ) {
                 val += 1f /150f;
-                getPaths().get( i ).valueAt( tmp2, val );
+                getPaths().get( i ).valueAt( temp2, val );
                 shape.setColor( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
-                shape.line( tmp, tmp2 );
-                tmp.set( tmp2 );
+                shape.line( temp3, temp2 );
+                temp3.set( temp2 );
             }
         }
         shape.end();
@@ -302,9 +303,9 @@ public class WorldBase {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        Model temp = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
-        toDispose.add( temp );
-        ModelInstance baza = new ModelInstance( temp, overview );
+        Model tmpModel = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
+        toDispose.add( tmpModel );
+        ModelInstance baza = new ModelInstance( tmpModel, overview );
         baza.transform.setToTranslation( overview );
         baza.calculateTransforms();
         towers[0] = new ViewPlace( baza, superior, overview, 0 );
@@ -355,29 +356,32 @@ public class WorldBase {
         float dist = Float.MAX_VALUE;
 
         for (CatmullRomSpline<Vector3> path : getPaths() ) {
-            tmp2.set( path.controlPoints[0] );
-            if ( location.dst2( tmp2 ) <dist ) {
-                dist = location.dst2( tmp2 );
+            temp2.set( path.controlPoints[0] );
+            float dst2 = location.dst2( temp2 );
+            if ( dst2 <dist ) {
+                dist = dst2;
                 closest = path;
             }
         }
         return closest;
     }
 
-    @SuppressWarnings("deprecation")
-    public Vector3 getOnPath(Vector3 point, Vector3 out) {// TODO use this to set the position of an ally on the path
-        float tmpDist, t;
-        final float step = 1 /40f, minDist = 5f;
-        Vector3 temp = Vector3.tmp3.set( 0, 0, 0 );
+
+    public Vector3 getOnPath(Vector3 point, Vector3 out, float chkDst) {// TODO use this to set the position of an ally on the path
+        float tmpDist, t, minDist = Float.MAX_VALUE;
+        final float step = 1 /chkDst;
+
         for (CatmullRomSpline<Vector3> path : paths ) {
             t = 0;
             while ( t <=1 ) {
-                path.valueAt( temp, t );
-                tmpDist = temp.dst( point );
+                path.valueAt( temp1, t );
+                tmpDist = temp1.dst( point );
 
-                if ( tmpDist <=minDist )
+                if ( tmpDist <=minDist ) {
+                    minDist = tmpDist;
                     if ( out !=null )
-                        out.set( temp );
+                        out.set( temp1 );
+                }
                 t += step;
             }
         }
