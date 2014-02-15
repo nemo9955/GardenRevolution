@@ -90,18 +90,19 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) ); addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) ); addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddAlly ) {
                     WorldAddAlly waa = (WorldAddAlly) obj;
-                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
+                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID=waa.ID;
+                    
                     server.sendToAllExceptTCP( connection.getID(), waa );
                 }
                 else if ( obj instanceof AllyKilled ) {

@@ -14,6 +14,7 @@ import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.utility.Functions;
@@ -124,7 +125,8 @@ public class WorldMP implements IWorldModel {
         mp.sendTCP( ent );
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        addFoe.ID = Enemy.getGlobalID();
+        addFoe.ID = ent.ID;
+
         return addFoe;
     }
 
@@ -137,15 +139,16 @@ public class WorldMP implements IWorldModel {
 
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], world.getPaths().get( ent.pathNo ) );
         addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
-        addFoe.ID = Enemy.getGlobalID();
+        addFoe.ID = ent.ID;
         return addFoe;
     }
 
     @Override
     public Ally addAlly(Vector3 duty, AllyType type) {
-        mp.sendTCP( Functions.getAddAl( type, Ally.newGlobalID(), duty ) );
+        WorldAddAlly addAl = Functions.getAddAl( type, Ally.newGlobalID(), duty );
+        mp.sendTCP( addAl );
         Ally addAlly = world.addAlly( duty, type );
-        addAlly.ID = Ally.getGlobalID();
+        addAlly.ID = addAl.ID;
         return addAlly;
     }
 

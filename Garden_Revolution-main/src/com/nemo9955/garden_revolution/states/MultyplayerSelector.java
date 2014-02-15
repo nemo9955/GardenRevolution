@@ -35,6 +35,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
     private static final float rap = 1.3f;
     private Table              table;
     public TextField           ipInput;
+    public TextField           portInput;
 
 
     public MultyplayerSelector() {
@@ -46,6 +47,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         back = new TextButton( "Back", skin );
         final TextButton start = new TextButton( "Start", skin );
         ipInput = new TextField( "", skin );
+        portInput = new TextField( "", skin );
         final CheckBox isHost = new CheckBox( "Is host", skin );
         final CheckBox isPublic = new CheckBox( "Is public", skin );
         final Label theIP = new Label( Functions.getIpAddress(), skin );
@@ -54,8 +56,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         theIP.setVisible( false );
         ipInput.setVisible( true );
         ipInput.setText( "188.173.17.234" );
-        ipInput.setMaxLength( 30 );
-        ipInput.setWidth( 1000 );
+        portInput.setText( "29955" );
 
         table.setFillParent( true );
         table.defaults().space( 50 );
@@ -64,7 +65,8 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
         table.add( "IP :" );
         table.add( ipInput );
         table.add( theIP ).row();
-        table.add( isPublic ).colspan( 3 ).row();
+        table.add( isPublic );
+        table.add( portInput ).row();
         table.add( back ).colspan( 3 ).row();
 
         table.addListener( new ChangeListener() {
@@ -75,14 +77,20 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                 if ( back.isPressed() )
                     GR.game.setScreen( GR.selecter );
                 else if ( start.isPressed() ) {
-                    if ( isHost.isChecked() ) {
-                        startAsHost();
-                    }
-                    else {
-                        startAsClient( ipInput.getMessageText() );
-                    }
-                }
+                    try {
+                        Vars.TCPport = Integer.parseInt( portInput.getText() );
+                        Vars.UDPport = Vars.TCPport +10000;
 
+                        if ( isHost.isChecked() )
+                            startAsHost();
+                        else
+                            startAsClient( ipInput.getMessageText() );
+                    }
+                    catch (Exception e) {
+                        showMessage( e.getMessage() );
+                    }
+
+                }
                 if ( isHost.isChecked() ) {
                     ipInput.setVisible( false );
                     theIP.setVisible( true );
@@ -97,6 +105,7 @@ public class MultyplayerSelector extends ControllerAdapter implements Screen {
                     // placeHolder = (Actor) ipInput;
                     table.invalidate();
                 }
+
 
             }
 

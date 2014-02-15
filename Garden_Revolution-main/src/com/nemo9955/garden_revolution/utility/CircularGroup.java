@@ -1,6 +1,6 @@
 package com.nemo9955.garden_revolution.utility;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -74,7 +74,7 @@ public class CircularGroup extends WidgetGroup {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(SpriteBatch batch, float parentAlpha) {
         super.draw( batch, parentAlpha );
         shape.setProjectionMatrix( getStage().getCamera().combined );
         shape.begin( ShapeType.Line );

@@ -39,10 +39,10 @@ public class FightZone implements Poolable {
             }
 
         // TODO make this not random and dependent of the attack speed
-        for (Ally ally : allies ) {
+        for (int i = 0 ; i <allies.size ; i ++ ) {
             Enemy enemy = enemies.random();
             if ( enemy !=null ) {
-                ally.attack( enemy );
+                allies.get( i ).attack( enemy );
                 if ( enemy.isDead() )
                     removeEnemy( enemy );
             }
@@ -51,10 +51,10 @@ public class FightZone implements Poolable {
         }
 
         // TODO make this not random and dependent of the attack speed
-        for (Enemy enemy : enemies ) {
+        for (int i = 0 ; i <enemies.size ; i ++ ) {
             Ally ally = allies.random();
             if ( ally !=null ) {
-                enemy.atack( ally );
+                enemies.get( i ).atack( ally );
                 if ( ally.isDead() )
                     removeAlly( ally );
             }

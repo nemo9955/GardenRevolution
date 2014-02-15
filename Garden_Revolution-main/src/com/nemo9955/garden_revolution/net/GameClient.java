@@ -88,11 +88,13 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.ID = ent.ID;
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], Vector3.tmp3.set( ent.x, ent.y, ent.z ) );
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.ID = ent.ID;
                 }
                 else if ( obj instanceof StartingServerInfo ) {
                     StartingServerInfo ssi = (StartingServerInfo) obj;
@@ -101,7 +103,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WorldAddAlly ) {
                     WorldAddAlly waa = (WorldAddAlly) obj;
-                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] );
+                    gp.world.getSgPl().addAlly( Vector3.tmp3.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
                 }
                 else if ( obj instanceof WeaponChangedPacket ) {
                     final WeaponChangedPacket weap = (WeaponChangedPacket) obj;

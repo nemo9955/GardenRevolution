@@ -40,13 +40,13 @@ public class Vars {
     public static final int    noButtons           = buton.length, noAxis = axis.length;
 
     // pentru comportamentul entitatilor
-    public static final long   enemyAttackInterval = 2037;
-    public static final long   allyAttackInterval  = 1956;
+    public static final long   enemyAttackInterval = 868;
+    public static final long   allyAttackInterval  = 696;
 
 
     // variabile multyplayer
-    public static final int    TCPport             = 29954;
-    public static final int    UDPport             = 39954;
+    public static  int    TCPport             = 29955;
+    public static  int    UDPport             = 39955;
     public static final String stringSeparator     = "___";
 
     protected static final String waitingMessage = "Waiting for others ..."; 
