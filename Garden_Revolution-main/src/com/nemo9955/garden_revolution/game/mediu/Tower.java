@@ -26,7 +26,7 @@ public class Tower implements Disposable {
 
     private Array<ModelInstance> parts           = new Array<ModelInstance>( false, 1 );
     public final Vector3         poz             = new Vector3();
-    public TowerType             type            = TowerType.FUNDATION;
+    public TowerType             type;
 
     private Weapon               weapon;
     public Vector3               place           = new Vector3();
@@ -41,16 +41,16 @@ public class Tower implements Disposable {
 
     private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
-    public Tower(ModelInstance baza, WorldWrapper world, Vector3 poz, int ID) {
+
+    public Tower(TowerType type, WorldWrapper world, Vector3 poz, int ID) {
         this.ID = (byte) ID;
         this.poz.set( poz );
         this.world = world;
-        if ( baza !=null ) {
-            parts.add( baza );
-            addToTowerColiders( baza.calculateBoundingBox( new BoundingBox() ) );
-        }
-        pointer.setPosition( poz.x, poz.y +5f, poz.z );
-        place.set( poz ).add( 0, 10, 0 );
+
+        upgradeTower( type );
+
+        // pointer.setPosition( poz.x, poz.y +5f, poz.z );
+        // place.set( poz ).add( 0, 10, 0 );
         direction.set( -1, 0, 0 );
     }
 
@@ -61,6 +61,8 @@ public class Tower implements Disposable {
     }
 
     public boolean changeWeapon(WeaponType toChange) {
+        if ( type ==TowerType.VIEWAREA )
+            return false;
         if ( !hasWeapon() ) {
             weapon = new Weapon( toChange, place );
             return true;
@@ -72,8 +74,9 @@ public class Tower implements Disposable {
     }
 
     public boolean upgradeTower(TowerType upgrade) {
-        if ( type !=TowerType.FUNDATION &&type.rank >=upgrade.rank )
-            return false;
+        if ( type !=null )
+            if ( type.rank >=upgrade.rank )
+                return false;
         type = upgrade;
         parts.clear();
 
@@ -101,11 +104,7 @@ public class Tower implements Disposable {
         model.nodes.removeAll( remove, false );
         parts.add( model );
 
-        if ( type !=TowerType.FUNDATION )
-            pointer.setPosition( place.x, place.y +5f, place.z );
-        else
-            pointer.setPosition( poz.x, poz.y +5f, poz.z );
-
+        pointer.setPosition( place.x, place.y +5f, place.z );
 
         return true;
     }
@@ -121,9 +120,8 @@ public class Tower implements Disposable {
             modelBatch.render( model, light );
         if ( hasWeapon() )
             weapon.render( modelBatch, light );
-        if ( ocupier !=null )
+        if ( ocupier !=null &&world.isMultiplayer() )
             decalBatch.add( pointer );
-
     }
 
     public Weapon getWeapon() {

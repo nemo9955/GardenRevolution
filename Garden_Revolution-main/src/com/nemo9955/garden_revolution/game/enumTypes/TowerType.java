@@ -7,7 +7,16 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public enum TowerType {
 
-    FUNDATION(Assets.TOWER_BASIC) {
+    VIEWAREA(Assets.TOWER_FUNDATION) {
+
+        @Override
+        protected void propTowers() {
+            rank = 6666666;
+            name = "View baloon";
+        }
+    },
+
+    FUNDATION(Assets.TOWER_FUNDATION) {
 
         @Override
         protected void propTowers() {

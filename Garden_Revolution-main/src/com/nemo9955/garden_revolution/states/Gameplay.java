@@ -240,7 +240,6 @@ public class Gameplay extends CustomAdapter implements Screen {
             weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
             return true;
         }
-
         return false;
     }
 
@@ -365,11 +364,14 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
+    public boolean buttonDown(Controller cont, int buttonCode) {
 
         if ( buttonCode ==Vars.buton[0] ) {
+            if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
+                player.getTower().setFiringHold( true );
+            }
 
-            if ( player.isInTower() &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 charge = 0;
@@ -412,6 +414,9 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
         if ( buttonCode ==Vars.buton[0] ) {
+            if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
+                player.getTower().setFiringHold( false );
+            }
             if ( player.isInTower() &&weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
                 // player.getTower().fireWeapon( world.getDef(), charge );

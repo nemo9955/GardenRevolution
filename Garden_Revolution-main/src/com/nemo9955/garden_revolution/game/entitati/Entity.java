@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.game.entitati;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -49,7 +48,6 @@ public abstract class Entity implements Poolable {
     protected abstract ModelInstance getModel(float x, float y, float z);
 
     protected void setBox(float x, float y, float z) {
-        // FIXME when i go from a host to sa sp game , and i double-tap on a tower fundation while a minigun is equiped it crashes , probabli due to the cursor catched ...
         model.calculateBoundingBox( box );
         addPoz( box, x, y, z );
     }
@@ -58,24 +56,9 @@ public abstract class Entity implements Poolable {
 
     }
 
-    public void render(ModelBatch modelBatch) {
-        modelBatch.render( model );
-        renderGeneral( modelBatch );
-    }
-
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         modelBatch.render( model, light );
-        renderGeneral( modelBatch );
     }
-
-    public void render(ModelBatch modelBatch, Shader shader) {
-        modelBatch.render( model, shader );
-        renderGeneral( modelBatch );
-    }
-
-    protected void renderGeneral(ModelBatch modelBatch) {
-    }
-
 
     public void move(Vector3 move) {
         move( move.x, move.y, move.z );
@@ -127,7 +110,6 @@ public abstract class Entity implements Poolable {
 
     public void setDead(boolean dead) {
         this.dead = dead;
-
     }
- 
+
 }

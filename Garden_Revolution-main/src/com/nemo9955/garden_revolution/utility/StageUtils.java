@@ -104,7 +104,8 @@ public class StageUtils {
         final TextButton backBut = new TextButton( "Back", skin, "demon" );
         final CheckBox updWaves = new CheckBox( "Auto-Update Wave", skin );
         updWaves.setChecked( Vars.updateUave );
-        final TextButton debug = new TextButton( "Hide Debug", skin );
+        final CheckBox debug = new CheckBox( "Show Debug", skin );
+        debug.setChecked( Vars.showDebug );
 
         optiuni.setVisible( false );
         optiuni.setWidget( optContinut );
@@ -125,20 +126,20 @@ public class StageUtils {
         final ImageButton cannon = new ImageButton( IconType.TUN.getAsDrawable( skin, 70, 70 ) );
         final CircularGroup mainUpgrades = new CircularGroup( gp.shape );
 
-        final float freeSpace = 25 *Vars.densitate;
+        float freeSpace = 25 *Vars.densitate;
 
         backTowe1.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe1.getHeight() /2 );
         backTowe2.setPosition( 15 *Vars.densitate, stage.getHeight() /2 -backTowe2.getHeight() /2 );
 
         mainUpgrades.setDraggable( true );
-        mainUpgrades.setAsCircle( 1000, 70 );
+        mainUpgrades.setAsCircle( 300, 70 );
         mainUpgrades.setPosition( -mainUpgrades.getRadius() + ( freeSpace *2.1f ) +backTowe1.getWidth(), stage.getHeight() /2 );
         // mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
         float i;
         final float treapta = CircularGroup.aprxOptAngl( mainUpgrades.getRadius(), basicT.getHeight() );
         final Rectangle zon = new Rectangle( 0, 0, stage.getWidth(), stage.getHeight() );
         i = mainUpgrades.minAngleInZon( zon, treapta, 2 );
-        mainUpgrades.setActivInterval( i, 360 -i, true, treapta *1.4f, true );
+        mainUpgrades.setActivInterval( i, 360 -i, true, treapta *1.4f, false );
         // mainUpgrades.setActivInterval( 30, -30, true, 30, false );
 
 
@@ -168,22 +169,26 @@ public class StageUtils {
                     gp.updWorld = false;
                 }
                 else if ( gp.ready.isPressed() ) {
-                    if ( gp.mp ==null ) {// singleplayer part
+                    // singleplayer part
+                    if ( gp.mp ==null ) {
                         gp.ready.setVisible( false );
                         gp.world.getSgPl().setCanWaveStart( true );
                     }
-                    else {// multyplayer part
+                    // multyplayer part
+                    else {
                         gp.ready.setText( Vars.waitingMessage );
                         gp.ready.setTouchable( Touchable.disabled );
 
                         gp.mp.sendTCP( msNetGR.IAmReady );
 
                     }
+                    gp.ready.pack();
                 }
 
             }
         };
 
+        final Rectangle scrZon = new Rectangle( 5, 5, stage.getWidth() -10, stage.getHeight() -10 );
         gp.allyPlacer.addListener( new InputListener() {
 
             private final Vector2 tmp   = new Vector2();
@@ -210,14 +215,16 @@ public class StageUtils {
 
                 // tmp.set( x, y );
                 // gp.allyPlacer.localToParentCoordinates( tmp );
-                if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
+                // if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
+
+                if ( scrZon.contains( event.getStageX(), event.getStageY() ) ) {
                     temp2.y = 0;
                     for (int i = 0 ; i <3 ; i ++ ) {
                         temp1.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
                         gp.world.getDef().addAlly( temp1.add( temp2 ), AllyType.SOLDIER );
                     }
                 }
-                System.out.println( tmp.x +" " +tmp.y );
+                // System.out.println( tmp.x +" " +tmp.y );
             }
 
             private void updatePoz(float x, float y) {
@@ -295,20 +302,10 @@ public class StageUtils {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
                 else if ( updWaves.isPressed() ) {
-                    // if ( updWaves.isChecked() )
-                    // updWaves.setText( "Dezactivate Wave" );
-                    // else
-                    // updWaves.setText( "Activate Wave" );
-                    // updWaves.pack();
                     Vars.updateUave = updWaves.isChecked();
                 }
                 else if ( debug.isPressed() ) {
-                    if ( debug.isChecked() )
-                        debug.setText( "Show Debug" );
-                    else
-                        debug.setText( "Hide Debug" );
-                    debug.pack();
-                    Vars.showDebug = !Vars.showDebug;
+                    Vars.showDebug = debug.isChecked();
                 }
             }
         };

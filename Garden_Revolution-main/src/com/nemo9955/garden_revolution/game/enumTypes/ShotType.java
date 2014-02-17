@@ -20,6 +20,7 @@ public enum ShotType {
 
     GHIULEA {
 
+
         @Override
         protected void propShots() {
             damage = 80;
@@ -40,15 +41,15 @@ public enum ShotType {
 
         @Override
         public Vector3 getMove(Vector3 direction, float delta) {
-            return temp.set( direction ).sub( 0, 0.7f *delta, 0 ).scl( delta *speed );
+            return temp.set( direction.sub( 0, 0.7f *delta, 0 ) ).scl( delta *speed );
         }
     };
 
-    public int             range  = 0;
-    public int             damage = 10;
-    public int             speed  = 20;
+    public int                   range  = 0;
+    public int                   damage = 10;
+    public int                   speed  = 20;
 
-    private static final Vector3 temp    = new Vector3();
+    private static final Vector3 temp   = new Vector3();
 
     ShotType() {
         propShots();
@@ -57,7 +58,7 @@ public enum ShotType {
     protected abstract void propShots();
 
     public Vector3 getMove(Vector3 direction, float delta) {
-        return temp.set( direction ).scl( delta *speed );
+        return temp.set( direction ).nor().scl( delta *speed );
     }
 
     public void hitActivity(Shot shot, WorldWrapper world) {

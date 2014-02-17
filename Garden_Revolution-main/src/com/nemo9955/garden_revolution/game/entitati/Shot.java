@@ -2,10 +2,13 @@ package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -15,18 +18,16 @@ import com.nemo9955.garden_revolution.game.world.WorldBase;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
-// FIXME major problem with this class ... bullets are more accelerated at launch and sometimes disappear
 public class Shot extends Entity {
 
 
-    private Vector3 direction;
-    private float   life;
-    public ShotType type;
-    private float   charge;
+    private final Vector3 direction = new Vector3();
+    private float         life;
+    public ShotType       type;
+    private float         charge;
 
     public Shot(WorldWrapper world) {
         super( world );
-        direction = new Vector3();
     }
 
     public Shot create(ShotType type, Ray ray, float charge) {
@@ -35,11 +36,15 @@ public class Shot extends Entity {
         super.init( ray.origin );
         this.direction.set( ray.direction ).nor();
 
+        // System.out.println( this.direction );
+
         life = 5f;
         this.charge = charge;
 
         if ( type ==ShotType.GHIULEA ) {
-            this.direction.y = 0.5f;
+            this.direction.y /= 2;
+            this.direction.y += 0.45f;
+            System.out.println(this.direction.y);
             this.direction.nor().scl( 1f +this.charge );
         }
         return this;
@@ -68,10 +73,20 @@ public class Shot extends Entity {
                 setDead( true );
 
         type.hitActivity( this, world );
+
+        if ( isDead() ) {
+            world.getWorld().getShotPool().free( this );
+            world.getWorld().getShot().removeValue( this, false );
+        }
+    }
+
+    @Override
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+        modelBatch.render( model );
     }
 
 
-    private static Model model = createModel();
+    private static Model modelTemp = createModel();
 
     private static Model createModel() {
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -83,7 +98,7 @@ public class Shot extends Entity {
 
     @Override
     protected ModelInstance getModel(float x, float y, float z) {
-        return new ModelInstance( model, x, y, z );
+        return new ModelInstance( modelTemp, x, y, z );
 
     }
 
@@ -91,10 +106,5 @@ public class Shot extends Entity {
     public void setDead(boolean dead) {
         super.setDead( dead );
 
-        if ( isDead() ) {
-            world.getWorld().getShotPool().free( this );
-            world.getWorld().getShot().removeValue( this, false );
-        }
     }
-
 }

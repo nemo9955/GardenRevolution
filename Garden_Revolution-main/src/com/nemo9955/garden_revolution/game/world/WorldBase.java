@@ -43,7 +43,6 @@ import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.game.mediu.ViewPlace;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -51,7 +50,7 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class WorldBase {
 
-    public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 3 );
+    public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 1 );
 
     private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
     private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
@@ -172,7 +171,7 @@ public class WorldBase {
         for (Ally e : getAlly() )
             e.render( modelBatch, environment, decalBatch );
         for (Shot e : getShot() )
-            e.render( modelBatch );
+            e.render( modelBatch, environment, decalBatch );
         for (Tower tower : towers )
             tower.render( modelBatch, environment, decalBatch );
     }
@@ -261,7 +260,7 @@ public class WorldBase {
             if ( id.startsWith( "turn" ) ) {
                 sect = id.split( "_" );
                 int no = Integer.parseInt( sect[1] ) -1;
-                towers[no +1] = new Tower( instance, superior, scena.nodes.get( i ).translation, no +1 );
+                towers[no +1] = new Tower( TowerType.FUNDATION, superior, scena.nodes.get( i ).translation, no +1 );
             }
             else if ( id.startsWith( "path" ) ) {
                 sect = id.split( "_" );
@@ -308,7 +307,7 @@ public class WorldBase {
         ModelInstance baza = new ModelInstance( tmpModel, overview );
         baza.transform.setToTranslation( overview );
         baza.calculateTransforms();
-        towers[0] = new ViewPlace( baza, superior, overview, 0 );
+        towers[0] = new Tower( TowerType.VIEWAREA, superior, overview, 0 );
     }
 
     private void readData(FileHandle location) {
@@ -458,7 +457,7 @@ public class WorldBase {
                                            }
                                        };
 
-    private Pool<Shot>      shotPool   = new Pool<Shot>() {
+    private Pool<Shot>      shotPool   = new Pool<Shot>( 100, 500 ) {
 
 
                                            @Override
@@ -662,7 +661,7 @@ public class WorldBase {
 
         shotPool.clear();
 
-        overview.set( 0, 0, 0 );
+        overview.set( 10, 10, 10 );
         canWaveStart = false;
     }
 }

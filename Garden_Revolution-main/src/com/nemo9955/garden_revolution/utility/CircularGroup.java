@@ -251,7 +251,7 @@ public class CircularGroup extends WidgetGroup {
     public float minAngleInZon(final Rectangle zon, final float angle, final float padding) {
         tmp1.set( zon.x +1, zon.y +1 );
         float i = 0;
-        while ( zon.contains( tmp1 ) &&i <=180 ) {
+        while ( zon.contains( tmp1 ) &&i <=360 ) {
             i += angle;
             getPositionbyAngle( tmp1, i ).add( getX(), getY() );
         }
