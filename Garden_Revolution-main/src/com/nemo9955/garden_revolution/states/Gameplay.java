@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -71,7 +72,6 @@ public class Gameplay extends CustomAdapter implements Screen {
     public Image                weaponCharger;
     public TextButton           ready;
     public Image                allyPlacer;
-    private float               charge         = -1;
 
     public boolean              showASA        = false;
     public Decal                allySpawnArea  = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
@@ -117,14 +117,18 @@ public class Gameplay extends CustomAdapter implements Screen {
             gestures.cancel();
 
         modelBatch.begin( player.getCamera() );
+        shape.setProjectionMatrix( player.getCamera().combined );
+        shape.begin( ShapeType.Line );
+
         world.getWorld().render( modelBatch, decalBatch );
         if ( showASA )
             decalBatch.add( allySpawnArea );
-        modelBatch.end();
-        decalBatch.flush();
-
         if ( Vars.showDebug &&!Gdx.input.isKeyPressed( Keys.F9 ) )
             world.getWorld().renderDebug( player.getCamera(), shape );
+        modelBatch.end();
+        shape.end();
+        decalBatch.flush();
+
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
@@ -135,12 +139,11 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     private void updateTheGame(float delta) {
 
-        if ( player.isInTower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {
+        if ( player.isInATower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {
             int time = (int) ( System.currentTimeMillis() -player.getTower().fireChargedTime );
             time = MathUtils.clamp( time, 0, 2000 );
-            charge = time /2000f;
-            weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
-
+            player.getTower().charge = time /2000f;
+            weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
         }
 
         player.getCamera().translate( dolly );
@@ -215,17 +218,21 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         presDown.set( screenX, screenY );
 
-        if ( player.isInTower() &&updWorld &&screenX >scrw /2 ) {
-            player.getTower().setFiringHold( true );
+        if ( screenX <scrw /2 ||!updWorld ) {
+            return false;
         }
-        if ( updWorld &&player.isInTower() &&player.getTower().isWeaponType( FireType.FIRECHARGED ) &&screenX >scrw /2 ) {
+        else if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
-            charge = 0;
+            player.getTower().charge = 0;
 
             tmp1.set( presDown );
             stage.screenToStageCoordinates( tmp1 );
             weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
+        }
+        else {
+            player.getTower().setFiringHold( true );
         }
         return false;
     }
@@ -235,9 +242,9 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( weaponCharger.isVisible() ) {
             float distance = 150 *Vars.densitate;
-            charge = MathUtils.clamp( presDown.dst2( screenX, screenY ), 0, distance *distance );
-            charge /= distance *distance;
-            weaponCharger.setColor( ( charge !=1 ? 0 : 1 ), 0, 0, charge );
+            player.getTower().charge = MathUtils.clamp( presDown.dst2( screenX, screenY ), 0, distance *distance );
+            player.getTower().charge /= distance *distance;
+            weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
             return true;
         }
         return false;
@@ -246,16 +253,15 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if ( updWorld &&player.isInTower() &&player.getTower().isFiringHold ) {
+        if ( updWorld &&player.getTower().isFiringHold ) {
             player.getTower().setFiringHold( false );
         }
 
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( charge >0.01f ) {
-                // player.getTower().fireWeapon( world.getDef(), charge );
-                world.getDef().fireFromTower( player.getTower(), charge );
-                charge = -1;
+            if ( world.getWorld().getTowerHitByRay( player.getCamera().getPickRay( screenX, screenY ) ) ==null ) {
+                world.getDef().fireFromTower( player.getTower() );
+                player.getTower().charge = -1;
                 return true;
             }
         }
@@ -374,7 +380,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
-                charge = 0;
+                player.getTower().charge = 0;
                 player.getTower().fireChargedTime = System.currentTimeMillis();
 
                 tmp1.set( stage.screenToStageCoordinates( tmp1.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
@@ -417,12 +423,12 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( false );
             }
-            if ( player.isInTower() &&weaponCharger.isVisible() ) {
+            if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
                 // player.getTower().fireWeapon( world.getDef(), charge );
-                world.getDef().fireFromTower( player.getTower(), charge );
+                world.getDef().fireFromTower( player.getTower() );
                 player.getTower().fireChargedTime = 0;
-                charge = -1;
+                player.getTower().charge = -1;
             }
         }
         return false;

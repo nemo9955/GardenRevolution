@@ -84,9 +84,8 @@ public class WorldSP implements IWorldModel {
     public boolean changePlayerTower(Player player, byte next) {// /////////////////////////////////////////
         Tower nxt = world.getTowers()[next];
 
-        if ( nxt.ocupier ==null ) {
-            if ( player.isInTower() )
-                player.getTower().ocupier = null;
+        if ( nxt.ocupier ==null ||next ==0 ) {
+            player.getTower().ocupier = null;
             nxt.ocupier = player.name;
             player.setTower( nxt );
             return true;
@@ -95,8 +94,8 @@ public class WorldSP implements IWorldModel {
     }
 
     @Override
-    public void fireFromTower(Tower tower, float charge) {
-        world.fireFromTower( tower, charge );
+    public void fireFromTower(Tower tower) {
+        world.fireFromTower( tower );
     }
 
     @Override

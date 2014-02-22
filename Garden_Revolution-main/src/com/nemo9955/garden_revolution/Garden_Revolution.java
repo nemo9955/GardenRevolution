@@ -25,20 +25,6 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
 
-    // public static final String TITLU = "Garden Revolution";
-    // public static final String VERSIUNE = "alfa 0.666";
-    //
-    // public static Options options;
-    // public static Gameplay gameplay;
-    // public static Menu menu;
-    // public static TestScene test;
-    // public static SplashScreen splash;
-    // public static LevelSelector selecter;
-    // public static MultyplayerSelector multyplayer;
-    //
-    // public static Garden_Revolution game;
-    // public static AssetManager manager;
-
     @Override
     public void create() {
 

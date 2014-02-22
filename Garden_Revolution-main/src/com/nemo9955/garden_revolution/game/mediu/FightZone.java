@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -11,17 +12,15 @@ import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 public class FightZone implements Poolable {
 
-    private static final Vector3 temp1    = new Vector3();
-    private static final Vector3 temp2    = new Vector3();
-    private static final Vector3 temp     = new Vector3();
-    private WorldWrapper         world;
-    public Array<Ally>           allies   = new Array<Ally>( false, 10 );
-    public Array<Enemy>          enemies  = new Array<Enemy>( false, 5 );
 
-    public final Vector3         poz      = new Vector3();
-    public BoundingBox           box      = new BoundingBox();
+    private WorldWrapper     world;
+    public Array<Ally>       allies   = new Array<Ally>( false, 10 );
+    public Array<Enemy>      enemies  = new Array<Enemy>( false, 5 );
 
-    private static final int     halfSize = 8;
+    public final Vector3     poz      = new Vector3();
+    public BoundingBox       box      = new BoundingBox();
+
+    private static final int halfSize = 8;
 
     public FightZone(WorldWrapper worldModel) {
         this.world = worldModel;
@@ -35,9 +34,10 @@ public class FightZone implements Poolable {
     public void update(float delta) {
 
         for (Enemy enemy : world.getWorld().getEnemy() )
-            if ( !enemy.paused &&box.contains( enemy.box ) ) {
+            if ( !enemy.isPaused() &&box.contains( enemy.box ) ) {
                 addEnemy( enemy );
-                enemy.paused = true;
+                enemy.setPaused( true );
+                enemy.flag.set( GR.temp3.set( box.getCenter() ).add( GR.temp2.set( enemy.offset ).scl( 2f ) ) );
             }
 
         // TODO make this not random and dependent of the attack speed
@@ -93,7 +93,7 @@ public class FightZone implements Poolable {
 
     public void removeFightZone() {
         for (Enemy enemy : enemies )
-            enemy.paused = false;
+            enemy.setPaused( false );
         world.getWorld().getFzPool().free( this );
         world.getWorld().getFightZones().removeValue( this, false );
     }
@@ -108,20 +108,20 @@ public class FightZone implements Poolable {
 
     public void setPoz(Vector3 poz) {
         this.poz.set( poz );
-        box.set( temp1.set( poz ).add( halfSize ), temp2.set( poz ).sub( halfSize ) );
+        box.set( GR.temp3.set( poz ).add( halfSize ), GR.temp2.set( poz ).sub( halfSize ) );
     }
 
     public void aproximatePoz() {
-        temp.set( 0, 0, 0 );
+        GR.temp1.set( 0, 0, 0 );
 
         for (Ally ally : allies )
-            temp.add( ally.duty );
+            GR.temp1.add( ally.duty );
 
         for (int i = 0 ; i <5 ; i ++ )
-            temp.add( box.getCenter() );
+            GR.temp1.add( box.getCenter() );
 
-        temp.scl( 1f / ( allies.size +5 ) );
-        setPoz( temp );
+        GR.temp1.scl( 1f / ( allies.size +5 ) );
+        setPoz( GR.temp1 );
 
     }
 

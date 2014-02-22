@@ -16,8 +16,9 @@ public enum Assets {
 
     ALLIES(LOC.MODEL, "allies.g3db"), //
     ENEMYS(LOC.MODEL, "enemies.g3db"), //
-    TOWER_BASIC(LOC.MODEL, "tower_basic.g3db"), //
     TOWER_FUNDATION(LOC.MODEL, "tower_fundation.g3db"), //
+    TOWER_BASIC(LOC.MODEL, "tower_basic.g3db"), //
+    VIEW_POINT(LOC.MODEL, "view_point.g3db"), // 
 
     ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
     GAME_PACK(LOC.ELEMENT, "GameImages.atlas", TextureAtlas.class), //

@@ -43,7 +43,7 @@ public class Player {
     }
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
-        if ( !isInTower() ||count >=2 ) {
+        if ( count >=2 ) {
             Ray ray = getCamera().getPickRay( x, y );
             return canChangeTower( world.getWorld().getTowerHitByRay( ray ) );
         }
@@ -51,10 +51,10 @@ public class Player {
     }
 
     private static Vector3 tempSpawner = new Vector3();
-    
+
     public boolean longPress(float x, float y, GestureDetector gestures) {
 
-        if ( isInTower() &&Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
+        if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
 
             // Vector3 tmp = Player.tmp;
             Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
@@ -89,7 +89,7 @@ public class Player {
             cam.rotateAround( getCameraRotAround(), temp3.nor(), amontY );
         }
         cam.direction.nor();
-        if ( isInTower() ) {
+        if ( isInATower() ) {
             tower.setDirection( cam.direction );
 
             if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >100 ) {
@@ -116,7 +116,10 @@ public class Player {
         cam.up.set( Vector3.Y );
 
         if ( tower.type ==TowerType.FUNDATION ) {
-            cam.position.add( 0, 3, 0 );
+            cam.position.add( 0, 5, 0 );
+        }
+        else if ( tower.type ==TowerType.VIEWPOINT ) {
+
         }
         else {
             temp2.set( cam.direction ).scl( 4 );
@@ -141,8 +144,8 @@ public class Player {
         moveCamera( 0, -angle );
     }
 
-    public boolean isInTower() {
-        return true;
+    public boolean isInATower() {
+        return tower.ID !=0;
     }
 
 
@@ -152,7 +155,7 @@ public class Player {
 
 
     public Vector3 getCameraRotAround() {
-        if ( isInTower() )
+        if ( isInATower() )
             return tower.place;
         return cam.position;
 
@@ -183,18 +186,18 @@ public class Player {
 
 
     public void upgradeCurentTower(TowerType upgrade) {
-        if ( isInTower() &&world.getDef().upgradeTower( tower, upgrade ) )
+        if ( world.getDef().upgradeTower( tower, upgrade ) )
             resetCamera();
     }
 
     public void changeCurrentWeapon(WeaponType newWeapon) {
-        if ( isInTower() &&world.getDef().changeWeapon( tower, newWeapon ) )
+        if ( world.getDef().changeWeapon( tower, newWeapon ) )
             resetCamera();
     }
 
     public boolean canChangeTower(Tower tower) {
 
-        if ( tower !=null &&world.getDef().canChangeTowers( ( isInTower() ? this.tower.ID : -1 ), tower.ID, name ) ) {
+        if ( tower !=null &&world.getDef().canChangeTowers( this.tower.ID, tower.ID, name ) ) {
             setTower( tower );
             return true;
         }

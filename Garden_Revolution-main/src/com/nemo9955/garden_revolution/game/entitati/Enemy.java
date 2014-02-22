@@ -24,7 +24,7 @@ public class Enemy extends LifeForm {
     public Vector3            offset;
     private EnemyType         type;
 
-    public boolean            paused = false;
+    private boolean           paused = false;
 
     public Enemy(WorldWrapper worldModel) {
         super( worldModel );
@@ -68,7 +68,7 @@ public class Enemy extends LifeForm {
     @Override
     public void reset() {
         super.reset();
-        paused = false;
+        setPaused( false );
     }
 
     @Override
@@ -79,14 +79,18 @@ public class Enemy extends LifeForm {
     @Override
     public void update(float delta) {
         super.update( delta );
-        if ( !paused && ( Vars.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) ) )
+        if ( ( Vars.updateUave ||Gdx.input.isKeyPressed( Keys.F12 ) ) )
             advance( delta );
+        if ( isDead() )
+            world.getDef().enemyKilled( this );
     }
 
     private void advance(float delta) {
-        direction.set( flag ).sub( poz ).nor().scl( type.speed *delta );
-        move( direction );
-        if ( flag.epsilonEquals( poz, 1f ) ) {
+        if ( !poz.epsilonEquals( flag, 0.5f ) ) {
+            direction.set( flag ).sub( poz ).nor().scl( type.speed *delta );
+            move( direction );
+        }
+        else if ( !isPaused() ) {
             percent += STEP;
             if ( percent >=1 ) {
                 world.getDef().addLife( -type.strenght );
@@ -110,8 +114,6 @@ public class Enemy extends LifeForm {
     @Override
     public void setDead(boolean dead) {
         super.setDead( dead );
-        if ( isDead() )
-            world.getDef().enemyKilled( this );
     }
 
     private static short globalID = -32768;
@@ -123,5 +125,13 @@ public class Enemy extends LifeForm {
     public static short newGlobalID() {
         return ++ globalID;
 
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 }

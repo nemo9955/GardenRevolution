@@ -36,15 +36,12 @@ public class Shot extends Entity {
         super.init( ray.origin );
         this.direction.set( ray.direction ).nor();
 
-        // System.out.println( this.direction );
-
         life = 5f;
         this.charge = charge;
 
         if ( type ==ShotType.GHIULEA ) {
             this.direction.y /= 2;
             this.direction.y += 0.45f;
-            System.out.println(this.direction.y);
             this.direction.nor().scl( 1f +this.charge );
         }
         return this;

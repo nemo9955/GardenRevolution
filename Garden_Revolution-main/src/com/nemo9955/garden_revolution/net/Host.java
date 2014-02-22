@@ -138,8 +138,10 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof PlayerFireCharged ) {
                     PlayerFireCharged pfa = (PlayerFireCharged) obj;
                     Tower tower = gp.world.getWorld().getTowers()[pfa.towerID];
-                    if ( tower.isWeaponType( FireType.FIRECHARGED ) )
-                        gp.world.getSgPl().fireFromTower( tower, pfa.charge );
+                    if ( tower.isWeaponType( FireType.FIRECHARGED ) ) {
+                        tower.charge = pfa.charge;
+                        gp.world.getSgPl().fireFromTower( tower );
+                    }
                     server.sendToAllExceptTCP( connection.getID(), pfa );
                 }
                 else if ( obj instanceof PlayerFireHold ) {

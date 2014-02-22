@@ -39,7 +39,7 @@ public interface IWorldModel {
 
     public boolean canChangeTowers(byte current, byte next, String name);
 
-    public void fireFromTower(Tower tower, float charge);
+    public void fireFromTower(Tower tower);
 
     public void setTowerFireHold(Tower tower, boolean hold);
 

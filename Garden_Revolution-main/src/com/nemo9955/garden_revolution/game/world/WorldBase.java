@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -179,9 +178,6 @@ public class WorldBase {
 
     public void renderDebug(PerspectiveCamera cam, ShapeRenderer shape) {
 
-        shape.setProjectionMatrix( cam.combined );
-        shape.begin( ShapeType.Line );
-
         shape.setColor( 1, 0.5f, 0, 1 );
         for (BoundingBox box : getColide() )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
@@ -220,7 +216,6 @@ public class WorldBase {
                 temp3.set( temp2 );
             }
         }
-        shape.end();
     }
 
     private void populateWorld(FileHandle location) {
@@ -305,9 +300,9 @@ public class WorldBase {
         Model tmpModel = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
         toDispose.add( tmpModel );
         ModelInstance baza = new ModelInstance( tmpModel, overview );
-        baza.transform.setToTranslation( overview );
+        baza.transform.setToTranslation( overview ); 
         baza.calculateTransforms();
-        towers[0] = new Tower( TowerType.VIEWAREA, superior, overview, 0 );
+        towers[0] = new Tower( TowerType.VIEWPOINT, superior, overview, 0 );
     }
 
     private void readData(FileHandle location) {
@@ -593,9 +588,8 @@ public class WorldBase {
 
 
     public boolean canChangeTowers(byte current, byte next, String name) {
-        if ( towers[next].ocupier ==null ) {
-            if ( current !=-1 )
-                towers[current].ocupier = null;
+        if ( towers[next].ocupier ==null ||next ==0 ) {
+            towers[current].ocupier = null;
             towers[next].ocupier = name;
             return true;
         }
@@ -623,8 +617,8 @@ public class WorldBase {
     }
 
 
-    public boolean fireFromTower(Tower tower, float charge) {
-        return tower.fireWeapon( charge );
+    public boolean fireFromTower(Tower tower) {
+        return tower.fireWeapon( );
     }
 
 

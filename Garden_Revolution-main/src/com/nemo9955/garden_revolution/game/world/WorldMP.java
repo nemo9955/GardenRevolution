@@ -102,9 +102,9 @@ public class WorldMP implements IWorldModel {
 
 
     @Override
-    public void fireFromTower(Tower tower, float charge) {
-        if ( world.fireFromTower( tower, charge ) )
-            mp.sendTCP( Functions.getPFC( tower.ID, charge ) );
+    public void fireFromTower(Tower tower) {
+        if ( world.fireFromTower( tower) )
+            mp.sendTCP( Functions.getPFC( tower.ID, tower.charge ) );
     }
 
     @Override

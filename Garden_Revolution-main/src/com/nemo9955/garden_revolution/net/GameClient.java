@@ -113,8 +113,10 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     PlayerFireCharged pfa = (PlayerFireCharged) obj;
 
                     Tower tower = gp.world.getWorld().getTowers()[pfa.towerID];
-                    if ( tower.isWeaponType( FireType.FIRECHARGED ) )
-                        gp.world.getSgPl().fireFromTower( tower, pfa.charge );
+                    if ( tower.isWeaponType( FireType.FIRECHARGED ) ) {
+                        tower.charge = pfa.charge;
+                        gp.world.getSgPl().fireFromTower( tower );
+                    }
                 }
                 else if ( obj instanceof PlayerFireHold ) {
                     PlayerFireHold pfh = (PlayerFireHold) obj;

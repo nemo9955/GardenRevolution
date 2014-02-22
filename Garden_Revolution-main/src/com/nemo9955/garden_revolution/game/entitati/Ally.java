@@ -42,6 +42,8 @@ public class Ally extends LifeForm {
         // direction.set( duty ).sub( poz ).nor().scl( type.speed *delta );
         // move( direction );
         // }
+        if ( isDead() )
+            world.getDef().allyKilled( this );
     }
 
     private long lastAtack = 0;
@@ -56,8 +58,6 @@ public class Ally extends LifeForm {
     @Override
     public void setDead(boolean dead) {
         super.setDead( dead );
-        if ( isDead() )
-            world.getDef().allyKilled( this );
     }
 
     private static short globalID = -32768;

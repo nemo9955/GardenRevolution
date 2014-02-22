@@ -38,6 +38,7 @@ public class Tower implements Disposable {
 
     public boolean               isFiringHold    = false;
     public long                  fireChargedTime = 0;
+    public float                 charge          = -1;
 
     private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
@@ -54,14 +55,14 @@ public class Tower implements Disposable {
         direction.set( -1, 0, 0 );
     }
 
-    public boolean fireWeapon(float charge) {
+    public boolean fireWeapon() {
         if ( hasWeapon() )
             return weapon.fire( world, ray, charge );
         return false;
     }
 
     public boolean changeWeapon(WeaponType toChange) {
-        if ( type ==TowerType.VIEWAREA )
+        if ( type ==TowerType.VIEWPOINT )
             return false;
         if ( !hasWeapon() ) {
             weapon = new Weapon( toChange, place );
@@ -104,7 +105,7 @@ public class Tower implements Disposable {
         model.nodes.removeAll( remove, false );
         parts.add( model );
 
-        pointer.setPosition( place.x, place.y +5f, place.z );
+        pointer.setPosition( place.x, place.y +10f, place.z );
 
         return true;
     }
@@ -112,14 +113,17 @@ public class Tower implements Disposable {
     public void update(float delta) {
 
         if ( ocupier !=null &&isFiringHold )
-            fireWeapon( 0 );
+            fireWeapon();
+        if ( hasWeapon() ) {
+            weapon.type.updateWeaponTargeting( this );
+        }
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         for (ModelInstance model : parts )
             modelBatch.render( model, light );
-        if ( hasWeapon() )
-            weapon.render( modelBatch, light );
+        if ( hasWeapon() )// TODO add a showTargeting boolean
+            weapon.render( modelBatch, light, decalBatch );
         if ( ocupier !=null &&world.isMultiplayer() )
             decalBatch.add( pointer );
     }
@@ -170,6 +174,9 @@ public class Tower implements Disposable {
         return false;
     }
 
+    public Vector3 getDirection() {
+        return direction;
+    }
 
     public void setDirection(Vector3 dir) {
         setDirection( dir.x, dir.y, dir.z );

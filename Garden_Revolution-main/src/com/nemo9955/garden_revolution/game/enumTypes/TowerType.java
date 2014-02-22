@@ -7,7 +7,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 
 public enum TowerType {
 
-    VIEWAREA(Assets.TOWER_FUNDATION) {
+    VIEWPOINT(Assets.VIEW_POINT) {
 
         @Override
         protected void propTowers() {

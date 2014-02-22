@@ -24,7 +24,7 @@ public class Vars {
     public static byte            invertDragY         = -1;
 
     // pentru debuging
-    public static boolean         updateUave          = true;
+    public static boolean         updateUave          = false;
     public static boolean         showDebug           = true;
 
     // pentru controller

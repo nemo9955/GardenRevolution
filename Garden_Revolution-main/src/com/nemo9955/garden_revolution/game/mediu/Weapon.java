@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution.game.mediu;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -32,7 +33,7 @@ public class Weapon implements Disposable {
     }
 
     public boolean fire(WorldWrapper world, Ray ray, float charge) {
-      return  type.fireProjectile( world, ray, charge );
+        return type.fireProjectile( world, ray, charge );
     }
 
     public ModelInstance getModelInstance(Vector3 poz) {
@@ -43,16 +44,12 @@ public class Weapon implements Disposable {
         animation.update( delta );
     }
 
-    public void render(ModelBatch modelBatch) {
-        modelBatch.render( model );
-    }
-
-    public void render(ModelBatch modelBatch, Environment light) {
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
         modelBatch.render( model, light );
+        type.render( modelBatch, light, decalBatch );
     }
 
     @Override
     public void dispose() {
-
     }
 }
