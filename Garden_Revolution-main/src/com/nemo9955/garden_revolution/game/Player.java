@@ -42,9 +42,17 @@ public class Player {
     public void update(float delta) {
     }
 
+    Vector3 cevaaa = new Vector3();
+
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
+
+
         if ( count >=2 ) {
             Ray ray = getCamera().getPickRay( x, y );
+            Functions.intersectLinePlane( ray, cevaaa );
+            System.out.println( cevaaa.x +"f , height , " +cevaaa.z +"f" );
+
+
             return canChangeTower( world.getWorld().getTowerHitByRay( ray ) );
         }
         return false;

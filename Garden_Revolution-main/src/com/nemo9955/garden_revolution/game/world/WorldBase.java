@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -46,7 +46,7 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class WorldBase implements Disposable {
 
-    public static Array<Disposable>          toDispose   = new Array<Disposable>( false, 1 );
+    public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 1 );
 
     private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
     private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
@@ -65,15 +65,31 @@ public class WorldBase implements Disposable {
     private boolean                          canWaveStart = false;
     private Waves                            waves;
     private String                           mapName;
-    private Environment                      environment  = new Environment();
+    private Environment                      lights       = new Environment();
     private WorldWrapper                     superior;
 
-    { // lights.
-        environment.set( ColorAttribute.createAmbient( 1f, 1f, 1f, 1f ) );
-        // environment.add( new PointLight().set( Color.WHITE, new Vector3( 0, 1, 0 ), 1000 ) );
+
+    {
+        // public void initEnv() {
+        // lights = null;
+        // lights = new Environment();
+        float amb = 0.4f;
+        float intensity = 800f;
+        float height = 10f;
+        lights.set( new ColorAttribute( ColorAttribute.AmbientLight, amb, amb, amb, 1f ) );
+
+        lights.add( new PointLight().set( Color.BLACK, new Vector3( 0, height *5, 0 ), intensity /2f ) );
+        lights.add( new PointLight().set( Color.BLUE, new Vector3( 15.292713f, height, -29.423798f ), intensity ) );
+        lights.add( new PointLight().set( Color.RED, new Vector3( 10.024132f, height, 40.54626f ), intensity /2 ) );
+        lights.add( new PointLight().set( Color.DARK_GRAY, new Vector3( -14.920635f, height, 0.18914032f ), intensity ) );
+        lights.add( new PointLight().set( Color.GREEN, new Vector3( 52.817417f, height, -0.45362854f ), intensity ) );
+        lights.add( new PointLight().set( Color.CYAN, new Vector3( -13.099552f, height *2, -15.360998f ), intensity ) );
+        lights.add( new PointLight().set( Color.WHITE, new Vector3( -16.840088f, height, -17.439095f ), intensity ) );
+
+        // environment.set( ColorAttribute.createAmbient( 1f, 1f, 1f, 1f ) );
         // envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1, -1, 0 ) ) );
-        environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, -1, 0 ) ) );
-        environment.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, 1, 0 ) ) );
+        // lights.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0.5f, -1, 0.4f ).nor() ) );
+        // lights.add( new DirectionalLight().set( Color.WHITE, new Vector3( 0, 1, 0 ) ) );
     }
 
     public void init(FileHandle location, WorldWrapper superior) {
@@ -160,16 +176,16 @@ public class WorldBase implements Disposable {
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch) {
         for (ModelInstance e : mediu )
-            modelBatch.render( e, environment );
+            modelBatch.render( e, lights );
 
         for (Enemy e : getEnemy() )
-            e.render( modelBatch, environment, decalBatch );
+            e.render( modelBatch, lights, decalBatch );
         for (Ally e : getAlly() )
-            e.render( modelBatch, environment, decalBatch );
+            e.render( modelBatch, lights, decalBatch );
         for (Shot e : getShot() )
-            e.render( modelBatch, environment, decalBatch );
+            e.render( modelBatch, lights, decalBatch );
         for (Tower tower : towers )
-            tower.render( modelBatch, environment, decalBatch );
+            tower.render( modelBatch, lights, decalBatch );
     }
 
 
@@ -266,13 +282,13 @@ public class WorldBase implements Disposable {
                 BoundingBox box = new BoundingBox();
                 instance.calculateBoundingBox( box );
                 addToColide( box );
-                addMediu( instance );
+                mediu.add( instance );
             }
             else if ( id.startsWith( "camera" ) ) {
                 overview.set( scena.nodes.get( i ).translation );
             }
             else {
-                addMediu( instance );
+                mediu.add( instance );
             }
 
         }
@@ -424,10 +440,6 @@ public class WorldBase implements Disposable {
         return fightZone;
     }
 
-    private void addMediu(ModelInstance med) {
-        mediu.add( med );
-    }
-
     private Pool<Enemy>     inamicPool = new Pool<Enemy>() {
 
 
@@ -495,7 +507,7 @@ public class WorldBase implements Disposable {
 
 
     public Environment getEnvironment1() {
-        return environment;
+        return lights;
     }
 
 

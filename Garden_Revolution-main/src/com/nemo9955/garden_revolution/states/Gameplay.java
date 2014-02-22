@@ -139,7 +139,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     private void updateTheGame(float delta) {
 
-        // if ( player.isInATower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {//TODO
+        // if ( player.isInATower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {
         // int time = (int) ( System.currentTimeMillis() -player.getTower().fireChargedTime );
         // time = MathUtils.clamp( time, 0, 2000 );
         // player.getTower().charge = time /2000f;
@@ -330,8 +330,11 @@ public class Gameplay extends CustomAdapter implements Screen {
                 dolly.y = -0.3f;
                 break;
             case Keys.ESCAPE:
-                GR.game.setScreen( GR.menu );
+                GR.game.setScreen( GR.selecter );
                 break;
+            // case Keys.F4:
+            // world.getWorld().initEnv();
+            // break;
             case Keys.H:
                 mp.sendTCP( "a random message" );
                 break;
@@ -377,7 +380,7 @@ public class Gameplay extends CustomAdapter implements Screen {
                 player.getTower().setFiringHold( true );
             }
 
-            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {// TODO
+            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 player.getTower().charge = ( -cont.getAxis( Vars.axis[0] ) +1 ) /2;
@@ -424,7 +427,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( false );
             }
-            if ( weaponCharger.isVisible() ) {// TODO
+            if ( weaponCharger.isVisible() ) {
                 weaponCharger.setVisible( false );
                 // player.getTower().fireWeapon( world.getDef(), charge );
                 world.getDef().fireFromTower( player.getTower() );
