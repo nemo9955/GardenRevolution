@@ -3,7 +3,7 @@ MenuImages.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-acorn
+profit
   rotate: false
   xy: 1, 305
   size: 150, 150
@@ -17,28 +17,28 @@ archery-target
   orig: 150, 150
   offset: 0, 0
   index: -1
-aubergine
+cannon
   rotate: false
   xy: 1, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-beam-wake
+aubergine
   rotate: false
   xy: 153, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-cannon
+radial-balance
   rotate: false
   xy: 153, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-crossbow
+shiny-apple
   rotate: false
   xy: 153, 1
   size: 150, 150
@@ -52,35 +52,35 @@ lightning-bow
   orig: 150, 150
   offset: 0, 0
   index: -1
-profit
+targeting
   rotate: false
   xy: 305, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-radial-balance
+spotted-mushroom
   rotate: false
   xy: 305, 1
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-shiny-apple
+acorn
   rotate: false
   xy: 457, 305
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-spotted-mushroom
+crossbow
   rotate: false
   xy: 457, 153
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
-targeting
+beam-wake
   rotate: false
   xy: 457, 1
   size: 150, 150
@@ -102,26 +102,26 @@ buton_down
   orig: 60, 60
   offset: 0, 0
   index: -1
-buton_over
+element1
   rotate: false
   xy: 711, 333
   size: 60, 60
-  split: 14, 16, 13, 16
+  split: 12, 14, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-back
+play
   rotate: false
   xy: 609, 303
   size: 100, 50
   orig: 100, 50
   offset: 0, 0
   index: -1
-buton_up
+buton_over
   rotate: false
   xy: 711, 271
   size: 60, 60
-  split: 14, 16, 14, 16
+  split: 14, 16, 13, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
@@ -132,22 +132,22 @@ exit
   orig: 100, 50
   offset: 0, 0
   index: -1
-meniu
+test
   rotate: false
   xy: 609, 199
   size: 100, 50
   orig: 100, 50
   offset: 0, 0
   index: -1
-element1
+buton_up
   rotate: false
   xy: 711, 209
   size: 60, 60
-  split: 12, 14, 14, 16
+  split: 14, 16, 14, 16
   orig: 60, 60
   offset: 0, 0
   index: -1
-play
+back
   rotate: false
   xy: 609, 147
   size: 100, 50
@@ -162,7 +162,7 @@ element2
   orig: 60, 60
   offset: 0, 0
   index: -1
-test
+meniu
   rotate: false
   xy: 609, 95
   size: 100, 50

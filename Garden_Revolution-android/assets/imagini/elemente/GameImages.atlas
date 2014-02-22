@@ -5,9 +5,16 @@ filter: Linear,Linear
 repeat: none
 Rectangle-1
   rotate: false
-  xy: 1, 53
+  xy: 1, 105
   size: 454, 9
   orig: 454, 9
+  offset: 0, 0
+  index: -1
+life-low
+  rotate: false
+  xy: 1, 53
+  size: 200, 50
+  orig: 200, 50
   offset: 0, 0
   index: -1
 life-full
@@ -17,23 +24,23 @@ life-full
   orig: 200, 50
   offset: 0, 0
   index: -1
-life-low
+soare
   rotate: false
-  xy: 203, 1
-  size: 200, 50
-  orig: 200, 50
+  xy: 203, 3
+  size: 100, 100
+  orig: 100, 100
   offset: 0, 0
   index: -1
 pointer-1
   rotate: false
-  xy: 405, 1
+  xy: 305, 53
   size: 44, 50
   orig: 44, 50
   offset: 0, 0
   index: -1
 pointer-2
   rotate: false
-  xy: 451, 1
+  xy: 351, 53
   size: 44, 50
   orig: 44, 50
   offset: 0, 0
