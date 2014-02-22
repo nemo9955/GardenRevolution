@@ -149,7 +149,7 @@ public class Tower implements Disposable {
 
     @Override
     public void dispose() {
-        if ( hasWeapon() )
+        if ( hasWeapon() )// TODO get rid of this when i get proper weapon models
             weapon.dispose();
     }
 

@@ -89,7 +89,6 @@ public class Shot extends Entity {
         ModelBuilder modelBuilder = new ModelBuilder();
         Model model = modelBuilder.createSphere( 0.5f, 0.5f, 0.5f, 12, 12, new Material( ColorAttribute.createDiffuse( Color.RED ) ), Usage.Position |Usage.Normal );
         WorldBase.toDispose.add( model );
-        // System.out.println( "creat" );
         return model;
     }
 

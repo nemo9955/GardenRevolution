@@ -6,9 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -16,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector3;
@@ -47,9 +44,9 @@ import com.nemo9955.garden_revolution.utility.IndexedObject;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class WorldBase {
+public class WorldBase implements Disposable {
 
-    public static Array<Disposable>          toDispose    = new Array<Disposable>( false, 1 );
+    public static Array<Disposable>          toDispose   = new Array<Disposable>( false, 1 );
 
     private Array<ModelInstance>             mediu        = new Array<ModelInstance>( false, 10 );
     private Array<Enemy>                     enemy        = new Array<Enemy>( false, 10 );
@@ -239,9 +236,6 @@ public class WorldBase {
 
         Model scena = new G3dModelLoader( new UBJsonReader() ).loadModel( location.parent().parent().child( "maps" ).child( map.get( "map" ) ) );
 
-        toDispose.add( scena );
-
-
         for (int i = 0 ; i <scena.nodes.size ; i ++ ) {
             String id = scena.nodes.get( i ).id;
             ModelInstance instance = new ModelInstance( scena, id );
@@ -297,11 +291,11 @@ public class WorldBase {
             paths.add( new CatmullRomSpline<Vector3>( cps, false ) );
         }
 
-        Model tmpModel = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
-        toDispose.add( tmpModel );
-        ModelInstance baza = new ModelInstance( tmpModel, overview );
-        baza.transform.setToTranslation( overview ); 
-        baza.calculateTransforms();
+        // Model tmpModel = new ModelBuilder().createCone( 5, 5, 5, 20, new Material( ColorAttribute.createDiffuse( Color.GRAY ) ), Usage.Position |Usage.Normal );
+        // toDispose.add( tmpModel );
+        // ModelInstance baza = new ModelInstance( tmpModel, overview );
+        // baza.transform.setToTranslation( overview );
+        // baza.calculateTransforms();
         towers[0] = new Tower( TowerType.VIEWPOINT, superior, overview, 0 );
     }
 
@@ -618,7 +612,7 @@ public class WorldBase {
 
 
     public boolean fireFromTower(Tower tower) {
-        return tower.fireWeapon( );
+        return tower.fireWeapon();
     }
 
 
@@ -635,27 +629,31 @@ public class WorldBase {
 
 
     public void reset() {
-
-
-        for (Disposable dis : toDispose )
-            dis.dispose();
-        if ( towers !=null )
-            for (Disposable dis : towers )
-                dis.dispose();
-
-        toDispose.clear();
+        if ( mediu.size >0 )
+            mediu.first().model.dispose();
+        mediu.clear();
         enemy.clear();
         ally.clear();
         shot.clear();
         colide.clear();
-        mediu.clear();
         fightZones.clear();
         if ( paths !=null )
             paths.clear();
 
-        shotPool.clear();
-
         overview.set( 10, 10, 10 );
         canWaveStart = false;
+    }
+
+    @Override
+    public void dispose() {
+
+        reset();
+
+        if ( towers !=null )
+            for (Tower dis : towers )
+                dis.dispose();
+
+        for (Disposable dis : toDispose )
+            dis.dispose();
     }
 }

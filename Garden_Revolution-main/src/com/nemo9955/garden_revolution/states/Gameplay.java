@@ -139,12 +139,12 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     private void updateTheGame(float delta) {
 
-        if ( player.isInATower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {
-            int time = (int) ( System.currentTimeMillis() -player.getTower().fireChargedTime );
-            time = MathUtils.clamp( time, 0, 2000 );
-            player.getTower().charge = time /2000f;
-            weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
-        }
+        // if ( player.isInATower() &&weaponCharger.isVisible() &&player.getTower().fireChargedTime !=0 ) {//TODO
+        // int time = (int) ( System.currentTimeMillis() -player.getTower().fireChargedTime );
+        // time = MathUtils.clamp( time, 0, 2000 );
+        // player.getTower().charge = time /2000f;
+        // weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
+        // }
 
         player.getCamera().translate( dolly );
         if ( movex !=0 ||movey !=0 ||!dolly.isZero() )
@@ -377,10 +377,11 @@ public class Gameplay extends CustomAdapter implements Screen {
                 player.getTower().setFiringHold( true );
             }
 
-            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {// TODO
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
-                player.getTower().charge = 0;
+                player.getTower().charge = ( -cont.getAxis( Vars.axis[0] ) +1 ) /2;
+                weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
                 player.getTower().fireChargedTime = System.currentTimeMillis();
 
                 tmp1.set( stage.screenToStageCoordinates( tmp1.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
@@ -423,7 +424,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( false );
             }
-            if ( weaponCharger.isVisible() ) {
+            if ( weaponCharger.isVisible() ) {// TODO
                 weaponCharger.setVisible( false );
                 // player.getTower().fireWeapon( world.getDef(), charge );
                 world.getDef().fireFromTower( player.getTower() );
@@ -440,7 +441,13 @@ public class Gameplay extends CustomAdapter implements Screen {
         value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
 
         if ( axisCode ==Vars.axis[0] )
-            Vars.multiplyControlletY = -value +1.5f;
+            if ( controller.getButton( Vars.buton[0] ) ) {
+                player.getTower().charge = ( -value +1 ) /2;
+                weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
+            }
+            else {
+                Vars.multiplyControlletY = -value +1.5f;
+            }
 
         if ( axisCode ==Vars.axis[1] )
             if ( Math.abs( value ) >=Vars.deadZone )
@@ -448,8 +455,13 @@ public class Gameplay extends CustomAdapter implements Screen {
             else
                 Vars.multiplyControlletX = 1;
 
-        if ( Math.abs( value ) <Vars.deadZone )
+        if ( Math.abs( value ) <Vars.deadZone ) {
             value = 0f;
+            if ( axisCode ==Vars.axis[3] ||axisCode ==Vars.axis[2] )
+                movex = 0;
+            if ( axisCode ==Vars.axis[1] )
+                movey = 0;
+        }
 
         if ( axisCode ==Vars.axis[1] &&Math.abs( controller.getAxis( Vars.axis[3] ) ) >Vars.deadZone &&controller.getAxis( Vars.axis[3] ) ==MathUtils.clamp( controller.getAxis( Vars.axis[3] ), -1, 1 ) )
             movex = controller.getAxis( Vars.axis[3] ) *Vars.invertControlletX *Vars.multiplyControlletX /2;
@@ -469,7 +481,6 @@ public class Gameplay extends CustomAdapter implements Screen {
     private Dialog dialog = new Dialog( "titlu", GR.manager.get( Assets.SKIN_JSON.path(), Skin.class ) ) {
 
                               protected void result(Object object) {
-                                  // TODO add something that clears all the buttons after one is pressed
                               };
                           };
 
@@ -535,8 +546,10 @@ public class Gameplay extends CustomAdapter implements Screen {
             modelBatch.dispose();
         if ( stage !=null )
             stage.dispose();
-        if ( world !=null )
+        if ( world !=null ) {
             world.getDef().reset();
+            world.getWorld().dispose();
+        }
         if ( shape !=null )
             shape.dispose();
         if ( camGRStr !=null )
