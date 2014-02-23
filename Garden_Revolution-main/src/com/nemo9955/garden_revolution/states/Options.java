@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -80,16 +79,16 @@ public class Options extends ControllerAdapter implements Screen {
         holder.addActor( action );
         holder.addActor( back );
         holder.setFillParent( true );
-        holder.setSpacing( 20 );
+        // holder.setSpacing( 20 );
 
         // pane.setFillParent( true );
 
-        name.setAlignment( Align.right );
-        name.setSpacing( 40 );
+        // name.setAlignment( Align.right );
+        // name.setSpacing( 40 );
         // name.setFillParent( true );
         // name.pack();
-        action.setAlignment( Align.left );
-        action.setSpacing( 40 );
+        // action.setAlignment( Align.left );
+        // action.setSpacing( 40 );
         // action.setFillParent( true );
 
         // pane.pack();

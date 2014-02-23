@@ -191,9 +191,8 @@ public class StageUtils {
         final Rectangle scrZon = new Rectangle( 5, 5, stage.getWidth() -10, stage.getHeight() -10 );
         gp.allyPlacer.addListener( new InputListener() {
 
-            private final Vector2 tmp   = new Vector2();
-            private final Vector3 temp1 = new Vector3();
-            private final Vector3 temp2 = new Vector3();
+            private final Vector2 tmp    = new Vector2();
+            private final Vector3 onPath = new Vector3();
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -218,10 +217,10 @@ public class StageUtils {
                 // if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
 
                 if ( scrZon.contains( event.getStageX(), event.getStageY() ) ) {
-                    temp2.y = 0;
+                    onPath.y = 0;
                     for (int i = 0 ; i <3 ; i ++ ) {
-                        temp1.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                        gp.world.getDef().addAlly( temp1.add( temp2 ), AllyType.SOLDIER );
+                        GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
+                        gp.world.getDef().addAlly( GR.temp4.add( onPath ), AllyType.SOLDIER );
                     }
                 }
                 // System.out.println( tmp.x +" " +tmp.y );
@@ -235,9 +234,9 @@ public class StageUtils {
 
                 tmp.add( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
                 gp.stage.stageToScreenCoordinates( tmp );
-                Functions.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), temp1 );
-                gp.world.getWorld().getOnPath( temp1, temp2, 150 );
-                gp.allySpawnArea.setPosition( temp2.x, 2, temp2.z );
+                Functions.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), GR.temp4 );
+                gp.world.getWorld().getOnPath( GR.temp4, onPath, 150 );
+                gp.allySpawnArea.setPosition( onPath.x, 2, onPath.z );
             }
         } );
 

@@ -38,7 +38,7 @@ public class LevelSelector extends ControllerAdapter implements Screen {
     private SplitPane          lista;
     private static final float rap = 1.5f;
     private TextButton         start;
-    private List               elem;
+    private List<String>       elem;
     private TextButton         back;
 
     public LevelSelector() {
@@ -76,7 +76,8 @@ public class LevelSelector extends ControllerAdapter implements Screen {
         }
 
         start = new TextButton( "Start", skin );
-        elem = new List( harti, skin );
+        elem = new List<String>( skin );
+        elem.setItems( harti );
         final TextButton multy = new TextButton( "Multiplayer", skin );
 
         back = new TextButton( "Back", skin );
@@ -97,12 +98,14 @@ public class LevelSelector extends ControllerAdapter implements Screen {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                toAcces = ( (List) actor ).getSelection();
+                @SuppressWarnings("unchecked")
+                List<String> lst = (List<String>) actor;
+                toAcces = lst.getSelected();
             }
         } );
 
 
-        toAcces = elem.getSelection();
+        toAcces = elem.getSelected();
         table.addListener( new ChangeListener() {
 
             @Override
@@ -129,14 +132,14 @@ public class LevelSelector extends ControllerAdapter implements Screen {
     public boolean povMoved(Controller controller, int povIndex, PovDirection value) {
         if ( value ==PovDirection.south ) {
             int index = elem.getSelectedIndex() +1;
-            if ( index >=elem.getItems().length )
+            if ( index >=elem.getItems().size )
                 index = 0;
             elem.setSelectedIndex( index );
         }
         if ( value ==PovDirection.north ) {
             int index = elem.getSelectedIndex() -1;
             if ( index <=0 )
-                index = elem.getItems().length -1;
+                index = elem.getItems().size -1;
             elem.setSelectedIndex( index );
         }
         return false;

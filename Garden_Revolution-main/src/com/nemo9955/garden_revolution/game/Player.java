@@ -20,14 +20,11 @@ import com.nemo9955.garden_revolution.utility.Functions;
 
 public class Player {
 
-    private static final Vector3 temp2 = new Vector3();
-    private static final Vector3 temp3 = new Vector3();
-    private static final Vector3 temp1 = new Vector3();
-    private PerspectiveCamera    cam;
-    private WorldWrapper         world;
-    private Tower                tower;
+    private PerspectiveCamera cam;
+    private WorldWrapper      world;
+    private Tower             tower;
 
-    public String                name  = "Player " +MathUtils.random( 99 );
+    public String             name = "Player " +MathUtils.random( 99 );
 
     public Player(WorldWrapper world) {
         this.world = world;
@@ -42,23 +39,16 @@ public class Player {
     public void update(float delta) {
     }
 
-    Vector3 cevaaa = new Vector3();
 
     public boolean tap(float x, float y, int count, int button, GestureDetector gestures) {
-
-
         if ( count >=2 ) {
             Ray ray = getCamera().getPickRay( x, y );
-            Functions.intersectLinePlane( ray, cevaaa );
-            System.out.println( cevaaa.x +"f , height , " +cevaaa.z +"f" );
-
-
             return canChangeTower( world.getWorld().getTowerHitByRay( ray ) );
         }
         return false;
     }
 
-    private static Vector3 tempSpawner = new Vector3();
+    private static final Vector3 tempSpawner = new Vector3();
 
     public boolean longPress(float x, float y, GestureDetector gestures) {
 
@@ -70,8 +60,8 @@ public class Player {
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
                 for (int i = 0 ; i <=20 ; i ++ )
                     for (int j = 0 ; j <=20 ; j ++ ) {
-                        temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
-                        world.getDef().addFoe( EnemyType.ROSIE, temp2 );
+                        GR.temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
+                        world.getDef().addFoe( EnemyType.ROSIE, GR.temp2 );
                     }
             }
 
@@ -93,8 +83,8 @@ public class Player {
 
         cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
         if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
-            temp3.set( cam.direction ).crs( cam.up ).y = 0f;
-            cam.rotateAround( getCameraRotAround(), temp3.nor(), amontY );
+            GR.temp3.set( cam.direction ).crs( cam.up ).y = 0f;
+            cam.rotateAround( getCameraRotAround(), GR.temp3.nor(), amontY );
         }
         cam.direction.nor();
         if ( isInATower() ) {
@@ -130,17 +120,17 @@ public class Player {
 
         }
         else {
-            temp2.set( cam.direction ).scl( 4 );
-            temp1.set( cam.up ).crs( cam.direction ).scl( 3 );
+            GR.temp2.set( cam.direction ).scl( 4 );
+            GR.temp1.set( cam.up ).crs( cam.direction ).scl( 3 );
 
-            cam.position.sub( temp2 );
-            cam.position.sub( temp1 );
+            cam.position.sub( GR.temp2 );
+            cam.position.sub( GR.temp1 );
             cam.position.add( 0, 2, 0 );
         }
 
-        Vector3 u = temp2.set( temp3.set( look ).sub( cam.position ) );
+        Vector3 u = GR.temp2.set( GR.temp4.set( look ).sub( cam.position ) );
         look.y = 0;
-        Vector3 v = temp1.set( temp3.set( look ).sub( cam.position ) );
+        Vector3 v = GR.temp1.set( GR.temp4.set( look ).sub( cam.position ) );
 
         float dot = u.dot( v );
         float lenu = u.len();

@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -86,7 +87,7 @@ public enum WeaponType {
          * <lordjone> nemo9955 also normalize the axis after you have calculated the cross because cross product is not normalized
          */
 
-//        private final Quaternion qt = new Quaternion();
+        // private final Quaternion qt = new Quaternion();
 
         @Override
         public void updateWeaponTargeting(Tower tower) {
@@ -95,19 +96,18 @@ public enum WeaponType {
             // raza.transform.setToLookAt( tower.place, temp.set( tower.place ).add( tower.getDirection() ), Vector3.Y );
 
 
-//            temp.set( raza.transform.val[Matrix4.M02], raza.transform.val[Matrix4.M12], raza.transform.val[Matrix4.M22] ).nor();
-//
-//            float angle = (float) ( MathUtils.radiansToDegrees *Math.acos( GR.temp1.set( tower.getDirection() ).nor().dot( temp ) ) );
-//
-//            qt.setFromAxis( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
-//
-//            // raza.transform.set( qt );
-//            raza.transform.setToRotation( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
+            // temp.set( raza.transform.val[Matrix4.M02], raza.transform.val[Matrix4.M12], raza.transform.val[Matrix4.M22] ).nor();
+            //
+            // float angle = (float) ( MathUtils.radiansToDegrees *Math.acos( GR.temp1.set( tower.getDirection() ).nor().dot( temp ) ) );
+            //
+            // qt.setFromAxis( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
+            //
+            // // raza.transform.set( qt );
+            // raza.transform.setToRotation( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
 
-             temp.set( tower.getDirection().z, tower.getDirection().y, tower.getDirection().x );
+            GR.temp2.set( tower.getDirection().z, tower.getDirection().y, tower.getDirection().x );
             raza.transform.setToLookAt( tower.getDirection(), Vector3.Y );
             raza.transform.setTranslation( tower.place );
-
 
 
             // qt.setFromAxis( raza.transform.getTranslation( GR.temp2 ).crs( tower.getDirection() ).nor(), raza.transform.getTranslation( GR.temp1 ).dot( tower.getDirection() ) );
@@ -125,8 +125,8 @@ public enum WeaponType {
                 fireTime = System.currentTimeMillis();
 
                 myray.set( ray );
-                temp.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
-                myray.origin.add( temp );
+                GR.temp2.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
+                myray.origin.add( GR.temp2 );
 
                 world.getWorld().addShot( ShotType.STANDARD, myray, 0 );
                 return true;
@@ -194,13 +194,12 @@ public enum WeaponType {
         }
     };
 
-    private static final Vector3 temp       = new Vector3();
-    private static final Ray     myray      = new Ray( new Vector3(), new Vector3() );
+    private static final Ray myray      = new Ray( new Vector3(), new Vector3() );
 
-    public String                name       = "weapon name";
-    public String                details    = "weapon description";
-    protected int                fireDellay = 100;
-    protected long               fireTime   = 0;
+    public String            name       = "weapon name";
+    public String            details    = "weapon description";
+    protected int            fireDellay = 100;
+    protected long           fireTime   = 0;
 
 
     {

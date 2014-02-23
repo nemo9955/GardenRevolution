@@ -46,6 +46,7 @@ public class Menu extends ControllerAdapter implements Screen {
         // stage = new Stage();
 
         options = new ImageTextButton( "Options", skin );
+        final ImageTextButton sdr = new ImageTextButton( "shader", skin );
         play = new ImageButton( skin, "start" );
         exit = new ImageButton( skin, "exit" );
         // mode = new CheckBox( "Use intern", skin );
@@ -73,6 +74,9 @@ public class Menu extends ControllerAdapter implements Screen {
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
+                if ( sdr.isPressed() )
+                    GR.game.setScreen( new TestSceneShader() );
+
                 // if ( mode.isPressed() ) {
                 // LevelSelector.internal = mode.isChecked();
                 // }
@@ -84,7 +88,7 @@ public class Menu extends ControllerAdapter implements Screen {
 
         tab.defaults().pad( 25 );
         tab.add( play );
-        // tab.add( mode ).space( 10 );
+        tab.add( sdr );
         tab.row();
         tab.add( test );
         tab.add( options );

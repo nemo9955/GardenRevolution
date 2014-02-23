@@ -32,5 +32,6 @@ public class GR {
     public static final Vector3       temp1          = new Vector3();
     public static final Vector3       temp2          = new Vector3();
     public static final Vector3       temp3          = new Vector3();
+    public static final Vector3       temp4          = new Vector3();
 
 }

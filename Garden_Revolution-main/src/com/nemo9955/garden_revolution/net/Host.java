@@ -3,7 +3,6 @@ package com.nemo9955.garden_revolution.net;
 import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -36,7 +35,6 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class Host extends Listener implements MultiplayerComponent {
 
-    private static final Vector3 temp         = new Vector3();
     public Server                server;
     private final Gameplay       gp;
     public int                   clientsReady = 0;
@@ -96,14 +94,14 @@ public class Host extends Listener implements MultiplayerComponent {
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], temp.set( ent.x, ent.y, ent.z ) );
+                    Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal],  GR.temp2.set( ent.x, ent.y, ent.z ) );
                     addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
                     addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddAlly ) {
                     WorldAddAlly waa = (WorldAddAlly) obj;
-                    gp.world.getSgPl().addAlly( temp.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
+                    gp.world.getSgPl().addAlly(  GR.temp2.set( waa.x, waa.y, waa.z ), AllyType.values()[waa.ordinal] ).ID = waa.ID;
 
                     server.sendToAllExceptTCP( connection.getID(), waa );
                 }

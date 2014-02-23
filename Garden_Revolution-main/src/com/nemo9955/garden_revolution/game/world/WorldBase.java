@@ -56,9 +56,6 @@ public class WorldBase implements Disposable {
     private Array<FightZone>                 fightZones   = new Array<FightZone>( false, 10 );
     private Array<CatmullRomSpline<Vector3>> paths;
 
-    private static final Vector3             temp1        = new Vector3();
-    private static final Vector3             temp2        = new Vector3();
-    private static final Vector3             temp3        = new Vector3();
     private Vector3                          overview     = new Vector3( 20, 10, 10 );
     private int                              viata;
     private Tower[]                          towers;
@@ -220,13 +217,13 @@ public class WorldBase implements Disposable {
         int pts = getPaths().size;
         for (int i = 0 ; i <pts ; i ++ ) {
             float val = 0;
-            getPaths().get( i ).valueAt( temp3, val );
+            getPaths().get( i ).valueAt( GR.temp3, val );
             while ( val <1f ) {
                 val += 1f /150f;
-                getPaths().get( i ).valueAt( temp2, val );
+                getPaths().get( i ).valueAt( GR.temp2, val );
                 shape.setColor( i +3 /pts, i +1 /pts, i +2 /pts, 1f );
-                shape.line( temp3, temp2 );
-                temp3.set( temp2 );
+                shape.line( GR.temp3, GR.temp2 );
+                GR.temp3.set( GR.temp2 );
             }
         }
     }
@@ -360,8 +357,8 @@ public class WorldBase implements Disposable {
         float dist = Float.MAX_VALUE;
 
         for (CatmullRomSpline<Vector3> path : getPaths() ) {
-            temp2.set( path.controlPoints[0] );
-            float dst2 = location.dst2( temp2 );
+            GR.temp2.set( path.controlPoints[0] );
+            float dst2 = location.dst2( GR.temp2 );
             if ( dst2 <dist ) {
                 dist = dst2;
                 closest = path;
@@ -378,13 +375,13 @@ public class WorldBase implements Disposable {
         for (CatmullRomSpline<Vector3> path : paths ) {
             t = 0;
             while ( t <=1 ) {
-                path.valueAt( temp1, t );
-                tmpDist = temp1.dst( point );
+                path.valueAt( GR.temp1, t );
+                tmpDist = GR.temp1.dst( point );
 
                 if ( tmpDist <=minDist ) {
                     minDist = tmpDist;
                     if ( out !=null )
-                        out.set( temp1 );
+                        out.set( GR.temp1 );
                 }
                 t += step;
             }

@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.math.Vector3;
+import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -41,15 +42,14 @@ public enum ShotType {
 
         @Override
         public Vector3 getMove(Vector3 direction, float delta) {
-            return temp.set( direction.sub( 0, 0.7f *delta, 0 ) ).scl( delta *speed );
+            return GR.temp2.set( direction.sub( 0, 0.7f *delta, 0 ) ).scl( delta *speed );
         }
     };
 
-    public int                   range  = 0;
-    public int                   damage = 10;
-    public int                   speed  = 20;
+    public int range  = 0;
+    public int damage = 10;
+    public int speed  = 20;
 
-    private static final Vector3 temp   = new Vector3();
 
     ShotType() {
         propShots();
@@ -58,7 +58,7 @@ public enum ShotType {
     protected abstract void propShots();
 
     public Vector3 getMove(Vector3 direction, float delta) {
-        return temp.set( direction ).nor().scl( delta *speed );
+        return GR.temp2.set( direction ).nor().scl( delta *speed );
     }
 
     public void hitActivity(Shot shot, WorldWrapper world) {
