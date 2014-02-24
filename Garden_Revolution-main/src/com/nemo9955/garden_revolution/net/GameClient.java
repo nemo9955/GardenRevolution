@@ -55,7 +55,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
         catch (final IOException e) {
             // e.printStackTrace();
             // gp.showMessage( "[C] Couldn't connect" );TODO
-            client.close();
+            stop();
             Gdx.app.postRunnable( new Runnable() {
 
                 public void run() {

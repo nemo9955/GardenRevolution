@@ -56,8 +56,12 @@ public class Tower implements Disposable {
     }
 
     public boolean fireWeapon() {
-        if ( hasWeapon() )
-            return weapon.fire( world, ray, charge );
+        if ( hasWeapon() ) {
+            if ( weapon.fire( world, ray, charge ) ) {
+                weapon.type.updateWeaponTargeting( this );
+                return true;
+            }
+        }
         return false;
     }
 
@@ -114,9 +118,6 @@ public class Tower implements Disposable {
 
         if ( ocupier !=null &&isFiringHold )
             fireWeapon();
-        if ( hasWeapon() ) {
-            weapon.type.updateWeaponTargeting( this );
-        }
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
@@ -185,6 +186,8 @@ public class Tower implements Disposable {
     public void setDirection(float x, float y, float z) {
         direction.set( x, y, z );
         ray.set( place, direction );
+        if ( hasWeapon() )
+            weapon.type.updateWeaponTargeting( this );
     }
 
 }
