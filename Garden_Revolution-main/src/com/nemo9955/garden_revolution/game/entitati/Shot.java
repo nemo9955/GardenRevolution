@@ -24,41 +24,34 @@ public class Shot extends Entity {
     private final Vector3 direction = new Vector3();
     private float         life;
     public ShotType       type;
-    private float         charge;
 
     public Shot(WorldWrapper world) {
         super( world );
     }
 
     public Shot create(ShotType type, Ray ray, float charge) {
-
         this.type = type;
         super.init( ray.origin );
-        this.direction.set( ray.direction ).nor();
-
         life = 5f;
-        this.charge = charge;
 
-        if ( type ==ShotType.GHIULEA ) {
-            this.direction.y /= 2;
-            this.direction.y += 0.45f;
-            this.direction.nor().scl( 1f +this.charge );
-        }
+        this.type.getInitialDir( this.direction.set( ray.direction ), charge );
+
         return this;
     }
 
     @Override
     public void reset() {
         super.reset();
-        charge = 0;
         life = 0;
     }
+
+    private static final Vector3 tempMover = new Vector3();
 
     @Override
     public void update(float delta) {
         super.update( delta );
 
-        move( type.getMove( direction, delta ) );
+        move( type.makeMove( direction, tempMover, delta ) );
 
         life -= delta;
         if ( life <=0 ||poz.y <0 ) {

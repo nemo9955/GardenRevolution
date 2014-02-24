@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -41,14 +40,24 @@ public enum ShotType {
         }
 
         @Override
-        public Vector3 getMove(Vector3 direction, float delta) {
-            return GR.temp2.set( direction.sub( 0, 0.7f *delta, 0 ) ).scl( delta *speed );
+        public Vector3 getInitialDir(Vector3 direction, float charge) {
+            direction.y /= 2;
+            direction.y += 0.45f;
+            direction.nor().scl( 1f +charge );
+            return direction;
+        }
+
+        @Override
+        public Vector3 makeMove(Vector3 direction, Vector3 out, float delta) {
+            return out.set( direction.sub( 0, flyRap, 0 ) ).scl( delta *speed );
         }
     };
 
-    public int range  = 0;
-    public int damage = 10;
-    public int speed  = 20;
+    public final float flyRap = 0.01f;
+
+    public int         range  = 0;
+    public int         damage = 10;
+    public int         speed  = 20;
 
 
     ShotType() {
@@ -57,8 +66,8 @@ public enum ShotType {
 
     protected abstract void propShots();
 
-    public Vector3 getMove(Vector3 direction, float delta) {
-        return GR.temp2.set( direction ).nor().scl( delta *speed );
+    public Vector3 makeMove(Vector3 direction, Vector3 out, float delta) {
+        return out.set( direction ).nor().scl( delta *speed );
     }
 
     public void hitActivity(Shot shot, WorldWrapper world) {
@@ -69,6 +78,10 @@ public enum ShotType {
                     shot.setDead( true );
                     break;
                 }
+    }
+
+    public Vector3 getInitialDir(Vector3 direction, float charge) {
+        return direction.nor();
     }
 
 }

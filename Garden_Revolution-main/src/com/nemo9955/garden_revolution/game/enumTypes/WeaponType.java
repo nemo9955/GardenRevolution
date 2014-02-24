@@ -130,10 +130,41 @@ public enum WeaponType {
     },
     CANNON {
 
+
+        private Decal   spot;
+        private boolean draw;
+
         {
             fireDellay = 1000;
             name = "Cannon";
             details = "Slow but powerfull.";
+
+            spot = Decal.newDecal( Garden_Revolution.getMenuTexture( "mover-bg" ), true );
+            spot.setRotation( Vector3.Y, Vector3.Y );
+            spot.setDimensions( 20, 20 );
+            spot.setColor( 1, 1, 1, 0 );
+
+        }
+
+        @Override
+        public void updateWeaponTargeting(Tower tower) {
+
+            ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
+            GR.temp4.set( tower.place );
+
+            do {
+                ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, Gdx.graphics.getDeltaTime() );
+                GR.temp4.add( GR.temp3 );
+            } while ( GR.temp4.y >0 );
+            spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
+            spot.setColor( Color.WHITE );
+            draw = true;
+        }
+
+        @Override
+        public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+            if ( draw )
+                decalBatch.add( spot );
         }
 
         @Override
@@ -165,11 +196,6 @@ public enum WeaponType {
             return FireType.FIRECHARGED;
         }
 
-        @Override
-        public void updateWeaponTargeting(Tower tower) {
-            // TODO Auto-generated method stub
-
-        }
     };
 
     private static final Ray myray      = new Ray( new Vector3(), new Vector3() );
