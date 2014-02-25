@@ -244,7 +244,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             float distance = 150 *Vars.densitate;
             player.getTower().charge = MathUtils.clamp( presDown.dst2( screenX, screenY ), 0, distance *distance );
             player.getTower().charge /= distance *distance;
-            player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower() );
+            player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
             weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
             return true;
         }
@@ -264,6 +264,10 @@ public class Gameplay extends CustomAdapter implements Screen {
                 world.getDef().fireFromTower( player.getTower() );
                 player.getTower().charge = 0;
                 return true;
+            }
+            else {
+                player.getTower().charge = 0;
+                player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
             }
         }
         return false;

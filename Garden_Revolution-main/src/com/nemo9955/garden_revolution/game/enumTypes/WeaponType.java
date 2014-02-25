@@ -47,45 +47,48 @@ public enum WeaponType {
         }
 
         @Override
-        public void updateWeaponTargeting(Tower tower) {
+        public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
         }
     },
     MINIGUN {
 
-        private Decal   raza;
-        private float   opac     = -1f;
-        private boolean atop     = false;
+        private Decal   raza1;
+        private Decal   raza2;
+        private float   opac     = 0f;
+        private boolean atop     = true;
         private boolean drawRaza = false;
-
+        private short   rotation = 0;
         {
             name = "Mini Gun";
             details = "Small but vicious.";
-            raza = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
-            raza.setDimensions( 200, 0.1f );
-            raza.setColor( 1, 0, 0, 0 );
+            raza1 = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
+            raza1.setDimensions( 200, 0.3f );
+            raza1.setColor( 1, 0, 0, 0 );
+            raza2 = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
+            raza2.setDimensions( 200, 0.3f );
+            raza2.setColor( 0.5f, 0, 0, 0 );
         }
 
         @Override
-        public void updateWeaponTargeting(Tower tower) {
-            GR.temp1.set( tower.place ).add( GR.temp2.set( tower.getDirection() ).nor().scl( raza.getWidth() /2 ) );
-            raza.setPosition( GR.temp1.x, GR.temp1.y, GR.temp1.z );
-            raza.setRotation( tower.getDirection(), Vector3.Y );
-            raza.rotateY( 90 );
-            atop = false;
-            drawRaza = tower.isFiringHold;
-        }
-
-        @Override
-        public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-            if ( drawRaza ) {
-                decalBatch.add( raza );
-                raza.setColor( 1, 0, 0, opac );
-
-                if ( atop )
-                    opac -= Gdx.graphics.getDeltaTime() *3;
+        public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
+            GR.temp1.set( tower.place ).add( GR.temp2.set( tower.getDirection() ).nor().scl( raza1.getWidth() /2 ) );
+            raza1.setPosition( GR.temp1.x, GR.temp1.y, GR.temp1.z );
+            raza1.setRotation( tower.getDirection(), GR.temp3.set( 0, 1, 0 ).rotate( tower.getDirection(), rotation ) );
+            raza1.rotateY( 90 );
+            raza2.setPosition( GR.temp1.x, GR.temp1.y, GR.temp1.z );
+            raza2.setRotation( tower.getDirection(), GR.temp3.set( 0, 1, 0 ).rotate( tower.getDirection(), rotation +90 ) );
+            raza2.rotateY( 90 );
+            if ( tower.isFiringHold )
+                atop = false;
+            if ( fromUpdate ) {
+                if ( atop ) {
+                    if ( !tower.isFiringHold )
+                        opac -= Gdx.graphics.getDeltaTime() *2.5f;
+                }
                 else
-                    opac += Gdx.graphics.getDeltaTime() *3;
+                    opac += Gdx.graphics.getDeltaTime() *3.5f;
 
+                drawRaza = true;
                 if ( opac >1 ) {
                     opac = 1f;
                     atop = true;
@@ -94,6 +97,16 @@ public enum WeaponType {
                     drawRaza = false;
                     opac = 0;
                 }
+            }
+        }
+
+        @Override
+        public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+            if ( drawRaza ) {
+                decalBatch.add( raza1 );
+                decalBatch.add( raza2 );
+                raza1.setColor( 1, 0, 0, opac );
+                raza2.setColor( 0.5f, 0, 0, opac );
             }
         }
 
@@ -106,6 +119,10 @@ public enum WeaponType {
                 myray.set( ray );
                 GR.temp2.set( MathUtils.random() -0.5f, MathUtils.random() -0.5f, MathUtils.random() -0.5f ).scl( 2 );
                 myray.origin.add( GR.temp2 );
+
+                rotation += 53;
+                rotation %= 360;
+
 
                 world.getWorld().addShot( ShotType.STANDARD, myray, 0 );
                 return true;
@@ -132,7 +149,10 @@ public enum WeaponType {
 
 
         private Decal   spot;
-        private boolean draw;
+        private float   opac   = 0.3f;
+        private float   idle   = 2;
+        private boolean draw   = false;
+        private boolean aftImp = false;
 
         {
             fireDellay = 1000;
@@ -142,23 +162,47 @@ public enum WeaponType {
             spot = Decal.newDecal( Garden_Revolution.getMenuTexture( "mover-bg" ), true );
             spot.setRotation( Vector3.Y, Vector3.Y );
             spot.setDimensions( 20, 20 );
-            spot.setColor( 1, 1, 1, 0 );
+            spot.setColor( 1, 1, 1, opac );
 
         }
 
         @Override
-        public void updateWeaponTargeting(Tower tower) {
+        public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
+            if ( !fromUpdate ) {
+                ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
+                GR.temp4.set( tower.place );
+                do {
+                    ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, 1 /60f );
+                    GR.temp4.add( GR.temp3 );
+                } while ( GR.temp4.y >0 );
+                spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
+                opac = 0.2f;
+                idle = 2f;
+                aftImp = false;
+            }
+            else {
+                if ( idle >=0 )
+                    idle -= Gdx.graphics.getDeltaTime();
+                else
+                    opac -= Gdx.graphics.getDeltaTime() /5;
+                draw = opac >0;
+            }
 
-            ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
-            GR.temp4.set( tower.place );
-
-            do {
-                ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, Gdx.graphics.getDeltaTime() );
-                GR.temp4.add( GR.temp3 );
-            } while ( GR.temp4.y >0 );
-            spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
-            spot.setColor( Color.WHITE );
-            draw = true;
+            if ( tower.charge >0 ) {
+                draw = true;
+                spot.setColor( 0, 0, 0, MathUtils.clamp( tower.charge, 0.4f, 1 ) );
+            }
+            else if ( aftImp ) {
+                spot.setColor( 1, 0, 0, 0.3f );
+                if ( idle <0 ) {
+                    opac = 0.3f;
+                    idle = 2;
+                    aftImp = false;
+                    tower.charge = 0;
+                }
+            }
+            else
+                spot.setColor( 1, 1, 1, opac );
         }
 
         @Override
@@ -172,8 +216,8 @@ public enum WeaponType {
             if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
                 fireTime = System.currentTimeMillis();
 
-                // float distance = -ray.origin.y /ray.direction.y;
-                // tmp.set( ray.getEndPoint( tmp, distance ) );
+                aftImp = true;
+                idle = fireDellay /1000f;
 
                 world.getWorld().addShot( ShotType.GHIULEA, ray, charge );
                 return true;
@@ -209,7 +253,7 @@ public enum WeaponType {
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
     }
 
-    public abstract void updateWeaponTargeting(Tower tower);
+    public abstract void updateWeaponTargeting(Tower tower, boolean fromUpdate);
 
     public abstract boolean fireProjectile(WorldWrapper world, Ray ray, float charge);
 
