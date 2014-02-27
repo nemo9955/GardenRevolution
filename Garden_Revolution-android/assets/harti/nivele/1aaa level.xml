@@ -1,0 +1,35 @@
+<Harta map="mapaaa.g3db" turnuri="6"  drumuri="3" viata="156" >
+   
+    <wave index="1" delay="1" interval="1" >
+        <path nr="1" >
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+        </path>
+        
+        <path nr="2">
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="3">
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+            <morcov amount="2"/>
+        </path>
+    </wave>
+
+    <wave index="2" delay="30" interval="2" >
+        <path nr="1" >
+            <rosie amount="5"/>
+        </path>
+        <path nr="3">
+            <rosie amount="1"/>
+            <aluna amount="8"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="2">
+            <morcov amount="7"/>
+        </path>
+    </wave>
+    
+</Harta>

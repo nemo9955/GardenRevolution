@@ -12,8 +12,8 @@ public enum ShotType {
 
         @Override
         protected void propShots() {
-            damage = 35;
-            speed = 50;
+            damage = 25;
+            speed = 80;
         }
 
     },
