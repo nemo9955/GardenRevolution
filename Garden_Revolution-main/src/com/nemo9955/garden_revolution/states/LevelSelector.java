@@ -63,7 +63,7 @@ public class LevelSelector extends ControllerAdapter implements Screen {
                 harti = Gdx.files.classpath( GR.levelsLocation ).readString().split( ".xml\n" );
             }
             catch (Exception e) {
-                harti = new String[] { "a1 nivelul 1" , "1aaa level" };
+                harti = new String[] { "1aaa level", "a1 nivelul 1" };
             }
         }
         else if ( Gdx.app.getType() ==ApplicationType.Android ) {
