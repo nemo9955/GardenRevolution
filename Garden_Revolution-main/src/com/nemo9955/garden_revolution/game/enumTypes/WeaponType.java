@@ -58,6 +58,7 @@ public enum WeaponType {
         private boolean atop     = true;
         private boolean drawRaza = false;
         private short   rotation = 0;
+
         {
             name = "Mini Gun";
             details = "Small but vicious.";
@@ -72,14 +73,18 @@ public enum WeaponType {
         @Override
         public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
             GR.temp1.set( tower.place ).add( GR.temp2.set( tower.getDirection() ).nor().scl( raza1.getWidth() /2 ) );
+
             raza1.setPosition( GR.temp1.x, GR.temp1.y, GR.temp1.z );
             raza1.setRotation( tower.getDirection(), GR.temp3.set( 0, 1, 0 ).rotate( tower.getDirection(), rotation ) );
             raza1.rotateY( 90 );
+
             raza2.setPosition( GR.temp1.x, GR.temp1.y, GR.temp1.z );
             raza2.setRotation( tower.getDirection(), GR.temp3.set( 0, 1, 0 ).rotate( tower.getDirection(), rotation +90 ) );
             raza2.rotateY( 90 );
+
             if ( tower.isFiringHold )
                 atop = false;
+
             if ( fromUpdate ) {
                 if ( atop ) {
                     if ( !tower.isFiringHold )
@@ -153,6 +158,7 @@ public enum WeaponType {
         private float   idle   = 2;
         private boolean draw   = false;
         private boolean aftImp = false;
+        private float   frames = 1 /60f;
 
         {
             fireDellay = 1000;
@@ -169,10 +175,12 @@ public enum WeaponType {
         @Override
         public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
             if ( !fromUpdate ) {
+                if ( tower.charge <=0 )
+                    frames = Gdx.graphics.getDeltaTime();
                 ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
                 GR.temp4.set( tower.place );
                 do {
-                    ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, 1 /60f );
+                    ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, frames );
                     GR.temp4.add( GR.temp3 );
                 } while ( GR.temp4.y >0 );
                 spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
@@ -266,31 +274,3 @@ public enum WeaponType {
     }
 
 }
-
-/*
- * <lordjone> nemo9955 crs the current z axis of the model with the vector you need to obtain a rotation axis and the dot the z axis of the
- * model with the vector you need to point to
- * <lordjone> nemo9955 the cross represents the rotation axis, the dot the rotation angle, then do quaternion.setFromAxis(axis, angle)
- * <nemo9955> lordjone, ok i'll try that , thanks :D
- * <lordjone> nemo9955 also normalize the axis after you have calculated the cross because cross product is not normalized
- * // private final Quaternion qt = new Quaternion();
- * // raza.transform.setTranslation( tower.place );
- * // raza.transform.setToLookAt( tower.place, tower.getDirection(), Vector3.Y );
- * // raza.transform.setToLookAt( tower.place, temp.set( tower.place ).add( tower.getDirection() ), Vector3.Y );
- * // temp.set( raza.transform.val[Matrix4.M02], raza.transform.val[Matrix4.M12], raza.transform.val[Matrix4.M22] ).nor();
- * //
- * // float angle = (float) ( MathUtils.radiansToDegrees *Math.acos( GR.temp1.set( tower.getDirection() ).nor().dot( temp ) ) );
- * //
- * // qt.setFromAxis( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
- * //
- * // // raza.transform.set( qt );
- * // raza.transform.setToRotation( GR.temp2.set( tower.getDirection().nor() ).crs( temp ).nor(), angle );
- * // GR.temp2.set( tower.getDirection().z, tower.getDirection().y, tower.getDirection().x );
- * // raza.transform.setToLookAt( tower.getDirection(), Vector3.Y );
- * // raza.transform.setTranslation( tower.place );
- * // qt.setFromAxis( raza.transform.getTranslation( GR.temp2 ).crs( tower.getDirection() ).nor(), raza.transform.getTranslation( GR.temp1 ).dot( tower.getDirection() ) );
- * // qt.setFromAxis( raza., angle );
- * // raza.transform.set( GR.gameplay.player.getCamera().view );
- * // raza.transform.set( qt );
- * // raza.transform.set( tower.place, qt.set( tower.getDirection(), 0 ), temp.set( 1, 1, 1 ) );
- */

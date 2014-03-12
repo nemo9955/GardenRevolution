@@ -22,25 +22,26 @@ import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 public class Tower implements Disposable {
 
     private WorldWrapper         world;
-    private Array<BoundingBox>   coliders        = new Array<BoundingBox>( false, 1 );
+    private Array<BoundingBox>   coliders         = new Array<BoundingBox>( false, 1 );
 
-    private Array<ModelInstance> parts           = new Array<ModelInstance>( false, 1 );
-    public final Vector3         poz             = new Vector3();
+    private Array<ModelInstance> parts            = new Array<ModelInstance>( false, 1 );
+    public final Vector3         poz              = new Vector3();
     public TowerType             type;
 
     private Weapon               weapon;
-    public Vector3               place           = new Vector3();
-    private Vector3              direction       = new Vector3();
-    public Ray                   ray             = new Ray( place, direction );
+    public Vector3               place            = new Vector3();
+    private Vector3              direction        = new Vector3();
+    public Ray                   ray              = new Ray( place, direction );
     public byte                  ID;
 
-    public String                ocupier         = null;
+    public String                ocupier          = null;
+    public boolean               isClientPlayerIn = false;
 
-    public boolean               isFiringHold    = false;
-    public long                  fireChargedTime = 0;
-    public float                 charge          = 0;
+    public boolean               isFiringHold     = false;
+    public long                  fireChargedTime  = 0;
+    public float                 charge           = 0;
 
-    private Decal                pointer         = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
+    private Decal                pointer          = Decal.newDecal( 2, 2, Garden_Revolution.getGameTexture( "pointer-2" ), true );
 
 
     public Tower(TowerType type, WorldWrapper world, Vector3 poz, int ID) {
@@ -115,7 +116,7 @@ public class Tower implements Disposable {
         if ( ocupier !=null &&isFiringHold )
             fireWeapon();
 
-        if ( hasWeapon() )
+        if ( hasWeapon() &&isClientPlayerIn )
             weapon.type.updateWeaponTargeting( this, true );
     }
 
@@ -186,7 +187,7 @@ public class Tower implements Disposable {
         direction.set( x, y, z );
         ray.set( place, direction );
 
-        if ( hasWeapon() )
+        if ( hasWeapon() &&isClientPlayerIn )
             weapon.type.updateWeaponTargeting( this, false );
     }
 

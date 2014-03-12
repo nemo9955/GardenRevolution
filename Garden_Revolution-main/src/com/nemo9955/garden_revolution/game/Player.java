@@ -81,6 +81,9 @@ public class Player {
 
     public void moveCamera(float amontX, float amontY) {
 
+        amontX*=Gdx.graphics.getDeltaTime()*30f;
+        amontY*=Gdx.graphics.getDeltaTime()*30f;
+        
         cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
         if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
             GR.temp3.set( cam.direction ).crs( cam.up ).y = 0f;
@@ -204,7 +207,10 @@ public class Player {
 
 
     public void setTower(Tower tower) {
+        if ( this.tower !=null )
+            this.tower.isClientPlayerIn = false;
         this.tower = tower;
+        this.tower.isClientPlayerIn = true;
         resetCamera();
     }
 }

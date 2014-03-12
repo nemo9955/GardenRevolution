@@ -4,6 +4,7 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -58,6 +59,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public float                movex          = 0;
     public float                movey          = 0;
     public boolean              updWorld       = true;
+    @SuppressWarnings("unused")
     private final int           scrw           = Gdx.graphics.getWidth();
     private Vector3             dolly          = new Vector3();
     public static Vector2       tmp1           = new Vector2();
@@ -218,10 +220,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         presDown.set( screenX, screenY );
 
-        if ( screenX <scrw /2 ||!updWorld ) {
+        if ( !updWorld ) {
             return false;
         }
-        else if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+        else if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) &&button ==Buttons.LEFT ) {
 
             weaponCharger.setColor( Color.CLEAR );
             weaponCharger.setVisible( true );
@@ -231,7 +233,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             stage.screenToStageCoordinates( tmp1 );
             weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
         }
-        else {
+        else if ( button ==Buttons.LEFT ) {
             player.getTower().setFiringHold( true );
         }
         return false;
@@ -254,13 +256,13 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if ( updWorld &&player.getTower().isFiringHold ) {
+        if ( updWorld &&player.getTower().isFiringHold )
             player.getTower().setFiringHold( false );
-        }
 
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
             if ( world.getWorld().getTowerHitByRay( player.getCamera().getPickRay( screenX, screenY ) ) ==null ) {
+                player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
                 world.getDef().fireFromTower( player.getTower() );
                 player.getTower().charge = 0;
                 return true;
@@ -276,7 +278,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( ( updWorld &&!weaponCharger.isVisible() &&x <scrw /2 ) || ( Gdx.app.getType() ==ApplicationType.Desktop &&Gdx.input.isCursorCatched() ) ) {
+        if ( ( updWorld &&!weaponCharger.isVisible() &&Gdx.input.isButtonPressed( Buttons.RIGHT ) ) || ( Gdx.app.getType() ==ApplicationType.Desktop &&Gdx.input.isCursorCatched() ) ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;

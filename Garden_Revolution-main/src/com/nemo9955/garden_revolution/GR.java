@@ -14,7 +14,7 @@ import com.nemo9955.garden_revolution.states.TestScene;
 public class GR {
 
     public static final String        TITLU          = "Garden Revolution";
-    public static final String        VERSIUNE       = "alfa 0.666";
+    public static final String        VERSIUNE       = "alfa 0.75";
 
     public static Options             options;
     public static Gameplay            gameplay;
