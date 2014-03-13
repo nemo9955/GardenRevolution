@@ -55,7 +55,7 @@ public class StageUtils {
         gp.ready.setTouchable( Touchable.enabled );
         gp.ready.setPosition( 0, stage.getHeight() /2 );
 
-//        final Image tinta = new Image( skin, "tinta" );
+        // final Image tinta = new Image( skin, "tinta" );
         gp.viataTurn = new Label( "Life ", skin );
         gp.mover = new Touchpad( 1, skin );
         gp.mover.setVisible( true );
@@ -67,12 +67,12 @@ public class StageUtils {
 
         gp.mover.setPosition( stage.getWidth() *0.02f, stage.getWidth() *0.02f );
         gp.mover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
-//        tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
+        // tinta.setPosition( stage.getWidth() /2 -tinta.getWidth() /2, stage.getHeight() /2 -tinta.getHeight() /2 );
 
         hud.addActor( gp.ready );
         hud.addActor( gp.viataTurn );
         hud.addActor( pauseBut );
-//        hud.addActor( tinta );
+        // hud.addActor( tinta );
         hud.addActor( gp.mover );
         hud.addActor( turnIG );
         hud.addActor( gp.weaponCharger );

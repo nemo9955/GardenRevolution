@@ -4,9 +4,10 @@ package com.nemo9955.garden_revolution.states;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,11 +19,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class Menu extends ControllerAdapter implements Screen {
+public class Menu extends CustomAdapter implements Screen {
 
     private TweenManager       tweeger;
     // private StageActorPointer pointer;
@@ -74,7 +76,7 @@ public class Menu extends ControllerAdapter implements Screen {
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
-                if ( sdr.isPressed() )
+                if ( sdr.isPressed() &&Functions.isDesktop() )
                     GR.game.setScreen( new TestSceneShader() );
 
                 // if ( mode.isPressed() ) {
@@ -118,10 +120,20 @@ public class Menu extends ControllerAdapter implements Screen {
 
     }
 
+    @Override
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Keys.ESCAPE:
+            case Keys.BACK:
+                Gdx.app.exit();
+                break;
+        }
+        return false;
+    }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor( stage );
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         if ( Functions.isControllerUsable() ) {
             Controllers.addListener( this );
         }

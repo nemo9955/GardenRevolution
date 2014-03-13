@@ -10,7 +10,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum EnemyType {
 
 
-    ALUNA("aluna") {
+    ALUNA("Peanut") {
 
         @Override
         public void propEnemys() {
@@ -19,7 +19,7 @@ public enum EnemyType {
         }
     },
 
-    ROSIE("rosie") {
+    ROSIE("Tomato") {
 
         @Override
         public void propEnemys() {
@@ -28,7 +28,7 @@ public enum EnemyType {
         }
     },
 
-    MORCOV("morcov") {
+    MORCOV("Carrot") {
 
         @Override
         public void propEnemys() {

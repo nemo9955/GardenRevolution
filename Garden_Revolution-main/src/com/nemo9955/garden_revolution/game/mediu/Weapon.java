@@ -44,9 +44,10 @@ public class Weapon implements Disposable {
         animation.update( delta );
     }
 
-    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch, boolean drTarg) {
         modelBatch.render( model, light );
-        type.render( modelBatch, light, decalBatch );
+        if ( drTarg )
+            type.render( modelBatch, light, decalBatch );
     }
 
     @Override

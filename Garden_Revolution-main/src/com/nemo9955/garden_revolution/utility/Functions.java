@@ -212,4 +212,12 @@ public class Functions {
         return MathUtils.random( -30, 30 ) *0.1f;
         // return 0;
     }
+
+    public static boolean isDesktop() {
+        return Gdx.app.getType() ==ApplicationType.Desktop;
+    }
+
+    public static boolean isAndroid() {
+        return Gdx.app.getType() ==ApplicationType.Android;
+    }
 }

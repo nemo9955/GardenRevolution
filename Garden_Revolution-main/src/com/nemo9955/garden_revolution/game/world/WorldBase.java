@@ -70,7 +70,7 @@ public class WorldBase implements Disposable {
         // public void initEnv() {
         // lights = null;
         // lights = new Environment();
-        float amb = 0.4f;
+        float amb = 1f;
         float intensity = 800f;
         float height = 10f;
         lights.set( new ColorAttribute( ColorAttribute.AmbientLight, amb, amb, amb, 1f ) );
@@ -79,7 +79,7 @@ public class WorldBase implements Disposable {
         lights.add( new PointLight().set( Color.BLUE, new Vector3( 15.292713f, height, -29.423798f ), intensity ) );
         lights.add( new PointLight().set( Color.RED, new Vector3( 10.024132f, height, 40.54626f ), intensity /2 ) );
         lights.add( new PointLight().set( Color.DARK_GRAY, new Vector3( -14.920635f, height, 0.18914032f ), intensity ) );
-        lights.add( new PointLight().set( Color.GREEN, new Vector3( 52.817417f, height*3, -0.45362854f ), intensity ) );
+        lights.add( new PointLight().set( Color.GREEN, new Vector3( 52.817417f, height *3, -0.45362854f ), intensity ) );
         lights.add( new PointLight().set( Color.CYAN, new Vector3( -13.099552f, height *2, -15.360998f ), intensity ) );
         lights.add( new PointLight().set( Color.WHITE, new Vector3( -16.840088f, height, -17.439095f ), intensity ) );
 
@@ -632,7 +632,7 @@ public class WorldBase implements Disposable {
             hold = false;
 
         tower.isFiringHold = hold;
-        Gdx.input.setCursorCatched( hold );
+
         return true;
     }
 

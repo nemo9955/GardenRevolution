@@ -124,7 +124,7 @@ public class Tower implements Disposable {
         for (ModelInstance model : parts )
             modelBatch.render( model, light );
         if ( hasWeapon() )// TODO add a showTargeting boolean
-            weapon.render( modelBatch, light, decalBatch );
+            weapon.render( modelBatch, light, decalBatch, isClientPlayerIn );
         if ( ocupier !=null &&world.isMultiplayer() )
             decalBatch.add( pointer );
     }

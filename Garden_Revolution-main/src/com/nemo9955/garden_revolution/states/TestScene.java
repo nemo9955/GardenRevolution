@@ -1,11 +1,10 @@
 package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,11 +20,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class TestScene extends ControllerAdapter implements Screen, InputProcessor {
+public class TestScene extends CustomAdapter implements Screen {
 
     private SpriteBatch        batch;
     private ShapeRenderer      shape;
@@ -72,6 +72,17 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
     }
 
     @Override
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Keys.ESCAPE:
+            case Keys.BACK:
+                GR.game.setScreen( GR.menu );
+                break;
+        }
+        return false;
+    }
+
+    @Override
     public void show() {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         Gdx.input.setInputProcessor( new InputMultiplexer( this, stage ) );
@@ -87,6 +98,9 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
         stage.act( delta );
+
+        if ( Functions.isAndroid() && ( Gdx.input.isKeyPressed( Keys.BACK ) ||Gdx.input.isKeyPressed( Keys.ESCAPE ) ) )
+            GR.game.setScreen( GR.menu );
 
         // normal image rendering
         batch.setProjectionMatrix( cam.combined );
@@ -151,27 +165,6 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-
-        return false;
-
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-
-        return false;
-
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-
-        return false;
-
-    }
-
-    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         pozitie = screenY;
         // System.out.println( ( screenX +cam.position.x - ( Gdx.graphics.getWidth() /2 ) ) +" " + ( -screenY + ( Gdx.graphics.getHeight() /2 ) +cam.position.y ) );
@@ -180,11 +173,6 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
 
     }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-
-    }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
@@ -194,15 +182,5 @@ public class TestScene extends ControllerAdapter implements Screen, InputProcess
 
     }
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
 
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-
-    }
 }

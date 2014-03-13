@@ -1,9 +1,10 @@
 package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,11 +19,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
-public class Options extends ControllerAdapter implements Screen {
+public class Options extends CustomAdapter implements Screen {
 
     private Stage              stage;
     private Skin               skin;
@@ -105,10 +107,21 @@ public class Options extends ControllerAdapter implements Screen {
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
-
         stage.act();
         stage.draw();
 
+    }
+
+
+    @Override
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Keys.ESCAPE:
+            case Keys.BACK:
+                GR.game.setScreen( GR.menu );
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -117,7 +130,8 @@ public class Options extends ControllerAdapter implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor( stage );
+
+        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         if ( Functions.isControllerUsable() ) {
             Controllers.addListener( this );
         }

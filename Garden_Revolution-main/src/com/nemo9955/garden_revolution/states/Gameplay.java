@@ -2,7 +2,6 @@ package com.nemo9955.garden_revolution.states;
 
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -223,21 +222,32 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( !updWorld ) {
             return false;
         }
-        else if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) &&button ==Buttons.LEFT ) {
+        else if ( Functions.isAndroid() ||button ==Buttons.LEFT ) {
 
-            weaponCharger.setColor( Color.CLEAR );
-            weaponCharger.setVisible( true );
-            player.getTower().charge = 0;
+            if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+                weaponCharger.setColor( Color.CLEAR );
+                weaponCharger.setVisible( true );
+                player.getTower().charge = 0;
 
-            tmp1.set( presDown );
-            stage.screenToStageCoordinates( tmp1 );
-            weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
+                tmp1.set( presDown );
+                stage.screenToStageCoordinates( tmp1 );
+                weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
+            }
+
+            if ( player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
+                player.getTower().setFiringHold( true );
+                if ( Functions.isDesktop() )
+                    Gdx.input.setCursorCatched( true );
+            }
+
         }
-        else if ( button ==Buttons.LEFT ) {
-            player.getTower().setFiringHold( true );
+        else {
+            if ( Functions.isDesktop() )
+                Gdx.input.setCursorCatched( true );
         }
         return false;
     }
+
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
@@ -261,7 +271,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         if ( weaponCharger.isVisible() ) {
             weaponCharger.setVisible( false );
-            if ( world.getWorld().getTowerHitByRay( player.getCamera().getPickRay( screenX, screenY ) ) ==null ) {
+            if ( world.getWorld().getTowerHitByRay( player.getCamera().getPickRay( screenX, screenY ) ) ==null ||player.getTower().charge >0.4f ) {
                 player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
                 world.getDef().fireFromTower( player.getTower() );
                 player.getTower().charge = 0;
@@ -272,13 +282,17 @@ public class Gameplay extends CustomAdapter implements Screen {
                 player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
             }
         }
+
+        if ( Functions.isDesktop() )
+            Gdx.input.setCursorCatched( false );
+
         return false;
     }
 
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( ( updWorld &&!weaponCharger.isVisible() &&Gdx.input.isButtonPressed( Buttons.RIGHT ) ) || ( Gdx.app.getType() ==ApplicationType.Desktop &&Gdx.input.isCursorCatched() ) ) {
+        if ( updWorld && ( ( !weaponCharger.isVisible() && ( Gdx.input.isButtonPressed( Buttons.RIGHT ) ||Functions.isAndroid() ) ) || ( Functions.isDesktop() &&Gdx.input.isCursorCatched() ) ) ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;
@@ -336,14 +350,15 @@ public class Gameplay extends CustomAdapter implements Screen {
             case Keys.NUMPAD_3:
                 dolly.y = -0.3f;
                 break;
-            case Keys.ESCAPE:
-                GR.game.setScreen( GR.selecter );
-                break;
             // case Keys.F4:
             // world.getWorld().initEnv();
             // break;
             case Keys.H:
                 mp.sendTCP( "a random message" );
+                break;
+            case Keys.ESCAPE:
+            case Keys.BACK:
+                GR.game.setScreen( GR.selecter );
                 break;
         }
 

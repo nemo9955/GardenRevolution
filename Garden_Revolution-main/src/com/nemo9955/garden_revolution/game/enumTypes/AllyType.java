@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -10,7 +11,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 public enum AllyType {
 
 
-    SOLDIER("Suzanne") {
+    SOLDIER("Derp_potato") {
 
         @Override
         protected void propAllys() {
@@ -40,7 +41,9 @@ public enum AllyType {
 
     public ModelInstance getModel(float x, float y, float z) {
         model.transform.setToTranslation( x, y, z );
-        return new ModelInstance( model );
+        ModelInstance modelInstance = new ModelInstance( model );
+        modelInstance.transform.rotate( 0, 1, 0, MathUtils.random( 359 ) );
+        return modelInstance;
     }
 
     protected abstract void propAllys();

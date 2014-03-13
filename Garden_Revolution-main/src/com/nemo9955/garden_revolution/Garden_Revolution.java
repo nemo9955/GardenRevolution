@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +21,7 @@ import com.nemo9955.garden_revolution.states.Options;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.Functions;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
@@ -54,6 +56,9 @@ public class Garden_Revolution extends Game {
     }
 
     public void postLoading() {
+
+        if ( Functions.isAndroid() )
+            Gdx.input.setCatchBackKey( true );
 
         Tween.registerAccessor( Sprite.class, new SpriteTween() );
         Tween.registerAccessor( BitmapFont.class, new FontTween() );

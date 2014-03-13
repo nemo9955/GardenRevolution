@@ -8,7 +8,7 @@ public class Vars {
 
     // modul de miscare a camerei
     public static boolean         moveByTouch         = false;
-    public static float           tPadMinAlpha        = 0.2f;
+    public static float           tPadMinAlpha        = 0.1f;
     protected static float        tPadAlphaDellay     = 2f;
 
     // ( 0 , 3 ] viteza de miscare a camerei
