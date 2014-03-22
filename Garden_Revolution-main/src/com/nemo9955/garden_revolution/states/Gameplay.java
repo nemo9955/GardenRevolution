@@ -45,6 +45,8 @@ import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageUtils;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 public class Gameplay extends CustomAdapter implements Screen {
 
@@ -395,7 +397,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean buttonDown(Controller cont, int buttonCode) {
 
-        if ( buttonCode ==Vars.buton[0] ) {
+        if ( buttonCode ==CoButt.Fire.id ) {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( true );
             }
@@ -403,7 +405,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
-                player.getTower().charge = ( -cont.getAxis( Vars.axis[0] ) +1 ) /2;
+                player.getTower().charge = ( -cont.getAxis( CoAxis.mvY.id ) +1 ) /2;
                 weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
                 player.getTower().fireChargedTime = System.currentTimeMillis();
 
@@ -415,24 +417,24 @@ public class Gameplay extends CustomAdapter implements Screen {
         }
 
 
-        if ( buttonCode ==Vars.buton[4] ) {
+        if ( buttonCode ==CoButt.PrevT.id ) {
             if ( Func.isCurrentState( stage, "HUD" ) )
                 player.prevTower();
             return false;
         }
 
-        if ( buttonCode ==Vars.buton[5] ) {
+        if ( buttonCode ==CoButt.NextT.id ) {
             if ( Func.isCurrentState( stage, "HUD" ) )
                 player.nextTower();
             return false;
         }
 
-        if ( buttonCode ==Vars.buton[6] ) {
+        if ( buttonCode ==CoButt.X.id ) {
             Vars.invertControlletX *= -1;
             return false;
         }
 
-        if ( buttonCode ==Vars.buton[7] ) {
+        if ( buttonCode ==CoButt.Y.id ) {
             Vars.invertControlletY *= -1;
             return false;
         }
@@ -443,7 +445,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonUp(Controller controller, int buttonCode) {
-        if ( buttonCode ==Vars.buton[0] ) {
+        if ( buttonCode ==CoButt.Fire.id ) {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( false );
             }
@@ -463,39 +465,22 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
 
-        if ( axisCode ==Vars.axis[0] )
-            if ( controller.getButton( Vars.buton[0] ) ) {
-                player.getTower().charge = ( -value +1 ) /2;
-                weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
-            }
-            else {
-                Vars.multiplyControlletY = -value +1.5f;
-            }
-
-        if ( axisCode ==Vars.axis[1] )
-            if ( Math.abs( value ) >=Vars.deadZone )
-                Vars.multiplyControlletX = ( Math.abs( value ) +0.5f ) *2;
-            else
-                Vars.multiplyControlletX = 1;
 
         if ( Math.abs( value ) <Vars.deadZone ) {
             value = 0f;
-            if ( axisCode ==Vars.axis[3] ||axisCode ==Vars.axis[2] )
+            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
                 movex = 0;
-            if ( axisCode ==Vars.axis[1] )
+            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
                 movey = 0;
         }
+        else {
 
-        if ( axisCode ==Vars.axis[1] &&Math.abs( controller.getAxis( Vars.axis[3] ) ) >Vars.deadZone &&controller.getAxis( Vars.axis[3] ) ==MathUtils.clamp( controller.getAxis( Vars.axis[3] ), -1, 1 ) )
-            movex = controller.getAxis( Vars.axis[3] ) *Vars.invertControlletX *Vars.multiplyControlletX /2;
-        if ( axisCode ==Vars.axis[3] )
-            movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
+            if ( axisCode ==CoAxis.mvX.id )
+                movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
 
-        if ( axisCode ==Vars.axis[0] &&Math.abs( controller.getAxis( Vars.axis[2] ) ) >Vars.deadZone &&controller.getAxis( Vars.axis[2] ) ==MathUtils.clamp( controller.getAxis( Vars.axis[2] ), -1, 1 ) )
-            movey = controller.getAxis( Vars.axis[2] ) *Vars.invertControlletY *Vars.multiplyControlletY;
-        if ( axisCode ==Vars.axis[2] )
-            movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
-
+            if ( axisCode ==CoAxis.mvY.id )
+                movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
+        }
 
         return false;
 

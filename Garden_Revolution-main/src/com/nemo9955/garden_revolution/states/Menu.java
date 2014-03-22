@@ -22,6 +22,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
 public class Menu extends CustomAdapter implements Screen {
@@ -104,13 +105,13 @@ public class Menu extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
-        if ( buttonIndex ==Vars.buton[2] )
+        if ( buttonIndex ==CoButt.A.id )
             Func.fire( test );
 
-        if ( buttonIndex ==Vars.buton[3] )
+        if ( buttonIndex ==CoButt.B.id )
             Func.fire( options );
 
-        if ( buttonIndex ==Vars.buton[4] )
+        if ( buttonIndex ==CoButt.Fire.id )
             Func.fire( play );
 
         // if ( buttonIndex ==Vars.buton[5] )

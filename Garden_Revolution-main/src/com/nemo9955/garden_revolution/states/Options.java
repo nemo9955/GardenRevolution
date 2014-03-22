@@ -22,6 +22,8 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
 public class Options extends CustomAdapter implements Screen {
@@ -55,20 +57,20 @@ public class Options extends CustomAdapter implements Screen {
 
 
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
-            TextButton button = new TextButton( "Button " +Vars.buton[i], skin );
+            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, skin );
             button.setUserObject( "Button" +Vars.stringSeparator +i );
 
 
-            table.add( new Label( Vars.butonName[i], skin ) );
+            table.add( new Label( CoButt.values()[i].name, skin ) );
             table.add( button );
             table.row();
         }
 
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
-            TextButton axis = new TextButton( "Axis " +Vars.axis[i], skin );
+            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, skin );
             axis.setUserObject( "Axis" +Vars.stringSeparator +i );
 
-            table.add( new Label( Vars.axisName[i], skin ) );
+            table.add( new Label( CoAxis.values()[i].name, skin ) );
             table.add( axis );
             table.row();
         }
@@ -129,13 +131,13 @@ public class Options extends CustomAdapter implements Screen {
             String[] parts = current.getUserObject().toString().split( Vars.stringSeparator );
 
             if ( parts[0].contains( "Button" ) ) {
-                Vars.buton[Integer.parseInt( parts[1] )] = buttonIndex;
+                CoButt.values()[Integer.parseInt( parts[1] )].id = buttonIndex;
                 current.setText( "Button " +buttonIndex );
                 current.invalidateHierarchy();
                 butSelected = false;
             }
         }
-        else if ( buttonIndex ==Vars.buton[1] )
+        else if ( buttonIndex ==CoButt.Back.id )
             Func.fire( back );
 
         return false;
@@ -144,11 +146,11 @@ public class Options extends CustomAdapter implements Screen {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-        if ( butSelected &&value >0.2f ) {
+        if ( butSelected &&Math.abs( value ) >0.2f ) {
             String[] parts = current.getUserObject().toString().split( Vars.stringSeparator );
 
             if ( parts[0].contains( "Axis" ) ) {
-                Vars.axis[Integer.parseInt( parts[1] )] = axisCode;
+                CoAxis.values()[Integer.parseInt( parts[1] )].id = axisCode;
                 current.setText( "Axis " +axisCode );
                 current.invalidateHierarchy();
                 butSelected = false;

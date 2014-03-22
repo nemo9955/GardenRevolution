@@ -23,6 +23,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
 public class TestScene extends CustomAdapter implements Screen {
@@ -137,7 +138,7 @@ public class TestScene extends CustomAdapter implements Screen {
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
-        if ( buttonIndex ==Vars.buton[1] )
+        if ( buttonIndex ==CoButt.Back.id )
             Func.fire( back );
 
         return false;

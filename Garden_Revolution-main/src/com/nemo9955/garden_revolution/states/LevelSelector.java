@@ -25,6 +25,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
 public class LevelSelector extends CustomAdapter implements Screen {
@@ -162,9 +163,9 @@ public class LevelSelector extends CustomAdapter implements Screen {
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
-        if ( Vars.buton[0] ==buttonIndex )
+        if ( buttonIndex ==CoButt.Fire.id )
             Func.fire( start );
-        if ( Vars.buton[1] ==buttonIndex )
+        if ( buttonIndex ==CoButt.Back.id )
             Func.fire( back );
 
 
