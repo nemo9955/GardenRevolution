@@ -72,7 +72,8 @@ public class Shot extends Entity {
 
     @Override
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-        modelBatch.render( model );
+        if ( isEntVisible( modelBatch ) )
+            modelBatch.render( model );
     }
 
 

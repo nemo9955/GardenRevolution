@@ -18,7 +18,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 
 
 public class WorldMP implements IWorldModel {
@@ -49,7 +49,7 @@ public class WorldMP implements IWorldModel {
 
     @Override
     public boolean canChangeTowers(byte current, byte next, String name) {
-        mp.sendTCP( Functions.getPCT( current, next, name ) );
+        mp.sendTCP( Func.getPCT( current, next, name ) );
         return false;
     }
 
@@ -59,7 +59,7 @@ public class WorldMP implements IWorldModel {
 
 
         if ( world.changeWeapon( tower, newWeapon ) ) {
-            mp.sendTCP( Functions.getWCP( tower.ID, newWeapon.ordinal() ) );
+            mp.sendTCP( Func.getWCP( tower.ID, newWeapon.ordinal() ) );
             return true;
         }
         return false;
@@ -87,14 +87,14 @@ public class WorldMP implements IWorldModel {
     @Override
     public void setLife(int viata) {
         world.setLife( viata );
-        mp.sendTCP( Functions.getCWL( viata ) );
+        mp.sendTCP( Func.getCWL( viata ) );
     }
 
 
     @Override
     public boolean upgradeTower(Tower tower, TowerType upgrade) {
         if ( world.upgradeTower( tower, upgrade ) ) {
-            mp.sendTCP( Functions.getTCP( tower.ID, upgrade.ordinal() ) );
+            mp.sendTCP( Func.getTCP( tower.ID, upgrade.ordinal() ) );
             return true;
         }
         return false;
@@ -104,13 +104,13 @@ public class WorldMP implements IWorldModel {
     @Override
     public void fireFromTower(Tower tower) {
         if ( world.fireFromTower( tower ) )
-            mp.sendTCP( Functions.getPFC( tower.ID, tower.charge ) );
+            mp.sendTCP( Func.getPFC( tower.ID, tower.charge ) );
     }
 
     @Override
     public void setTowerFireHold(Tower tower, boolean hold) {
         if ( world.setTowerFireHold( tower, hold ) )
-            mp.sendTCP( Functions.getPFH( tower.ID, hold ) );
+            mp.sendTCP( Func.getPFH( tower.ID, hold ) );
     }
 
     @Override
@@ -121,10 +121,10 @@ public class WorldMP implements IWorldModel {
     @Override
     public Enemy addFoe(EnemyType type, Vector3 poz) {
 
-        WorldAddEnemyOnPoz ent = Functions.getEOnPox( type, Enemy.newGlobalID(), poz, GR.temp1.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPoz ent = Func.getEOnPox( type, Enemy.newGlobalID(), poz, GR.temp1.set( Func.getRandOffset(), 0, Func.getRandOffset() ) );
         mp.sendTCP( ent );
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], poz );
-        addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        addFoe.offset.set( Func.getOffset( ent.ofsX ), 0, Func.getOffset( ent.ofsZ ) );
         addFoe.ID = ent.ID;
 
         return addFoe;
@@ -133,18 +133,18 @@ public class WorldMP implements IWorldModel {
     @Override
     public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
 
-        WorldAddEnemyOnPath ent = Functions.getEOnPath( type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf( path, false ), GR.temp1.set( Functions.getRandOffset(), 0, Functions.getRandOffset() ) );
+        WorldAddEnemyOnPath ent = Func.getEOnPath( type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf( path, false ), GR.temp1.set( Func.getRandOffset(), 0, Func.getRandOffset() ) );
         mp.sendTCP( ent );
 
         Enemy addFoe = world.addFoe( EnemyType.values()[ent.ordinal], world.getPaths().get( ent.pathNo ) );
-        addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+        addFoe.offset.set( Func.getOffset( ent.ofsX ), 0, Func.getOffset( ent.ofsZ ) );
         addFoe.ID = ent.ID;
         return addFoe;
     }
 
     @Override
     public Ally addAlly(Vector3 duty, AllyType type) {
-        WorldAddAlly addAl = Functions.getAddAl( type, Ally.newGlobalID(), duty );
+        WorldAddAlly addAl = Func.getAddAl( type, Ally.newGlobalID(), duty );
         mp.sendTCP( addAl );
         Ally addAlly = world.addAlly( duty, type );
         addAlly.ID = addAl.ID;
@@ -154,14 +154,14 @@ public class WorldMP implements IWorldModel {
 
     @Override
     public void enemyKilled(Enemy enemy) {
-        mp.sendTCP( Functions.getEnmyyK( enemy.ID ) );
+        mp.sendTCP( Func.getEnmyyK( enemy.ID ) );
         world.getEnemyPool().free( enemy );
         world.getEnemy().removeValue( enemy, false );
     }
 
     @Override
     public void allyKilled(Ally ally) {
-        mp.sendTCP( Functions.getAllyK( ally.ID ) );
+        mp.sendTCP( Func.getAllyK( ally.ID ) );
         world.getAliatPool().free( ally );
         world.getAlly().removeValue( ally, false );
 

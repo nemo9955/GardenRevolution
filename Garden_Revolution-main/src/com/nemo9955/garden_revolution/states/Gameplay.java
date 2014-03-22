@@ -42,7 +42,7 @@ import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageUtils;
 import com.nemo9955.garden_revolution.utility.Vars;
 
@@ -129,7 +129,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         modelBatch.end();
         shape.end();
         decalBatch.flush();
-
 
         fps.setText( "FPS: " +Gdx.graphics.getFramesPerSecond() );
 
@@ -222,7 +221,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( !updWorld ) {
             return false;
         }
-        else if ( Functions.isAndroid() ||button ==Buttons.LEFT ) {
+        else if ( Func.isAndroid() ||button ==Buttons.LEFT ) {
 
             if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
@@ -236,13 +235,13 @@ public class Gameplay extends CustomAdapter implements Screen {
 
             if ( player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( true );
-                if ( Functions.isDesktop() )
+                if ( Func.isDesktop() )
                     Gdx.input.setCursorCatched( true );
             }
 
         }
         else {
-            if ( Functions.isDesktop() )
+            if ( Func.isDesktop() )
                 Gdx.input.setCursorCatched( true );
         }
         return false;
@@ -283,7 +282,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             }
         }
 
-        if ( Functions.isDesktop() )
+        if ( Func.isDesktop() )
             Gdx.input.setCursorCatched( false );
 
         return false;
@@ -292,7 +291,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( updWorld && ( ( !weaponCharger.isVisible() && ( Gdx.input.isButtonPressed( Buttons.RIGHT ) ||Functions.isAndroid() ) ) || ( Functions.isDesktop() &&Gdx.input.isCursorCatched() ) ) ) {
+        if ( updWorld && ( ( !weaponCharger.isVisible() && ( Gdx.input.isButtonPressed( Buttons.RIGHT ) ||Func.isAndroid() ) ) || ( Func.isDesktop() &&Gdx.input.isCursorCatched() ) ) ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;
@@ -321,16 +320,16 @@ public class Gameplay extends CustomAdapter implements Screen {
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.W:
-                movey = 1.5f;
+                movey = 2f;
                 break;
             case Keys.S:
-                movey = -1.5f;
+                movey = -2f;
                 break;
             case Keys.D:
-                movex = -1.5f;
+                movex = -2f;
                 break;
             case Keys.A:
-                movex = 1.5f;
+                movex = 2f;
                 break;
             case Keys.NUMPAD_8:
                 dolly.x = 0.3f;
@@ -418,13 +417,13 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 
         if ( buttonCode ==Vars.buton[4] ) {
-            if ( Functions.isCurrentState( stage, "HUD" ) )
+            if ( Func.isCurrentState( stage, "HUD" ) )
                 player.prevTower();
             return false;
         }
 
         if ( buttonCode ==Vars.buton[5] ) {
-            if ( Functions.isCurrentState( stage, "HUD" ) )
+            if ( Func.isCurrentState( stage, "HUD" ) )
                 player.nextTower();
             return false;
         }
@@ -541,7 +540,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void hide() {
-        if ( Functions.isControllerUsable() )
+        if ( Func.isControllerUsable() )
             Controllers.removeListener( this );
         Gdx.input.setInputProcessor( null );
 
@@ -554,7 +553,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void show() {
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this, gestures ) );

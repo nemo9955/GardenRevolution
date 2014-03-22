@@ -15,7 +15,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 
 
 public class Player {
@@ -55,11 +55,11 @@ public class Player {
         if ( Math.abs( Gdx.input.getX() -x ) <20 &&Math.abs( Gdx.input.getY() -y ) <20 ) {
 
             // Vector3 tmp = Player.tmp;
-            Functions.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
+            Func.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
 
             if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
-                for (int i = 0 ; i <=20 ; i ++ )
-                    for (int j = 0 ; j <=20 ; j ++ ) {
+                for (int i = 0 ; i <=20 ; i += 2 )
+                    for (int j = 0 ; j <=20 ; j += 2 ) {
                         GR.temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
                         world.getDef().addFoe( EnemyType.ROSIE, GR.temp2 );
                     }
@@ -81,9 +81,9 @@ public class Player {
 
     public void moveCamera(float amontX, float amontY) {
 
-        amontX*=Gdx.graphics.getDeltaTime()*30f;
-        amontY*=Gdx.graphics.getDeltaTime()*30f;
-        
+        amontX *= Gdx.graphics.getDeltaTime() *30f;
+        amontY *= Gdx.graphics.getDeltaTime() *30f;
+
         cam.rotateAround( getCameraRotAround(), Vector3.Y, amontX );
         if ( ( amontY >0 &&cam.direction.y <0.7f ) || ( amontY <0 &&cam.direction.y >-0.9f ) ) {
             GR.temp3.set( cam.direction ).crs( cam.up ).y = 0f;
@@ -95,7 +95,7 @@ public class Player {
 
             if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >100 ) {
                 dirTime = System.currentTimeMillis();
-                GR.gameplay.mp.sendTCP( Functions.getTDC( tower.ID, cam.direction ) );
+                GR.gameplay.mp.sendTCP( Func.getTDC( tower.ID, cam.direction ) );
                 // System.out.println( "Sending directional info : " +tower.ID +" " +cam.direction );
             }
         }
@@ -109,7 +109,7 @@ public class Player {
 
 
         Ray ray = cam.getPickRay( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        Functions.intersectLinePlane( ray, look );
+        Func.intersectLinePlane( ray, look );
 
         cam.position.set( tower.place );
         look.y = cam.position.y;

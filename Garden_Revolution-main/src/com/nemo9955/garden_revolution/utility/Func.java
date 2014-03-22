@@ -34,7 +34,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 
-public class Functions {
+public class Func {
 
     public static InputEvent clickedEvent = newInputEvent();
 

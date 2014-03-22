@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -76,7 +76,7 @@ public class Menu extends CustomAdapter implements Screen {
                 if ( exit.isPressed() )
                     Gdx.app.exit();
 
-                if ( sdr.isPressed() &&Functions.isDesktop() )
+                if ( sdr.isPressed() &&Func.isDesktop() )
                     GR.game.setScreen( new TestSceneShader() );
 
                 // if ( mode.isPressed() ) {
@@ -105,13 +105,13 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
         if ( buttonIndex ==Vars.buton[2] )
-            Functions.fire( test );
+            Func.fire( test );
 
         if ( buttonIndex ==Vars.buton[3] )
-            Functions.fire( options );
+            Func.fire( options );
 
         if ( buttonIndex ==Vars.buton[4] )
-            Functions.fire( play );
+            Func.fire( play );
 
         // if ( buttonIndex ==Vars.buton[5] )
         // Functions.fire( mode );
@@ -134,7 +134,7 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
         // Gdx.input.setInputProcessor( new InputMultiplexer( stage, new InputAdapter() {
@@ -174,7 +174,7 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.removeListener( this );
         }
     }

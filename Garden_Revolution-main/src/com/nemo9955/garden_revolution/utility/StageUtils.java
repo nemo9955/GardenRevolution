@@ -234,7 +234,7 @@ public class StageUtils {
 
                 tmp.add( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
                 gp.stage.stageToScreenCoordinates( tmp );
-                Functions.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), GR.temp4 );
+                Func.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), GR.temp4 );
                 gp.world.getWorld().getOnPath( GR.temp4, onPath, 150 );
                 gp.allySpawnArea.setPosition( onPath.x, 0.2f, onPath.z );
             }

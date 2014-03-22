@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -52,7 +52,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
         portInput = new TextField( "", skin );
         final CheckBox isHost = new CheckBox( "Is host", skin );
         final CheckBox isPublic = new CheckBox( "Is public", skin );
-        final Label theIP = new Label( Functions.getIpAddress(), skin );
+        final Label theIP = new Label( Func.getIpAddress(), skin );
 
 
         theIP.setVisible( false );
@@ -166,7 +166,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
         ipInput.setText( "188.173.17.234" );
@@ -176,7 +176,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
         if ( buttonIndex ==Vars.buton[1] )
-            Functions.fire( back );
+            Func.fire( back );
 
         return false;
 
@@ -185,7 +185,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.removeListener( this );
         }
     }

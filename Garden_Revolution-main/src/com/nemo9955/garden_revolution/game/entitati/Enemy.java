@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -39,7 +39,7 @@ public class Enemy extends LifeForm {
 
         this.life = type.life;
 
-        offset.set( Functions.getRandOffset(), 0, Functions.getRandOffset() );
+        offset.set( Func.getRandOffset(), 0, Func.getRandOffset() );
         this.path = path;
         percent = -STEP;
 
@@ -55,7 +55,7 @@ public class Enemy extends LifeForm {
         super.init( poz );
         this.life = type.life;
 
-        offset.set( Functions.getRandOffset(), 0, Functions.getRandOffset() );
+        offset.set( Func.getRandOffset(), 0, Func.getRandOffset() );
         this.path = world.getWorld().getClosestStartPath( poz );
         percent = -STEP;
 

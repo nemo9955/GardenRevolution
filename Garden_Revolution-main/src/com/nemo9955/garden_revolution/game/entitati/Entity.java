@@ -17,6 +17,8 @@ public abstract class Entity implements Poolable {
 
     private boolean              dead;
     public BoundingBox           box;
+    public float                 colRadius;
+    public boolean               isColCubic;
     public float                 angle;
     public Vector3               poz;
     protected final WorldWrapper world;
@@ -25,7 +27,6 @@ public abstract class Entity implements Poolable {
         this.world = world;
         poz = new Vector3();
         box = new BoundingBox();
-
     }
 
     public void init(Vector3 position) {
@@ -47,9 +48,21 @@ public abstract class Entity implements Poolable {
 
     protected abstract ModelInstance getModel(float x, float y, float z);
 
+    public static final float maxRap = 2f;
+
     protected void setBox(float x, float y, float z) {
         model.calculateBoundingBox( box );
         addPoz( box, x, y, z );
+        colRadius = box.getDimensions().len() /2f;
+
+        isColCubic = true;
+
+        if ( Math.max( box.getDimensions().x, box.getDimensions().y ) /Math.min( box.getDimensions().x, box.getDimensions().y ) >maxRap )
+            isColCubic = false;
+        if ( Math.max( box.getDimensions().x, box.getDimensions().z ) /Math.min( box.getDimensions().x, box.getDimensions().z ) >maxRap )
+            isColCubic = false;
+        if ( Math.max( box.getDimensions().z, box.getDimensions().y ) /Math.min( box.getDimensions().z, box.getDimensions().y ) >maxRap )
+            isColCubic = false;
     }
 
     public void update(float delta) {
@@ -57,7 +70,15 @@ public abstract class Entity implements Poolable {
     }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-        modelBatch.render( model, light );
+        if ( isEntVisible( modelBatch ) )
+            modelBatch.render( model, light );
+    }
+
+    protected boolean isEntVisible(ModelBatch modelBatch) {
+        if ( isColCubic )
+            return modelBatch.getCamera().frustum.sphereInFrustum( box.getCenter(), colRadius );
+        else
+            return modelBatch.getCamera().frustum.boundsInFrustum( box );
     }
 
     public void move(Vector3 move) {

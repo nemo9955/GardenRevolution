@@ -29,7 +29,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
 import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -42,7 +42,7 @@ public class Host extends Listener implements MultiplayerComponent {
     public Host(final Gameplay gp) {
         this.gp = gp;
         server = new Server();
-        Functions.setSerializedClasses( server.getKryo() );
+        Func.setSerializedClasses( server.getKryo() );
         server.start();
         server.addListener( this );
 
@@ -88,14 +88,14 @@ public class Host extends Listener implements MultiplayerComponent {
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get( ent.pathNo ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.offset.set( Func.getOffset( ent.ofsX ), 0, Func.getOffset( ent.ofsZ ) );
                     addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPoz ) {
                     WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
                     Enemy addFoe = gp.world.getSgPl().addFoe( EnemyType.values()[ent.ordinal], GR.temp2.set( ent.x, ent.y, ent.z ) );
-                    addFoe.offset.set( Functions.getOffset( ent.ofsX ), 0, Functions.getOffset( ent.ofsZ ) );
+                    addFoe.offset.set( Func.getOffset( ent.ofsX ), 0, Func.getOffset( ent.ofsZ ) );
                     addFoe.ID = ent.ID;
                     server.sendToAllExceptTCP( connection.getID(), ent );
                 }

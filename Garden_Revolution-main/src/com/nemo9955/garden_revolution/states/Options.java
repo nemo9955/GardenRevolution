@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -132,7 +132,7 @@ public class Options extends CustomAdapter implements Screen {
     public void show() {
 
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
     }
@@ -142,7 +142,7 @@ public class Options extends CustomAdapter implements Screen {
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
         if ( buttonIndex ==Vars.buton[1] )
-            Functions.fire( back );
+            Func.fire( back );
 
         return false;
 
@@ -151,7 +151,7 @@ public class Options extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.removeListener( this );
         }
     }

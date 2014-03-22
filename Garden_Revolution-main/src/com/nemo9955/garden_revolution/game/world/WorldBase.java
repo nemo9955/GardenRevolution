@@ -177,10 +177,13 @@ public class WorldBase implements Disposable {
 
         for (Enemy e : getEnemy() )
             e.render( modelBatch, lights, decalBatch );
+
         for (Ally e : getAlly() )
             e.render( modelBatch, lights, decalBatch );
+
         for (Shot e : getShot() )
             e.render( modelBatch, lights, decalBatch );
+
         for (Tower tower : towers )
             tower.render( modelBatch, lights, decalBatch );
     }

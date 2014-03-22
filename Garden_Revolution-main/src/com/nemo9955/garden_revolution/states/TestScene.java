@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
-import com.nemo9955.garden_revolution.utility.Functions;
+import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -86,7 +86,7 @@ public class TestScene extends CustomAdapter implements Screen {
     public void show() {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         Gdx.input.setInputProcessor( new InputMultiplexer( this, stage ) );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
     }
@@ -99,7 +99,7 @@ public class TestScene extends CustomAdapter implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT |GL20.GL_DEPTH_BUFFER_BIT );
         stage.act( delta );
 
-        if ( Functions.isAndroid() && ( Gdx.input.isKeyPressed( Keys.BACK ) ||Gdx.input.isKeyPressed( Keys.ESCAPE ) ) )
+        if ( Func.isAndroid() && ( Gdx.input.isKeyPressed( Keys.BACK ) ||Gdx.input.isKeyPressed( Keys.ESCAPE ) ) )
             GR.game.setScreen( GR.menu );
 
         // normal image rendering
@@ -138,7 +138,7 @@ public class TestScene extends CustomAdapter implements Screen {
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
         if ( buttonIndex ==Vars.buton[1] )
-            Functions.fire( back );
+            Func.fire( back );
 
         return false;
 
@@ -151,7 +151,7 @@ public class TestScene extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        if ( Functions.isControllerUsable() ) {
+        if ( Func.isControllerUsable() ) {
             Controllers.removeListener( this );
         }
     }
