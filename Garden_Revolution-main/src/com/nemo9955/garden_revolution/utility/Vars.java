@@ -47,7 +47,7 @@ public class Vars {
     // variabile multyplayer
     public static int             TCPport             = 29955;
     public static int             UDPport             = 39955;
-    public static final String    stringSeparator     = "___";
+    public static final String    stringSeparator     = "---";
 
     protected static final String waitingMessage      = "Waiting for others ...";
 

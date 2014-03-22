@@ -219,7 +219,6 @@ public class Gameplay extends CustomAdapter implements Screen {
         presDown.set( screenX, screenY );
 
         if ( !updWorld ) {
-            return false;
         }
         else if ( Func.isAndroid() ||button ==Buttons.LEFT ) {
 
@@ -241,7 +240,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         }
         else {
-            if ( Func.isDesktop() )
+            if ( Func.isDesktop() &&Gdx.input.isButtonPressed( Buttons.RIGHT ) )
                 Gdx.input.setCursorCatched( true );
         }
         return false;

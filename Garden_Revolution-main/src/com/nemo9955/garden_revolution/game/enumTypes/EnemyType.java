@@ -2,6 +2,7 @@ package com.nemo9955.garden_revolution.game.enumTypes;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -64,5 +65,8 @@ public enum EnemyType {
 
     protected abstract void propEnemys();
 
+    public static EnemyType getRandomEnemy() {
+        return EnemyType.values()[MathUtils.random( EnemyType.values().length -1 )];
+    }
 
 }

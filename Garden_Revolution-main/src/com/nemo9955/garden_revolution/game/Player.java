@@ -57,19 +57,21 @@ public class Player {
             // Vector3 tmp = Player.tmp;
             Func.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
 
-            if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
-                for (int i = 0 ; i <=20 ; i += 2 )
-                    for (int j = 0 ; j <=20 ; j += 2 ) {
-                        GR.temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
-                        world.getDef().addFoe( EnemyType.ROSIE, GR.temp2 );
-                    }
+            if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) ) {
+                if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
+                    for (int i = 0 ; i <=20 ; i += 2 )
+                        for (int j = 0 ; j <=20 ; j += 2 ) {
+                            GR.temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
+                            world.getDef().addFoe( EnemyType.getRandomEnemy(), GR.temp2 );
+                        }
+                }
+
+                if ( Gdx.input.isKeyPressed( Keys.F7 ) )
+                    world.getDef().addFoe( EnemyType.getRandomEnemy(), tempSpawner );
+
+                if ( Gdx.input.isKeyPressed( Keys.F8 ) )
+                    world.getDef().addAlly( tempSpawner, AllyType.SOLDIER );
             }
-
-            else if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) )
-                world.getDef().addFoe( EnemyType.MORCOV, tempSpawner );
-
-            else if ( Gdx.input.isButtonPressed( Buttons.RIGHT ) )
-                world.getDef().addAlly( tempSpawner, AllyType.SOLDIER );
             gestures.invalidateTapSquare();
             return true;
         }

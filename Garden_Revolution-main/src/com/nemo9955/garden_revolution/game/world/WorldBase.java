@@ -356,12 +356,11 @@ public class WorldBase implements Disposable {
 
 
     public CatmullRomSpline<Vector3> getClosestStartPath(Vector3 location) {
-        CatmullRomSpline<Vector3> closest = null;
+        CatmullRomSpline<Vector3> closest = paths.first();
         float dist = Float.MAX_VALUE;
 
         for (CatmullRomSpline<Vector3> path : getPaths() ) {
-            GR.temp2.set( path.controlPoints[0] );
-            float dst2 = location.dst2( GR.temp2 );
+            float dst2 = location.dst2( path.controlPoints[0] );
             if ( dst2 <dist ) {
                 dist = dst2;
                 closest = path;
@@ -371,7 +370,7 @@ public class WorldBase implements Disposable {
     }
 
 
-    public Vector3 getOnPath(Vector3 point, Vector3 out, float chkDst) {// TODO use this to set the position of an ally on the path
+    public Vector3 getOnPath(Vector3 point, Vector3 out, float chkDst) {
         float tmpDist, t, minDist = Float.MAX_VALUE;
         final float step = 1 /chkDst;
 

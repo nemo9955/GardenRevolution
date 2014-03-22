@@ -8,14 +8,14 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
@@ -30,8 +30,12 @@ public class Options extends CustomAdapter implements Screen {
     private Skin               skin;
     private TextButton         back;
 
+    private TextButton         current;
+    private boolean            butSelected = false;
+    private String             remName;
 
-    private static final float rap = 1.3f;
+
+    private static final float rap         = 1.3f;
 
 
     public Options() {
@@ -40,66 +44,117 @@ public class Options extends CustomAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
-        back.addListener( new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                GR.game.setScreen( GR.menu );
-            }
-
-        } );
-
-        final VerticalGroup name = new VerticalGroup();
-        final VerticalGroup action = new VerticalGroup();
-        final HorizontalGroup holder = new HorizontalGroup();
-        final ScrollPane pane = new ScrollPane( holder, skin, "clear" );
 
 
-        Label numeButon[] = new Label[Vars.noButtons];
-        TextField actButon[] = new TextField[Vars.noButtons];
-        Label numeAxis[] = new Label[Vars.noAxis];
-        TextField actAxis[] = new TextField[Vars.noAxis];
+        // final VerticalGroup name = new VerticalGroup();
+        // final VerticalGroup action = new VerticalGroup();
+        // final HorizontalGroup holder = new HorizontalGroup();
+        final Table table = new Table( skin );
+
+        table.defaults().pad( 20 );
+
 
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
-            numeButon[i] = new Label( Vars.butonName[i], skin );
-            actButon[i] = new TextField( "Button " + ( i +1 ), skin );
-            // actButon[i].
+            TextButton button = new TextButton( "Button " +Vars.buton[i], skin );
+            button.setUserObject( "Button" +Vars.stringSeparator +i );
 
-            name.addActor( numeButon[i] );
-            action.addActor( actButon[i] );
+
+            table.add( new Label( Vars.butonName[i], skin ) );
+            table.add( button );
+            table.row();
         }
 
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
-            numeAxis[i] = new Label( Vars.axisName[i], skin );
-            actAxis[i] = new TextField( "Axa " + ( i +1 ), skin );
+            TextButton axis = new TextButton( "Axis " +Vars.axis[i], skin );
+            axis.setUserObject( "Axis" +Vars.stringSeparator +i );
 
-            name.addActor( numeAxis[i] );
-            action.addActor( actAxis[i] );
+            table.add( new Label( Vars.axisName[i], skin ) );
+            table.add( axis );
+            table.row();
         }
 
-        holder.addActor( name );
-        holder.addActor( action );
-        holder.addActor( back );
-        holder.setFillParent( true );
-        // holder.setSpacing( 20 );
+        table.add( back ).colspan( 2 );
 
-        // pane.setFillParent( true );
 
-        // name.setAlignment( Align.right );
-        // name.setSpacing( 40 );
-        // name.setFillParent( true );
-        // name.pack();
-        // action.setAlignment( Align.left );
-        // action.setSpacing( 40 );
-        // action.setFillParent( true );
+        final ScrollPane pane = new ScrollPane( table, skin, "clear" );
+        pane.setFillParent( true );
 
-        // pane.pack();
-        pane.setHeight( stage.getHeight() );
-        pane.setWidth( stage.getWidth() /2 );
-        pane.setX( stage.getWidth() /2 -pane.getWidth() /2 );
+        pane.addListener( new InputListener() {
+
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Actor actor = stage.hit( x, y, true );
+                if ( ! ( actor instanceof TextButton ) &&butSelected ) {
+                    current.setText( remName );
+                    current.invalidateHierarchy();
+                }
+                return false;
+            }
+        } );
+
+        pane.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( back.equals( actor ) )
+                    GR.game.setScreen( GR.menu );
+                else if ( actor instanceof TextButton ) {
+                    if ( butSelected &&current !=null ) {
+                        current.setText( remName );
+                        current.invalidateHierarchy();
+                    }
+
+                    current = (TextButton) actor;
+                    butSelected = true;
+                    remName = current.getText().toString();
+
+                    if ( current.getUserObject().toString().contains( "Button" ) )
+                        current.setText( "Press a button ..." );
+                    else
+                        current.setText( "Move an axis ..." );
+
+                    current.invalidateHierarchy();
+                }
+            }
+        } );
 
 
         stage.addActor( pane );
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonIndex) {
+
+
+        if ( butSelected ) {
+            String[] parts = current.getUserObject().toString().split( Vars.stringSeparator );
+
+            if ( parts[0].contains( "Button" ) ) {
+                Vars.buton[Integer.parseInt( parts[1] )] = buttonIndex;
+                current.setText( "Button " +buttonIndex );
+                current.invalidateHierarchy();
+                butSelected = false;
+            }
+        }
+        else if ( buttonIndex ==Vars.buton[1] )
+            Func.fire( back );
+
+        return false;
+
+    }
+
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+        if ( butSelected &&value >0.2f ) {
+            String[] parts = current.getUserObject().toString().split( Vars.stringSeparator );
+
+            if ( parts[0].contains( "Axis" ) ) {
+                Vars.axis[Integer.parseInt( parts[1] )] = axisCode;
+                current.setText( "Axis " +axisCode );
+                current.invalidateHierarchy();
+                butSelected = false;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -131,29 +186,17 @@ public class Options extends CustomAdapter implements Screen {
     @Override
     public void show() {
 
-        Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
-        if ( Func.isControllerUsable() ) {
+        if ( Func.isControllerUsable() )
             Controllers.addListener( this );
-        }
+        Gdx.input.setInputProcessor( new InputMultiplexer( this, stage ) );
     }
 
-
-    @Override
-    public boolean buttonDown(Controller controller, int buttonIndex) {
-
-        if ( buttonIndex ==Vars.buton[1] )
-            Func.fire( back );
-
-        return false;
-
-    }
 
     @Override
     public void hide() {
-        Gdx.input.setInputProcessor( null );
-        if ( Func.isControllerUsable() ) {
+        if ( Func.isControllerUsable() )
             Controllers.removeListener( this );
-        }
+        Gdx.input.setInputProcessor( null );
     }
 
     @Override

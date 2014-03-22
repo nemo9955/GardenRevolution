@@ -1,6 +1,5 @@
 package com.nemo9955.garden_revolution.game.entitati;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
@@ -22,7 +21,7 @@ public abstract class LifeForm extends Entity {
         super.init( x, y, z );
         animation = new AnimationController( model );
         direction = Vector3.Zero;
-        update( Gdx.graphics.getDeltaTime() );
+        // update( Gdx.graphics.getDeltaTime() );
     }
 
     @Override
