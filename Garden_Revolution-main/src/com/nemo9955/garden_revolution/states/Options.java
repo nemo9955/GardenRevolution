@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,6 +22,7 @@ import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
@@ -35,9 +37,12 @@ public class Options extends CustomAdapter implements Screen {
     private TextButton         current;
     private boolean            butSelected = false;
     private String             remName;
+    private StageActorPointer  pointer;
 
 
     private static final float rap         = 1.3f;
+    private Label              opt;
+    private ScrollPane         pane;
 
 
     public Options() {
@@ -46,15 +51,17 @@ public class Options extends CustomAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
+        pointer = new StageActorPointer( stage );
 
 
         // final VerticalGroup name = new VerticalGroup();
         // final VerticalGroup action = new VerticalGroup();
         // final HorizontalGroup holder = new HorizontalGroup();
         final Table table = new Table( skin );
+        opt = new Label( "Options", skin );
 
         table.defaults().pad( 20 );
-
+        table.add( opt ).colspan( 2 ).pad( 40 ).row();
 
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
             TextButton button = new TextButton( "Button " +CoButt.values()[i].id, skin );
@@ -78,7 +85,7 @@ public class Options extends CustomAdapter implements Screen {
         table.add( back ).colspan( 2 );
 
 
-        final ScrollPane pane = new ScrollPane( table, skin, "clear" );
+        pane = new ScrollPane( table, skin, "clear" );
         pane.setFillParent( true );
 
         pane.addListener( new InputListener() {
@@ -121,6 +128,7 @@ public class Options extends CustomAdapter implements Screen {
 
 
         stage.addActor( pane );
+
     }
 
     @Override
@@ -137,8 +145,14 @@ public class Options extends CustomAdapter implements Screen {
                 butSelected = false;
             }
         }
+        else if ( buttonIndex ==CoButt.Fire.id )
+            pointer.fireSelected();
         else if ( buttonIndex ==CoButt.Back.id )
-            Func.fire( back );
+            Func.click( back );
+        else if ( buttonIndex ==CoButt.InvX.id )
+            Vars.invertControlletX *= -1;
+        else if ( buttonIndex ==CoButt.InvY.id )
+            Vars.invertControlletY *= -1;
 
         return false;
 
@@ -155,20 +169,51 @@ public class Options extends CustomAdapter implements Screen {
                 current.invalidateHierarchy();
                 butSelected = false;
             }
+            return false;
         }
+
+        value = MathUtils.clamp( value, -1f, 1f );
+
+        if ( Math.abs( value ) <Vars.deadZone ) {
+            value = 0f;
+            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
+                pointer.mvx = 0;
+            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
+                pointer.mvy = 0;
+        }
+        else {
+            if ( axisCode ==CoAxis.mvX.id )
+                pointer.mvx = value *Vars.invertControlletX;
+            if ( axisCode ==CoAxis.mvY.id )
+                pointer.mvy = value *Vars.invertControlletY;
+        }
+
         return false;
     }
+
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor( 0, 0, 0, 0 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
+
+        // Rectangle zon = Func.getScrShrink( 0.8f, 0.8f );
+        // stage.stageToScreenCoordinates( GR.tmp2.set( pointer.getPoint() ) );
+        // if ( !zon.contains( GR.tmp2 ) ) {
+        // GR.tmp2.sub( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        // // pane.moveBy(- GR.tmp2.x /3, -GR.tmp2.y /3 );
+        // pane.setVelocityX( -GR.tmp2.x /3 );
+        // pane.setVelocityY( -GR.tmp2.y /3 );
+        // pane.f
+        // // pointer.movePointer( GR.tmp2.x /3, GR.tmp2.y /3 );
+        // System.out.println( GR.tmp2 );
+        // }
+
         stage.act();
         stage.draw();
-
+        pointer.draw();
     }
-
 
     @Override
     public boolean keyDown(int keycode) {
@@ -187,6 +232,10 @@ public class Options extends CustomAdapter implements Screen {
 
     @Override
     public void show() {
+
+        stage.draw();
+        pointer.setSelectedActor( opt );
+
 
         if ( Func.isControllerUsable() )
             Controllers.addListener( this );

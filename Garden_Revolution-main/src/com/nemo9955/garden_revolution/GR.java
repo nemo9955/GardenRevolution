@@ -1,6 +1,7 @@
 package com.nemo9955.garden_revolution;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
@@ -29,9 +30,13 @@ public class GR {
     public final static String        levelsLocation = "harti/nivele/";
 
 
+    public static final Vector2       tmp1           = new Vector2();
+    public static final Vector2       tmp2           = new Vector2();
+
     public static final Vector3       temp1          = new Vector3();
     public static final Vector3       temp2          = new Vector3();
     public static final Vector3       temp3          = new Vector3();
     public static final Vector3       temp4          = new Vector3();
+
 
 }

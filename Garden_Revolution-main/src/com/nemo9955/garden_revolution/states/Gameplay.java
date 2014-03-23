@@ -60,8 +60,6 @@ public class Gameplay extends CustomAdapter implements Screen {
     public float                movex          = 0;
     public float                movey          = 0;
     public boolean              updWorld       = true;
-    @SuppressWarnings("unused")
-    private final int           scrw           = Gdx.graphics.getWidth();
     private Vector3             dolly          = new Vector3();
     public static Vector2       tmp1           = new Vector2();
     public float                touchPadTimmer = 0;
@@ -415,29 +413,17 @@ public class Gameplay extends CustomAdapter implements Screen {
                 return false;
             }
         }
-
-
-        if ( buttonCode ==CoButt.PrevT.id ) {
-            if ( Func.isCurrentState( stage, "HUD" ) )
-                player.prevTower();
-            return false;
-        }
-
-        if ( buttonCode ==CoButt.NextT.id ) {
-            if ( Func.isCurrentState( stage, "HUD" ) )
-                player.nextTower();
-            return false;
-        }
-
-        if ( buttonCode ==CoButt.X.id ) {
+        else if ( buttonCode ==CoButt.InvX.id )
             Vars.invertControlletX *= -1;
-            return false;
-        }
 
-        if ( buttonCode ==CoButt.Y.id ) {
+        else if ( buttonCode ==CoButt.InvY.id )
             Vars.invertControlletY *= -1;
-            return false;
-        }
+
+        else if ( buttonCode ==CoButt.PrevT.id &&Func.isCurrentState( stage, "HUD" ) )
+            player.prevTower();
+
+        else if ( buttonCode ==CoButt.NextT.id &&Func.isCurrentState( stage, "HUD" ) )
+            player.nextTower();
 
         return false;
 

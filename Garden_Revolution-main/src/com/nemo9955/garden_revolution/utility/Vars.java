@@ -28,11 +28,11 @@ public class Vars {
     public static boolean         showDebug           = false;
 
     // pentru controller
-    public static float           invertControlletY   = 1;
-    public static float           invertControlletX   = -1;
+    public static float           invertControlletY   = -1;
+    public static float           invertControlletX   = 1;
     public static float           multiplyControlletY = 1;
     public static float           multiplyControlletX = 1;
-    public static float           deadZone            = 0.01f;
+    public static float           deadZone            = 0.05f;
     // public static int buton[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
     // public static final String butonName[] = { "Fire", "2", "3", "4", "Previous camera", "Next Camera", "7", "8", "9", "10", "11", "12" };
     // public static int axis[] = { 2, 3, 1, 0 };
@@ -53,7 +53,13 @@ public class Vars {
 
 
     public enum CoButt {
-        Fire(0, "Fire"), Back(1, "Back"), NextT(2, "Next Tower"), PrevT(3, "Previews Tower"), A(4, "A Button"), B(5, "B Button"), X(6, "X Button"), Y(7, "Y Button");
+        Fire(0, "Fire"), //
+        Back(5, "Back"), //
+        NextT(3, "Next Tower"), //
+        PrevT(2, "Last Tower"), //
+        InvY(7, "Invert Y"), //
+        InvX(6, "Invert X"), //
+        SpdUp(1, "Speed Up Cam"); //
 
         public int    id;
         public String name;

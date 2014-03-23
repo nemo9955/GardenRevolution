@@ -4,14 +4,15 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -24,17 +25,18 @@ import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
+import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
 public class LevelSelector extends CustomAdapter implements Screen {
 
-    // public static boolean internal = true;
     private Stage              stage;
     private Skin               skin;
     private Table              table;
-    // private StageActorPointer pointer;
+    private StageActorPointer  pointer;
 
     // private FileHandle lvlLoc;
     private String             toAcces;
@@ -49,7 +51,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         table = new Table( skin );
         table.setHeight( stage.getHeight() );
-        // pointer = new StageActorPointer( stage );
+        pointer = new StageActorPointer( stage );
     }
 
     @Override
@@ -134,7 +136,10 @@ public class LevelSelector extends CustomAdapter implements Screen {
         } );
 
         stage.addActor( lista );
-        // pointer.setSelectedActor( start );
+
+
+        stage.draw();
+        pointer.setSelectedActor( start );
 
         Gdx.input.setInputProcessor( new InputMultiplexer( stage, this ) );
         if ( Func.isControllerUsable() ) {
@@ -152,7 +157,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
         }
         if ( value ==PovDirection.north ) {
             int index = elem.getSelectedIndex() -1;
-            if ( index <=0 )
+            if ( index <0 )
                 index = elem.getItems().size -1;
             elem.setSelectedIndex( index );
         }
@@ -160,18 +165,45 @@ public class LevelSelector extends CustomAdapter implements Screen {
 
     }
 
+
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
-
         if ( buttonIndex ==CoButt.Fire.id )
-            Func.fire( start );
-        if ( buttonIndex ==CoButt.Back.id )
-            Func.fire( back );
+            pointer.fireSelected();
 
+        else if ( buttonIndex ==CoButt.Back.id )
+            Func.click( back );
+
+        else if ( buttonIndex ==CoButt.InvX.id )
+            Vars.invertControlletX *= -1;
+        else if ( buttonIndex ==CoButt.InvY.id )
+            Vars.invertControlletY *= -1;
 
         return false;
 
     }
+
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+        value = MathUtils.clamp( value, -1f, 1f );
+
+        if ( Math.abs( value ) <Vars.deadZone ) {
+            value = 0f;
+            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
+                pointer.mvx = 0;
+            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
+                pointer.mvy = 0;
+        }
+        else {
+            if ( axisCode ==CoAxis.mvX.id )
+                pointer.mvx = value *Vars.invertControlletX;
+            if ( axisCode ==CoAxis.mvY.id )
+                pointer.mvy = value *Vars.invertControlletY;
+        }
+
+        return false;
+    }
+
 
     @Override
     public void render(float delta) {
@@ -180,7 +212,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
 
         stage.act( delta );
         stage.draw();
-        // pointer.draw( delta );
+        pointer.draw();
     }
 
     @Override

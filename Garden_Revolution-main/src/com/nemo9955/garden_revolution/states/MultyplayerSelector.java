@@ -177,7 +177,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
         if ( buttonIndex ==CoButt.Back.id )
-            Func.fire( back );
+            Func.click( back );
 
         return false;
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -84,7 +85,7 @@ public class Func {
         return "Could not detect the IP.";
     }
 
-    public static void fire(Actor actor) {
+    public static void click(Actor actor) {
 
         clickedEvent.setType( Type.touchDown );
         actor.fire( clickedEvent );
@@ -219,5 +220,18 @@ public class Func {
 
     public static boolean isAndroid() {
         return Gdx.app.getType() ==ApplicationType.Android;
+    }
+
+    public static final Rectangle screenBounds = new Rectangle();
+
+    public static Rectangle getScrZon() {
+        screenBounds.set( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        return screenBounds;
+    }
+
+    public static Rectangle getScrShrink(float rapx, float rapy) {
+        screenBounds.setSize( Gdx.graphics.getWidth() *rapx, Gdx.graphics.getHeight() *rapy );
+        screenBounds.setCenter( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        return screenBounds;
     }
 }
