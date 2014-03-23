@@ -9,6 +9,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -43,6 +44,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.StageUtils;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
@@ -66,14 +68,15 @@ public class Gameplay extends CustomAdapter implements Screen {
     private TweenManager        tweeger;
 
     private Vector2             presDown       = new Vector2();
-    public Stage                stage;
     public Label                viataTurn;
     public Label                fps;
     public Touchpad             mover;
     public Image                weaponCharger;
     public TextButton           ready;
     public Image                allyPlacer;
+    public Stage                stage;
 
+    public StageActorPointer    pointer;
     public boolean              showASA        = false;
     public Decal                allySpawnArea  = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
 
@@ -92,6 +95,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         modelBatch = new ModelBatch();
 
         allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
+        pointer = new StageActorPointer( stage );
 
     }
 
@@ -134,6 +138,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         stage.act();
         stage.draw();
+        pointer.draw();
     }
 
 
@@ -163,6 +168,9 @@ public class Gameplay extends CustomAdapter implements Screen {
             stage.clear();
         }
         stage = StageUtils.makeGamePlayStage( stage, this );
+        stage.draw();
+        pointer.setStage( stage );
+        pointer.setVisible( false );
     }
 
     public void postInit(WorldWrapper newWorld) {
@@ -393,14 +401,32 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     @Override
+    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+
+        if ( Func.isCurrentState( stage, "Pause" ) ) {
+            if ( value ==PovDirection.north )
+                pointer.goInDir( 0, 1 );
+            else if ( value ==PovDirection.south )
+                pointer.goInDir( 0, -1 );
+            else if ( value ==PovDirection.southWest )
+                pointer.goInDir( -1, -1 );
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean buttonDown(Controller cont, int buttonCode) {
 
         if ( buttonCode ==CoButt.Fire.id ) {
-            if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
+
+            if ( pointer.isVisible() ) {
+                pointer.fireSelected();
+            }
+            else if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( true );
             }
-
-            if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
+            else if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
                 weaponCharger.setColor( Color.CLEAR );
                 weaponCharger.setVisible( true );
                 player.getTower().charge = ( -cont.getAxis( CoAxis.mvY.id ) +1 ) /2;
@@ -425,6 +451,9 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( buttonCode ==CoButt.NextT.id &&Func.isCurrentState( stage, "HUD" ) )
             player.nextTower();
 
+        else if ( buttonCode ==CoButt.Back.id &&Func.isCurrentState( stage, "Tower Upgrade" ) )
+            Func.click( Func.getActorInParentStage( stage, "Tower Upgrade", "Back" ) );
+
         return false;
 
     }
@@ -448,7 +477,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {
+    public boolean axisMoved(Controller controller, int axisCode, float value) {//TODO make an enum that holds the curent actor that is visible
         value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
 
 
@@ -460,10 +489,8 @@ public class Gameplay extends CustomAdapter implements Screen {
                 movey = 0;
         }
         else {
-
             if ( axisCode ==CoAxis.mvX.id )
                 movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
-
             if ( axisCode ==CoAxis.mvY.id )
                 movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
         }

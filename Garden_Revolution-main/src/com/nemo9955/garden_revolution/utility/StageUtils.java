@@ -101,7 +101,7 @@ public class StageUtils {
 
         final Table optContinut = new Table();// aici e tot ce tine de optiunile in-game ---------------------------------------------------------------------------------
         final ScrollPane optiuni = new ScrollPane( optContinut, skin );
-        final TextButton backBut = new TextButton( "Back", skin, "demon" );
+        final TextButton backOpt = new TextButton( "Back", skin, "demon" );
         final CheckBox updWaves = new CheckBox( "Auto-Update Wave", skin );
         updWaves.setChecked( Vars.updateUave );
         final CheckBox debug = new CheckBox( "Show Debug", skin );
@@ -115,11 +115,12 @@ public class StageUtils {
         optContinut.defaults().space( 70 *Vars.densitate );
         optContinut.add( updWaves ).row();
         optContinut.add( debug ).row();
-        optContinut.add( backBut ).row();
+        optContinut.add( backOpt ).row();
 
 
         final Group upgradeTower = new Group();// aici e tot ce tine de meniul de upgradare a turnurilor ------------------------------------------------------------------
         final TextButton backTowe1 = new TextButton( "Bk", skin );// FIXME repara afiseara butonului
+        backTowe1.setName( "Back" );
         final TextButton backTowe2 = new TextButton( "Bk", skin );
         final TextButton basicT = new TextButton( "BASIC", skin );
         final ImageButton miniGun = new ImageButton( IconType.SAGETI.getAsDrawable( skin, 70, 70 ) );
@@ -162,11 +163,15 @@ public class StageUtils {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gp.updWorld = false;
+                    gp.pointer.setVisible( true );
+                    gp.pointer.setSelectedActor( resumeBut );
                 }
                 else if ( turnIG.isPressed() ) {
                     hud.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gp.updWorld = false;
+                    gp.pointer.setVisible( true );
+                    gp.pointer.setSelectedActor( miniGun );
                 }
                 else if ( gp.ready.isPressed() ) {
                     // singleplayer part
@@ -241,7 +246,7 @@ public class StageUtils {
         } );
 
         // pentru butoanele din pause
-        final ChangeListener pauseButons = new ChangeListener() {
+        pauseIG.addListener( new ChangeListener() {
 
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
@@ -249,13 +254,17 @@ public class StageUtils {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     optiuni.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gp.updWorld = false;
+                    gp.pointer.setVisible( true );
+                    gp.pointer.setSelectedActor( backOpt ); 
                 }
                 else if ( resumeBut.isPressed() ) {
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gp.updWorld = true;
+                    gp.pointer.setVisible( false );
                 }
                 else if ( meniuBut.isPressed() ) {
+                    gp.pointer.setVisible( false );
                     hud.setVisible( true );
                     hud.addAction( Actions.alpha( 1 ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ), Actions.run( new Runnable() {
@@ -267,7 +276,7 @@ public class StageUtils {
                     } ) ) );
                 }
             }
-        };
+        } );
 
 
         // pentru tot ce tine de upgradarea turnurilor
@@ -279,6 +288,7 @@ public class StageUtils {
                     upgradeTower.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     hud.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                     gp.updWorld = true;
+                    gp.pointer.setVisible( false );
                 }
                 else if ( basicT.isPressed() )
                     gp.player.upgradeCurentTower( TowerType.BASIC );
@@ -296,7 +306,7 @@ public class StageUtils {
 
             @Override
             public void changed(final ChangeEvent event, final Actor actor) {
-                if ( backBut.isPressed() ) {
+                if ( backOpt.isPressed() ) {
                     optiuni.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                     pauseIG.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                 }
@@ -320,7 +330,6 @@ public class StageUtils {
             }
         } );
 
-        pauseIG.addListener( pauseButons );
 
         upgradeTower.addListener( turnButons );
         hud.addListener( hudButons );

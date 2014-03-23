@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -204,6 +205,15 @@ public class Func {
         return false;
     }
 
+    public static Actor getActorInParentStage(Stage stage, String parent, String name) {
+        for (Actor pare : stage.getActors() )
+            if ( pare.isVisible() &&pare.getName() ==parent )
+                for (Actor act : ( (Group) pare ).getChildren() )
+                    if ( act.getName() ==name )
+                        return act;
+        return null;
+    }
+
     public static float getOffset(byte ofs) {
         return ofs *0.1f;
         // return 0;
@@ -222,16 +232,21 @@ public class Func {
         return Gdx.app.getType() ==ApplicationType.Android;
     }
 
-    public static final Rectangle screenBounds = new Rectangle();
+    public static final Rectangle zonBound = new Rectangle();
 
     public static Rectangle getScrZon() {
-        screenBounds.set( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-        return screenBounds;
+        zonBound.set( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+        return zonBound;
+    }
+
+    public static Rectangle getStageZon(Stage stage) {
+        zonBound.set( 0, 0, stage.getWidth(), stage.getHeight() );
+        return zonBound;
     }
 
     public static Rectangle getScrShrink(float rapx, float rapy) {
-        screenBounds.setSize( Gdx.graphics.getWidth() *rapx, Gdx.graphics.getHeight() *rapy );
-        screenBounds.setCenter( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
-        return screenBounds;
+        zonBound.setSize( Gdx.graphics.getWidth() *rapx, Gdx.graphics.getHeight() *rapy );
+        zonBound.setCenter( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
+        return zonBound;
     }
 }
