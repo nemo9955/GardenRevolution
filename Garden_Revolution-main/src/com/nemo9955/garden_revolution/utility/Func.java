@@ -16,8 +16,12 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
@@ -262,5 +266,17 @@ public class Func {
         zonBound.setSize( Gdx.graphics.getWidth() *rapx, Gdx.graphics.getHeight() *rapy );
         zonBound.setCenter( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 );
         return zonBound;
+    }
+
+    public static ImageTextButton newImageTextButton(String string, Skin skin) {
+        ImageTextButton imageTextButton = new ImageTextButton( string, skin );
+        imageTextButton.getImage().setTouchable( Touchable.disabled );
+        return imageTextButton;
+    }
+
+    public static CheckBox newCheckBox(String string, Skin skin) {
+        CheckBox checkBox = new CheckBox( string, skin );
+        checkBox.getImage().setTouchable( Touchable.disabled );
+        return checkBox;
     }
 }

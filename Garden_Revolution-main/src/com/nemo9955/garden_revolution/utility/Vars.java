@@ -48,13 +48,14 @@ public class Vars {
 
     public enum CoButt {
         Fire(0, "Fire"), //
-        Back(5, "Back"), //
+        Back(1, "Back"), //
         TowerUpgr(4, "Upgrade tower"), //
         NextT(3, "Next Tower"), //
         PrevT(2, "Last Tower"), //
+        CallAlly(5, "Last Tower"), //
         InvY(7, "Invert Y"), //
         InvX(6, "Invert X"), //
-        SpdUp(1, "Speed Up Cam"); //
+        SpdUp(11, "Speed Up Cam"); //
 
         public int    id;
         public String name;

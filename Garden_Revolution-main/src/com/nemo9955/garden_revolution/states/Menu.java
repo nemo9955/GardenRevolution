@@ -13,7 +13,6 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -51,17 +50,12 @@ public class Menu extends CustomAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         // stage = new Stage();
 
-        final ImageTextButton options = new ImageTextButton( "Options", GR.skin );
-        options.getImage().setTouchable( Touchable.disabled );
+        final ImageTextButton options = Func.newImageTextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );
         play = new ImageButton( GR.skin, "start" );
         final ImageButton exit = new ImageButton( GR.skin, "exit" );
         final ImageButton test = new ImageButton( GR.skin, "test" );
 
-
-        // mode = new CheckBox( "Use intern", skin );
-
-        // mode.setChecked( LevelSelector.internal );
 
         final Table tab = new Table( GR.skin );
         tab.setFillParent( true );

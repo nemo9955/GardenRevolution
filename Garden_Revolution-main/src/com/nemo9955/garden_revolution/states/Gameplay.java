@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
+import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.GameClient;
@@ -78,6 +79,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public StageActorPointer    pointer;
     public boolean              showASA        = false;
+    public final Vector3        onPath         = new Vector3();
     public Decal                allySpawnArea  = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
 
     public MultiplayerComponent mp             = null;
@@ -156,6 +158,13 @@ public class Gameplay extends CustomAdapter implements Screen {
             player.moveCamera( movex, movey );
 
         player.update( delta );
+
+
+        if ( showASA &&!Gdx.input.isTouched() ) {
+            Func.intersectLinePlane( GR.ray1.set( player.getCamera().position, player.getCamera().direction ), GR.temp4 );
+            world.getWorld().getOnPath( GR.temp4, onPath, 150 );
+            allySpawnArea.setPosition( onPath.x, 0.2f, onPath.z );
+        }
 
         world.getWorld().update( delta );
     }
@@ -444,10 +453,19 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( buttonCode ==CoButt.TowerUpgr.id &&Func.isCurrentState( stage, "HUD" ) )
             Func.click( GameStageMaker.hudTowerBut );
 
+        else if ( buttonCode ==CoButt.CallAlly.id &&Func.isCurrentState( stage, "HUD" ) ) {
+            showASA = true;
+        }
+
         else if ( buttonCode ==CoButt.Back.id ) {
-            Actor actBkBut = Func.getActorInActiveStage( stage, "Back" );
-            if ( actBkBut !=null )
-                Func.click( actBkBut );
+            if ( showASA ) {
+                showASA = false;
+            }
+            else {
+                Actor actBkBut = Func.getActorInActiveStage( stage, "Back" );
+                if ( actBkBut !=null )
+                    Func.click( actBkBut );
+            }
         }
 
         return false;
@@ -467,6 +485,16 @@ public class Gameplay extends CustomAdapter implements Screen {
                 player.getTower().fireChargedTime = 0;
                 player.getTower().charge = 0;
             }
+        }
+        else if ( buttonCode ==CoButt.CallAlly.id &&showASA ) {
+            showASA = false;
+
+            onPath.y = 0;
+            for (int i = 0 ; i <3 ; i ++ ) {
+                GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
+                world.getDef().addAlly( GR.temp4.add( onPath ), AllyType.SOLDIER );
+            }
+
         }
         return false;
 

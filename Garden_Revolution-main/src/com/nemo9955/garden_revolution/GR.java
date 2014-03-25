@@ -3,6 +3,7 @@ package com.nemo9955.garden_revolution;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
@@ -31,6 +32,8 @@ public class GR {
     public static final String        levelsLocation = "harti/nivele/";
     public static Skin                skin;
 
+
+    public static final Ray           ray1           = new Ray( new Vector3(), new Vector3() );
 
     public static final Vector2       tmp1           = new Vector2();
     public static final Vector2       tmp2           = new Vector2();

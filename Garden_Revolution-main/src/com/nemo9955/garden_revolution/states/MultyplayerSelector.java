@@ -49,8 +49,8 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
         final TextButton start = new TextButton( "Start", GR.skin );
         ipInput = new TextField( "", GR.skin );
         portInput = new TextField( "", GR.skin );
-        final CheckBox isHost = new CheckBox( "Is host", GR.skin );
-        final CheckBox isPublic = new CheckBox( "Is public", GR.skin );
+        final CheckBox isHost = Func.newCheckBox( "Is host", GR.skin );
+        final CheckBox isPublic = Func.newCheckBox( "Is public", GR.skin );
         final Label theIP = new Label( Func.getIpAddress(), GR.skin );
 
 

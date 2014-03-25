@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -174,8 +173,7 @@ public class GameStageMaker {
 
         gp.allyPlacer.addListener( new InputListener() {
 
-            private final Vector2 tmp    = new Vector2();
-            private final Vector3 onPath = new Vector3();
+            private final Vector2 tmp = new Vector2();
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -200,10 +198,10 @@ public class GameStageMaker {
                 // if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
 
                 if ( Func.getStageZon( gp.stage ).contains( event.getStageX(), event.getStageY() ) ) {
-                    onPath.y = 0;
+                    gp.onPath.y = 0;
                     for (int i = 0 ; i <3 ; i ++ ) {
                         GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                        gp.world.getDef().addAlly( GR.temp4.add( onPath ), AllyType.SOLDIER );
+                        gp.world.getDef().addAlly( GR.temp4.add( gp.onPath ), AllyType.SOLDIER );
                     }
                 }
                 // System.out.println( tmp.x +" " +tmp.y );
@@ -218,8 +216,8 @@ public class GameStageMaker {
                 tmp.add( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
                 gp.stage.stageToScreenCoordinates( tmp );
                 Func.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), GR.temp4 );
-                gp.world.getWorld().getOnPath( GR.temp4, onPath, 150 );
-                gp.allySpawnArea.setPosition( onPath.x, 0.2f, onPath.z );
+                gp.world.getWorld().getOnPath( GR.temp4, gp.onPath, 150 );
+                gp.allySpawnArea.setPosition( gp.onPath.x, 0.2f, gp.onPath.z );
             }
         } );
 
@@ -299,16 +297,16 @@ public class GameStageMaker {
         optTab = new Table();
         optScrollP = new ScrollPane( optTab, GR.skin );
         optBackBut = new TextButton( "Back", GR.skin, "demon" );
-        optAutUpdBut = new CheckBox( "Auto-Update Wave", GR.skin );
+        optAutUpdBut = Func.newCheckBox( "Auto-Update Wave", GR.skin );
         optAutUpdBut.setChecked( Vars.updateUave );
-        optShDebugBut = new CheckBox( "Show Debug", GR.skin );
+        optShDebugBut = Func.newCheckBox( "Show Debug", GR.skin );
         optShDebugBut.setChecked( Vars.showDebug );
 
 
-        optInvMX = new CheckBox( "Invert Drag X", GR.skin );
-        optInvMY = new CheckBox( "Invert Drag Y", GR.skin );
-        optInvPX = new CheckBox( "Invert TouchPad X", GR.skin );
-        optInvPY = new CheckBox( "Invert TouchPad Y", GR.skin );
+        optInvMX = Func.newCheckBox( "Invert Drag X", GR.skin );
+        optInvMY = Func.newCheckBox( "Invert Drag Y", GR.skin );
+        optInvPX = Func.newCheckBox( "Invert TouchPad X", GR.skin );
+        optInvPY = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
 
         ChangeListener invButtons = new ChangeListener() {
 

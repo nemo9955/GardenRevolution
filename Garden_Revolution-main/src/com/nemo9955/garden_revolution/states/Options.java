@@ -89,10 +89,10 @@ public class Options extends CustomAdapter implements Screen {
             }
         } );
 
-        final CheckBox invMX = new CheckBox( "Invert Drag X", GR.skin );
-        final CheckBox invMY = new CheckBox( "Invert Drag Y", GR.skin );
-        final CheckBox invPX = new CheckBox( "Invert TouchPad X", GR.skin );
-        final CheckBox invPY = new CheckBox( "Invert TouchPad Y", GR.skin );
+        final CheckBox invMX = Func.newCheckBox( "Invert Drag X", GR.skin );
+        final CheckBox invMY = Func.newCheckBox( "Invert Drag Y", GR.skin );
+        final CheckBox invPX = Func.newCheckBox( "Invert TouchPad X", GR.skin );
+        final CheckBox invPY = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
 
         ChangeListener invButtons = new ChangeListener() {
 

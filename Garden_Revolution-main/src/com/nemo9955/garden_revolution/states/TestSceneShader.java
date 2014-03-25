@@ -105,7 +105,7 @@ public class TestSceneShader extends CustomAdapter implements Screen {
 
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
-        if ( buttonIndex ==CoButt.Fire.id )
+        if ( buttonIndex ==CoButt.Back.id )
             GR.game.setScreen( GR.menu );
         return false;
 

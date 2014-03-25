@@ -72,11 +72,13 @@ public class StageActorPointer {
 
 
     private void updatePointer() {
-        movePoint( mvx, mvy );
+        selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
+
+        if ( !Func.getStageZon( stage ).contains( selCenter ) )
+            selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
 
         Actor hit = stage.hit( selCenter.x, selCenter.y, true );
         if ( hit !=null ) {
-            // System.out.println( hit );
             if ( isValid( hit ) &&hit !=selected ) {
                 setSelectedActor( hit );
                 mvx = 0;
@@ -85,12 +87,6 @@ public class StageActorPointer {
         }
     }
 
-    private void movePoint(float movex, float movey) {
-        selCenter.add( GR.tmp1.set( movex, movey ).scl( Gdx.graphics.getDeltaTime() *400 ) );
-
-        if ( !Func.getStageZon( stage ).contains( selCenter ) )
-            selCenter.sub( GR.tmp1.set( movex, movey ).scl( Gdx.graphics.getDeltaTime() *400 ) );
-    }
 
     private boolean isValid(Actor hit) {
         if ( hit instanceof ImageButton )
