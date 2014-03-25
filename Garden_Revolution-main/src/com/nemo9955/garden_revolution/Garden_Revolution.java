@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
 import com.nemo9955.garden_revolution.states.Menu;
@@ -64,6 +65,8 @@ public class Garden_Revolution extends Game {
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
 
         Texture.setEnforcePotImages( false );
+
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
         GR.multyplayer = new MultyplayerSelector();
         GR.options = new Options();

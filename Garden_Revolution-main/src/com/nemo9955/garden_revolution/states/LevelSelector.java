@@ -16,7 +16,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -34,7 +33,6 @@ import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 public class LevelSelector extends CustomAdapter implements Screen {
 
     private Stage              stage;
-    private Skin               skin;
     private Table              table;
     private StageActorPointer  pointer;
 
@@ -47,9 +45,9 @@ public class LevelSelector extends CustomAdapter implements Screen {
     private TextButton         back;
 
     public LevelSelector() {
-        skin = GR.manager.get( Assets.SKIN_JSON.path() );
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
-        table = new Table( skin );
+        table = new Table( GR.skin );
         table.setHeight( stage.getHeight() );
         pointer = new StageActorPointer( stage );
     }
@@ -91,12 +89,12 @@ public class LevelSelector extends CustomAdapter implements Screen {
             Arrays.sort( harti );
         }
 
-        start = new TextButton( "Start", skin );
-        elem = new List<String>( skin );
+        start = new TextButton( "Start", GR.skin );
+        elem = new List<String>( GR.skin );
         elem.setItems( harti );
-        final TextButton multy = new TextButton( "Multiplayer", skin );
+        final TextButton multy = new TextButton( "Multiplayer", GR.skin );
 
-        back = new TextButton( "Back", skin );
+        back = new TextButton( "Back", GR.skin );
 
 
         table.add( "Select a LEVEL" ).expand().top().row();
@@ -104,7 +102,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
         table.add( multy ).expand().row();
         table.add( back ).bottom().expand().right();
 
-        lista = new SplitPane( elem, table, false, skin );
+        lista = new SplitPane( elem, table, false, GR.skin );
         lista.setFillParent( true );
         lista.setMaxSplitAmount( 0.5f );
         lista.setMinSplitAmount( 0.3f );

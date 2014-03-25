@@ -45,7 +45,7 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
-import com.nemo9955.garden_revolution.utility.StageUtils;
+import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
@@ -167,7 +167,7 @@ public class Gameplay extends CustomAdapter implements Screen {
                 actor.clear();
             stage.clear();
         }
-        stage = StageUtils.makeGamePlayStage( stage, this );
+        stage = GameStageMaker.makeGamePlayStage( stage, this );
         stage.draw();
         pointer.setStage( stage );
         pointer.setVisible( false );
@@ -213,7 +213,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public Gameplay initAsClient(String ip) {
         Gdx.graphics.setTitle( "[C] " +GR.TITLU +" " +GR.VERSIUNE );
-        preInit();
         preInit();
         mp = new GameClient( this, ip );
 
@@ -402,16 +401,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-
-        if ( Func.isCurrentState( stage, "Pause" ) ) {
-            if ( value ==PovDirection.north )
-                pointer.goInDir( 0, 1 );
-            else if ( value ==PovDirection.south )
-                pointer.goInDir( 0, -1 );
-            else if ( value ==PovDirection.southWest )
-                pointer.goInDir( -1, -1 );
-        }
-
+        pointer.updateFromController( controller, povCode, value );
         return false;
     }
 
@@ -451,8 +441,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( buttonCode ==CoButt.NextT.id &&Func.isCurrentState( stage, "HUD" ) )
             player.nextTower();
 
-        else if ( buttonCode ==CoButt.Back.id &&Func.isCurrentState( stage, "Tower Upgrade" ) )
-            Func.click( Func.getActorInParentStage( stage, "Tower Upgrade", "Back" ) );
+        else if ( buttonCode ==CoButt.TowerUpgr.id &&Func.isCurrentState( stage, "HUD" ) )
+            Func.click( GameStageMaker.hudTowerBut );
+
+        else if ( buttonCode ==CoButt.Back.id ) {
+            Actor actBkBut = Func.getActorInActiveStage( stage, "Back" );
+            if ( actBkBut !=null )
+                Func.click( actBkBut );
+        }
 
         return false;
 
@@ -477,23 +473,29 @@ public class Gameplay extends CustomAdapter implements Screen {
     }
 
     @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {//TODO make an enum that holds the curent actor that is visible
-        value = MathUtils.clamp( value, -1f, 1f );// in caz ca primeste valori anormale
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+        value = MathUtils.clamp( value, -1f, 1f );// in case of abnormal values
 
 
-        if ( Math.abs( value ) <Vars.deadZone ) {
-            value = 0f;
-            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
-                movex = 0;
-            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
-                movey = 0;
-        }
+        if ( pointer.isVisible() )
+            pointer.updFromController( controller, axisCode, value );
+
         else {
-            if ( axisCode ==CoAxis.mvX.id )
-                movex = value *Vars.invertControlletX *Vars.multiplyControlletX /2;
-            if ( axisCode ==CoAxis.mvY.id )
-                movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
+            if ( Math.abs( value ) <Vars.deadZone ) {
+                value = 0f;
+                if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
+                    movex = 0;
+                if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
+                    movey = 0;
+            }
+            else {
+                if ( axisCode ==CoAxis.mvX.id )
+                    movex = value *Vars.invertControlletX *Vars.multiplyControlletX;
+                if ( axisCode ==CoAxis.mvY.id )
+                    movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
+            }
         }
+
 
         return false;
 

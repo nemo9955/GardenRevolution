@@ -9,14 +9,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -26,7 +25,6 @@ import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
-import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
@@ -35,7 +33,6 @@ public class Menu extends CustomAdapter implements Screen {
     private TweenManager       tweeger;
     private StageActorPointer  pointer;
     private Stage              stage;
-    private Skin               skin;
 
     private static final float rap = 1.3f;
     private ImageButton        play;
@@ -50,23 +47,23 @@ public class Menu extends CustomAdapter implements Screen {
 
         tweeger = new TweenManager();
 
-        skin = GR.manager.get( Assets.SKIN_JSON.path() );
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
         // stage = new Stage();
 
-        final ImageTextButton options = new ImageTextButton( "Options", skin );
+        final ImageTextButton options = new ImageTextButton( "Options", GR.skin );
         options.getImage().setTouchable( Touchable.disabled );
-        final TextButton sdr = new TextButton( "Shader", skin );
-        play = new ImageButton( skin, "start" );
-        final ImageButton exit = new ImageButton( skin, "exit" );
-        final ImageButton test = new ImageButton( skin, "test" );
+        final TextButton sdr = new TextButton( "Shader", GR.skin );
+        play = new ImageButton( GR.skin, "start" );
+        final ImageButton exit = new ImageButton( GR.skin, "exit" );
+        final ImageButton test = new ImageButton( GR.skin, "test" );
 
 
         // mode = new CheckBox( "Use intern", skin );
 
         // mode.setChecked( LevelSelector.internal );
 
-        final Table tab = new Table( skin );
+        final Table tab = new Table( GR.skin );
         tab.setFillParent( true );
 
         ChangeListener asc = new ChangeListener() {
@@ -139,6 +136,12 @@ public class Menu extends CustomAdapter implements Screen {
     }
 
     @Override
+    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+        pointer.updateFromController( controller, povCode, value );
+        return false;
+    }
+
+    @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
         if ( buttonIndex ==CoButt.Fire.id )
             pointer.fireSelected();
@@ -152,22 +155,7 @@ public class Menu extends CustomAdapter implements Screen {
 
     @Override
     public boolean axisMoved(Controller controller, int axisCode, float value) {
-        value = MathUtils.clamp( value, -1f, 1f );
-
-        if ( Math.abs( value ) <Vars.deadZone ) {
-            value = 0f;
-            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
-                pointer.mvx = 0;
-            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
-                pointer.mvy = 0;
-        }
-        else {
-            if ( axisCode ==CoAxis.mvX.id )
-                pointer.mvx = value *Vars.invertControlletX;
-            if ( axisCode ==CoAxis.mvY.id )
-                pointer.mvy = value *Vars.invertControlletY;
-        }
-
+        pointer.updFromController( controller, axisCode, value );
         return false;
     }
 

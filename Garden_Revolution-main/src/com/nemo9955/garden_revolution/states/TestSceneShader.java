@@ -3,6 +3,8 @@ package com.nemo9955.garden_revolution.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
+import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 /**
  * A port of ShaderLesson4B (simplex noise) from lwjgl-basics to LibGDX:
@@ -95,6 +99,16 @@ public class TestSceneShader extends CustomAdapter implements Screen {
         cam = new OrthographicCamera( Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.setToOrtho( false );
         Gdx.input.setInputProcessor( this );
+        if ( Func.isControllerUsable() )
+            Controllers.addListener( this );
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonIndex) {
+        if ( buttonIndex ==CoButt.Fire.id )
+            GR.game.setScreen( GR.menu );
+        return false;
+
     }
 
     @Override
@@ -133,6 +147,10 @@ public class TestSceneShader extends CustomAdapter implements Screen {
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor( null );
+        if ( Func.isControllerUsable() ) {
+            Controllers.removeListener( this );
+        }
         dispose();
     }
 

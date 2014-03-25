@@ -87,7 +87,6 @@ public class Func {
     }
 
     public static void click(Actor actor) {
-
         clickedEvent.setType( Type.touchDown );
         actor.fire( clickedEvent );
         clickedEvent.setType( Type.touchUp );
@@ -207,7 +206,16 @@ public class Func {
 
     public static Actor getActorInParentStage(Stage stage, String parent, String name) {
         for (Actor pare : stage.getActors() )
-            if ( pare.isVisible() &&pare.getName() ==parent )
+            if ( pare.isVisible() &&pare instanceof Group &&pare.getName() ==parent )
+                for (Actor act : ( (Group) pare ).getChildren() )
+                    if ( act.getName() ==name )
+                        return act;
+        return null;
+    }
+
+    public static Actor getActorInActiveStage(Stage stage, String name) {
+        for (Actor pare : stage.getActors() )
+            if ( pare.isVisible() &&pare instanceof Group )
                 for (Actor act : ( (Group) pare ).getChildren() )
                     if ( act.getName() ==name )
                         return act;
@@ -241,6 +249,12 @@ public class Func {
 
     public static Rectangle getStageZon(Stage stage) {
         zonBound.set( 0, 0, stage.getWidth(), stage.getHeight() );
+        return zonBound;
+    }
+
+    public static Rectangle getStageShrink(Stage stage, float rapx, float rapy) {
+        zonBound.setSize( stage.getWidth() *rapx, stage.getHeight() *rapy );
+        zonBound.setCenter( stage.getWidth() /2, stage.getHeight() /2 );
         return zonBound;
     }
 

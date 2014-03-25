@@ -1,8 +1,8 @@
 package com.nemo9955.garden_revolution.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -29,7 +28,6 @@ import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 public class MultyplayerSelector extends CustomAdapter implements Screen {
 
     private Stage              stage;
-    private Skin               skin;
     private TextButton         back;
 
     private FileHandle         level;
@@ -43,17 +41,17 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
     public MultyplayerSelector() {
 
-        skin = GR.manager.get( Assets.SKIN_JSON.path() );
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
-        table = new Table( skin );
-        back = new TextButton( "Back", skin );
-        final TextButton start = new TextButton( "Start", skin );
-        ipInput = new TextField( "", skin );
-        portInput = new TextField( "", skin );
-        final CheckBox isHost = new CheckBox( "Is host", skin );
-        final CheckBox isPublic = new CheckBox( "Is public", skin );
-        final Label theIP = new Label( Func.getIpAddress(), skin );
+        table = new Table( GR.skin );
+        back = new TextButton( "Back", GR.skin );
+        final TextButton start = new TextButton( "Start", GR.skin );
+        ipInput = new TextField( "", GR.skin );
+        portInput = new TextField( "", GR.skin );
+        final CheckBox isHost = new CheckBox( "Is host", GR.skin );
+        final CheckBox isPublic = new CheckBox( "Is public", GR.skin );
+        final Label theIP = new Label( Func.getIpAddress(), GR.skin );
 
 
         theIP.setVisible( false );
@@ -116,7 +114,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
         stage.addActor( table );
 
-        dialog = new Dialog( "You cannot connect !", skin, "error" ) {
+        dialog = new Dialog( "You cannot connect !", GR.skin, "error" ) {
 
             {
                 pad( 50 );

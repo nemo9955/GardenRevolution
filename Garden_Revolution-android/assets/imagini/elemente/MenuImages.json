@@ -65,6 +65,11 @@
 	com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle:{
 		default:{ background:mover-bg , knob: mover-knob }
 	},
+
+	com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle:{
+		default-horizontal:{ background:element1 , disabledBackground:element2 , knob: mover-knob },
+		default-vertical:{ background:element1 , disabledBackground:element2 , knob: mover-knob }
+	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle:{
 		default:{ font:arial_32	, fontColor:white ,	focusedFontColor:blue , disabledFontColor:gray , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }

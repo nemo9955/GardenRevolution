@@ -6,15 +6,17 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -31,7 +33,6 @@ import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 public class Options extends CustomAdapter implements Screen {
 
     private Stage              stage;
-    private Skin               skin;
     private TextButton         back;
 
     private TextButton         current;
@@ -47,37 +48,105 @@ public class Options extends CustomAdapter implements Screen {
 
     public Options() {
 
-        skin = GR.manager.get( Assets.SKIN_JSON.path() );
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
         pointer = new StageActorPointer( stage );
 
+        final Table table = new Table( GR.skin );
+        opt = new Label( "Options", GR.skin );
 
-        // final VerticalGroup name = new VerticalGroup();
-        // final VerticalGroup action = new VerticalGroup();
-        // final HorizontalGroup holder = new HorizontalGroup();
-        final Table table = new Table( skin );
-        opt = new Label( "Options", skin );
+
+        final Slider contSensX = new Slider( 1, 10, 0.1f, false, GR.skin ) {
+
+            @Override
+            public float getPrefWidth() {
+                return 300;
+            }
+        };
+        contSensX.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Vars.multiplyControlletX = contSensX.getValue();
+            }
+        } );
+
+
+        final Slider contSensY = new Slider( 1, 10, 0.1f, false, GR.skin ) {
+
+            @Override
+            public float getPrefWidth() {
+                return 300;
+            }
+        };
+        contSensY.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Vars.multiplyControlletY = contSensY.getValue();
+            }
+        } );
+
+        final CheckBox invMX = new CheckBox( "Invert Drag X", GR.skin );
+        final CheckBox invMY = new CheckBox( "Invert Drag Y", GR.skin );
+        final CheckBox invPX = new CheckBox( "Invert TouchPad X", GR.skin );
+        final CheckBox invPY = new CheckBox( "Invert TouchPad Y", GR.skin );
+
+        ChangeListener invButtons = new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if ( invMX.isPressed() )
+                    Vars.invertDragX = (byte) ( invMX.isChecked() ? -1 : 1 );
+                else if ( invMY.isPressed() )
+                    Vars.invertDragY = (byte) ( invMY.isChecked() ? -1 : 1 );
+                else if ( invPX.isPressed() )
+                    Vars.invertPadX = (byte) ( invPX.isChecked() ? -1 : 1 );
+                else if ( invPY.isPressed() )
+                    Vars.invertPadY = (byte) ( invPY.isChecked() ? -1 : 1 );
+            }
+        };
+
+        invMX.setChecked( Vars.invertDragX <0 );
+        invMX.addListener( invButtons );
+        invMY.setChecked( Vars.invertDragY <0 );
+        invMY.addListener( invButtons );
+
+        invPX.setChecked( Vars.invertPadX <0 );
+        invPX.addListener( invButtons );
+        invPY.setChecked( Vars.invertPadY <0 );
+        invPY.addListener( invButtons );
 
         table.defaults().pad( 20 );
         table.add( opt ).colspan( 2 ).pad( 40 ).row();
 
+        table.add( invMX ).colspan( 2 ).row();
+        table.add( invMY ).colspan( 2 ).row();
+        table.add( invPX ).colspan( 2 ).row();
+        table.add( invPY ).colspan( 2 ).row();
+
+
+        table.add( "Controller X sensivity" ).colspan( 2 ).row();
+        table.add( contSensX ).colspan( 2 ).row();
+        table.add( "Controller Y sensivity" ).colspan( 2 ).row();
+        table.add( contSensY ).colspan( 2 ).row();
+
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
-            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, skin );
-            button.setUserObject( "Button" +Vars.stringSeparator +i );
+            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin );
+            button.setUserObject( "Button" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
 
-
-            table.add( new Label( CoButt.values()[i].name, skin ) );
+            table.add( new Label( CoButt.values()[i].name, GR.skin ) );
             table.add( button );
             table.row();
         }
 
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
-            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, skin );
-            axis.setUserObject( "Axis" +Vars.stringSeparator +i );
+            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin );
+            axis.setUserObject( "Axis" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
 
-            table.add( new Label( CoAxis.values()[i].name, skin ) );
+            table.add( new Label( CoAxis.values()[i].name, GR.skin ) );
             table.add( axis );
             table.row();
         }
@@ -85,19 +154,36 @@ public class Options extends CustomAdapter implements Screen {
         table.add( back ).colspan( 2 );
 
 
-        pane = new ScrollPane( table, skin, "clear" );
+        pane = new ScrollPane( table, GR.skin, "clear" );
         pane.setFillParent( true );
 
         pane.addListener( new InputListener() {
 
+            private boolean onAct = false;
+
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Actor actor = stage.hit( x, y, true );
-                if ( ! ( actor instanceof TextButton ) &&butSelected ) {
-                    current.setText( remName );
-                    current.invalidateHierarchy();
+                if ( actor instanceof ScrollPane ||actor instanceof Label ) {
+                    if ( butSelected ) {
+                        current.setText( remName );
+                        current.invalidateHierarchy();
+                    }
+                }
+                else {
+                    pane.cancel();
+                    onAct = true;
                 }
                 return false;
             }
+
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                if ( onAct )
+                    pane.cancel();
+            };
+
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                onAct = false;
+            };
         } );
 
         pane.addListener( new ChangeListener() {
@@ -106,22 +192,23 @@ public class Options extends CustomAdapter implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 if ( back.equals( actor ) )
                     GR.game.setScreen( GR.menu );
-                else if ( actor instanceof TextButton ) {
+                else if ( actor.getUserObject() !=null &&actor.getUserObject().toString().contains( "Controller" ) ) {
                     if ( butSelected &&current !=null ) {
                         current.setText( remName );
                         current.invalidateHierarchy();
                     }
+                    if ( current ==null ||!current.equals( actor ) ) {
+                        current = (TextButton) actor;
+                        butSelected = true;
+                        remName = current.getText().toString();
 
-                    current = (TextButton) actor;
-                    butSelected = true;
-                    remName = current.getText().toString();
+                        if ( current.getUserObject().toString().contains( "Button" ) )
+                            current.setText( "Press a button ..." );
+                        else
+                            current.setText( "Move an axis ..." );
 
-                    if ( current.getUserObject().toString().contains( "Button" ) )
-                        current.setText( "Press a button ..." );
-                    else
-                        current.setText( "Move an axis ..." );
-
-                    current.invalidateHierarchy();
+                        current.invalidateHierarchy();
+                    }
                 }
             }
         } );
@@ -130,7 +217,13 @@ public class Options extends CustomAdapter implements Screen {
         stage.addActor( pane );
 
     }
+    @Override
+    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
 
+        pointer.updateFromController(controller , povCode,value);
+
+        return false;
+    }
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
 
@@ -172,21 +265,7 @@ public class Options extends CustomAdapter implements Screen {
             return false;
         }
 
-        value = MathUtils.clamp( value, -1f, 1f );
-
-        if ( Math.abs( value ) <Vars.deadZone ) {
-            value = 0f;
-            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
-                pointer.mvx = 0;
-            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
-                pointer.mvy = 0;
-        }
-        else {
-            if ( axisCode ==CoAxis.mvX.id )
-                pointer.mvx = value *Vars.invertControlletX;
-            if ( axisCode ==CoAxis.mvY.id )
-                pointer.mvy = value *Vars.invertControlletY;
-        }
+        pointer.updFromController( controller, axisCode, value );
 
         return false;
     }
