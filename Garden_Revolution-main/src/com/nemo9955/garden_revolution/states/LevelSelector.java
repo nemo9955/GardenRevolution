@@ -26,7 +26,6 @@ import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
-import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
 
@@ -185,19 +184,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
     public boolean axisMoved(Controller controller, int axisCode, float value) {
         value = MathUtils.clamp( value, -1f, 1f );
 
-        if ( Math.abs( value ) <Vars.deadZone ) {
-            value = 0f;
-            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
-                pointer.mvx = 0;
-            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
-                pointer.mvy = 0;
-        }
-        else {
-            if ( axisCode ==CoAxis.mvX.id )
-                pointer.mvx = value *Vars.invertControlletX;
-            if ( axisCode ==CoAxis.mvY.id )
-                pointer.mvy = value *Vars.invertControlletY;
-        }
+        pointer.updFromController( controller, axisCode, value );
 
         return false;
     }

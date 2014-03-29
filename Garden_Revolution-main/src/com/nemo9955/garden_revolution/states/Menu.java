@@ -131,7 +131,7 @@ public class Menu extends CustomAdapter implements Screen {
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-        pointer.updateFromController( controller, povCode, value );
+        pointer.updFromController( controller, povCode, value );
         return false;
     }
 

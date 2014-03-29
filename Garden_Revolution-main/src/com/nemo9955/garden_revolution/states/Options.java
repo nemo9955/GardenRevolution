@@ -52,7 +52,7 @@ public class Options extends CustomAdapter implements Screen {
         stage = new Stage( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate, true );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
-        pointer = new StageActorPointer( stage );
+        pointer = new StageActorPointer( stage);
 
         final Table table = new Table( GR.skin );
         opt = new Label( "Options", GR.skin );
@@ -217,13 +217,15 @@ public class Options extends CustomAdapter implements Screen {
         stage.addActor( pane );
 
     }
+
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
 
-        pointer.updateFromController(controller , povCode,value);
+        pointer.updFromController( controller, povCode, value );
 
         return false;
     }
+
     @Override
     public boolean buttonDown(Controller controller, int buttonIndex) {
 

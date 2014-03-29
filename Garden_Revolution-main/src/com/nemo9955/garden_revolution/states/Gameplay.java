@@ -97,7 +97,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         modelBatch = new ModelBatch();
 
         allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
-        pointer = new StageActorPointer( stage );
+        pointer = new StageActorPointer( stage);
 
     }
 
@@ -410,7 +410,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-        pointer.updateFromController( controller, povCode, value );
+        pointer.updFromController( controller, povCode, value );
         return false;
     }
 

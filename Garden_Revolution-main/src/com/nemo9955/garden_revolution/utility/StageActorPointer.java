@@ -3,8 +3,7 @@ package com.nemo9955.garden_revolution.utility;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,37 +20,34 @@ import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 public class StageActorPointer {
 
     // private static final Vector2 tmp = new Vector2();
+    private Actor   selected;
+    private Vector2 selCenter = new Vector2();
+    private Stage   stage;
 
-    private ShapeRenderer shape;
-    private Actor         selected;
-    private Vector2       selCenter = new Vector2();
-    private Stage         stage;
-
-    public float          mvx       = 0, mvy = 0;
-    private boolean       visible   = true;
+    public float    mvx       = 0, mvy = 0;
+    private boolean visible   = true;
+    private float   alfa      = 1.5f;
+    private Sprite  img;
 
     public StageActorPointer(Stage stage) {
         this.stage = stage;
-        shape = new ShapeRenderer();
+        img = new Sprite( GR.skin.getSprite( "mover-knob" ) );
+        img.setSize( 50, 50 );
+        // img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
     }
-
-    public StageActorPointer(Stage stage, ShapeRenderer shape) {
-        this.stage = stage;
-        this.shape = shape;
-    }
-
 
     public void draw() {
-        if ( visible ) {
-            shape.setProjectionMatrix( stage.getCamera().combined );
-            shape.begin( ShapeType.Line );
+        if ( visible &&alfa >0f ) {
 
-            shape.setColor( 1, 1, 1, 0.1f );
 
-            shape.circle( selCenter.x, selCenter.y, 4 );
-            shape.circle( selCenter.x, selCenter.y, 40 );
+            stage.getSpriteBatch().begin();
 
-            shape.end();
+            // stage.getSpriteBatch().draw( img, selCenter.x, selCenter.y );
+            img.setPosition( selCenter.x -img.getWidth() /2, selCenter.y -img.getHeight() /2 );
+            img.draw( stage.getSpriteBatch(), MathUtils.clamp( alfa, 0f, 1f ) );
+
+            stage.getSpriteBatch().end();
+            alfa -= Gdx.graphics.getDeltaTime();
 
             if ( mvx !=0 ||mvy !=0 )
                 updatePointer();
@@ -59,7 +55,7 @@ public class StageActorPointer {
     }
 
     public void setSelectedActor(Actor selected) {
-        System.out.println( selected );
+        // System.out.println( selected );
         this.selected = selected;
         selCenter.set( selected.getWidth(), selected.getHeight() ).scl( 0.5f );
         this.selected.localToStageCoordinates( selCenter );
@@ -73,6 +69,7 @@ public class StageActorPointer {
 
     private void updatePointer() {
         selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
+
 
         if ( !Func.getStageZon( stage ).contains( selCenter ) )
             selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
@@ -123,24 +120,6 @@ public class StageActorPointer {
         }
     }
 
-    public void updFromController(Controller controller, int axisCode, float value) {
-        value = MathUtils.clamp( value, -1f, 1f );
-        if ( Math.abs( value ) <Vars.deadZone ) {
-            value = 0f;
-            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
-                mvx = 0;
-            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
-                mvy = 0;
-        }
-        else {
-            if ( axisCode ==CoAxis.mvX.id )
-                mvx = value *Vars.invertControlletX;
-            if ( axisCode ==CoAxis.mvY.id )
-                mvy = value *Vars.invertControlletY;
-        }
-    }
-
-
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -153,7 +132,27 @@ public class StageActorPointer {
         this.visible = visible;
     }
 
-    public void updateFromController(Controller controller, int povCode, PovDirection value) {
+    public void updFromController(Controller controller, int axisCode, float value) {
+        value = MathUtils.clamp( value, -1f, 1f );
+        if ( Math.abs( value ) <Vars.deadZone ) {
+            value = 0f;
+            if ( Math.abs( controller.getAxis( CoAxis.mvX.id ) ) <Vars.deadZone )
+                mvx = 0;
+            if ( Math.abs( controller.getAxis( CoAxis.mvY.id ) ) <Vars.deadZone )
+                mvy = 0;
+        }
+        else {
+            if ( axisCode ==CoAxis.mvX.id )
+                mvx = value *Vars.invertControlletX *-1f;
+            if ( axisCode ==CoAxis.mvY.id )
+                mvy = value *Vars.invertControlletY *-1f;
+            alfa = 2f;
+        }
+    }
+
+    public void updFromController(Controller controller, int povCode, PovDirection value) {
+
+        alfa = 2f;
 
         if ( value ==PovDirection.north )
             goInDir( 0, 1 );

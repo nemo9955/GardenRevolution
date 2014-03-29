@@ -28,8 +28,8 @@ public class Vars {
     public static boolean      showDebug           = false;
 
     // pentru controller
-    public static float        invertControlletY   = -1;
-    public static float        invertControlletX   = 1;
+    public static float        invertControlletY   = 1;
+    public static float        invertControlletX   = -1;
     public static float        multiplyControlletY = 1;
     public static float        multiplyControlletX = 1;
     public static float        deadZone            = 0.05f;
@@ -46,13 +46,13 @@ public class Vars {
     public static final String stringSeparator     = "---";
 
 
-    public enum CoButt {
+    public static enum CoButt {
         Fire(0, "Fire"), //
         Back(1, "Back"), //
-        TowerUpgr(4, "Upgrade tower"), //
+        TowerUpgr(5, "Upgrade tower"), //
         NextT(3, "Next Tower"), //
         PrevT(2, "Last Tower"), //
-        CallAlly(5, "Last Tower"), //
+        CallAlly(4, "Last Tower"), //
         InvY(7, "Invert Y"), //
         InvX(6, "Invert X"), //
         SpdUp(11, "Speed Up Cam"); //
@@ -66,7 +66,7 @@ public class Vars {
         }
     }
 
-    public enum CoAxis {
+    public static enum CoAxis {
         mvY(1, "Move Y"), mvX(0, "Move X");
 
         public int    id;
