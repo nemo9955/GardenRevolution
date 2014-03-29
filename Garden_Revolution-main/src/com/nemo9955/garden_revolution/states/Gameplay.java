@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.states;
 
+import static com.nemo9955.garden_revolution.utility.GameStageMaker.*;
 import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.Gdx;
@@ -45,8 +46,8 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.IconType;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
-import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
@@ -69,12 +70,12 @@ public class Gameplay extends CustomAdapter implements Screen {
     private TweenManager        tweeger;
 
     private Vector2             presDown       = new Vector2();
-    public Label                viataTurn;
-    public Label                fps;
-    public Touchpad             mover;
-    public Image                weaponCharger;
-    public TextButton           ready;
-    public Image                allyPlacer;
+    public Label                viataTurn      = new Label( "Life ", GR.skin );
+    public Label                fps            = new Label( "FPS: ", GR.skin );
+    public Touchpad             mover          = new Touchpad( 1, GR.skin );
+    public Image                weaponCharger  = new Image( GR.skin, "mover-knob" );
+    public TextButton           ready          = new TextButton( "Start Wave!", GR.skin );
+    public Image                allyPlacer     = new Image( IconType.TINTA.getAsDrawable( GR.skin, 60f, 60f ) );
     public Stage                stage;
 
     public StageActorPointer    pointer;
@@ -85,7 +86,7 @@ public class Gameplay extends CustomAdapter implements Screen {
     public MultiplayerComponent mp             = null;
 
     public WorldWrapper         world          = new WorldWrapper();
-    public Player               player;
+    public Player               player         = new Player();
 
     public Gameplay() {
 
@@ -96,8 +97,14 @@ public class Gameplay extends CustomAdapter implements Screen {
         shape = new ShapeRenderer();
         modelBatch = new ModelBatch();
 
+        stage = new Stage();
+        makeGamePlayStage( this );
+
         allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
-        pointer = new StageActorPointer( stage);
+        pointer = new StageActorPointer( stage );
+
+        camGRStr = new CameraGroupStrategy( player.getCamera() );
+        decalBatch = new DecalBatch( camGRStr );
 
     }
 
@@ -171,12 +178,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     public void preInit() {
 
-        if ( stage !=null ) {
-            for (Actor actor : stage.getActors() )
-                actor.clear();
-            stage.clear();
-        }
-        stage = GameStageMaker.makeGamePlayStage( stage, this );
+        restartStage();
+
         stage.draw();
         pointer.setStage( stage );
         pointer.setVisible( false );
@@ -187,16 +190,13 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         world = newWorld;
 
-        player = new Player( world );
+        player.reset( world );
 
         // player.getCamera().position.set( world.getWorld().getOverview() );
         player.setTower( world.getWorld().getTowers()[0] );
         player.getCamera().lookAt( Vector3.Zero );
         player.getCamera().update();
 
-
-        camGRStr = new CameraGroupStrategy( player.getCamera() );
-        decalBatch = new DecalBatch( camGRStr );
 
     }
 
@@ -451,7 +451,7 @@ public class Gameplay extends CustomAdapter implements Screen {
             player.nextTower();
 
         else if ( buttonCode ==CoButt.TowerUpgr.id &&Func.isCurrentState( stage, "HUD" ) )
-            Func.click( GameStageMaker.hudTowerBut );
+            Func.click( hudTowerBut );
 
         else if ( buttonCode ==CoButt.CallAlly.id &&Func.isCurrentState( stage, "HUD" ) ) {
             showASA = true;

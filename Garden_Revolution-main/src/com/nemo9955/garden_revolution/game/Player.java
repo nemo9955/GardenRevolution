@@ -26,13 +26,15 @@ public class Player {
 
     public String             name = "Player " +MathUtils.random( 99 );
 
-    public Player(WorldWrapper world) {
-        this.world = world;
-
+    {
         cam = new PerspectiveCamera( 60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.near = 0.1f;
         cam.far = 300f;
         cam.update();
+    }
+
+    public void reset(WorldWrapper world) {
+        this.world = world;
     }
 
 
