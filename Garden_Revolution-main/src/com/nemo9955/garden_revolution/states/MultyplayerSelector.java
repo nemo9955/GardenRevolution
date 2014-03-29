@@ -38,6 +38,12 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     public TextField           ipInput;
     public TextField           portInput;
 
+    private Dialog             dialog;
+    private TextButton         start;
+    private CheckBox           isHost;
+    private CheckBox           isPublic;
+    private Label              theIP;
+
 
     public MultyplayerSelector() {
 
@@ -46,29 +52,30 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
         table = new Table( GR.skin );
         back = new TextButton( "Back", GR.skin );
-        final TextButton start = new TextButton( "Start", GR.skin );
-        ipInput = new TextField( "", GR.skin );
-        portInput = new TextField( "", GR.skin );
-        final CheckBox isHost = Func.newCheckBox( "Is host", GR.skin );
-        final CheckBox isPublic = Func.newCheckBox( "Is public", GR.skin );
-        final Label theIP = new Label( Func.getIpAddress(), GR.skin );
+        start = new TextButton( "Start", GR.skin );
+        ipInput = new TextField( "", GR.skin ) {
+
+            @Override
+            public float getPrefWidth() {
+                return 250;
+            }
+
+        };
+        portInput = new TextField( "", GR.skin ) {
+
+            public float getPrefWidth() {
+                return 95;
+            };
+        };
+        isHost = Func.newCheckBox( "Is host", GR.skin );
+        isPublic = Func.newCheckBox( "Is public", GR.skin );
+        theIP = new Label( Func.getIpAddress(), GR.skin );
 
 
-        theIP.setVisible( false );
-        ipInput.setVisible( true );
         ipInput.setText( "188.173.17.234" );
         portInput.setText( "29955" );
 
-        table.setFillParent( true );
-        table.defaults().space( 50 );
-        table.add( start ).colspan( 3 ).row();
-        table.add( isHost );
-        table.add( "IP :" );
-        table.add( ipInput );
-        table.add( theIP ).row();
-        table.add( isPublic );
-        table.add( portInput ).row();
-        table.add( back ).colspan( 3 ).row();
+        makeLayout();
 
         table.addListener( new ChangeListener() {
 
@@ -93,18 +100,10 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
                 }
                 if ( isHost.isChecked() ) {
-                    ipInput.setVisible( false );
-                    theIP.setVisible( true );
-                    // placeHolder = (Actor) theIP;
-                    table.swapActor( ipInput, theIP );
-                    table.invalidate();
+                    makeLayout();
                 }
                 else {
-                    ipInput.setVisible( true );
-                    theIP.setVisible( false );
-                    table.swapActor( theIP, ipInput );
-                    // placeHolder = (Actor) ipInput;
-                    table.invalidate();
+                    makeLayout();
                 }
 
 
@@ -125,6 +124,26 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
             };
         };
 
+    }
+
+    private void makeLayout() {
+
+        table.clearChildren();
+
+        table.setFillParent( true );
+        table.defaults().space( 50 );
+        table.add( start ).colspan( 3 ).row();
+        table.add( isHost );
+        if ( isHost.isChecked() )
+            table.add( theIP ).size( 250, theIP.getHeight() );
+        else
+            table.add( ipInput );
+        table.row();
+        table.add( isPublic );
+        table.add( portInput ).row();
+        table.add( back ).colspan( 3 ).row();
+
+        table.invalidateHierarchy();
     }
 
     public MultyplayerSelector init(FileHandle level) {
@@ -188,8 +207,6 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
             Controllers.removeListener( this );
         }
     }
-
-    private Dialog dialog;
 
     public void showMessage(String message) {
         dialog.setTitle( message );

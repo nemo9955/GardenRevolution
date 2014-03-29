@@ -26,7 +26,7 @@ public class StageActorPointer {
 
     public float    mvx       = 0, mvy = 0;
     private boolean visible   = true;
-    private float   alfa      = 1.5f;
+    private float   alfa      = 0f;
     private Sprite  img;
 
     public StageActorPointer(Stage stage) {
