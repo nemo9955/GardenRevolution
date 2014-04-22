@@ -69,7 +69,7 @@ public class CircularGroup extends WidgetGroup {
 
     @Override
     public void setPosition(float x, float y) {
-        this.center = new Vector2( radius +stroke, radius +stroke );
+        center.set( radius +stroke, radius +stroke );
         super.setPosition( x - ( getWidth() /2 ), y - ( getHeight() /2 ) );
     }
 
@@ -81,8 +81,8 @@ public class CircularGroup extends WidgetGroup {
         shape.setColor( 0.5f, 1, 0.7f, parentAlpha );
         shape.circle( getX() +center.x, getY() +center.y, radius );
         shape.circle( getX() +center.x, getY() +center.y, radius +stroke );
-        shape.circle( getX() +center.x, getY() +center.y, 2 );
-        shape.circle( getX() +center.x, getY() +center.y, 5 );
+        // shape.circle( getX() +center.x, getY() +center.y, 2 );
+        // shape.circle( getX() +center.x, getY() +center.y, 5 );
         shape.end();
 
     }

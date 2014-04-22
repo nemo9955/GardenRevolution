@@ -70,9 +70,10 @@ public class StageActorPointer {
     private void updatePointer() {
         selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
 
+//        System.out.println(selCenter);
 
-        if ( !Func.getStageZon( stage ).contains( selCenter ) )
-            selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
+//        if ( !Func.getStageZon( stage ).contains( selCenter ) )
+//            selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
 
         Actor hit = stage.hit( selCenter.x, selCenter.y, true );
         if ( hit !=null ) {
@@ -107,7 +108,7 @@ public class StageActorPointer {
         return selCenter;
     }
 
-    public void goInDir(float dirX, float dirY) {// FIXME observed a problem in the menu while using the POV , there is still a problem with the stage.hit detecting ImageButton as Image
+    public void goInDir(float dirX, float dirY) {
         Vector2 down = GR.tmp2.set( selCenter );
         while ( Func.getStageZon( stage ).contains( down ) ) {
             down.add( dirX, dirY );

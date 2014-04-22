@@ -213,7 +213,7 @@ public class GameStageMaker {
                                                                  tuGroup.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                                  gp.updWorld = false;
                                                                  gp.pointer.setVisible( true );
-                                                                 // gp.pointer.setSelectedActor( tuMiniGunBut );
+                                                                 gp.pointer.setSelectedActor( tuBasicBut );
                                                              }
                                                              else if ( gp.ready.isPressed() ) {
                                                                  // singleplayer part
