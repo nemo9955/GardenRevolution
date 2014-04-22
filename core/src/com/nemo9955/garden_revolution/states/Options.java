@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
@@ -49,11 +49,12 @@ public class Options extends CustomAdapter implements Screen {
 
     public Options() {
 
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage(new StretchViewport( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate));
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel( rap /Vars.densitate );
+        stage = new Stage( viewport );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
-        pointer = new StageActorPointer( stage);
+        pointer = new StageActorPointer( stage );
 
         final Table table = new Table( GR.skin );
         opt = new Label( "Options", GR.skin );
@@ -310,6 +311,7 @@ public class Options extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
     }
 
     @Override

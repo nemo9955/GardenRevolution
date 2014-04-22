@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
@@ -40,13 +40,6 @@ public class TestScene extends CustomAdapter implements Screen {
 
     private float              pozitie = 0;
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        shape.dispose();
-        stage.dispose();
-    }
-
     public TestScene() {
         font = GR.manager.get( Assets.ARIAL32.path() );
 
@@ -59,7 +52,7 @@ public class TestScene extends CustomAdapter implements Screen {
         cam.position.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2, 0 );
         cam.update();
 
-        stage = new Stage( new StretchViewport( Gdx.graphics.getWidth(), Gdx.graphics.getHeight() ), batch );
+        stage = new Stage( new ScreenViewport() );
 
         back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
         back.addListener( new ChangeListener() {
@@ -148,6 +141,7 @@ public class TestScene extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
     }
 
     @Override
@@ -182,6 +176,13 @@ public class TestScene extends CustomAdapter implements Screen {
         pozitie = screenY;
         return false;
 
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        shape.dispose();
+        stage.dispose();
     }
 
 

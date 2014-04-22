@@ -20,9 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
@@ -45,8 +44,10 @@ public class LevelSelector extends CustomAdapter implements Screen {
     private TextButton         back;
 
     public LevelSelector() {
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( new StretchViewport( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate ) );
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel( rap /Vars.densitate );
+        stage = new Stage( viewport );
+
         table = new Table( GR.skin );
         table.setHeight( stage.getHeight() );
         pointer = new StageActorPointer( stage );
@@ -219,6 +220,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
     }
 
     @Override

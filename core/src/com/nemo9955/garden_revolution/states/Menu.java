@@ -18,9 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
@@ -47,9 +46,10 @@ public class Menu extends CustomAdapter implements Screen {
 
         tweeger = new TweenManager();
 
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( new StretchViewport( Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate ) );
-        // stage = new Stage();
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel( rap /Vars.densitate );
+        stage = new Stage( viewport );
+        
 
         final ImageTextButton options = Func.newImageTextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );
@@ -167,6 +167,7 @@ public class Menu extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
     }
 
     @Override

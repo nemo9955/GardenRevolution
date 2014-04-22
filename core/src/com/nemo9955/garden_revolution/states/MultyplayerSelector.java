@@ -17,9 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -48,8 +47,10 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
     public MultyplayerSelector() {
 
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path() );
-        stage = new Stage( new StretchViewport(Gdx.graphics.getWidth() *rap /Vars.densitate, Gdx.graphics.getHeight() *rap /Vars.densitate) );
+
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel( rap /Vars.densitate );
+        stage = new Stage( viewport );
 
         table = new Table( GR.skin );
         back = new TextButton( "Back", GR.skin );
@@ -224,6 +225,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
     }
 
     @Override

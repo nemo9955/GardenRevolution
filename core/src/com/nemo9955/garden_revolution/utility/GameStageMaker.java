@@ -94,7 +94,8 @@ public class GameStageMaker {
 
     public static void restartStage() {
 
-        gp.mover.setVisible( true );
+        hudGroup.setVisible( true );
+        gp.weaponCharger.setVisible( false );
         gp.ready.setVisible( true );
         gp.ready.setText( "Start Wave!" );
 
@@ -105,23 +106,34 @@ public class GameStageMaker {
         pauseTab.setVisible( false );
     }
 
-    private static void createHUD() {
-        gp.weaponCharger.setVisible( false );
 
-        gp.fps.setScale( Vars.densitate );
+    public static void resizeStage(int width, int height) {
         gp.fps.setPosition( gp.stage.getWidth() /2, gp.stage.getHeight() -gp.fps.getHeight() );
-
         gp.allyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
-
-        gp.ready.setTouchable( Touchable.enabled );
         gp.ready.setPosition( 0, gp.stage.getHeight() /2 );
-
         hudTowerBut.setPosition( gp.stage.getWidth() -hudTowerBut.getWidth(), 0 );
         gp.viataTurn.setFontScale( 0.6f );
         gp.viataTurn.setPosition( 10 *Vars.densitate, gp.stage.getHeight() -gp.viataTurn.getHeight() -10 *Vars.densitate );
         hudPauseBut.setPosition( gp.stage.getWidth() -hudPauseBut.getWidth(), gp.stage.getHeight() -hudPauseBut.getHeight() );
-
         gp.mover.setPosition( gp.stage.getWidth() *0.02f, gp.stage.getWidth() *0.02f );
+
+        float freeSpace = 25 *Vars.densitate;
+        tuTowerCircG.setAsCircle( (int) ( height /2 ), 70 );
+        tuTowerCircG.setPosition( -tuTowerCircG.getRadius() + ( freeSpace *2.1f ) +tuBackBut1.getWidth(), gp.stage.getHeight() /2 );
+
+        final float treapta = CircularGroup.aprxOptAngl( tuTowerCircG.getRadius(), tuBasicBut.getHeight() );
+        float i = tuTowerCircG.minAngleInZon( Func.getStageZon( gp.stage ), treapta, 2 );
+        tuTowerCircG.setActivInterval( i, 360 -i, true, treapta *1.4f, false );
+
+        tuBackBut1.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut1.getHeight() /2 );
+        tuBackBut2.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut2.getHeight() /2 );
+    }
+
+
+    private static void createHUD() {
+
+        // gp.fps.setScale( Vars.densitate );
+
         gp.mover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
 
         hudGroup.addActor( gp.ready );
@@ -241,22 +253,7 @@ public class GameStageMaker {
     private static void createTowerUpgrade() {
 
         tuTowerCircG = new CircularGroup( gp.shape );
-
-        float freeSpace = 25 *Vars.densitate;
-
-        tuBackBut1.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut1.getHeight() /2 );
-        tuBackBut2.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut2.getHeight() /2 );
-
         tuTowerCircG.setDraggable( true );
-        tuTowerCircG.setAsCircle( 300, 70 );
-        tuTowerCircG.setPosition( -tuTowerCircG.getRadius() + ( freeSpace *2.1f ) +tuBackBut1.getWidth(), gp.stage.getHeight() /2 );
-        // mainUpgrades.setPosition( stage.getWidth() /2, stage.getHeight() /2 );
-        float i;
-        final float treapta = CircularGroup.aprxOptAngl( tuTowerCircG.getRadius(), tuBasicBut.getHeight() );
-        // final Rectangle zon = new Rectangle( 0, 0, gp.stage.getWidth(), gp.stage.getHeight() );
-        i = tuTowerCircG.minAngleInZon( Func.getStageZon( gp.stage ), treapta, 2 );
-        tuTowerCircG.setActivInterval( i, 360 -i, true, treapta *1.4f, false );
-        // mainUpgrades.setActivInterval( 30, -30, true, 30, false );
 
         tuTowerCircG.addActor( tuBasicBut );
         tuTowerCircG.addActor( tuMiniGunBut );

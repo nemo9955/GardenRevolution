@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = GR.TITLU +" " +GR.VERSIUNE;
-        cfg.resizable = false;
+        cfg.resizable = true;
         cfg.width = 800;
         cfg.height = 500;
 

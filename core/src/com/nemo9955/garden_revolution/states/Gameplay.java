@@ -18,6 +18,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
@@ -33,8 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
@@ -48,6 +50,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.IconType;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -97,9 +100,16 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         tweeger = new TweenManager();
         shape = new ShapeRenderer();
-        modelBatch = new ModelBatch();
 
-        stage = new Stage( new ScalingViewport( Scaling.stretch, Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate ) );
+        DefaultShader.Config cfg = new Config();
+        cfg.defaultCullFace = 0;
+        modelBatch = new ModelBatch( new DefaultShaderProvider( cfg ) );
+
+        // stage = new Stage( new ScalingViewport( Scaling.stretch, Gdx.graphics.getWidth() *1.5f /Vars.densitate, Gdx.graphics.getHeight() *1.5f /Vars.densitate ) );
+
+        ScreenViewport viewport = new ScreenViewport();
+        viewport.setUnitsPerPixel( 1.5f /Vars.densitate );
+        stage = new Stage( viewport );
         makeGamePlayStage( this );
 
         allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
@@ -554,6 +564,12 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        stage.getViewport().update( width, height, true );
+        GameStageMaker.resizeStage( width, height );
+
+        player.getCamera().viewportHeight = height;
+        player.getCamera().viewportWidth = width;
+        player.getCamera().update();
     }
 
 

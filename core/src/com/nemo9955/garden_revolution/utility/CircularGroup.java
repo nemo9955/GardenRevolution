@@ -212,6 +212,11 @@ public class CircularGroup extends WidgetGroup {
 
     }
 
+    /**
+     * 
+     * @param radius
+     * @param stroke
+     */
     public void setAsCircle(int radius, int stroke) {
         this.radius = radius;
         this.stroke = stroke;
