@@ -124,7 +124,6 @@ public class Enemy extends LifeForm {
 
     public static short newGlobalID() {
         return ++ globalID;
-
     }
 
     public boolean isPaused() {

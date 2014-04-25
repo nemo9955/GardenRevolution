@@ -57,7 +57,7 @@ public class WorldBase implements Disposable {
     private Array<CatmullRomSpline<Vector3>> paths;
 
     private Vector3                          overview     = new Vector3( 20, 10, 10 );
-    private int                              viata;
+    private int                              life, money;
     private Tower[]                          towers;
     private boolean                          canWaveStart = false;
     private Waves                            waves;
@@ -200,13 +200,13 @@ public class WorldBase implements Disposable {
         // for (BoundingBox box : tower.getTowerColiders() )
         // shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
-        shape.setColor( 1, 0, 0, 1 );
-        for (Entity e : getEnemy() )
-            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
-
-        shape.setColor( 0, 0, 1, 1 );
-        for (Entity e : getAlly() )
-            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+        // shape.setColor( 1, 0, 0, 1 );
+        // for (Entity e : getEnemy() )
+        // shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+        //
+        // shape.setColor( 0, 0, 1, 1 );
+        // for (Entity e : getAlly() )
+        // shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 1, 1, 1 );
         for (Entity e : getShot() )
@@ -327,6 +327,8 @@ public class WorldBase implements Disposable {
         waves = new Waves( superior );
 
         setLife( map.getInt( "viata", 100 ) );
+
+        setMoney( map.getInt( "money", 1001 ) );
 
         Array<Element> tmpWaves = map.getChildrenByName( "wave" );
         tmpWaves.shrink();
@@ -552,13 +554,13 @@ public class WorldBase implements Disposable {
 
 
     public void setLife(int viata) {
-        this.viata = viata;
+        this.life = viata;
         GR.gameplay.viataTurn.setText( "Life " +viata );
     }
 
 
     public int getLife() {
-        return viata;
+        return life;
     }
 
 
@@ -621,6 +623,15 @@ public class WorldBase implements Disposable {
         return overview;
     }
 
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+
+    public int getMoney() {
+        return money;
+    }
 
     public boolean fireFromTower(Tower tower) {
         return tower.fireWeapon();

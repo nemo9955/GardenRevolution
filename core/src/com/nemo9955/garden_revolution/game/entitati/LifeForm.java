@@ -35,12 +35,10 @@ public abstract class LifeForm extends Entity {
         animation.update( delta );
     }
 
-    @Override
     public void damage(int dmg) {
         life -= dmg;
         if ( life <=0 )
-            super.damage( dmg );
-
+            super.setDead( true );
     }
 
     protected void lookAt(Vector3 look) {// FIXME doar se invarte

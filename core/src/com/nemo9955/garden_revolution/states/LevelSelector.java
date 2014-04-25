@@ -74,11 +74,15 @@ public class LevelSelector extends CustomAdapter implements Screen {
         String harti[] = null;
 
         if ( Gdx.app.getType() ==ApplicationType.Desktop ) {
+            // System.out.println( Gdx.files.internal( "harti/lista nivele.txt" ).readString() );
             try {
                 harti = Gdx.files.classpath( GR.levelsLocation ).readString().split( ".xml\n" );
+                // for (String str : harti )
+                // System.out.println( str );
             }
             catch (Exception e) {
-                harti = new String[] { "1aaa level", "a1 nivelul 1" };
+                harti = Gdx.files.internal( "harti/lista nivele.txt" ).readString().split( "\n" );
+                // new String[] { "1aaa level", "a1 nivelul 1" };
             }
         }
         else if ( Gdx.app.getType() ==ApplicationType.Android ) {
@@ -87,8 +91,9 @@ public class LevelSelector extends CustomAdapter implements Screen {
             harti = new String[nivele.length];
             for (int i = 0 ; i <harti.length ; i ++ )
                 harti[i] = nivele[i].nameWithoutExtension();
-            Arrays.sort( harti );
         }
+
+        Arrays.sort( harti );
 
         start = new TextButton( "Start", GR.skin );
         elem = new List<String>( GR.skin );

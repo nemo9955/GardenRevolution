@@ -1,4 +1,4 @@
 Garden_Revolution
 =================
 
-Android game .
+Desktop and Android game .

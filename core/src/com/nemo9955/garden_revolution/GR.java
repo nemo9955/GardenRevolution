@@ -44,4 +44,6 @@ public class GR {
     public static final Vector3       temp4          = new Vector3();
 
 
+    // public static BitmapFont kblc;
+
 }

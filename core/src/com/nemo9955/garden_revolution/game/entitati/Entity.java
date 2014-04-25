@@ -19,9 +19,13 @@ public abstract class Entity implements Poolable {
     public BoundingBox           box;
     public float                 colRadius;
     public boolean               isColCubic;
+
+    // TODO do something about this ...
+    protected final WorldWrapper world;
+
+    // TODO remove these variables
     public float                 angle;
     public Vector3               poz;
-    protected final WorldWrapper world;
 
     public Entity(WorldWrapper world) {
         this.world = world;
@@ -111,11 +115,6 @@ public abstract class Entity implements Poolable {
         if ( angle <0 )
             angle += 360;
     }
-
-    public void damage(int dmg) {
-        setDead( true );
-    }
-
 
     public static void addPoz(BoundingBox box, Vector3 poz) {
         box.set( box.min.add( poz ), box.max.add( poz ) );

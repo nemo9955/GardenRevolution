@@ -49,7 +49,6 @@ public class Menu extends CustomAdapter implements Screen {
         ScreenViewport viewport = new ScreenViewport();
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
-        
 
         final ImageTextButton options = Func.newImageTextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nemo9955.garden_revolution.states.Gameplay;
@@ -27,6 +28,8 @@ import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
+
+    private FreeTypeFontGenerator gen;
 
     @Override
     public void create() {
@@ -62,11 +65,21 @@ public class Garden_Revolution extends Game {
             Gdx.input.setCatchBackKey( true );
 
         Tween.registerAccessor( Sprite.class, new SpriteTween() );
-        Tween.registerAccessor( BitmapFont.class,  new FontTween() );
-
+        Tween.registerAccessor( BitmapFont.class, new FontTween() );
         Texture.setAssetManager( GR.manager );
 
+
+        // FreeTypeFontParameter fontPar = new FreeTypeFontParameter();
+        // fontPar.size = 20;
+        //
+        // gen = new FreeTypeFontGenerator( Gdx.files.internal( "fonts/KBLuckyClover.ttf" ) );
+        // GR.kblc = gen.generateFont( fontPar );
+        // // GR.skin.get( "ceva", BitmapFont.class ). = null;
+        // // GR.skin.remove( "ceva", BitmapFont.class );
+        // GR.skin.add( "ceva", GR.kblc, BitmapFont.class );
+
         GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
+
 
         GR.multyplayer = new MultyplayerSelector();
         GR.options = new Options();
@@ -101,6 +114,8 @@ public class Garden_Revolution extends Game {
         GR.multyplayer.dispose();
 
         GR.manager.dispose();
+
+        gen.dispose();
 
         System.out.println( "Toate resursele au fost eliminate cu succes !" );
     }

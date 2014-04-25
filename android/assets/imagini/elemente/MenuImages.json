@@ -1,4 +1,7 @@
 {
+
+	
+        
 	com.badlogic.gdx.graphics.Color: {
 	        white: { r: 1, g: 1, b: 1, a: 1 },
 	        black: { r: 0, g: 0, b: 0, a: 1 },
@@ -12,12 +15,12 @@
 	        demonized_32: { file: fonts/demonized_32.fnt }, 
 	        demonized_64: { file: fonts/demonized_64.fnt }, 
 	        arial_32:     { file: fonts/arial_32.fnt }, 
-	        arial_64:     { file: fonts/arial_64.fnt }
+	        arial_64:     { file: fonts/arial_64.fnt },
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	        default:   { font: arial_32, fontColor: white },
-	        def-black:   { font: arial_32, fontColor: black },
+	        def-black: { font: arial_32, fontColor: black },
 	        big:       { font: arial_64, fontColor: white },
 	        big-green: { font: arial_64, fontColor: green},
 	        demon:     { font: demonized_32, fontColor: white },

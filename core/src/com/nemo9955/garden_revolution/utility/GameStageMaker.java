@@ -127,6 +127,9 @@ public class GameStageMaker {
 
         tuBackBut1.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut1.getHeight() /2 );
         tuBackBut2.setPosition( 15 *Vars.densitate, gp.stage.getHeight() /2 -tuBackBut2.getHeight() /2 );
+
+
+        optScrollP.setBounds( gp.stage.getHeight() *0.1f, gp.stage.getHeight() *0.1f, gp.stage.getWidth() -gp.stage.getHeight() *0.2f, gp.stage.getHeight() *0.8f );
     }
 
 
@@ -292,7 +295,6 @@ public class GameStageMaker {
         optAutUpdBut.setChecked( Vars.updateUave );
         optShDebugBut.setChecked( Vars.showDebug );
 
-
         optInvMX.setChecked( Vars.invertDragX <0 );
         optInvMX.addListener( invButtons );
         optInvMY.setChecked( Vars.invertDragY <0 );
@@ -304,7 +306,6 @@ public class GameStageMaker {
         optInvPY.addListener( invButtons );
 
         optScrollP.setWidget( optTab );
-        optScrollP.setBounds( gp.stage.getHeight() *0.1f, gp.stage.getHeight() *0.1f, gp.stage.getWidth() -gp.stage.getHeight() *0.2f, gp.stage.getHeight() *0.8f );
 
         // optTab.setFillParent( true );
         optTab.defaults().pad( 20 );
