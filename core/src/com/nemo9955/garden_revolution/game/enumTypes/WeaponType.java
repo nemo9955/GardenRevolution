@@ -27,6 +27,7 @@ public enum WeaponType {
     NONE {
 
         {
+            setPrice( 0 );
             name = "None";
             details = "You have no weapon equiped";
         }
@@ -50,6 +51,106 @@ public enum WeaponType {
         public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
         }
     },
+    CANNON {
+
+
+        private Decal   spot;
+        private float   opac   = 0.3f;
+        private float   idle   = 2;
+        private boolean draw   = false;
+        private boolean aftImp = false;
+        private float   frames = 1 /60f;
+
+        {
+            setPrice( 360 );
+            fireDellay = 1000;
+            name = "Cannon";
+            details = "Slow but powerfull.";
+
+            spot = Decal.newDecal( Garden_Revolution.getMenuTexture( "mover-bg" ), true );
+            spot.setRotation( Vector3.Y, Vector3.Y );
+            spot.setDimensions( 20, 20 );
+            spot.setColor( 1, 1, 1, opac );
+
+        }
+
+        @Override
+        public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
+            if ( !fromUpdate ) {
+                if ( tower.charge <=0 )
+                    frames = Gdx.graphics.getDeltaTime();
+                ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
+                GR.temp4.set( tower.place );
+                do {
+                    ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, frames );
+                    GR.temp4.add( GR.temp3 );
+                } while ( GR.temp4.y >0 );
+                spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
+                opac = 0.2f;
+                idle = 2f;
+                aftImp = false;
+            }
+            else {
+                if ( idle >=0 )
+                    idle -= Gdx.graphics.getDeltaTime();
+                else
+                    opac -= Gdx.graphics.getDeltaTime() /5;
+                draw = opac >0;
+            }
+
+            if ( tower.charge >0 ) {
+                draw = true;
+                spot.setColor( 0, 0, 0, MathUtils.clamp( tower.charge, 0.4f, 1 ) );
+            }
+            else if ( aftImp ) {
+                spot.setColor( 1, 0, 0, 0.3f );
+                if ( idle <0 ) {
+                    opac = 0.3f;
+                    idle = 2;
+                    aftImp = false;
+                    tower.charge = 0;
+                }
+            }
+            else
+                spot.setColor( 1, 1, 1, opac );
+        }
+
+        @Override
+        public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
+            if ( draw )
+                decalBatch.add( spot );
+        }
+
+        @Override
+        public boolean fireProjectile(WorldWrapper world, Ray ray, float charge) {
+            if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
+                fireTime = System.currentTimeMillis();
+
+                aftImp = true;
+                idle = fireDellay /1000f;
+
+                world.getWorld().addShot( ShotType.GHIULEA, ray, charge );
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public ModelInstance getModelInstance(Vector3 poz) {
+            ModelBuilder build = new ModelBuilder();
+            Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
+            WorldBase.toDispose.add( sfera );
+
+            return new ModelInstance( sfera, poz );
+
+        }
+
+        @Override
+        public FireType getFireType() {
+            return FireType.FIRECHARGED;
+        }
+
+    },
     MINIGUN {
 
         private Decal   raza1;
@@ -60,6 +161,7 @@ public enum WeaponType {
         private short   rotation = 0;
 
         {
+            setPrice( 420 );
             name = "Mini Gun";
             details = "Small but vicious.";
             raza1 = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
@@ -149,105 +251,6 @@ public enum WeaponType {
         public FireType getFireType() {
             return FireType.FIREHOLD;
         }
-    },
-    CANNON {
-
-
-        private Decal   spot;
-        private float   opac   = 0.3f;
-        private float   idle   = 2;
-        private boolean draw   = false;
-        private boolean aftImp = false;
-        private float   frames = 1 /60f;
-
-        {
-            fireDellay = 1000;
-            name = "Cannon";
-            details = "Slow but powerfull.";
-
-            spot = Decal.newDecal( Garden_Revolution.getMenuTexture( "mover-bg" ), true );
-            spot.setRotation( Vector3.Y, Vector3.Y );
-            spot.setDimensions( 20, 20 );
-            spot.setColor( 1, 1, 1, opac );
-
-        }
-
-        @Override
-        public void updateWeaponTargeting(Tower tower, boolean fromUpdate) {
-            if ( !fromUpdate ) {
-                if ( tower.charge <=0 )
-                    frames = Gdx.graphics.getDeltaTime();
-                ShotType.GHIULEA.getInitialDir( GR.temp1.set( tower.getDirection() ), tower.charge );
-                GR.temp4.set( tower.place );
-                do {
-                    ShotType.GHIULEA.makeMove( GR.temp1, GR.temp3, frames );
-                    GR.temp4.add( GR.temp3 );
-                } while ( GR.temp4.y >0 );
-                spot.setPosition( GR.temp4.x, 0f, GR.temp4.z );
-                opac = 0.2f;
-                idle = 2f;
-                aftImp = false;
-            }
-            else {
-                if ( idle >=0 )
-                    idle -= Gdx.graphics.getDeltaTime();
-                else
-                    opac -= Gdx.graphics.getDeltaTime() /5;
-                draw = opac >0;
-            }
-
-            if ( tower.charge >0 ) {
-                draw = true;
-                spot.setColor( 0, 0, 0, MathUtils.clamp( tower.charge, 0.4f, 1 ) );
-            }
-            else if ( aftImp ) {
-                spot.setColor( 1, 0, 0, 0.3f );
-                if ( idle <0 ) {
-                    opac = 0.3f;
-                    idle = 2;
-                    aftImp = false;
-                    tower.charge = 0;
-                }
-            }
-            else
-                spot.setColor( 1, 1, 1, opac );
-        }
-
-        @Override
-        public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-            if ( draw )
-                decalBatch.add( spot );
-        }
-
-        @Override
-        public boolean fireProjectile(WorldWrapper world, Ray ray, float charge) {
-            if ( System.currentTimeMillis() -fireTime >=fireDellay ) {
-                fireTime = System.currentTimeMillis();
-
-                aftImp = true;
-                idle = fireDellay /1000f;
-
-                world.getWorld().addShot( ShotType.GHIULEA, ray, charge );
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public ModelInstance getModelInstance(Vector3 poz) {
-            ModelBuilder build = new ModelBuilder();
-            Model sfera = build.createSphere( 2, 2, 2, 12, 12, new Material( ColorAttribute.createDiffuse( Color.DARK_GRAY ) ), Usage.Position |Usage.Normal |Usage.TextureCoordinates );
-            WorldBase.toDispose.add( sfera );
-
-            return new ModelInstance( sfera, poz );
-
-        }
-
-        @Override
-        public FireType getFireType() {
-            return FireType.FIRECHARGED;
-        }
-
     };
 
     private static final Ray myray      = new Ray( new Vector3(), new Vector3() );
@@ -256,7 +259,13 @@ public enum WeaponType {
     public String            details    = "weapon description";
     protected int            fireDellay = 100;
     protected long           fireTime   = 0;
+    public int               cost       = 100;
+    public int               value      = 75;
 
+    public void setPrice(int cost) {
+        this.cost = cost;
+        this.value = (int) ( cost *0.75f );
+    }
 
     public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
     }
@@ -266,6 +275,7 @@ public enum WeaponType {
     public abstract boolean fireProjectile(WorldWrapper world, Ray ray, float charge);
 
     public abstract ModelInstance getModelInstance(Vector3 poz);
+
 
     public abstract FireType getFireType();
 

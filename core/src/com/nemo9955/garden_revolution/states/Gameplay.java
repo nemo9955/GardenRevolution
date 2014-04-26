@@ -346,6 +346,9 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
+            case Keys.R:
+                world.getDef().setMoney( 1000 );
+                break;
             case Keys.W:
                 movey = 2f;
                 break;
@@ -384,7 +387,9 @@ public class Gameplay extends CustomAdapter implements Screen {
                 break;
             case Keys.ESCAPE:
             case Keys.BACK:
-                GR.game.setScreen( GR.selecter );
+                Actor actBkBut = Func.getActorInActiveStage( stage, "Back" );
+                if ( actBkBut !=null )
+                    Func.click( actBkBut );
                 break;
         }
 

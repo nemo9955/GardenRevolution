@@ -9,17 +9,17 @@ public enum TowerType {
 
     VIEWPOINT(Assets.VIEW_POINT) {
 
-        @Override
-        protected void propTowers() {
-            rank = 6666666;
+        {
+            setPrice( 0 );
+            rank = 9000 +1;
             name = "View baloon";
         }
     },
 
     FUNDATION(Assets.TOWER_FUNDATION) {
 
-        @Override
-        protected void propTowers() {
+        {
+            setPrice( 0 );
             name = "Fundation";
             rank = 0;
         }
@@ -27,26 +27,36 @@ public enum TowerType {
 
     BASIC(Assets.TOWER_BASIC) {
 
-        @Override
-        protected void propTowers() {
+        {
             name = "Basic tower";
             rank = 5;
+            setPrice( 530 );
         }
     };
 
     Assets        type;
     public String name;
     public int    rank;
+    public int    cost;
+    public int    value;
 
 
     TowerType(Assets type) {
         this.type = type;
-        propTowers();
+        setPrice( 100 );
+    }
+
+    public void setPrice(int cost) {
+        this.cost = cost;
+        this.value = (int) ( cost *0.60f );
     }
 
     public Model getModel() {
         return Garden_Revolution.getModel( type );
     }
 
-    protected abstract void propTowers();
+    public static boolean isValidForWeapon(TowerType tower) {
+        return tower ==BASIC;
+    }
+
 }

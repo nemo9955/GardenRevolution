@@ -29,9 +29,9 @@ public class Tower implements Disposable {
     public TowerType             type;
 
     private Weapon               weapon;
-    public Vector3               place            = new Vector3();
-    private Vector3              direction        = new Vector3();
-    public Ray                   ray              = new Ray( place, direction );
+    public final Vector3         place            = new Vector3();
+    private final Vector3        direction        = new Vector3();
+    public final Ray             ray              = new Ray( place, direction );
     public byte                  ID;
 
     public String                ocupier          = null;
@@ -48,8 +48,10 @@ public class Tower implements Disposable {
         this.ID = (byte) ID;
         this.poz.set( poz );
         this.world = world;
+        weapon = new Weapon( WeaponType.NONE, place );
 
         upgradeTower( type );
+
 
         // pointer.setPosition( poz.x, poz.y +5f, poz.z );
         // place.set( poz ).add( 0, 10, 0 );
@@ -63,15 +65,11 @@ public class Tower implements Disposable {
     }
 
     public boolean changeWeapon(WeaponType toChange) {
-        if ( type ==TowerType.VIEWPOINT )
-            return false;
-        if ( !hasWeapon() ) {
-            weapon = new Weapon( toChange, place );
-            return true;
-        }
         if ( weapon.type ==toChange )
             return false;
+        world.getDef().addMoney( weapon.type.value );
         weapon.changeWeapon( toChange );
+        world.getDef().addMoney( -weapon.type.cost );
         return true;
     }
 
@@ -108,6 +106,8 @@ public class Tower implements Disposable {
 
         pointer.setPosition( place.x, place.y +10f, place.z );
 
+        weapon.poz.set( place );
+
         return true;
     }
 
@@ -138,7 +138,7 @@ public class Tower implements Disposable {
     }
 
     public boolean hasWeapon() {
-        return weapon !=null;
+        return weapon.type !=WeaponType.NONE;
     }
 
     public boolean intersectsRay(Ray ray) {
@@ -150,7 +150,7 @@ public class Tower implements Disposable {
 
     @Override
     public void dispose() {
-        if ( hasWeapon() )// TODO get rid of this when i get proper weapon models
+        if ( hasWeapon() )
             weapon.dispose();
     }
 

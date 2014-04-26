@@ -38,7 +38,7 @@ public abstract class LifeForm extends Entity {
     public void damage(int dmg) {
         life -= dmg;
         if ( life <=0 )
-            super.setDead( true );
+            setDead( true );
     }
 
     protected void lookAt(Vector3 look) {// FIXME doar se invarte
@@ -46,6 +46,6 @@ public abstract class LifeForm extends Entity {
         if ( ung <0 )
             ung += 360;
         ung -= 180;
-        rotate( 0, angle -ung, 0 );
+        rotate( 0, angle +ung, 0 );
     }
 }

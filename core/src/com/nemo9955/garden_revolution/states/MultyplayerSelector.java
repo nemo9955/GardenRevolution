@@ -66,15 +66,13 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
         portInput = new TextField( "", GR.skin ) {
 
             public float getPrefWidth() {
-                return 95;
+                return 100;
             };
         };
         isHost = Func.newCheckBox( "Is host", GR.skin );
         isPublic = Func.newCheckBox( "Is public", GR.skin );
         theIP = new Label( Func.getIpAddress(), GR.skin );
 
-
-        ipInput.setText( "188.173.17.234" );
         portInput.setText( "29955" );
 
         makeLayout();
@@ -134,16 +132,17 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
 
         table.setFillParent( true );
         table.defaults().space( 50 );
-        table.add( start ).colspan( 3 ).row();
+        table.add( start ).colspan( 2 ).row();
         table.add( isHost );
         if ( isHost.isChecked() )
             table.add( theIP ).size( 250, theIP.getHeight() );
         else
             table.add( ipInput );
         table.row();
-        table.add( isPublic );
+        table.add( "Port :" );
         table.add( portInput ).row();
-        table.add( back ).colspan( 3 ).row();
+        table.add( isPublic ).colspan( 2 ).row();
+        table.add( back ).colspan( 2 ).row();
 
         table.invalidateHierarchy();
     }
@@ -189,7 +188,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
         if ( Func.isControllerUsable() ) {
             Controllers.addListener( this );
         }
-        ipInput.setText( "188.173.17.234" );
+        ipInput.setText( "" );
     }
 
     @Override

@@ -29,7 +29,6 @@ import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.Waves;
 import com.nemo9955.garden_revolution.game.entitati.Ally;
 import com.nemo9955.garden_revolution.game.entitati.Enemy;
-import com.nemo9955.garden_revolution.game.entitati.Entity;
 import com.nemo9955.garden_revolution.game.entitati.Shot;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
@@ -40,6 +39,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
+import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.IndexedObject;
 import com.nemo9955.garden_revolution.utility.Vars;
 
@@ -195,22 +195,22 @@ public class WorldBase implements Disposable {
         for (BoundingBox box : getColide() )
             shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
-        // shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
-        // for (Tower tower : towers )
-        // for (BoundingBox box : tower.getTowerColiders() )
-        // shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
+        shape.setColor( 0.7f, 0.8f, 0.4f, 1 );
+        for (Tower tower : towers )
+            for (BoundingBox box : tower.getTowerColiders() )
+                shape.box( box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z );
 
         // shape.setColor( 1, 0, 0, 1 );
         // for (Entity e : getEnemy() )
         // shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
-        //
+
         // shape.setColor( 0, 0, 1, 1 );
         // for (Entity e : getAlly() )
         // shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
-        shape.setColor( 0, 1, 1, 1 );
-        for (Entity e : getShot() )
-            shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
+        // shape.setColor( 0, 1, 1, 1 );
+        // for (Entity e : getShot() )
+        // shape.box( e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z );
 
         shape.setColor( 0, 0.5f, 0.5f, 1 );
         for (FightZone e : getFightZones() )
@@ -585,7 +585,7 @@ public class WorldBase implements Disposable {
 
 
     public boolean changeWeapon(Tower tower, WeaponType newWeapon) {
-        if ( tower.type !=TowerType.FUNDATION )
+        if ( TowerType.isValidForWeapon( tower.type ) )
             if ( tower.changeWeapon( newWeapon ) ) {
                 // System.out.println( "World changed weapon" );
                 return true;
@@ -624,10 +624,17 @@ public class WorldBase implements Disposable {
     }
 
 
-    public void setMoney(int money) {
-        this.money = money;
+    public void addMoney(int money) {
+        this.money += money;
+        GameStageMaker.tuMoneyMeter.setText( "Money " +this.money );
+        System.out.println( "Added money  " +money );
     }
 
+    public void setMoney(int money) {
+        this.money = money;
+        GameStageMaker.tuMoneyMeter.setText( "Money " +this.money );
+        System.out.println( "Setted money  " +money );
+    }
 
     public int getMoney() {
         return money;

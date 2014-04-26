@@ -71,10 +71,19 @@ public class WorldSP implements IWorldModel {
 
 
     @Override
+    public void setMoney(int money) {
+        world.setMoney( money );
+    }
+
+    @Override
+    public void addMoney(int money) {
+        world.addMoney( money );
+    }
+
+    @Override
     public boolean upgradeTower(Tower tower, TowerType upgrade) {
         return world.upgradeTower( tower, upgrade );
     }
-
 
     @Override
     public boolean canChangeTowers(byte current, byte next, String name) {

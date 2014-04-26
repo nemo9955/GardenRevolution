@@ -16,6 +16,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
+import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldMoney;
 import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
@@ -84,6 +85,14 @@ public class Host extends Listener implements MultiplayerComponent {
                     ChangeWorldLife lf = (ChangeWorldLife) obj;
                     gp.world.getSgPl().setLife( lf.life );
                     server.sendToAllExceptTCP( connection.getID(), lf );
+                }
+                else if ( obj instanceof ChangeWorldMoney ) {
+                    ChangeWorldMoney mny = (ChangeWorldMoney) obj;
+                    if ( mny.isSetMoney )
+                        gp.world.getSgPl().setMoney( mny.money );
+                    else
+                        gp.world.getSgPl().addMoney( mny.money );
+                    server.sendToAllExceptTCP( connection.getID(), mny );
                 }
                 else if ( obj instanceof WorldAddEnemyOnPath ) {
                     WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;

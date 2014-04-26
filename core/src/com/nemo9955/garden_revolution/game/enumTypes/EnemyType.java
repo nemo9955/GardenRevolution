@@ -13,41 +13,42 @@ public enum EnemyType {
 
     ALUNA("Peanut") {
 
-        @Override
-        public void propEnemys() {
-            speed = 7;
-            life = 1;
+        {
+            life = 10;
+            speed = 10;
+            value = 25;
         }
     },
 
     ROSIE("Tomato") {
 
-        @Override
-        public void propEnemys() {
-            speed = 4;
-            life = 100;
+        {
+            life = 70;
+            speed = 7;
+            value = 65;
+            strenght = 15;
         }
     },
 
     MORCOV("Carrot") {
 
-        @Override
-        public void propEnemys() {
-            strenght = 5;
-            speed = 6;
+        {
             life = 150;
+            speed = 4;
+            value = 80;
+            strenght = 2;
         }
     };
 
     ModelInstance model;
-    public int    strenght = 5;
-    public float  speed    = 8;
     public String name     = "Plant";
     public int    life     = 50;
+    public float  speed    = 8;
+    public int    value    = 50;
+    public int    strenght = 5;
 
     EnemyType(String fileName) {
         name = name().charAt( 0 ) +"" +name().replaceFirst( name().charAt( 0 ) +"", "" ).toLowerCase();
-        propEnemys();
 
         ModelInstance tmp = new ModelInstance( Garden_Revolution.getModel( Assets.ENEMYS ) );
         Array<Node> toRemove = new Array<Node>( false, 1 );
@@ -62,8 +63,6 @@ public enum EnemyType {
         model.transform.setToTranslation( x, y, z );
         return new ModelInstance( model );
     }
-
-    protected abstract void propEnemys();
 
     public static EnemyType getRandomEnemy() {
         return EnemyType.values()[MathUtils.random( EnemyType.values().length -1 )];

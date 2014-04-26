@@ -29,6 +29,10 @@ public interface IWorldModel {
 
     public void setLife(int viata);
 
+    public void addMoney(int money);
+
+    public void setMoney(int money);
+
     public void setCanWaveStart(boolean canWaveStart);
 
     public void reset();

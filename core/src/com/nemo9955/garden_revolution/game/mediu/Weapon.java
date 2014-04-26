@@ -16,8 +16,8 @@ public class Weapon implements Disposable {
 
     private ModelInstance      model;
     public AnimationController animation;
-    public final Vector3       poz  = new Vector3();
-    public WeaponType          type = WeaponType.NONE;
+    public final Vector3       poz = new Vector3();
+    public WeaponType          type;
 
 
     public Weapon(WeaponType type, Vector3 poz) {

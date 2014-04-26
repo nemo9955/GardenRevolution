@@ -1,5 +1,6 @@
 package com.nemo9955.garden_revolution.utility;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -25,32 +28,34 @@ import com.nemo9955.garden_revolution.states.Gameplay;
 public class GameStageMaker {
 
 
-    private static Board         hudGroup      = new Board();
-    private static ImageButton   hudPauseBut   = new ImageButton( GR.skin, "IGpause" );
-    public static ImageButton    hudTowerBut   = new ImageButton( GR.skin, "towerUpgrade" );
+    private static Board         hudGroup       = new Board();
+    public static ImageButton    hudPauseBut    = new ImageButton( GR.skin, "IGpause" );
+    public static ImageButton    hudTowerBut    = new ImageButton( GR.skin, "towerUpgrade" );
 
-    private static Group         tuGroup       = new Group();
-    private static TextButton    tuBackBut1    = new TextButton( "Bk", GR.skin );
-    private static TextButton    tuBackBut2    = new TextButton( "Bk", GR.skin );
-    private static TextButton    tuBasicBut    = new TextButton( "BASIC", GR.skin );
-    private static ImageButton   tuMiniGunBut  = new ImageButton( IconType.SAGETI.getAsDrawable( GR.skin, 70, 70 ) );
-    private static ImageButton   tuCannonBut   = new ImageButton( IconType.TUN.getAsDrawable( GR.skin, 70, 70 ) );
+    private static Group         tuGroup        = new Group();
+    private static TextButton    tuBackBut1     = new TextButton( "Bk", GR.skin );
+    private static TextButton    tuBackBut2     = new TextButton( "Bk", GR.skin );
+    private static TextButton    tuBasicBut     = new TextButton( "BASIC", GR.skin );
+    private static ImageButton   tuMiniGunBut   = new ImageButton( IconType.SAGETI.getAsDrawable( GR.skin, 70, 70 ) );
+    private static ImageButton   tuCannonBut    = new ImageButton( IconType.TUN.getAsDrawable( GR.skin, 70, 70 ) );
+    public static Label          tuMoneyMeter   = new Label( "Money ----", GR.skin );
     private static CircularGroup tuTowerCircG;
 
-    private static Table         optTab        = new Table();
-    private static ScrollPane    optScrollP    = new ScrollPane( optTab, GR.skin );
-    private static TextButton    optBackBut    = new TextButton( "Back", GR.skin, "demon" );
-    private static CheckBox      optAutUpdBut  = Func.newCheckBox( "Auto-Update Wave", GR.skin );
-    private static CheckBox      optShDebugBut = Func.newCheckBox( "Show Debug", GR.skin );
-    private static CheckBox      optInvMX      = Func.newCheckBox( "Invert Drag X", GR.skin );
-    private static CheckBox      optInvMY      = Func.newCheckBox( "Invert Drag Y", GR.skin );
-    private static CheckBox      optInvPX      = Func.newCheckBox( "Invert TouchPad X", GR.skin );
-    private static CheckBox      optInvPY      = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
+    private static Table         optTab         = new Table();
+    private static ScrollPane    optScrollP     = new ScrollPane( optTab, GR.skin );
+    private static TextButton    optBackBut     = new TextButton( "Back", GR.skin, "demon" );
+    private static CheckBox      optAutUpdBut   = Func.newCheckBox( "Auto-Update Wave", GR.skin );
+    private static CheckBox      optShDebugBut  = Func.newCheckBox( "Show Debug", GR.skin );
+    private static CheckBox      optInvMX       = Func.newCheckBox( "Invert Drag X", GR.skin );
+    private static CheckBox      optInvMY       = Func.newCheckBox( "Invert Drag Y", GR.skin );
+    private static CheckBox      optInvPX       = Func.newCheckBox( "Invert TouchPad X", GR.skin );
+    private static CheckBox      optInvPY       = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
+    private static Label         optFOVmeter    = new Label( "Camera FOV 60", GR.skin );
 
-    private static Table         pauseTab      = new Table( GR.skin );
-    private static TextButton    pauseBackBut  = new TextButton( "Resume play", GR.skin );
-    private static TextButton    pauseOptBut   = new TextButton( "Options", GR.skin );
-    private static TextButton    pauseMMenuBut = new TextButton( "Main menu", GR.skin );
+    private static Table         pauseTab       = new Table( GR.skin );
+    private static TextButton    pauseResumeBut = new TextButton( "Resume play", GR.skin );
+    private static TextButton    pauseOptBut    = new TextButton( "Options", GR.skin );
+    private static TextButton    pauseMMenuBut  = new TextButton( "Main menu", GR.skin );
 
     private static Gameplay      gp;
 
@@ -82,7 +87,7 @@ public class GameStageMaker {
         hudPauseBut.setName( "Back" );
         optBackBut.setName( "Back" );
         tuBackBut1.setName( "Back" );
-        pauseBackBut.setName( "Back" );
+        pauseMMenuBut.setName( "Back" );
 
         gp.stage.addActor( hudGroup );
         gp.stage.addActor( tuGroup );
@@ -130,6 +135,7 @@ public class GameStageMaker {
 
 
         optScrollP.setBounds( gp.stage.getHeight() *0.1f, gp.stage.getHeight() *0.1f, gp.stage.getWidth() -gp.stage.getHeight() *0.2f, gp.stage.getHeight() *0.8f );
+        tuMoneyMeter.setPosition( 5, 5 );
     }
 
 
@@ -224,7 +230,7 @@ public class GameStageMaker {
                                                                  pauseTab.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                                  gp.updWorld = false;
                                                                  gp.pointer.setVisible( true );
-                                                                 gp.pointer.setSelectedActor( pauseBackBut );
+                                                                 gp.pointer.setSelectedActor( pauseResumeBut );
                                                              }
                                                              else if ( hudTowerBut.isPressed() ) {
                                                                  hudGroup.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
@@ -258,14 +264,16 @@ public class GameStageMaker {
         tuTowerCircG = new CircularGroup( gp.shape );
         tuTowerCircG.setDraggable( true );
 
+        tuMoneyMeter.setColor( Color.DARK_GRAY );
+
         tuTowerCircG.addActor( tuBasicBut );
         tuTowerCircG.addActor( tuMiniGunBut );
         tuTowerCircG.addActor( tuCannonBut );
 
+        tuGroup.addActor( tuMoneyMeter );
         tuGroup.addActor( tuBackBut1 );
         tuGroup.addActor( tuTowerCircG );
         tuGroup.addActor( tuBackBut2 );
-
 
         tuGroup.addListener( towerUpListener );
     }
@@ -305,9 +313,10 @@ public class GameStageMaker {
         optInvPY.setChecked( Vars.invertPadY <0 );
         optInvPY.addListener( invButtons );
 
-        optScrollP.setWidget( optTab );
+        optCamFOV.setValue( 60 );
+        optCamFOV.addListener( valueListener );
 
-        // optTab.setFillParent( true );
+
         optTab.defaults().pad( 20 );
         optTab.add( optAutUpdBut ).row();
         optTab.add( optShDebugBut ).row();
@@ -315,11 +324,35 @@ public class GameStageMaker {
         optTab.add( optInvMY ).row();
         optTab.add( optInvPX ).row();
         optTab.add( optInvPY ).row();
+        optTab.add( optFOVmeter ).padBottom( 3 ).row();
+        optTab.add( optCamFOV ).padTop( 0 ).row();
         optTab.add( optBackBut ).row();
 
+        optScrollP.setWidget( optTab );
 
         optScrollP.addListener( optScrollListener );
     }
+
+
+    private static Slider         optCamFOV         = new Slider( 20, 140, 1, false, GR.skin ) {
+
+                                                        @Override
+                                                        public float getPrefWidth() {
+                                                            return 300;
+                                                        }
+                                                    };
+
+    private static ChangeListener valueListener     = new ChangeListener() {
+
+                                                        @Override
+                                                        public void changed(ChangeEvent event, Actor actor) {
+                                                            gp.player.getCamera().fieldOfView = optCamFOV.getValue();
+                                                            gp.player.getCamera().update();
+                                                            optFOVmeter.setText( "Camera FOV " +(int) optCamFOV.getValue() );
+                                                            optScrollP.cancel();
+                                                        }
+                                                    };
+
 
     private static ChangeListener optScrollListener = new ChangeListener() {
 
@@ -360,7 +393,7 @@ public class GameStageMaker {
         pauseTab.setBackground( "pix30" );
         pauseTab.add( "PAUSE", "big-green" ).padBottom( gp.stage.getHeight() *0.1f );
         pauseTab.row();
-        pauseTab.add( pauseBackBut ).padBottom( gp.stage.getHeight() *0.07f );
+        pauseTab.add( pauseResumeBut ).padBottom( gp.stage.getHeight() *0.07f );
         pauseTab.row();
         pauseTab.add( pauseOptBut ).padBottom( gp.stage.getHeight() *0.07f );
         pauseTab.row();
@@ -382,7 +415,7 @@ public class GameStageMaker {
                                                             gp.pointer.setVisible( true );
                                                             gp.pointer.setSelectedActor( optBackBut );
                                                         }
-                                                        else if ( pauseBackBut.isPressed() ) {
+                                                        else if ( pauseResumeBut.isPressed() ) {
                                                             pauseTab.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                             hudGroup.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                             gp.updWorld = true;

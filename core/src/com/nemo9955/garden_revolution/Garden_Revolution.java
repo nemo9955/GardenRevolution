@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nemo9955.garden_revolution.states.Gameplay;
@@ -29,7 +28,6 @@ import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
 
-    private FreeTypeFontGenerator gen;
 
     @Override
     public void create() {
@@ -105,6 +103,8 @@ public class Garden_Revolution extends Game {
 
     @Override
     public void dispose() {
+        GR.manager.dispose();
+
         GR.gameplay.dispose();
         GR.menu.dispose();
         GR.selecter.dispose();
@@ -112,10 +112,6 @@ public class Garden_Revolution extends Game {
         GR.test.dispose();
         GR.options.dispose();
         GR.multyplayer.dispose();
-
-        GR.manager.dispose();
-
-        gen.dispose();
 
         System.out.println( "Toate resursele au fost eliminate cu succes !" );
     }

@@ -35,6 +35,24 @@ public class Packets {
         }
     }
 
+    public static class ChangeWorldMoney {
+
+        public int     money;
+        public boolean isSetMoney;
+
+        public ChangeWorldMoney getSetMoney(int money) {
+            this.money = money;
+            isSetMoney = true;
+            return this;
+        }
+
+        public ChangeWorldMoney getAddMoney(int money) {
+            this.money = money;
+            isSetMoney = false;
+            return this;
+        }
+    }
+
     public static class AllyKilled {
 
         public short ID;

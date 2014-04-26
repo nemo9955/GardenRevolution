@@ -15,6 +15,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
+import com.nemo9955.garden_revolution.net.packets.PSender;
 import com.nemo9955.garden_revolution.utility.Func;
 
 
@@ -99,7 +100,7 @@ public class Player {
 
             if ( GR.gameplay.mp !=null &&System.currentTimeMillis() -dirTime >100 ) {
                 dirTime = System.currentTimeMillis();
-                GR.gameplay.mp.sendTCP( Func.getTDC( tower.ID, cam.direction ) );
+                GR.gameplay.mp.sendTCP( PSender.getTDC( tower.ID, cam.direction ) );
                 // System.out.println( "Sending directional info : " +tower.ID +" " +cam.direction );
             }
         }
@@ -191,13 +192,16 @@ public class Player {
 
 
     public void upgradeCurentTower(TowerType upgrade) {
-        if ( world.getDef().upgradeTower( tower, upgrade ) )
+        if ( world.getWorld().getMoney() >=upgrade.cost &&world.getDef().upgradeTower( tower, upgrade ) ) {
+            world.getDef().addMoney( -upgrade.cost );
             resetCamera();
+        }
     }
 
     public void changeCurrentWeapon(WeaponType newWeapon) {
-        if ( world.getDef().changeWeapon( tower, newWeapon ) )
+        if ( world.getWorld().getMoney() +tower.getWeapon().type.value >=newWeapon.cost &&world.getDef().changeWeapon( tower, newWeapon ) ) {
             resetCamera();
+        }
     }
 
     public boolean canChangeTower(Tower tower) {

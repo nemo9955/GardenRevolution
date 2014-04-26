@@ -113,8 +113,13 @@ public class Enemy extends LifeForm {
 
     @Override
     public void setDead(boolean dead) {
+        if ( dead ) {
+            world.getDef().addMoney( type.value );
+            System.out.println( "added money : " +type.value );
+        }
         super.setDead( dead );
     }
+
 
     private static short globalID = -32768;
 

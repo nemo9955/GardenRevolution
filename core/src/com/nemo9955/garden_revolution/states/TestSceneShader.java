@@ -98,7 +98,9 @@ public class TestSceneShader extends CustomAdapter implements Screen {
 
         cam = new OrthographicCamera( Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
         cam.setToOrtho( false );
+
         Gdx.input.setInputProcessor( this );
+
         if ( Func.isControllerUsable() )
             Controllers.addListener( this );
     }
@@ -121,12 +123,13 @@ public class TestSceneShader extends CustomAdapter implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
 
-
         batch.begin();
         shader.setUniformf( "time", time += Gdx.graphics.getDeltaTime() );
         batch.draw( tex0, 0, 0 );
         batch.end();
 
+        if ( Gdx.input.isTouched() )
+            GR.game.setScreen( GR.menu );
     }
 
     @Override
@@ -148,9 +151,8 @@ public class TestSceneShader extends CustomAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor( null );
-        if ( Func.isControllerUsable() ) {
+        if ( Func.isControllerUsable() )
             Controllers.removeListener( this );
-        }
         dispose();
     }
 
