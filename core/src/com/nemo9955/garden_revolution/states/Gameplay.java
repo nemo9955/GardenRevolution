@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
@@ -31,14 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
@@ -51,7 +45,6 @@ import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.GameStageMaker;
-import com.nemo9955.garden_revolution.utility.IconType;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
@@ -74,19 +67,10 @@ public class Gameplay extends CustomAdapter implements Screen {
     public float                touchPadTimmer = 0;
     private TweenManager        tweeger;
 
+
     private Vector2             presDown       = new Vector2();
-    public Label                viataTurn      = new Label( "Life ", GR.skin );
-    public Label                fps            = new Label( "FPS: ", GR.skin );
-    public Touchpad             mover          = new Touchpad( 1, GR.skin );
-    public Image                weaponCharger  = new Image( GR.skin, "mover-knob" );
-    public TextButton           ready          = new TextButton( "Start Wave!", GR.skin );
-    public Image                allyPlacer     = new Image( IconType.TINTA.getAsDrawable( GR.skin, 60f, 60f ) );
     public Stage                stage;
 
-    public StageActorPointer    pointer;
-    public boolean              showASA        = false;
-    public final Vector3        onPath         = new Vector3();
-    public Decal                allySpawnArea  = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
 
     public MultiplayerComponent mp             = null;
 
@@ -129,12 +113,12 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         tweeger.update( delta );
 
-        if ( touchPadTimmer !=Vars.tPadMinAlpha &&!mover.isTouched() ) {
+        if ( touchPadTimmer !=Vars.tPadMinAlpha &&!hudMover.isTouched() ) {
             touchPadTimmer -= delta;
             if ( touchPadTimmer <Vars.tPadMinAlpha )
                 touchPadTimmer = Vars.tPadMinAlpha;
             if ( touchPadTimmer <1 )
-                mover.addAction( Actions.alpha( touchPadTimmer ) );
+                hudMover.addAction( Actions.alpha( touchPadTimmer ) );
         }
 
         if ( updWorld ||mp !=null )
@@ -178,11 +162,18 @@ public class Gameplay extends CustomAdapter implements Screen {
 
         player.update( delta );
 
+        if ( ASAtimer >0 ) {
+            hudAllyPlacer.setColor( 1, 0, 0, 1 - ( ASAtimer /Vars.allySpawnInterval ) );
+            ASAtimer -= delta;
+            if ( ASAtimer <=0 )
+                hudAllyPlacer.setColor( 1, 1, 1, 1 );
+
+        }
 
         if ( showASA &&!Gdx.input.isTouched() ) {
             Func.intersectLinePlane( GR.ray1.set( player.getCamera().position, player.getCamera().direction ), GR.temp4 );
-            world.getWorld().getOnPath( GR.temp4, onPath, 150 );
-            allySpawnArea.setPosition( onPath.x, 0.2f, onPath.z );
+            world.getWorld().getOnPath( GR.temp4, ASAonPath, 150 );
+            allySpawnArea.setPosition( ASAonPath.x, 0.2f, ASAonPath.z );
         }
 
         world.getWorld().update( delta );
@@ -227,7 +218,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         postInit( world.init( nivel, mp ) );
 
 
-        ready.setText( "Ready!" );
+        hudReady.setText( "Ready!" );
         // showMessage( "Created as HOST" );
         return this;
     }
@@ -238,7 +229,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         mp = new GameClient( this, ip );
 
         mp.sendTCP( new StartingServerInfo() );
-        ready.setText( "Ready!" );
+        hudReady.setText( "Ready!" );
         return this;
     }
 
@@ -251,13 +242,13 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( Func.isAndroid() ||button ==Buttons.LEFT ) {
 
             if ( player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
-                weaponCharger.setColor( Color.CLEAR );
-                weaponCharger.setVisible( true );
+                hudWeaponCharger.setColor( Color.CLEAR );
+                hudWeaponCharger.setVisible( true );
                 player.getTower().charge = 0;
 
                 tmp1.set( presDown );
                 stage.screenToStageCoordinates( tmp1 );
-                weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
+                hudWeaponCharger.setPosition( tmp1.x - ( hudWeaponCharger.getWidth() /2 ), tmp1.y - ( hudWeaponCharger.getHeight() /2 ) );
             }
 
             if ( player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
@@ -278,12 +269,12 @@ public class Gameplay extends CustomAdapter implements Screen {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if ( weaponCharger.isVisible() ) {
+        if ( hudWeaponCharger.isVisible() ) {
             float distance = 150 *Vars.densitate;
             player.getTower().charge = MathUtils.clamp( presDown.dst2( screenX, screenY ), 0, distance *distance );
             player.getTower().charge /= distance *distance;
             player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
-            weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
+            hudWeaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
             return true;
         }
         return false;
@@ -295,8 +286,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         if ( updWorld &&player.getTower().isFiringHold )
             player.getTower().setFiringHold( false );
 
-        if ( weaponCharger.isVisible() ) {
-            weaponCharger.setVisible( false );
+        if ( hudWeaponCharger.isVisible() ) {
+            hudWeaponCharger.setVisible( false );
             if ( world.getWorld().getTowerHitByRay( player.getCamera().getPickRay( screenX, screenY ) ) ==null ||player.getTower().charge >0.4f ) {
                 player.getTower().getWeapon().type.updateWeaponTargeting( player.getTower(), false );
                 world.getDef().fireFromTower( player.getTower() );
@@ -318,7 +309,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if ( updWorld && ( ( !weaponCharger.isVisible() && ( Gdx.input.isButtonPressed( Buttons.RIGHT ) ||Func.isAndroid() ) ) || ( Func.isDesktop() &&Gdx.input.isCursorCatched() ) ) ) {
+        if ( updWorld && ( ( !hudWeaponCharger.isVisible() && ( Gdx.input.isButtonPressed( Buttons.RIGHT ) ||Func.isAndroid() ) ) || ( Func.isDesktop() &&Gdx.input.isCursorCatched() ) ) ) {
             float difX = 0, difY = 0;
             difX = deltaX /10 *Vars.modCamSpeedX;
             difY = deltaY /7 *Vars.modCamSpeedY;
@@ -443,14 +434,14 @@ public class Gameplay extends CustomAdapter implements Screen {
                 player.getTower().setFiringHold( true );
             }
             else if ( updWorld &&player.getTower().isWeaponType( FireType.FIRECHARGED ) ) {
-                weaponCharger.setColor( Color.CLEAR );
-                weaponCharger.setVisible( true );
+                hudWeaponCharger.setColor( Color.CLEAR );
+                hudWeaponCharger.setVisible( true );
                 player.getTower().charge = ( -cont.getAxis( CoAxis.mvY.id ) +1 ) /2;
-                weaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
+                hudWeaponCharger.setColor( ( player.getTower().charge !=1 ? 0 : 1 ), 0, 0, player.getTower().charge );
                 player.getTower().fireChargedTime = System.currentTimeMillis();
 
                 tmp1.set( stage.screenToStageCoordinates( tmp1.set( Gdx.graphics.getWidth() /2, Gdx.graphics.getHeight() /2 ) ) );
-                weaponCharger.setPosition( tmp1.x - ( weaponCharger.getWidth() /2 ), tmp1.y - ( weaponCharger.getHeight() /2 ) );
+                hudWeaponCharger.setPosition( tmp1.x - ( hudWeaponCharger.getWidth() /2 ), tmp1.y - ( hudWeaponCharger.getHeight() /2 ) );
 
                 return false;
             }
@@ -495,8 +486,8 @@ public class Gameplay extends CustomAdapter implements Screen {
             if ( updWorld &&player.getTower().isWeaponType( FireType.FIREHOLD ) ) {
                 player.getTower().setFiringHold( false );
             }
-            if ( weaponCharger.isVisible() ) {
-                weaponCharger.setVisible( false );
+            if ( hudWeaponCharger.isVisible() ) {
+                hudWeaponCharger.setVisible( false );
                 // player.getTower().fireWeapon( world.getDef(), charge );
                 world.getDef().fireFromTower( player.getTower() );
                 player.getTower().fireChargedTime = 0;
@@ -506,10 +497,10 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( buttonCode ==CoButt.CallAlly.id &&showASA ) {
             showASA = false;
 
-            onPath.y = 0;
+            ASAonPath.y = 0;
             for (int i = 0 ; i <3 ; i ++ ) {
                 GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                world.getDef().addAlly( GR.temp4.add( onPath ), AllyType.SOLDIER );
+                world.getDef().addAlly( GR.temp4.add( ASAonPath ), AllyType.SOLDIER );
             }
 
         }

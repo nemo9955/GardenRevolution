@@ -61,7 +61,18 @@ public class Player {
             Func.intersectLinePlane( getCamera().getPickRay( x, y ), tempSpawner );
 
             if ( Gdx.input.isButtonPressed( Buttons.MIDDLE ) ) {
-                if ( Gdx.input.isKeyPressed( Keys.F5 ) ) {
+
+                if ( Gdx.input.isKeyPressed( Keys.F5 ) )
+                    world.getDef().addFoe( EnemyType.getRandomEnemy(), tempSpawner );
+
+                if ( Gdx.input.isKeyPressed( Keys.F6 ) ) {
+                    for (int i = 0 ; i <=10 ; i += 2 )
+                        for (int j = 0 ; j <=10 ; j += 2 ) {
+                            GR.temp2.set( i +tempSpawner.x -5, tempSpawner.y, j +tempSpawner.z -5 );
+                            world.getDef().addFoe( EnemyType.getRandomEnemy(), GR.temp2 );
+                        }
+                }
+                if ( Gdx.input.isKeyPressed( Keys.F7 ) ) {
                     for (int i = 0 ; i <=20 ; i += 2 )
                         for (int j = 0 ; j <=20 ; j += 2 ) {
                             GR.temp2.set( i +tempSpawner.x -10f, tempSpawner.y, j +tempSpawner.z -10f );
@@ -69,11 +80,13 @@ public class Player {
                         }
                 }
 
-                if ( Gdx.input.isKeyPressed( Keys.F7 ) )
-                    world.getDef().addFoe( EnemyType.getRandomEnemy(), tempSpawner );
-
                 if ( Gdx.input.isKeyPressed( Keys.F8 ) )
-                    world.getDef().addAlly( tempSpawner, AllyType.SOLDIER );
+                    for (int i = 0 ; i <5 ; i ++ ) {
+                        GR.temp2.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
+                        world.getDef().addAlly( GR.temp2.add( tempSpawner ), AllyType.SOLDIER );
+                    }
+
+
             }
             gestures.invalidateTapSquare();
             return true;

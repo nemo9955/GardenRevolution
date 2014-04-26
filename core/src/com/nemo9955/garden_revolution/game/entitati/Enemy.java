@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
-import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
@@ -20,17 +19,11 @@ public class Enemy extends LifeForm {
     public Path<Vector3>      path;
     public float              percent;
     public static final float STEP   = 1f /50f;
-    public Vector3            flag;
-    public Vector3            offset;
+    public final Vector3      flag   = new Vector3();
+    public final Vector3      offset = new Vector3();
     private EnemyType         type;
 
     private boolean           paused = false;
-
-    public Enemy(WorldWrapper worldModel) {
-        super( worldModel );
-        offset = new Vector3();
-        flag = new Vector3();
-    }
 
     public Enemy create(CatmullRomSpline<Vector3> path, EnemyType type) {
         this.type = type;
@@ -113,10 +106,8 @@ public class Enemy extends LifeForm {
 
     @Override
     public void setDead(boolean dead) {
-        if ( dead ) {
+        if ( dead )
             world.getDef().addMoney( type.value );
-            System.out.println( "added money : " +type.value );
-        }
         super.setDead( dead );
     }
 

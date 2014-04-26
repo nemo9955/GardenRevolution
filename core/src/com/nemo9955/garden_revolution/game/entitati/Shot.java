@@ -15,7 +15,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
-import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public class Shot extends Entity {
@@ -24,10 +23,6 @@ public class Shot extends Entity {
     private final Vector3 direction = new Vector3();
     private float         life;
     public ShotType       type;
-
-    public Shot(WorldWrapper world) {
-        super( world );
-    }
 
     public Shot create(ShotType type, Ray ray, float charge) {
         this.type = type;

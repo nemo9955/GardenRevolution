@@ -39,6 +39,9 @@ public class Vars {
     public static final long   enemyAttackInterval = 868;
     public static final long   allyAttackInterval  = 696;
 
+    // ally timers
+    public static final float  allySpawnInterval   = 20;
+    public static final float  allyAliveInterval   = 30;
 
     // variabile multyplayer
     public static int          TCPport             = 29955;

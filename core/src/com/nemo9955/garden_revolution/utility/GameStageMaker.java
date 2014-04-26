@@ -1,8 +1,10 @@
 package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,14 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
@@ -28,36 +33,48 @@ import com.nemo9955.garden_revolution.states.Gameplay;
 public class GameStageMaker {
 
 
-    private static Board         hudGroup       = new Board();
-    public static ImageButton    hudPauseBut    = new ImageButton( GR.skin, "IGpause" );
-    public static ImageButton    hudTowerBut    = new ImageButton( GR.skin, "towerUpgrade" );
+    private static Board            hudGroup         = new Board();
+    public static ImageButton       hudPauseBut      = new ImageButton( GR.skin, "IGpause" );
+    public static ImageButton       hudTowerBut      = new ImageButton( GR.skin, "towerUpgrade" );
+    public static Label             hudViataTurn     = new Label( "Life ", GR.skin );
+    public static Touchpad          hudMover         = new Touchpad( 1, GR.skin );
+    public static Image             hudWeaponCharger = new Image( GR.skin, "mover-knob" );
+    public static TextButton        hudReady         = new TextButton( "Start Wave!", GR.skin );
+    public static Image             hudAllyPlacer    = new Image( IconType.TINTA.getAsDrawable( GR.skin, 60f, 60f ) );
 
-    private static Group         tuGroup        = new Group();
-    private static TextButton    tuBackBut1     = new TextButton( "Bk", GR.skin );
-    private static TextButton    tuBackBut2     = new TextButton( "Bk", GR.skin );
-    private static TextButton    tuBasicBut     = new TextButton( "BASIC", GR.skin );
-    private static ImageButton   tuMiniGunBut   = new ImageButton( IconType.SAGETI.getAsDrawable( GR.skin, 70, 70 ) );
-    private static ImageButton   tuCannonBut    = new ImageButton( IconType.TUN.getAsDrawable( GR.skin, 70, 70 ) );
-    public static Label          tuMoneyMeter   = new Label( "Money ----", GR.skin );
-    private static CircularGroup tuTowerCircG;
+    private static Group            tuGroup          = new Group();
+    private static TextButton       tuBackBut1       = new TextButton( "Bk", GR.skin );
+    private static TextButton       tuBackBut2       = new TextButton( "Bk", GR.skin );
+    private static TextButton       tuBasicBut       = new TextButton( "BASIC", GR.skin );
+    private static ImageButton      tuMiniGunBut     = new ImageButton( IconType.SAGETI.getAsDrawable( GR.skin, 70, 70 ) );
+    private static ImageButton      tuCannonBut      = new ImageButton( IconType.TUN.getAsDrawable( GR.skin, 70, 70 ) );
+    public static Label             tuMoneyMeter     = new Label( "Money ----", GR.skin );
+    private static CircularGroup    tuTowerCircG;
 
-    private static Table         optTab         = new Table();
-    private static ScrollPane    optScrollP     = new ScrollPane( optTab, GR.skin );
-    private static TextButton    optBackBut     = new TextButton( "Back", GR.skin, "demon" );
-    private static CheckBox      optAutUpdBut   = Func.newCheckBox( "Auto-Update Wave", GR.skin );
-    private static CheckBox      optShDebugBut  = Func.newCheckBox( "Show Debug", GR.skin );
-    private static CheckBox      optInvMX       = Func.newCheckBox( "Invert Drag X", GR.skin );
-    private static CheckBox      optInvMY       = Func.newCheckBox( "Invert Drag Y", GR.skin );
-    private static CheckBox      optInvPX       = Func.newCheckBox( "Invert TouchPad X", GR.skin );
-    private static CheckBox      optInvPY       = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
-    private static Label         optFOVmeter    = new Label( "Camera FOV 60", GR.skin );
+    private static Table            optTab           = new Table();
+    private static ScrollPane       optScrollP       = new ScrollPane( optTab, GR.skin );
+    private static TextButton       optBackBut       = new TextButton( "Back", GR.skin, "demon" );
+    private static CheckBox         optAutUpdBut     = Func.newCheckBox( "Auto-Update Wave", GR.skin );
+    private static CheckBox         optShDebugBut    = Func.newCheckBox( "Show Debug", GR.skin );
+    private static CheckBox         optInvMX         = Func.newCheckBox( "Invert Drag X", GR.skin );
+    private static CheckBox         optInvMY         = Func.newCheckBox( "Invert Drag Y", GR.skin );
+    private static CheckBox         optInvPX         = Func.newCheckBox( "Invert TouchPad X", GR.skin );
+    private static CheckBox         optInvPY         = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
+    private static Label            optFOVmeter      = new Label( "Camera FOV 60", GR.skin );
 
-    private static Table         pauseTab       = new Table( GR.skin );
-    private static TextButton    pauseResumeBut = new TextButton( "Resume play", GR.skin );
-    private static TextButton    pauseOptBut    = new TextButton( "Options", GR.skin );
-    private static TextButton    pauseMMenuBut  = new TextButton( "Main menu", GR.skin );
+    private static Table            pauseTab         = new Table( GR.skin );
+    private static TextButton       pauseResumeBut   = new TextButton( "Resume play", GR.skin );
+    private static TextButton       pauseOptBut      = new TextButton( "Options", GR.skin );
+    private static TextButton       pauseMMenuBut    = new TextButton( "Main menu", GR.skin );
 
-    private static Gameplay      gp;
+    public static float             ASAtimer         = 0;
+    public static boolean           showASA          = false;
+    public static final Vector3     ASAonPath        = new Vector3();
+    public static Decal             allySpawnArea    = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
+
+    public static StageActorPointer pointer;
+    public static Label             fps              = new Label( "FPS: ", GR.skin );
+    private static Gameplay         gp;
 
 
     public static void makeGamePlayStage(Gameplay gpt) {
@@ -93,16 +110,16 @@ public class GameStageMaker {
         gp.stage.addActor( tuGroup );
         gp.stage.addActor( optScrollP );
         gp.stage.addActor( pauseTab );
-        gp.stage.addActor( gp.fps );
+        gp.stage.addActor( fps );
 
     }
 
     public static void restartStage() {
 
         hudGroup.setVisible( true );
-        gp.weaponCharger.setVisible( false );
-        gp.ready.setVisible( true );
-        gp.ready.setText( "Start Wave!" );
+        hudWeaponCharger.setVisible( false );
+        hudReady.setVisible( true );
+        hudReady.setText( "Start Wave!" );
 
         tuGroup.setVisible( false );
 
@@ -113,14 +130,14 @@ public class GameStageMaker {
 
 
     public static void resizeStage(int width, int height) {
-        gp.fps.setPosition( gp.stage.getWidth() /2, gp.stage.getHeight() -gp.fps.getHeight() );
-        gp.allyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
-        gp.ready.setPosition( 0, gp.stage.getHeight() /2 );
+        fps.setPosition( gp.stage.getWidth() /2, gp.stage.getHeight() -fps.getHeight() );
+        hudAllyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
+        hudReady.setPosition( 0, gp.stage.getHeight() /2 );
         hudTowerBut.setPosition( gp.stage.getWidth() -hudTowerBut.getWidth(), 0 );
-        gp.viataTurn.setFontScale( 0.6f );
-        gp.viataTurn.setPosition( 10 *Vars.densitate, gp.stage.getHeight() -gp.viataTurn.getHeight() -10 *Vars.densitate );
+        hudViataTurn.setFontScale( 0.6f );
+        hudViataTurn.setPosition( 10 *Vars.densitate, gp.stage.getHeight() -hudViataTurn.getHeight() -10 *Vars.densitate );
         hudPauseBut.setPosition( gp.stage.getWidth() -hudPauseBut.getWidth(), gp.stage.getHeight() -hudPauseBut.getHeight() );
-        gp.mover.setPosition( gp.stage.getWidth() *0.02f, gp.stage.getWidth() *0.02f );
+        hudMover.setPosition( gp.stage.getWidth() *0.02f, gp.stage.getWidth() *0.02f );
 
         float freeSpace = 25 *Vars.densitate;
         tuTowerCircG.setAsCircle( (int) ( height /2 ), 70 );
@@ -143,21 +160,21 @@ public class GameStageMaker {
 
         // gp.fps.setScale( Vars.densitate );
 
-        gp.mover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
+        hudMover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
 
-        hudGroup.addActor( gp.ready );
-        hudGroup.addActor( gp.viataTurn );
+        hudGroup.addActor( hudReady );
+        hudGroup.addActor( hudViataTurn );
         hudGroup.addActor( hudPauseBut );
-        hudGroup.addActor( gp.mover );
+        hudGroup.addActor( hudMover );
         hudGroup.addActor( hudTowerBut );
-        hudGroup.addActor( gp.weaponCharger );
-        hudGroup.addActor( gp.allyPlacer );
+        hudGroup.addActor( hudWeaponCharger );
+        hudGroup.addActor( hudAllyPlacer );
 
         hudGroup.addListener( hudListener );
 
-        gp.allyPlacer.addListener( allyPlacerListener );
+        hudAllyPlacer.addListener( allyPlacerListener );
 
-        gp.mover.addListener( moverListener );
+        hudMover.addListener( moverListener );
 
 
     }
@@ -168,31 +185,35 @@ public class GameStageMaker {
 
                                                          @Override
                                                          public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                                             gp.showASA = true;
-                                                             updatePoz( x, y );
-                                                             return true;
+                                                             if ( ASAtimer <=0 ) {
+                                                                 showASA = true;
+                                                                 updatePoz( x, y );
+                                                                 return true;
+                                                             }
+                                                             return false;
                                                          }
 
                                                          @Override
                                                          public void touchDragged(InputEvent event, float x, float y, int pointer) {
                                                              updatePoz( x, y );
-
                                                          }
 
                                                          @Override
                                                          public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                                                             gp.showASA = false;
-                                                             gp.allyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
+                                                             showASA = false;
+                                                             hudAllyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
 
                                                              // tmp.set( x, y );
                                                              // gp.allyPlacer.localToParentCoordinates( tmp );
-                                                             // if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0 &&event.getStageY() <gp.stage.getHeight() ) {
+                                                             // if ( event.getStageX() >0 &&event.getStageX() <gp.stage.getWidth() &&event.getStageY() >0v
+                                                             // &&event.getStageY() <gp.stage.getHeight() ) {
 
-                                                             if ( Func.getStageZon( gp.stage ).contains( event.getStageX(), event.getStageY() ) ) {
-                                                                 gp.onPath.y = 0;
+                                                             if ( Func.getStageShrink( gp.stage, 0.9f, 0.9f ).contains( event.getStageX(), event.getStageY() ) ) {
+                                                                 ASAtimer = Vars.allySpawnInterval;
+                                                                 ASAonPath.y = 0;
                                                                  for (int i = 0 ; i <3 ; i ++ ) {
                                                                      GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                                                                     gp.world.getDef().addAlly( GR.temp4.add( gp.onPath ), AllyType.SOLDIER );
+                                                                     gp.world.getDef().addAlly( GR.temp4.add( ASAonPath ), AllyType.SOLDIER );
                                                                  }
                                                              }
                                                              // System.out.println( tmp.x +" " +tmp.y );
@@ -200,25 +221,25 @@ public class GameStageMaker {
 
                                                          private void updatePoz(float x, float y) {
                                                              tmp.set( x, y );
-                                                             gp.allyPlacer.localToParentCoordinates( tmp );
-                                                             tmp.sub( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
-                                                             gp.allyPlacer.setPosition( tmp.x, tmp.y );
+                                                             hudAllyPlacer.localToParentCoordinates( tmp );
+                                                             tmp.sub( hudAllyPlacer.getWidth() /2, hudAllyPlacer.getHeight() /2 );
+                                                             hudAllyPlacer.setPosition( tmp.x, tmp.y );
 
-                                                             tmp.add( gp.allyPlacer.getWidth() /2, gp.allyPlacer.getHeight() /2 );
+                                                             tmp.add( hudAllyPlacer.getWidth() /2, hudAllyPlacer.getHeight() /2 );
                                                              gp.stage.stageToScreenCoordinates( tmp );
                                                              Func.intersectLinePlane( gp.player.getCamera().getPickRay( tmp.x, tmp.y ), GR.temp4 );
-                                                             gp.world.getWorld().getOnPath( GR.temp4, gp.onPath, 150 );
-                                                             gp.allySpawnArea.setPosition( gp.onPath.x, 0.2f, gp.onPath.z );
+                                                             gp.world.getWorld().getOnPath( GR.temp4, ASAonPath, 150 );
+                                                             allySpawnArea.setPosition( ASAonPath.x, 0.2f, ASAonPath.z );
                                                          }
                                                      };
     private static ChangeListener moverListener      = new ChangeListener() {
 
                                                          @Override
                                                          public void changed(final ChangeEvent event, final Actor actor) {
-                                                             gp.movex = Vars.invertPadX *gp.mover.getKnobPercentX() *Vars.modCamSpeedX;
-                                                             gp.movey = Vars.invertPadY *gp.mover.getKnobPercentY() *Vars.modCamSpeedY;
+                                                             gp.movex = Vars.invertPadX *hudMover.getKnobPercentX() *Vars.modCamSpeedX;
+                                                             gp.movey = Vars.invertPadY *hudMover.getKnobPercentY() *Vars.modCamSpeedY;
                                                              gp.touchPadTimmer = Vars.tPadAlphaDellay;
-                                                             gp.mover.addAction( Actions.alpha( 1 ) );
+                                                             hudMover.addAction( Actions.alpha( 1 ) );
                                                          }
                                                      };
     private static ChangeListener hudListener        = new ChangeListener() {
@@ -229,31 +250,31 @@ public class GameStageMaker {
                                                                  hudGroup.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                                  pauseTab.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                                  gp.updWorld = false;
-                                                                 gp.pointer.setVisible( true );
-                                                                 gp.pointer.setSelectedActor( pauseResumeBut );
+                                                                 pointer.setVisible( true );
+                                                                 pointer.setSelectedActor( pauseResumeBut );
                                                              }
                                                              else if ( hudTowerBut.isPressed() ) {
                                                                  hudGroup.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                                  tuGroup.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                                  gp.updWorld = false;
-                                                                 gp.pointer.setVisible( true );
-                                                                 gp.pointer.setSelectedActor( tuBasicBut );
+                                                                 pointer.setVisible( true );
+                                                                 pointer.setSelectedActor( tuBasicBut );
                                                              }
-                                                             else if ( gp.ready.isPressed() ) {
+                                                             else if ( hudReady.isPressed() ) {
                                                                  // singleplayer part
                                                                  if ( gp.mp ==null ) {
-                                                                     gp.ready.setVisible( false );
+                                                                     hudReady.setVisible( false );
                                                                      gp.world.getSgPl().setCanWaveStart( true );
                                                                  }
                                                                  // multyplayer part
                                                                  else {
-                                                                     gp.ready.setText( "Waiting for others ..." );
-                                                                     gp.ready.setTouchable( Touchable.disabled );
+                                                                     hudReady.setText( "Waiting for others ..." );
+                                                                     hudReady.setTouchable( Touchable.disabled );
 
                                                                      gp.mp.sendTCP( msNetGR.IAmReady );
 
                                                                  }
-                                                                 gp.ready.pack();
+                                                                 hudReady.pack();
                                                              }
 
                                                          }
@@ -286,7 +307,7 @@ public class GameStageMaker {
                                                               tuGroup.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                               hudGroup.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                               gp.updWorld = true;
-                                                              gp.pointer.setVisible( false );
+                                                              pointer.setVisible( false );
                                                           }
                                                           else if ( tuBasicBut.isPressed() )
                                                               gp.player.upgradeCurentTower( TowerType.BASIC );
@@ -412,17 +433,17 @@ public class GameStageMaker {
                                                             pauseTab.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                             optScrollP.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                             gp.updWorld = false;
-                                                            gp.pointer.setVisible( true );
-                                                            gp.pointer.setSelectedActor( optBackBut );
+                                                            pointer.setVisible( true );
+                                                            pointer.setSelectedActor( optBackBut );
                                                         }
                                                         else if ( pauseResumeBut.isPressed() ) {
                                                             pauseTab.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ) ) );
                                                             hudGroup.addAction( Actions.sequence( Actions.alpha( 0 ), Actions.visible( true ), Actions.delay( 0.2f ), Actions.alpha( 1, 0.5f ) ) );
                                                             gp.updWorld = true;
-                                                            gp.pointer.setVisible( false );
+                                                            pointer.setVisible( false );
                                                         }
                                                         else if ( pauseMMenuBut.isPressed() ) {
-                                                            gp.pointer.setVisible( false );
+                                                            pointer.setVisible( false );
                                                             hudGroup.setVisible( true );
                                                             hudGroup.addAction( Actions.alpha( 1 ) );
                                                             pauseTab.addAction( Actions.sequence( Actions.alpha( 0, 0.5f ), Actions.visible( false ), Actions.run( new Runnable() {

@@ -446,7 +446,7 @@ public class WorldBase implements Disposable {
 
                                            @Override
                                            protected Enemy newObject() {
-                                               return new Enemy( superior );
+                                               return new Enemy();
                                            }
                                        };
 
@@ -455,7 +455,7 @@ public class WorldBase implements Disposable {
 
                                            @Override
                                            protected Ally newObject() {
-                                               return new Ally( superior );
+                                               return new Ally();
                                            }
                                        };
 
@@ -464,7 +464,7 @@ public class WorldBase implements Disposable {
 
                                            @Override
                                            protected Shot newObject() {
-                                               return new Shot( superior );
+                                               return new Shot();
                                            }
                                        };
 
@@ -555,7 +555,7 @@ public class WorldBase implements Disposable {
 
     public void setLife(int viata) {
         this.life = viata;
-        GR.gameplay.viataTurn.setText( "Life " +viata );
+        GameStageMaker.hudViataTurn.setText( "Life " +viata );
     }
 
 
@@ -627,13 +627,11 @@ public class WorldBase implements Disposable {
     public void addMoney(int money) {
         this.money += money;
         GameStageMaker.tuMoneyMeter.setText( "Money " +this.money );
-        System.out.println( "Added money  " +money );
     }
 
     public void setMoney(int money) {
         this.money = money;
         GameStageMaker.tuMoneyMeter.setText( "Money " +this.money );
-        System.out.println( "Setted money  " +money );
     }
 
     public int getMoney() {

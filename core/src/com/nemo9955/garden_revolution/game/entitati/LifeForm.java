@@ -2,25 +2,19 @@ package com.nemo9955.garden_revolution.game.entitati;
 
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
-import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 
 public abstract class LifeForm extends Entity {
 
     public AnimationController animation;
-    public Vector3             direction;
+    public final Vector3       direction = new Vector3();
 
     public int                 life;
-
-    public LifeForm(WorldWrapper world) {
-        super( world );
-        direction = new Vector3();
-    }
 
     public void init(float x, float y, float z) {
         super.init( x, y, z );
         animation = new AnimationController( model );
-        direction = Vector3.Zero;
+        direction.set( Vector3.Zero );
         // update( Gdx.graphics.getDeltaTime() );
     }
 
@@ -41,7 +35,7 @@ public abstract class LifeForm extends Entity {
             setDead( true );
     }
 
-    protected void lookAt(Vector3 look) {// FIXME doar se invarte
+    protected void lookAt(Vector3 look) {// FIXME they spin
         float ung = (float) Math.toDegrees( Math.atan2( poz.x -look.x, poz.z -look.z ) );
         if ( ung <0 )
             ung += 360;

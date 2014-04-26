@@ -31,6 +31,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -157,7 +158,7 @@ public class GameClient extends Listener implements MultiplayerComponent {
                     switch (message) {
                         case YouCanStartWaves:
                             gp.world.getSgPl().setCanWaveStart( true );
-                            gp.ready.setVisible( false );
+                            GameStageMaker.hudReady.setVisible( false );
                             break;
                         case YouCannotConnect:
                             GR.multyplayer.showMessage( "The game already started !" );

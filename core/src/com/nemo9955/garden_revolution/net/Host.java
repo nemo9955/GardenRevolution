@@ -31,6 +31,7 @@ import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.GameStageMaker;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 
@@ -203,7 +204,7 @@ public class Host extends Listener implements MultiplayerComponent {
         clientsReady ++;
         if ( clientsReady ==server.getConnections().length +1 ) {
             gp.world.getDef().setCanWaveStart( true );
-            gp.ready.setVisible( false );
+            GameStageMaker.hudReady.setVisible( false );
             server.sendToAllTCP( msNetGR.YouCanStartWaves );
         }
     }
