@@ -57,7 +57,7 @@ public class Waves {
     }
 
     public boolean finishedWaves() {
-        return curent <wvs.size;
+        return curent >=wvs.size;
     }
 
 

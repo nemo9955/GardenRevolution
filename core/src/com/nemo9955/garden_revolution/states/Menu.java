@@ -11,8 +11,10 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -35,6 +37,8 @@ public class Menu extends CustomAdapter implements Screen {
 
     private static final float rap = 1.3f;
     private ImageButton        play;
+    private Image              img;
+    private Texture            bg;
 
     // private ImageTextButton options;
     // private ImageButton play;
@@ -87,6 +91,10 @@ public class Menu extends CustomAdapter implements Screen {
         };
 
 
+        bg = new Texture( Gdx.files.internal( "imagini/fundale/gr_background.png" ) );
+        img = new Image( bg );
+        img.setSize( stage.getWidth(), stage.getHeight() );
+
         tab.addListener( asc );
 
         tab.defaults().pad( 25 );
@@ -99,6 +107,7 @@ public class Menu extends CustomAdapter implements Screen {
         tab.add( exit );
         tab.add( " " );
 
+        stage.addActor( img );
         stage.addActor( tab );
 
         pointer = new StageActorPointer( stage );
@@ -167,6 +176,7 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update( width, height, true );
+        img.setSize( stage.getWidth(), stage.getHeight() );
     }
 
     @Override
@@ -188,6 +198,7 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        bg.dispose();
     }
 
 }

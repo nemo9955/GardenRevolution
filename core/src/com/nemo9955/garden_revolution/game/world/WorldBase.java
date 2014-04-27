@@ -149,24 +149,28 @@ public class WorldBase implements Disposable {
 
     public void update(float delta) {
 
-        if ( canWaveStart() &&waves.finishedWaves() && ( superior.isSinglelayer() ||GR.gameplay.mp.isHost() ) )
-            waves.update( delta );
+        if ( canWaveStart() && ( superior.isSinglelayer() ||GR.gameplay.mp.isHost() ) )
+            if ( !waves.finishedWaves() )
+                waves.update( delta );
+            else {
+                // TODO add event when game is won
+            }
 
-        for (FightZone fz : getFightZones() ) {
+        for (FightZone fz : getFightZones() )
             fz.update( delta );
-        }
-        for (Tower trn : towers ) {
+
+        for (Tower trn : towers )
             trn.update( delta );
-        }
-        for (Enemy fo : getEnemy() ) {
+
+        for (Enemy fo : getEnemy() )
             fo.update( delta );
-        }
-        for (Ally al : getAlly() ) {
+
+        for (Ally al : getAlly() )
             al.update( delta );
-        }
-        for (Shot sh : getShot() ) {
+
+        for (Shot sh : getShot() )
             sh.update( delta );
-        }
+
 
     }
 
@@ -556,6 +560,9 @@ public class WorldBase implements Disposable {
     public void setLife(int viata) {
         this.life = viata;
         GameStageMaker.hudViataTurn.setText( "Life " +viata );
+
+        // TODO add event when life <= 0
+
     }
 
 
