@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,7 +35,7 @@ public class Menu extends CustomAdapter implements Screen {
     private Stage              stage;
 
     private static final float rap = 1.3f;
-    private ImageButton        play;
+    private TextButton         play;
     private Image              img;
     private Texture            bg;
 
@@ -56,9 +55,9 @@ public class Menu extends CustomAdapter implements Screen {
 
         final ImageTextButton options = Func.newImageTextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );
-        play = new ImageButton( GR.skin, "start" );
-        final ImageButton exit = new ImageButton( GR.skin, "exit" );
-        final ImageButton test = new ImageButton( GR.skin, "test" );
+        play = new TextButton( "Play", GR.skin );
+        final TextButton exit = new TextButton( "Exit", GR.skin );
+        final TextButton test = new TextButton( "Test", GR.skin );
 
 
         final Table tab = new Table( GR.skin );

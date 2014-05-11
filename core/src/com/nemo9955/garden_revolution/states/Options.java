@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -72,6 +73,7 @@ public class Options extends CustomAdapter implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Vars.multiplyControlletX = contSensX.getValue();
+                pane.cancel();
             }
         } );
 
@@ -88,6 +90,7 @@ public class Options extends CustomAdapter implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Vars.multiplyControlletY = contSensY.getValue();
+                pane.cancel();
             }
         } );
 
@@ -138,6 +141,7 @@ public class Options extends CustomAdapter implements Screen {
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
             TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin );
             button.setUserObject( "Button" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
+            button.getLabel().setTouchable( Touchable.disabled );
 
             table.add( new Label( CoButt.values()[i].name, GR.skin ) );
             table.add( button );
@@ -147,6 +151,7 @@ public class Options extends CustomAdapter implements Screen {
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
             TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin );
             axis.setUserObject( "Axis" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
+            axis.getLabel().setTouchable( Touchable.disabled );
 
             table.add( new Label( CoAxis.values()[i].name, GR.skin ) );
             table.add( axis );
@@ -159,47 +164,28 @@ public class Options extends CustomAdapter implements Screen {
         pane = new ScrollPane( table, GR.skin, "clear" );
         pane.setFillParent( true );
 
-        pane.addListener( new InputListener() {
 
-            private boolean onAct = false;
+        stage.addListener( new ChangeListener() {
 
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Actor actor = stage.hit( x, y, true );
-                if ( actor instanceof ScrollPane ||actor instanceof Label ) {
-                    if ( butSelected ) {
-                        current.setText( remName );
-                        current.invalidateHierarchy();
-                    }
-                }
-                else {
-                    pane.cancel();
-                    onAct = true;
-                }
-                return false;
-            }
-
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                if ( onAct )
-                    pane.cancel();
-            };
-
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                onAct = false;
-            };
-        } );
-
-        pane.addListener( new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+
                 if ( back.equals( actor ) )
-                    GR.game.setScreen( GR.menu );
-                else if ( actor.getUserObject() !=null &&actor.getUserObject().toString().contains( "Controller" ) ) {
+                    GR.game.setScreen( GR.menu );// FIXME need to remake the conditions in the controller !!!
+                if ( actor.getUserObject() !=null &&actor.getUserObject().toString().contains( "Controller" ) ) {
                     if ( butSelected &&current !=null ) {
                         current.setText( remName );
                         current.invalidateHierarchy();
                     }
-                    if ( current ==null ||!current.equals( actor ) ) {
+
+                    if ( current !=null &&current.equals( actor ) &&butSelected ) {
+                        current.setText( "None" );
+                        current.invalidateHierarchy();
+                        butSelected = false;
+                        current = null;
+                    }
+                    else if ( current ==null ||!current.equals( actor ) ) {
                         current = (TextButton) actor;
                         butSelected = true;
                         remName = current.getText().toString();
@@ -208,13 +194,32 @@ public class Options extends CustomAdapter implements Screen {
                             current.setText( "Press a button ..." );
                         else
                             current.setText( "Move an axis ..." );
-
                         current.invalidateHierarchy();
+
                     }
+
                 }
+
+
             }
         } );
 
+        pane.addListener( new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Actor actor = stage.hit( x, y, true );
+                if ( ! ( actor.getUserObject() !=null &&actor.getUserObject().toString().contains( "Controller" ) ) )
+                    if ( butSelected ) {
+                        current.setText( remName );
+                        current.invalidateHierarchy();
+                        butSelected = false;
+                        current = null;
+                    }
+
+                return false;
+            }
+        } );
 
         stage.addActor( pane );
 
@@ -239,6 +244,7 @@ public class Options extends CustomAdapter implements Screen {
                 CoButt.values()[Integer.parseInt( parts[1] )].id = buttonIndex;
                 current.setText( "Button " +buttonIndex );
                 current.invalidateHierarchy();
+                current = null;
                 butSelected = false;
             }
         }
@@ -264,6 +270,7 @@ public class Options extends CustomAdapter implements Screen {
                 CoAxis.values()[Integer.parseInt( parts[1] )].id = axisCode;
                 current.setText( "Axis " +axisCode );
                 current.invalidateHierarchy();
+                current = null;
                 butSelected = false;
             }
             return false;

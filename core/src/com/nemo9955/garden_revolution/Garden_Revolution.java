@@ -6,6 +6,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -58,6 +59,7 @@ public class Garden_Revolution extends Game {
     }
 
     public void postLoading() {
+        GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
 
         if ( Func.isAndroid() )
             Gdx.input.setCatchBackKey( true );
@@ -76,8 +78,8 @@ public class Garden_Revolution extends Game {
         // // GR.skin.remove( "ceva", BitmapFont.class );
         // GR.skin.add( "ceva", GR.kblc, BitmapFont.class );
 
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
-
+        Pixmap pixmap = new Pixmap( Gdx.files.internal( "imagini/elemente/cursor.png" ) );
+        Gdx.input.setCursorImage( pixmap, 1, 1 );
 
         GR.multyplayer = new MultyplayerSelector();
         GR.options = new Options();
@@ -93,9 +95,6 @@ public class Garden_Revolution extends Game {
         return GR.manager.get( model.path(), Model.class );
     }
 
-    public static AtlasRegion getGameTexture(String name) {
-        return GR.manager.get( Assets.GAME_PACK.path(), TextureAtlas.class ).findRegion( name );
-    }
 
     public static AtlasRegion getMenuTexture(String name) {
         return GR.manager.get( Assets.ELEMENTS_PACK.path(), TextureAtlas.class ).findRegion( name );
