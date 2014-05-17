@@ -45,6 +45,7 @@ public class Menu extends CustomAdapter implements Screen {
     // private CheckBox mode;
     // private ImageButton test;
 
+
     public Menu() {
 
         tweeger = new TweenManager();
@@ -53,7 +54,7 @@ public class Menu extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
 
-        final ImageTextButton options = Func.newImageTextButton( "Options", GR.skin );
+        final ImageTextButton options = new ImageTextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );
         play = new TextButton( "Play", GR.skin );
         final TextButton exit = new TextButton( "Exit", GR.skin );
@@ -110,6 +111,8 @@ public class Menu extends CustomAdapter implements Screen {
         stage.addActor( tab );
 
         pointer = new StageActorPointer( stage );
+
+        Func.makePropTouch( stage.getRoot() );
 
     }
 

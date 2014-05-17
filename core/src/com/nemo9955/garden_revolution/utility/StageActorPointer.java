@@ -40,13 +40,13 @@ public class StageActorPointer {
         if ( visible &&alfa >0f ) {
 
 
-            stage.getSpriteBatch().begin();
+            stage.getBatch().begin();
 
             // stage.getSpriteBatch().draw( img, selCenter.x, selCenter.y );
             img.setPosition( selCenter.x -img.getWidth() /2, selCenter.y -img.getHeight() /2 );
-            img.draw( stage.getSpriteBatch(), MathUtils.clamp( alfa, 0f, 1f ) );
+            img.draw( stage.getBatch(), MathUtils.clamp( alfa, 0f, 1f ) );
 
-            stage.getSpriteBatch().end();
+            stage.getBatch().end();
             alfa -= Gdx.graphics.getDeltaTime();
 
             if ( mvx !=0 ||mvy !=0 )
@@ -62,6 +62,7 @@ public class StageActorPointer {
     }
 
     public void fireSelected() {
+        // System.out.println( selected );
         if ( selected !=null )
             Func.click( selected );
     }
@@ -70,10 +71,10 @@ public class StageActorPointer {
     private void updatePointer() {
         selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
 
-//        System.out.println(selCenter);
+        // System.out.println(selCenter);
 
-//        if ( !Func.getStageZon( stage ).contains( selCenter ) )
-//            selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
+        // if ( !Func.getStageZon( stage ).contains( selCenter ) )
+        // selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
 
         Actor hit = stage.hit( selCenter.x, selCenter.y, true );
         if ( hit !=null ) {

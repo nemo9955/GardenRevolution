@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -95,6 +96,8 @@ public class Gameplay extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( 1.5f /Vars.densitate );
         stage = new Stage( viewport );
         makeGamePlayStage( this );
+        Func.makePropTouch( stage.getRoot() );
+        hudAllyPlacer.setTouchable( Touchable.enabled );
 
         allySpawnArea.setRotation( Vector3.Y, Vector3.Y );
         pointer = new StageActorPointer( stage );
@@ -461,7 +464,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         else if ( buttonCode ==CoButt.TowerUpgr.id &&Func.isCurrentState( stage, "HUD" ) )
             Func.click( hudTowerBut );
 
-        else if ( buttonCode ==CoButt.CallAlly.id &&Func.isCurrentState( stage, "HUD" ) ) {
+        else if ( buttonCode ==CoButt.CallAlly.id &&Func.isCurrentState( stage, "HUD" ) &&ASAtimer <=0 ) {
             showASA = true;
         }
 
@@ -496,16 +499,19 @@ public class Gameplay extends CustomAdapter implements Screen {
         }
         else if ( buttonCode ==CoButt.CallAlly.id &&showASA ) {
             showASA = false;
-
-            ASAonPath.y = 0;
-            for (int i = 0 ; i <3 ; i ++ ) {
-                GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                world.getDef().addAlly( GR.temp4.add( ASAonPath ), AllyType.SOLDIER );
-            }
-
+            placeAllies();
         }
         return false;
 
+    }
+
+    public void placeAllies() {
+        ASAtimer = Vars.allySpawnInterval;
+        ASAonPath.y = 0;
+        for (int i = 0 ; i <3 ; i ++ ) {
+            GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
+            world.getDef().addAlly( GR.temp4.add( ASAonPath ), AllyType.SOLDIER );
+        }
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.nemo9955.garden_revolution.utility;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
@@ -54,12 +52,12 @@ public class GameStageMaker {
     private static Table            optTab           = new Table();
     private static ScrollPane       optScrollP       = new ScrollPane( optTab, GR.skin );
     private static TextButton       optBackBut       = new TextButton( "Back", GR.skin, "demon" );
-    private static CheckBox         optAutUpdBut     = Func.newCheckBox( "Auto-Update Wave", GR.skin );
-    private static CheckBox         optShDebugBut    = Func.newCheckBox( "Show Debug", GR.skin );
-    private static CheckBox         optInvMX         = Func.newCheckBox( "Invert Drag X", GR.skin );
-    private static CheckBox         optInvMY         = Func.newCheckBox( "Invert Drag Y", GR.skin );
-    private static CheckBox         optInvPX         = Func.newCheckBox( "Invert TouchPad X", GR.skin );
-    private static CheckBox         optInvPY         = Func.newCheckBox( "Invert TouchPad Y", GR.skin );
+    private static CheckBox         optAutUpdBut     = new CheckBox( "Auto-Update Wave", GR.skin );
+    private static CheckBox         optShDebugBut    = new CheckBox( "Show Debug", GR.skin );
+    private static CheckBox         optInvMX         = new CheckBox( "Invert Drag X", GR.skin );
+    private static CheckBox         optInvMY         = new CheckBox( "Invert Drag Y", GR.skin );
+    private static CheckBox         optInvPX         = new CheckBox( "Invert TouchPad X", GR.skin );
+    private static CheckBox         optInvPY         = new CheckBox( "Invert TouchPad Y", GR.skin );
     private static Label            optFOVmeter      = new Label( "Camera FOV 60", GR.skin );
 
     private static Table            pauseTab         = new Table( GR.skin );
@@ -209,12 +207,7 @@ public class GameStageMaker {
                                                              // &&event.getStageY() <gp.stage.getHeight() ) {
 
                                                              if ( Func.getStageShrink( gp.stage, 0.9f, 0.9f ).contains( event.getStageX(), event.getStageY() ) ) {
-                                                                 ASAtimer = Vars.allySpawnInterval;
-                                                                 ASAonPath.y = 0;
-                                                                 for (int i = 0 ; i <3 ; i ++ ) {
-                                                                     GR.temp4.set( MathUtils.random( -5, 5 ), 0, MathUtils.random( -5, 5 ) );
-                                                                     gp.world.getDef().addAlly( GR.temp4.add( ASAonPath ), AllyType.SOLDIER );
-                                                                 }
+                                                                 gp.placeAllies();
                                                              }
                                                              // System.out.println( tmp.x +" " +tmp.y );
                                                          }

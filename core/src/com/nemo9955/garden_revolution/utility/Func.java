@@ -19,8 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.esotericsoftware.kryo.Kryo;
 import com.nemo9955.garden_revolution.net.packets.Packets;
 
@@ -161,15 +163,27 @@ public class Func {
         return zonBound;
     }
 
-    public static ImageTextButton newImageTextButton(String string, Skin skin) {
-        ImageTextButton imageTextButton = new ImageTextButton( string, skin );
-        imageTextButton.getImage().setTouchable( Touchable.disabled );
-        return imageTextButton;
-    }
+    public static void makePropTouch(Group parent) {
+        for (Actor act : parent.getChildren() ) {
+            if ( act instanceof CheckBox ) {
+                ( (CheckBox) act ).getImage().setTouchable( Touchable.disabled );
+                ( (CheckBox) act ).getLabel().setTouchable( Touchable.disabled );
+            }
+            if ( act instanceof ImageTextButton ) {
+                ( (ImageTextButton) act ).getImage().setTouchable( Touchable.disabled );
+                ( (ImageTextButton) act ).getLabel().setTouchable( Touchable.disabled );
+            }
+            if ( act instanceof Image )
+                ( (Image) act ).setTouchable( Touchable.disabled );
 
-    public static CheckBox newCheckBox(String string, Skin skin) {
-        CheckBox checkBox = new CheckBox( string, skin );
-        checkBox.getImage().setTouchable( Touchable.disabled );
-        return checkBox;
+            if ( act instanceof Label )
+                ( (Label) act ).setTouchable( Touchable.disabled );
+
+            if ( act instanceof TextButton ) {
+                ( (TextButton) act ).getLabel().setTouchable( Touchable.disabled );
+            }
+            if ( act instanceof Group )
+                makePropTouch( (Group) act );
+        }
     }
 }

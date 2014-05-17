@@ -69,8 +69,8 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
                 return 100;
             };
         };
-        isHost = Func.newCheckBox( "Is host", GR.skin );
-        isPublic = Func.newCheckBox( "Is public", GR.skin );
+        isHost = new CheckBox( "Is host", GR.skin );
+        isPublic = new CheckBox( "Is public", GR.skin );
         theIP = new Label( Func.getIpAddress(), GR.skin );
 
         portInput.setText( "29955" );
@@ -124,6 +124,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
             };
         };
 
+        Func.makePropTouch( stage.getRoot() );
     }
 
     private void makeLayout() {
