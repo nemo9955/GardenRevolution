@@ -10,8 +10,7 @@ public enum ShotType {
 
     STANDARD {
 
-        @Override
-        protected void propShots() {
+        {
             damage = 25;
             speed = 80;
         }
@@ -20,9 +19,7 @@ public enum ShotType {
 
     GHIULEA {
 
-
-        @Override
-        protected void propShots() {
+        {
             damage = 80;
             range = 9;
             speed = 18;
@@ -59,13 +56,6 @@ public enum ShotType {
     public int         damage = 10;
     public int         speed  = 20;
 
-
-    ShotType() {
-        propShots();
-    }
-
-    protected abstract void propShots();
-
     public Vector3 makeMove(Vector3 direction, Vector3 out, float delta) {
         return out.set( direction ).nor().scl( delta *speed );
     }
@@ -83,5 +73,4 @@ public enum ShotType {
     public Vector3 getInitialDir(Vector3 direction, float charge) {
         return direction.nor();
     }
-
 }

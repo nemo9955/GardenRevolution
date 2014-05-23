@@ -1,7 +1,4 @@
 {
-
-	
-        
 	com.badlogic.gdx.graphics.Color: {
 	        white: { r: 1, g: 1, b: 1, a: 1 },
 	        black: { r: 0, g: 0, b: 0, a: 1 },
@@ -70,7 +67,7 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle:{
-		default:{ font:arial_32	, fontColor:white ,	focusedFontColor:blue , disabledFontColor:gray , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }
+		default:{ font:arial_32	, fontColor:gray ,	focusedFontColor:blue , disabledFontColor:white , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle:{

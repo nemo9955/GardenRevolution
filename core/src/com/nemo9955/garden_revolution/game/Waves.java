@@ -21,30 +21,26 @@ public class Waves {
 
     public void update(float delta) {
 
-
         if ( wvs.get( curent ).delay <=0 ) {
             if ( wvs.get( curent ).finishedCooldown( delta ) ) {
-
-                Array<Monstru> add = getMonsters();
-                for (Monstru mo : add ) {
+                Array<Monster> add = getMonsters();
+                for (Monster mo : add ) {
                     world.getDef().addFoe( mo.type, getPath( mo ) );
                 }
             }
-
             if ( !wvs.get( curent ).hasMonsters() )
                 curent ++;
-
         }
         else {
             wvs.get( curent ).delay -= delta;
         }
     }
 
-    private CatmullRomSpline<Vector3> getPath(Monstru mo) {
+    private CatmullRomSpline<Vector3> getPath(Monster mo) {
         return world.getWorld().getPaths().get( mo.path );
     }
 
-    private Array<Monstru> getMonsters() {
+    private Array<Monster> getMonsters() {
         return wvs.get( curent ).getMonsters();
     }
 
@@ -60,21 +56,19 @@ public class Waves {
         return curent >=wvs.size;
     }
 
-
     // ---------------------------------------------------------------------------------------------------------------------
 
     private class Wave {
 
-        private Array<Array<Monstru>> monstrii;
+        private Array<Array<Monster>> monsters;
         public float                  delay;
         private final float           INTERVAL;
         private float                 timer;
 
-
         public Wave(float delay, float interval) {
-            monstrii = new Array<Array<Monstru>>( world.getWorld().getPaths().size );
+            monsters = new Array<Array<Monster>>( world.getWorld().getPaths().size );
             for (int i = 0 ; i <world.getWorld().getPaths().size ; i ++ ) {
-                monstrii.add( new Array<Monstru>( 1 ) );
+                monsters.add( new Array<Monster>( 1 ) );
             }
             this.delay = delay;
             this.INTERVAL = interval;
@@ -82,19 +76,18 @@ public class Waves {
         }
 
         public boolean hasMonsters() {
-            for (Array<Monstru> monstr : monstrii ) {
+            for (Array<Monster> monstr : monsters ) {
                 if ( monstr.size >0 )
                     return true;
             }
             return false;
-
         }
 
-        public Array<Monstru> getMonsters() {
-            Array<Monstru> tmp = new Array<Monstru>();
-            for (Array<Monstru> monstr : monstrii )
-                if ( monstr.size >0 )
-                    tmp.add( monstr.removeIndex( 0 ) );
+        public Array<Monster> getMonsters() {
+            Array<Monster> tmp = new Array<Monster>();
+            for (Array<Monster> monstru : monsters )
+                if ( monstru.size >0 )
+                    tmp.add( monstru.removeIndex( 0 ) );
             return tmp;
         }
 
@@ -109,17 +102,16 @@ public class Waves {
 
         public void populate(int path, EnemyType type, int amont) {
             for (int i = 0 ; i <amont ; i ++ )
-                monstrii.get( path ).add( new Monstru( type, path ) );
+                monsters.get( path ).add( new Monster( type, path ) );
         }
-
     }
 
-    private class Monstru {
+    private class Monster {
 
         public EnemyType type;
         public int       path;
 
-        private Monstru(EnemyType type, int path) {
+        private Monster(EnemyType type, int path) {
             this.type = type;
             this.path = path;
         }

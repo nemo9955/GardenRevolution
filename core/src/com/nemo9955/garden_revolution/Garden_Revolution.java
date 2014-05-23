@@ -35,8 +35,6 @@ public class Garden_Revolution extends Game {
 
         GR.manager = new AssetManager();
 
-        // Texture.setEnforcePotImages( false );
-
         TextureParameter param = new TextureParameter();
         param.minFilter = TextureFilter.Linear;
         param.magFilter = TextureFilter.Linear;
@@ -68,18 +66,12 @@ public class Garden_Revolution extends Game {
         Tween.registerAccessor( BitmapFont.class, new FontTween() );
         Texture.setAssetManager( GR.manager );
 
-
-        // FreeTypeFontParameter fontPar = new FreeTypeFontParameter();
-        // fontPar.size = 20;
-        //
-        // gen = new FreeTypeFontGenerator( Gdx.files.internal( "fonts/KBLuckyClover.ttf" ) );
-        // GR.kblc = gen.generateFont( fontPar );
-        // // GR.skin.get( "ceva", BitmapFont.class ). = null;
-        // // GR.skin.remove( "ceva", BitmapFont.class );
-        // GR.skin.add( "ceva", GR.kblc, BitmapFont.class );
-
         Pixmap pixmap = new Pixmap( Gdx.files.internal( "imagini/elemente/cursor.png" ) );
         Gdx.input.setCursorImage( pixmap, 1, 1 );
+
+
+        GR.bg = new Texture( Gdx.files.internal( "imagini/fundale/gr_background.png" ) );
+
 
         GR.multyplayer = new MultyplayerSelector();
         GR.options = new Options();
@@ -95,7 +87,6 @@ public class Garden_Revolution extends Game {
         return GR.manager.get( model.path(), Model.class );
     }
 
-
     public static AtlasRegion getMenuTexture(String name) {
         return GR.manager.get( Assets.ELEMENTS_PACK.path(), TextureAtlas.class ).findRegion( name );
     }
@@ -103,6 +94,8 @@ public class Garden_Revolution extends Game {
     @Override
     public void dispose() {
         GR.manager.dispose();
+
+        GR.bg.dispose();
 
         GR.gameplay.dispose();
         GR.menu.dispose();

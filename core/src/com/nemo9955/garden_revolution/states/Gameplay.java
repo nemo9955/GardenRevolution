@@ -105,6 +105,7 @@ public class Gameplay extends CustomAdapter implements Screen {
         camGRStr = new CameraGroupStrategy( player.getCamera() );
         decalBatch = new DecalBatch( camGRStr );
 
+
     }
 
     @Override

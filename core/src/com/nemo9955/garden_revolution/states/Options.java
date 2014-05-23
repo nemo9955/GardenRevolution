@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -46,6 +47,7 @@ public class Options extends CustomAdapter implements Screen {
     private static final float rap         = 1.3f;
     private Label              opt;
     private ScrollPane         pane;
+    private Image              img;
 
 
     public Options() {
@@ -220,7 +222,8 @@ public class Options extends CustomAdapter implements Screen {
                 return false;
             }
         } );
-
+        img = new Image( GR.bg );
+        stage.addActor( img );
         stage.addActor( pane );
         Func.makePropTouch( stage.getRoot() );
     }
@@ -319,6 +322,7 @@ public class Options extends CustomAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update( width, height, true );
+        img.setSize( stage.getWidth(), stage.getHeight() );
     }
 
     @Override

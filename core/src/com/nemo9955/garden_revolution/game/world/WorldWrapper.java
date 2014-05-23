@@ -15,7 +15,6 @@ public class WorldWrapper {
 
 
     public WorldWrapper init(FileHandle location) {
-        // world = new WorldBase( location );
         spWorld.init( world );
         defWorld = spWorld;
         world.init( location, this );
@@ -23,7 +22,6 @@ public class WorldWrapper {
     }
 
     public WorldWrapper init(FileHandle location, MultiplayerComponent mp) {
-        // world = new WorldBase( location );
         mpWorld.init( world, mp );
         spWorld.init( world );
         defWorld = mpWorld;
@@ -32,7 +30,6 @@ public class WorldWrapper {
     }
 
     public WorldWrapper init(StartingServerInfo serverInfo, MultiplayerComponent mp) {
-        // world = new WorldBase( serverInfo );
         mpWorld.init( world, mp );
         spWorld.init( world );
         defWorld = mpWorld;

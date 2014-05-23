@@ -19,7 +19,6 @@ import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 
 public class StageActorPointer {
 
-    // private static final Vector2 tmp = new Vector2();
     private Actor   selected;
     private Vector2 selCenter = new Vector2();
     private Stage   stage;
@@ -33,59 +32,25 @@ public class StageActorPointer {
         this.stage = stage;
         img = new Sprite( GR.skin.getSprite( "mover-knob" ) );
         img.setSize( 50, 50 );
-        // img.setOrigin( img.getWidth() /2, img.getHeight() /2 );
     }
 
     public void draw() {
         if ( visible &&alfa >0f ) {
-
-
             stage.getBatch().begin();
-
-            // stage.getSpriteBatch().draw( img, selCenter.x, selCenter.y );
             img.setPosition( selCenter.x -img.getWidth() /2, selCenter.y -img.getHeight() /2 );
             img.draw( stage.getBatch(), MathUtils.clamp( alfa, 0f, 1f ) );
-
             stage.getBatch().end();
             alfa -= Gdx.graphics.getDeltaTime();
-
             if ( mvx !=0 ||mvy !=0 )
                 updatePointer();
         }
     }
 
     public void setSelectedActor(Actor selected) {
-        // System.out.println( selected );
         this.selected = selected;
         selCenter.set( selected.getWidth(), selected.getHeight() ).scl( 0.5f );
         this.selected.localToStageCoordinates( selCenter );
     }
-
-    public void fireSelected() {
-        // System.out.println( selected );
-        if ( selected !=null )
-            Func.click( selected );
-    }
-
-
-    private void updatePointer() {
-        selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
-
-        // System.out.println(selCenter);
-
-        // if ( !Func.getStageZon( stage ).contains( selCenter ) )
-        // selCenter.sub( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
-
-        Actor hit = stage.hit( selCenter.x, selCenter.y, true );
-        if ( hit !=null ) {
-            if ( isValid( hit ) &&hit !=selected ) {
-                setSelectedActor( hit );
-                mvx = 0;
-                mvy = 0;
-            }
-        }
-    }
-
 
     private boolean isValid(Actor hit) {
         if ( hit instanceof ImageButton )
@@ -99,6 +64,24 @@ public class StageActorPointer {
         if ( hit instanceof Button )
             return true;
         return false;
+    }
+
+    private void updatePointer() {
+        selCenter.add( GR.tmp1.set( mvx, mvy ).scl( Gdx.graphics.getDeltaTime() *400 ) );
+        Actor hit = stage.hit( selCenter.x, selCenter.y, true );
+        if ( hit !=null ) {
+            if ( isValid( hit ) &&hit !=selected ) {
+                setSelectedActor( hit );
+                mvx = 0;
+                mvy = 0;
+            }
+        }
+    }
+
+
+    public void fireSelected() {
+        if ( selected !=null )
+            Func.click( selected );
     }
 
     public Actor getSelected() {

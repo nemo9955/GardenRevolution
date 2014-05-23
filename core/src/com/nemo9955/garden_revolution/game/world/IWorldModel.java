@@ -27,7 +27,7 @@ public interface IWorldModel {
 
     public void addLife(int amount);
 
-    public void setLife(int viata);
+    public void setLife(int life);
 
     public void addMoney(int money);
 

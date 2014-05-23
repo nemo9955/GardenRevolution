@@ -63,7 +63,8 @@ project(":android") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
         
-        compile fileTree(dir: '../libs', include: '*.jar')
+        compile fileTree(dir: '../libs', include: 'kryonet.jar')
+        compile fileTree(dir: '../libs', include: 'tween-engine-api.jar')
     }
 }
 
@@ -77,7 +78,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         
-        compile fileTree(dir: '../libs', include: '*.jar')
+        compile fileTree(dir: '../libs', include: 'kryonet.jar')
+        compile fileTree(dir: '../libs', include: 'tween-engine-api.jar')
     }
 }
 

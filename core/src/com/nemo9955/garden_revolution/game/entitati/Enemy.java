@@ -14,8 +14,6 @@ import com.nemo9955.garden_revolution.utility.Vars;
 public class Enemy extends LifeForm {
 
 
-    public short              ID;
-
     public Path<Vector3>      path;
     public float              percent;
     public static final float STEP   = 1f /50f;
@@ -27,7 +25,6 @@ public class Enemy extends LifeForm {
 
     public Enemy create(CatmullRomSpline<Vector3> path, EnemyType type) {
         this.type = type;
-        ID = newGlobalID();
         super.init( path.valueAt( poz, 0 ) );
 
         this.life = type.life;
@@ -109,17 +106,6 @@ public class Enemy extends LifeForm {
         if ( dead )
             world.getDef().addMoney( type.value );
         super.setDead( dead );
-    }
-
-
-    private static short globalID = -32768;
-
-    public static short getGlobalID() {
-        return globalID;
-    }
-
-    public static short newGlobalID() {
-        return ++ globalID;
     }
 
     public boolean isPaused() {

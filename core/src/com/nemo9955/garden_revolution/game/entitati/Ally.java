@@ -9,7 +9,6 @@ import com.nemo9955.garden_revolution.utility.Vars;
 
 public class Ally extends LifeForm {
 
-    public short         ID;
     public final Vector3 duty = new Vector3();
     private AllyType     type;
     public FightZone     zone;
@@ -18,7 +17,6 @@ public class Ally extends LifeForm {
 
 
     public Ally create(Vector3 duty, AllyType type) {
-        ID = newGlobalID();
         this.type = type;
         super.init( duty );
         this.life = type.life;
@@ -57,19 +55,5 @@ public class Ally extends LifeForm {
         }
     }
 
-    @Override
-    public void setDead(boolean dead) {
-        super.setDead( dead );
-    }
 
-    private static short globalID = -32768;
-
-    public static short getGlobalID() {
-        return globalID;
-    }
-
-    public static short newGlobalID() {
-        return ++ globalID;
-
-    }
 }

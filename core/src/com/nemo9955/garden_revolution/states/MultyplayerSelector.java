@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -43,6 +44,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     private CheckBox           isHost;
     private CheckBox           isPublic;
     private Label              theIP;
+    private Image              img;
 
 
     public MultyplayerSelector() {
@@ -110,7 +112,8 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
             }
 
         } );
-
+        img = new Image( GR.bg );
+        stage.addActor( img );
         stage.addActor( table );
 
         dialog = new Dialog( "You cannot connect !", GR.skin, "error" ) {
@@ -226,6 +229,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update( width, height, true );
+        img.setSize( stage.getWidth(), stage.getHeight() );
     }
 
     @Override

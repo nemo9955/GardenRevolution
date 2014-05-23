@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -42,6 +43,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
     private TextButton         start;
     private List<String>       elem;
     private TextButton         back;
+    private Image              img;
 
     public LevelSelector() {
         ScreenViewport viewport = new ScreenViewport();
@@ -138,7 +140,8 @@ public class LevelSelector extends CustomAdapter implements Screen {
                     GR.game.setScreen( GR.gameplay.initAsSinglePlayer( Gdx.files.internal( GR.levelsLocation ).child( toAcces +".xml" ) ) );
             }
         } );
-
+        img = new Image( GR.bg );
+        stage.addActor( img );
         stage.addActor( lista );
 
 
@@ -226,6 +229,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update( width, height, true );
+        img.setSize( stage.getWidth(), stage.getHeight() );
     }
 
     @Override

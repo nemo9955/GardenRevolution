@@ -40,7 +40,6 @@ public class FightZone implements Poolable {
                 enemy.flag.set( GR.temp3.set( box.getCenter() ).add( GR.temp2.set( enemy.offset ).scl( 2f ) ) );
             }
 
-        // TODO make this not random and dependent of the attack speed
         for (int i = 0 ; i <enemies.size ; i ++ ) {
             Ally ally = allies.random();
             if ( ally !=null ) {
@@ -52,7 +51,6 @@ public class FightZone implements Poolable {
                 break;
         }
 
-        // TODO make this not random and dependent of the attack speed
         for (int i = 0 ; i <allies.size ; i ++ ) {
             Enemy enemy = enemies.random();
             if ( enemy !=null ) {
@@ -66,7 +64,6 @@ public class FightZone implements Poolable {
 
         if ( allies.size <=0 )
             removeFightZone();
-
     }
 
     @Override
@@ -79,12 +76,12 @@ public class FightZone implements Poolable {
         enemies.add( enemy );
     }
 
-    public void removeEnemy(Enemy enemy) {
-        enemies.removeValue( enemy, false );
-    }
-
     public void addAlly(Ally ally) {
         allies.add( ally );
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        enemies.removeValue( enemy, false );
     }
 
     public void removeAlly(Ally ally) {
@@ -122,7 +119,5 @@ public class FightZone implements Poolable {
 
         GR.temp1.scl( 1f / ( allies.size +5 ) );
         setPoz( GR.temp1 );
-
     }
-
 }

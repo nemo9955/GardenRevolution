@@ -11,13 +11,12 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
@@ -37,7 +36,6 @@ public class Menu extends CustomAdapter implements Screen {
     private static final float rap = 1.3f;
     private TextButton         play;
     private Image              img;
-    private Texture            bg;
 
     // private ImageTextButton options;
     // private ImageButton play;
@@ -54,11 +52,11 @@ public class Menu extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
 
-        final ImageTextButton options = new ImageTextButton( "Options", GR.skin );
+        final TextButton options = new TextButton( "Options", GR.skin );
         final TextButton sdr = new TextButton( "Shader", GR.skin );
         play = new TextButton( "Play", GR.skin );
         final TextButton exit = new TextButton( "Exit", GR.skin );
-        final TextButton test = new TextButton( "Test", GR.skin );
+        final TextButton test = new TextButton( "Credits", GR.skin );
 
 
         final Table tab = new Table( GR.skin );
@@ -91,22 +89,18 @@ public class Menu extends CustomAdapter implements Screen {
         };
 
 
-        bg = new Texture( Gdx.files.internal( "imagini/fundale/gr_background.png" ) );
-        img = new Image( bg );
-        img.setSize( stage.getWidth(), stage.getHeight() );
-
         tab.addListener( asc );
 
-        tab.defaults().pad( 25 );
-        tab.add( play );
-        tab.add( sdr );
+        tab.defaults().pad( 20 );
+        tab.add( play ).bottom().colspan( 2 ).expand();
         tab.row();
-        tab.add( test );
-        tab.add( options );
+        tab.add( sdr ).right();
+        tab.add( options ).left();
         tab.row();
-        tab.add( exit );
-        tab.add( " " );
+        tab.add( exit ).expand().align( Align.left |Align.bottom );
+        tab.add( test ).expand().align( Align.right |Align.bottom );
 
+        img = new Image( GR.bg );
         stage.addActor( img );
         stage.addActor( tab );
 
@@ -200,7 +194,6 @@ public class Menu extends CustomAdapter implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        bg.dispose();
     }
 
 }
