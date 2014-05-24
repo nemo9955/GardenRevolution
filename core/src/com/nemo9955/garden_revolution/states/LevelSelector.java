@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
@@ -110,7 +111,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
         table.add( multy ).expand().row();
         table.add( back ).bottom().expand().right();
 
-        lista = new SplitPane( elem, table, false, GR.skin );
+        lista = new SplitPane( elem, table, false, GR.skin, "vine" );
         lista.setFillParent( true );
         lista.setMaxSplitAmount( 0.5f );
         lista.setMinSplitAmount( 0.3f );
@@ -140,7 +141,7 @@ public class LevelSelector extends CustomAdapter implements Screen {
                     GR.game.setScreen( GR.gameplay.initAsSinglePlayer( Gdx.files.internal( GR.levelsLocation ).child( toAcces +".xml" ) ) );
             }
         } );
-        img = new Image( GR.bg );
+        img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
         stage.addActor( lista );
 

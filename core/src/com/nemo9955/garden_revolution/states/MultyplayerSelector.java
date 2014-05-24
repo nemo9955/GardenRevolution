@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -112,7 +113,7 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
             }
 
         } );
-        img = new Image( GR.bg );
+        img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
         stage.addActor( table );
 

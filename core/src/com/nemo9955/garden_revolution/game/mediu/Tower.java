@@ -41,7 +41,7 @@ public class Tower implements Disposable {
     public long                  fireChargedTime  = 0;
     public float                 charge           = 0;
 
-    private Decal                pointer          = Decal.newDecal( 2, 2, Garden_Revolution.getMenuTexture( "pointer-2" ), true );
+    private Decal                pointer          = Decal.newDecal( 2, 2, Garden_Revolution.getPackTexture( "pointer-2" ), true );
 
 
     public Tower(TowerType type, WorldWrapper world, Vector3 poz, int ID) {

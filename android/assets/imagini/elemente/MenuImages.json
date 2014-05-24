@@ -25,10 +25,12 @@
 	},
 	
 	 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	        default: { up: buton_up, down: buton_down, over:buton_over , font: arial_32, pressedOffsetX: 1, pressedOffsetY: -1 },
-	        big:     { up: buton_up, down: buton_down, over:buton_over , font: arial_64, pressedOffsetX: 1, pressedOffsetY: -1 },
-	        bigdemon:{ up: buton_up, down: buton_down, over:buton_over , font: demonized_64, pressedOffsetX: 1, pressedOffsetY: -1 },
-	        demon:   { up: buton_up, down: buton_down, over:buton_over , font: demonized_32, pressedOffsetX: 1, pressedOffsetY: -1 },
+	        default1: { up: buton_up, down: buton_down, over:buton_over , font: arial_32 },
+	        default: { up: ButPamU , down: ButPamD   , over:ButPamO    , font: arial_32 },
+	        earth  : { up: ButPamU , down: ButPamD   , over:ButPamO    , font: arial_32 },
+	        big:     { up: buton_up, down: buton_down, over:buton_over , font: arial_64},
+	        bigdemon:{ up: buton_up, down: buton_down, over:buton_over , font: demonized_64},
+	        demon:   { up: buton_up, down: buton_down, over:buton_over , font: demonized_32}
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
@@ -62,7 +64,6 @@
 	},
 
 	com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle:{
-		default-horizontal:{ background:element1 , disabledBackground:element2 , knob: mover-knob },
 		default-vertical:{ background:element1 , disabledBackground:element2 , knob: mover-knob }
 	},
 	

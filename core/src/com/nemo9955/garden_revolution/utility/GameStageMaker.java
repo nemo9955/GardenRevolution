@@ -68,7 +68,7 @@ public class GameStageMaker {
     public static float             ASAtimer         = 0;
     public static boolean           showASA          = false;
     public static final Vector3     ASAonPath        = new Vector3();
-    public static Decal             allySpawnArea    = Decal.newDecal( 20, 20, Garden_Revolution.getMenuTexture( "mover-bg" ), true );
+    public static Decal             allySpawnArea    = Decal.newDecal( 20, 20, Garden_Revolution.getPackTexture( "mover-bg" ), true );
 
     public static StageActorPointer pointer;
     public static Label             fps              = new Label( "FPS: ", GR.skin );

@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -42,7 +41,4 @@ public class GR {
     public static final Vector3       temp2          = new Vector3();
     public static final Vector3       temp3          = new Vector3();
     public static final Vector3       temp4          = new Vector3();
-
-
-    public static Texture             bg;
 }

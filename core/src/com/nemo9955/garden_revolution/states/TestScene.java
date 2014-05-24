@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
@@ -57,7 +58,7 @@ public class TestScene extends CustomAdapter implements Screen {
         tab.add( "Profesor: Tomulesct Vasilica" ).row();
         tab.add( "Colegiul National \"Ecaterina Teodoroiu\"" ).row();
 
-        img = new Image( GR.bg );
+        img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
         stage.addActor( tab );
         stage.addActor( back );

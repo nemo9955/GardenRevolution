@@ -67,7 +67,7 @@ public enum WeaponType {
             name = "Cannon";
             details = "Slow but powerfull.";
 
-            spot = Decal.newDecal( Garden_Revolution.getMenuTexture( "mover-bg" ), true );
+            spot = Decal.newDecal( Garden_Revolution.getPackTexture( "mover-bg" ), true );
             spot.setRotation( Vector3.Y, Vector3.Y );
             spot.setDimensions( 20, 20 );
             spot.setColor( 1, 1, 1, opac );
@@ -164,10 +164,10 @@ public enum WeaponType {
             setPrice( 420 );
             name = "Mini Gun";
             details = "Small but vicious.";
-            raza1 = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
+            raza1 = Decal.newDecal( Garden_Revolution.getPackTexture( "pix50" ), true );
             raza1.setDimensions( 200, 0.3f );
             raza1.setColor( 1, 0, 0, 0 );
-            raza2 = Decal.newDecal( Garden_Revolution.getMenuTexture( "pix50" ), true );
+            raza2 = Decal.newDecal( Garden_Revolution.getPackTexture( "pix50" ), true );
             raza2.setDimensions( 200, 0.3f );
             raza2.setColor( 0.5f, 0, 0, 0 );
         }

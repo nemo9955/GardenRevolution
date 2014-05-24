@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
@@ -100,7 +101,7 @@ public class Menu extends CustomAdapter implements Screen {
         tab.add( exit ).expand().align( Align.left |Align.bottom );
         tab.add( test ).expand().align( Align.right |Align.bottom );
 
-        img = new Image( GR.bg );
+        img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
         stage.addActor( tab );
 

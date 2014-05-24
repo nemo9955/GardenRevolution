@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
+import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
@@ -141,7 +142,7 @@ public class Options extends CustomAdapter implements Screen {
         table.add( contSensY ).colspan( 2 ).row();
 
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
-            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin );
+            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin, "earth" );
             button.setUserObject( "Button" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
             button.getLabel().setTouchable( Touchable.disabled );
 
@@ -151,7 +152,7 @@ public class Options extends CustomAdapter implements Screen {
         }
 
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
-            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin );
+            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin, "earth" );
             axis.setUserObject( "Axis" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
             axis.getLabel().setTouchable( Touchable.disabled );
 
@@ -222,7 +223,7 @@ public class Options extends CustomAdapter implements Screen {
                 return false;
             }
         } );
-        img = new Image( GR.bg );
+        img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
         stage.addActor( pane );
         Func.makePropTouch( stage.getRoot() );

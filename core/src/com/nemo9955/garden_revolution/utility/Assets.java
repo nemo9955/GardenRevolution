@@ -20,6 +20,7 @@ public enum Assets {
     TOWER_BASIC(LOC.MODEL, "tower_basic.g3db"), //
     VIEW_POINT(LOC.MODEL, "view_point.g3db"), //
 
+    BACKGROUNG(LOC.FUNDAL, "gr_background.png"), //
     ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
     SKIN_JSON(LOC.ELEMENT, "MenuImages.json", Skin.class); //
 

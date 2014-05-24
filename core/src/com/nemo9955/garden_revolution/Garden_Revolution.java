@@ -23,6 +23,7 @@ import com.nemo9955.garden_revolution.states.Options;
 import com.nemo9955.garden_revolution.states.SplashScreen;
 import com.nemo9955.garden_revolution.states.TestScene;
 import com.nemo9955.garden_revolution.utility.Assets;
+import com.nemo9955.garden_revolution.utility.CustomStyles;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
@@ -51,6 +52,9 @@ public class Garden_Revolution extends Game {
             }
         }
 
+        GR.manager.load( "imagini/fundale/gr_background.png", Texture.class, param );
+
+
         GR.splash = new SplashScreen( this );
         setScreen( GR.splash );
 
@@ -58,6 +62,8 @@ public class Garden_Revolution extends Game {
 
     public void postLoading() {
         GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
+
+        CustomStyles.makeStyles();
 
         if ( Func.isAndroid() )
             Gdx.input.setCatchBackKey( true );
@@ -68,10 +74,6 @@ public class Garden_Revolution extends Game {
 
         Pixmap pixmap = new Pixmap( Gdx.files.internal( "imagini/elemente/cursor.png" ) );
         Gdx.input.setCursorImage( pixmap, 1, 1 );
-
-
-        GR.bg = new Texture( Gdx.files.internal( "imagini/fundale/gr_background.png" ) );
-
 
         GR.multyplayer = new MultyplayerSelector();
         GR.options = new Options();
@@ -87,15 +89,17 @@ public class Garden_Revolution extends Game {
         return GR.manager.get( model.path(), Model.class );
     }
 
-    public static AtlasRegion getMenuTexture(String name) {
+    public static AtlasRegion getPackTexture(String name) {
         return GR.manager.get( Assets.ELEMENTS_PACK.path(), TextureAtlas.class ).findRegion( name );
+    }
+
+    public static Texture getBG() {
+        return GR.manager.get( Assets.BACKGROUNG.path(), Texture.class );
     }
 
     @Override
     public void dispose() {
         GR.manager.dispose();
-
-        GR.bg.dispose();
 
         GR.gameplay.dispose();
         GR.menu.dispose();
