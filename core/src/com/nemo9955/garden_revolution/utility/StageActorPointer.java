@@ -128,9 +128,9 @@ public class StageActorPointer {
         }
         else {
             if ( axisCode ==CoAxis.mvX.id )
-                mvx = value *Vars.invertControlletX *-1f;
+                mvx = value *Vars.invertControllerX *-1f;
             if ( axisCode ==CoAxis.mvY.id )
-                mvy = value *Vars.invertControlletY *-1f;
+                mvy = value *Vars.invertControllerY *-1f;
             alfa = 2f;
         }
     }

@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -25,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.StageActorPointer;
@@ -57,11 +55,11 @@ public class Options extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
 
-        back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
+        back = new TextButton( "Back", GR.skin, "demon" );
         pointer = new StageActorPointer( stage );
 
         final Table table = new Table( GR.skin );
-        opt = new Label( "Options", GR.skin );
+        opt = new Label( "Options", GR.skin, "clover", "white" );
 
 
         final Slider contSensX = new Slider( 1, 10, 0.1f, false, GR.skin ) {
@@ -71,6 +69,7 @@ public class Options extends CustomAdapter implements Screen {
                 return 300;
             }
         };
+        contSensX.setValue( Vars.multiplyControlletX );
         contSensX.addListener( new ChangeListener() {
 
             @Override
@@ -88,6 +87,7 @@ public class Options extends CustomAdapter implements Screen {
                 return 300;
             }
         };
+        contSensY.setValue( Vars.multiplyControlletY );
         contSensY.addListener( new ChangeListener() {
 
             @Override
@@ -97,10 +97,48 @@ public class Options extends CustomAdapter implements Screen {
             }
         } );
 
+
+        final Slider camSensX = new Slider( 0.2f, 4, 0.1f, false, GR.skin ) {
+
+            @Override
+            public float getPrefWidth() {
+                return 300;
+            }
+        };
+        camSensX.setValue( Vars.modCamSpeedX );
+        camSensX.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Vars.modCamSpeedX = camSensX.getValue();
+                pane.cancel();
+            }
+        } );
+
+
+        final Slider camSensY = new Slider( 0.2f, 4, 0.1f, false, GR.skin ) {
+
+            @Override
+            public float getPrefWidth() {
+                return 300;
+            }
+        };
+        camSensY.setValue( Vars.modCamSpeedY );
+        camSensY.addListener( new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Vars.modCamSpeedY = camSensY.getValue();
+                pane.cancel();
+            }
+        } );
+
         final CheckBox invMX = new CheckBox( "Invert Drag X", GR.skin );
         final CheckBox invMY = new CheckBox( "Invert Drag Y", GR.skin );
         final CheckBox invPX = new CheckBox( "Invert TouchPad X", GR.skin );
         final CheckBox invPY = new CheckBox( "Invert TouchPad Y", GR.skin );
+        final CheckBox invCX = new CheckBox( "Invert Controller X", GR.skin );
+        final CheckBox invCY = new CheckBox( "Invert Controller Y", GR.skin );
 
         ChangeListener invButtons = new ChangeListener() {
 
@@ -114,6 +152,10 @@ public class Options extends CustomAdapter implements Screen {
                     Vars.invertPadX = (byte) ( invPX.isChecked() ? -1 : 1 );
                 else if ( invPY.isPressed() )
                     Vars.invertPadY = (byte) ( invPY.isChecked() ? -1 : 1 );
+                else if ( invCX.isPressed() )
+                    Vars.invertControllerX = (byte) ( invCX.isChecked() ? -1 : 1 );
+                else if ( invCY.isPressed() )
+                    Vars.invertControllerY = (byte) ( invCY.isChecked() ? -1 : 1 );
             }
         };
 
@@ -127,22 +169,38 @@ public class Options extends CustomAdapter implements Screen {
         invPY.setChecked( Vars.invertPadY <0 );
         invPY.addListener( invButtons );
 
-        table.defaults().pad( 20 );
+        invCX.setChecked( Vars.invertControllerX <0 );
+        invCX.addListener( invButtons );
+        invCY.setChecked( Vars.invertControllerY <0 );
+        invCY.addListener( invButtons );
+
+        // ----------------------------------------------------------------------------------------------------
+        final byte space = 30, verSim = 10, categ = 50;
+        table.defaults().padLeft( space ).padBottom( space );
         table.add( opt ).colspan( 2 ).pad( 40 ).row();
 
         table.add( invMX ).colspan( 2 ).row();
         table.add( invMY ).colspan( 2 ).row();
         table.add( invPX ).colspan( 2 ).row();
         table.add( invPY ).colspan( 2 ).row();
+        table.add( invCX ).colspan( 2 ).row();
+        table.add( invCY ).padBottom( categ ).colspan( 2 ).row();
 
+        table.add( "Camera X sensivity" ).padBottom( verSim ).colspan( 2 ).row();
+        table.add( camSensX ).colspan( 2 ).row();
+        table.add( "Camera Y sensivity" ).padBottom( verSim ).colspan( 2 ).row();
+        table.add( camSensY ).colspan( 2 ).row();
 
-        table.add( "Controller X sensivity" ).colspan( 2 ).row();
+        table.add( "Controller X sensivity" ).padBottom( verSim ).colspan( 2 ).row();
         table.add( contSensX ).colspan( 2 ).row();
-        table.add( "Controller Y sensivity" ).colspan( 2 ).row();
-        table.add( contSensY ).colspan( 2 ).row();
+        table.add( "Controller Y sensivity" ).padBottom( verSim ).colspan( 2 ).row();
+        table.add( contSensY ).padBottom( categ ).colspan( 2 ).row();
+
+        table.add( "Controller Input", "clover", "white" ).padBottom( categ ).colspan( 2 ).row();
+
 
         for (int i = 0 ; i <Vars.noButtons ; i ++ ) {
-            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin, "earth" );
+            TextButton button = new TextButton( "Button " +CoButt.values()[i].id, GR.skin, "arial" );
             button.setUserObject( "Button" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
             button.getLabel().setTouchable( Touchable.disabled );
 
@@ -152,7 +210,7 @@ public class Options extends CustomAdapter implements Screen {
         }
 
         for (int i = 0 ; i <Vars.noAxis ; i ++ ) {
-            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin, "earth" );
+            TextButton axis = new TextButton( "Axis " +CoAxis.values()[i].id, GR.skin, "arial" );
             axis.setUserObject( "Axis" +Vars.stringSeparator +i +Vars.stringSeparator +"Controller" );
             axis.getLabel().setTouchable( Touchable.disabled );
 
@@ -257,9 +315,9 @@ public class Options extends CustomAdapter implements Screen {
         else if ( buttonIndex ==CoButt.Back.id )
             Func.click( back );
         else if ( buttonIndex ==CoButt.InvX.id )
-            Vars.invertControlletX *= -1;
+            Vars.invertControllerX *= -1;
         else if ( buttonIndex ==CoButt.InvY.id )
-            Vars.invertControlletY *= -1;
+            Vars.invertControllerY *= -1;
 
         return false;
 

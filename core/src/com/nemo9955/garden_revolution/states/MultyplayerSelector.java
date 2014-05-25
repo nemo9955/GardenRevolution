@@ -56,8 +56,8 @@ public class MultyplayerSelector extends CustomAdapter implements Screen {
         stage = new Stage( viewport );
 
         table = new Table( GR.skin );
-        back = new TextButton( "Back", GR.skin );
-        start = new TextButton( "Start", GR.skin );
+        start = new TextButton( "Start", GR.skin, "demon" );
+        back = new TextButton( "Back", GR.skin, "demon" );
         ipInput = new TextField( "", GR.skin ) {
 
             @Override

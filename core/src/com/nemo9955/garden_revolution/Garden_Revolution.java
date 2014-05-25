@@ -100,6 +100,7 @@ public class Garden_Revolution extends Game {
     @Override
     public void dispose() {
         GR.manager.dispose();
+        CustomStyles.dispose();
 
         GR.gameplay.dispose();
         GR.menu.dispose();

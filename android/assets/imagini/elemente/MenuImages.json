@@ -9,32 +9,26 @@
 	 },
 	
 	 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	        demonized_32: { file: fonts/demonized_32.fnt }, 
-	        demonized_64: { file: fonts/demonized_64.fnt }, 
-	        arial_32:     { file: fonts/arial_32.fnt }, 
-	        arial_64:     { file: fonts/arial_64.fnt },
+	        demon: { file: fonts/demonized_32.fnt }, 
+	        arial:     { file: fonts/arial_32.fnt }, 
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-	        default:   { font: arial_32, fontColor: white },
-	        def-black: { font: arial_32, fontColor: black },
-	        big:       { font: arial_64, fontColor: white },
-	        big-green: { font: arial_64, fontColor: green},
-	        demon:     { font: demonized_32, fontColor: white },
-	        bigdemon:  { font: demonized_64, fontColor: white }
+	        default:   { font: arial, fontColor: white },
+	        def-black: { font: arial, fontColor: black },
+	        demon:     { font: demon, fontColor: white },
 	},
 	
 	 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	        default1: { up: buton_up, down: buton_down, over:buton_over , font: arial_32 },
-	        default: { up: ButPamU , down: ButPamD   , over:ButPamO    , font: arial_32 },
-	        earth  : { up: ButPamU , down: ButPamD   , over:ButPamO    , font: arial_32 },
-	        big:     { up: buton_up, down: buton_down, over:buton_over , font: arial_64},
-	        bigdemon:{ up: buton_up, down: buton_down, over:buton_over , font: demonized_64},
-	        demon:   { up: buton_up, down: buton_down, over:buton_over , font: demonized_32}
+	        default:    { up: buton_up, down: buton_down, over:buton_over , font: demon },
+	        earth:      { up: ButPamU , down: ButPamD   , over:ButPamO    , font: arial },
+			earthDemon: { up: ButPamU , down: ButPamD   , over:ButPamO    , font: demon },
+	        arial: 	    { up: buton_up, down: buton_down, over:buton_over , font: arial},
+	        demon:      { up: buton_up, down: buton_down, over:buton_over , font: demon},
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-		default : { font : arial_32 , checkboxOn : checked , checkboxOff : unchecked },
+		default : { font : arial , checkboxOn : checked , checkboxOff : unchecked },
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
@@ -43,14 +37,14 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle:{
-		default:  { imageUp: buton_up , imageDown: buton_down , imageOver: buton_over  },
-		IGpause:  { imageUp: IGpause , pressedOffsetX: -2 , pressedOffsetY: -2},
+		default:       { imageUp: buton_up , imageDown: buton_down , imageOver: buton_over  },
+		IGpause:       { imageUp: IGpause , pressedOffsetX: -2 , pressedOffsetY: -2},
 		towerUpgrade:  { imageUp: tower-upgrade , pressedOffsetX: -2 ,pressedOffsetY: 2 ,},
 		
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-	    default:{ font: arial_32, fontColorUnselected: white, fontColorSelected: black , selection : pix50}
+	    default:{ font: arial, fontColorUnselected: white, fontColorSelected: black , selection : pix50}
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle:{
@@ -68,15 +62,15 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle:{
-		default:{ font:arial_32	, fontColor:gray ,	focusedFontColor:blue , disabledFontColor:white , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }
+		default:{ font:arial	, fontColor:gray ,	focusedFontColor:blue , disabledFontColor:white , messageFontColor:red  , background:pix80 , focusedBackground:pix50 , disabledBackground:pix30 }
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle:{
-		default:{font:arial_32	, imageUp : mover-knob  , up: buton_up, down: buton_down, over:buton_over  }
+		default:{font:arial	, imageUp : mover-knob  , up: buton_up, down: buton_down, over:buton_over  }
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle:{
-		default:{ titleFont : arial_32	, background: pix30  },
-		error:{ titleFont : arial_32 , titleFontColor:black	, background: pix100  }
+		default:{ titleFont : arial	, background: pix30  },
+		error:{ titleFont : arial , titleFontColor:black	, background: pix100  }
 	}
 }

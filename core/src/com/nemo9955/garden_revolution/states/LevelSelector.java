@@ -11,6 +11,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -98,15 +99,15 @@ public class LevelSelector extends CustomAdapter implements Screen {
 
         Arrays.sort( harti );
 
-        start = new TextButton( "Start", GR.skin );
+        start = new TextButton( "Start", GR.skin, "earthDemon" );
         elem = new List<String>( GR.skin );
         elem.setItems( harti );
-        final TextButton multy = new TextButton( "Multiplayer", GR.skin );
+        final TextButton multy = new TextButton( "Multiplayer", GR.skin, "earthDemon" );
 
         back = new TextButton( "Back", GR.skin );
 
 
-        table.add( "Select a LEVEL" ).expand().top().row();
+        table.add( "Select a LEVEL", "clover", Color.MAROON ).expand().top().row();
         table.add( start ).expand().row();
         table.add( multy ).expand().row();
         table.add( back ).bottom().expand().right();
@@ -183,9 +184,9 @@ public class LevelSelector extends CustomAdapter implements Screen {
             Func.click( back );
 
         else if ( buttonIndex ==CoButt.InvX.id )
-            Vars.invertControlletX *= -1;
+            Vars.invertControllerX *= -1;
         else if ( buttonIndex ==CoButt.InvY.id )
-            Vars.invertControlletY *= -1;
+            Vars.invertControllerY *= -1;
 
         return false;
 

@@ -11,7 +11,7 @@ public class Vars {
     public static float        tPadMinAlpha        = 0.1f;
     protected static float     tPadAlphaDellay     = 2f;
 
-    // ( 0 , 3 ] viteza de miscare a camerei
+    // ( 0 , 4 ] viteza de miscare a camerei
     public static float        modCamSpeedX        = 2f;
     public static float        modCamSpeedY        = 0.7f;
 
@@ -28,8 +28,8 @@ public class Vars {
     public static boolean      showDebug           = false;
 
     // pentru controller
-    public static float        invertControlletY   = 1;
-    public static float        invertControlletX   = -1;
+    public static float        invertControllerX   = -1;
+    public static float        invertControllerY   = 1;
     public static float        multiplyControlletY = 1;
     public static float        multiplyControlletX = 1;
     public static float        deadZone            = 0.05f;

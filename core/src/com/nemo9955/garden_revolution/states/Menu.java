@@ -53,11 +53,11 @@ public class Menu extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
 
-        final TextButton options = new TextButton( "Options", GR.skin );
-        final TextButton sdr = new TextButton( "Shader", GR.skin );
-        play = new TextButton( "Play", GR.skin );
-        final TextButton exit = new TextButton( "Exit", GR.skin );
-        final TextButton test = new TextButton( "Credits", GR.skin );
+        final TextButton options = new TextButton( "Options", GR.skin, "earthDemon" );
+        final TextButton sdr = new TextButton( "Shader", GR.skin, "earthDemon" );
+        /*-------------*/play = new TextButton( "Play", GR.skin, "earthDemon" );
+        final TextButton exit = new TextButton( "Exit", GR.skin, "earthDemon" );
+        final TextButton test = new TextButton( "Credits", GR.skin, "earthDemon" );
 
 
         final Table tab = new Table( GR.skin );
@@ -146,9 +146,9 @@ public class Menu extends CustomAdapter implements Screen {
         if ( buttonIndex ==CoButt.Fire.id )
             pointer.fireSelected();
         else if ( buttonIndex ==CoButt.InvX.id )
-            Vars.invertControlletX *= -1;
+            Vars.invertControllerX *= -1;
         else if ( buttonIndex ==CoButt.InvY.id )
-            Vars.invertControlletY *= -1;
+            Vars.invertControllerY *= -1;
         return false;
 
     }

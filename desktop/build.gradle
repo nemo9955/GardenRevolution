@@ -20,9 +20,14 @@ task dist(type: Jar) {
     from {configurations.compile.collect {zipTree(it)}}
     from files(project.assetsDir);
  
+    destinationDir = file"/home/nemo9955/CodeStation"
+    
+    archiveName = "GRev " +".jar"
+    
     manifest {
         attributes 'Main-Class': project.mainClassName
     }
+    
 }
 
 dist.dependsOn classes

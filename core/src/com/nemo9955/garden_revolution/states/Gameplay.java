@@ -167,11 +167,10 @@ public class Gameplay extends CustomAdapter implements Screen {
         player.update( delta );
 
         if ( ASAtimer >0 ) {
-            hudAllyPlacer.setColor( 1, 0, 0, 1 - ( ASAtimer /Vars.allySpawnInterval ) );
+            hudAllyPlacer.setColor( 0.4f, 0.4f, 0.4f, 1 - ( ASAtimer /Vars.allySpawnInterval ) );
             ASAtimer -= delta;
             if ( ASAtimer <=0 )
                 hudAllyPlacer.setColor( 1, 1, 1, 1 );
-
         }
 
         if ( showASA &&!Gdx.input.isTouched() ) {
@@ -451,10 +450,10 @@ public class Gameplay extends CustomAdapter implements Screen {
             }
         }
         else if ( buttonCode ==CoButt.InvX.id )
-            Vars.invertControlletX *= -1;
+            Vars.invertControllerX *= -1;
 
         else if ( buttonCode ==CoButt.InvY.id )
-            Vars.invertControlletY *= -1;
+            Vars.invertControllerY *= -1;
 
         else if ( buttonCode ==CoButt.PrevT.id &&Func.isCurrentState( stage, "HUD" ) )
             player.prevTower();
@@ -533,9 +532,9 @@ public class Gameplay extends CustomAdapter implements Screen {
             }
             else {
                 if ( axisCode ==CoAxis.mvX.id )
-                    movex = value *Vars.invertControlletX *Vars.multiplyControlletX;
+                    movex = value *Vars.invertControllerX *Vars.multiplyControlletX;
                 if ( axisCode ==CoAxis.mvY.id )
-                    movey = value *Vars.invertControlletY *Vars.multiplyControlletY;
+                    movey = value *Vars.invertControllerY *Vars.multiplyControlletY;
             }
         }
 

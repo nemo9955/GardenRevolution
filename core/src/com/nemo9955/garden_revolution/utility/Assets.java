@@ -10,19 +10,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public enum Assets {
 
     ARIAL32(LOC.FONT, "arial_32.fnt"), //
-    ARIAL64(LOC.FONT, "arial_64.fnt"), //
     DEMON32(LOC.FONT, "demonized_32.fnt"), //
-    DEMON64(LOC.FONT, "demonized_64.fnt"), //
+
+
+    BACKGROUNG(LOC.FUNDAL, "gr_background.png"), //
+    ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
+    SKIN_JSON(LOC.ELEMENT, "MenuImages.json", Skin.class), //
 
     ALLIES(LOC.MODEL, "allies.g3db"), //
     ENEMYS(LOC.MODEL, "enemies.g3db"), //
     TOWER_FUNDATION(LOC.MODEL, "tower_fundation.g3db"), //
     TOWER_BASIC(LOC.MODEL, "tower_basic.g3db"), //
-    VIEW_POINT(LOC.MODEL, "view_point.g3db"), //
-
-    BACKGROUNG(LOC.FUNDAL, "gr_background.png"), //
-    ELEMENTS_PACK(LOC.ELEMENT, "MenuImages.atlas", TextureAtlas.class), //
-    SKIN_JSON(LOC.ELEMENT, "MenuImages.json", Skin.class); //
+    VIEW_POINT(LOC.MODEL, "view_point.g3db"); //
 
 
     private String   path;

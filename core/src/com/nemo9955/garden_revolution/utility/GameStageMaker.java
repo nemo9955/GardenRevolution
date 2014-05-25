@@ -37,16 +37,16 @@ public class GameStageMaker {
     public static Label             hudViataTurn     = new Label( "Life ", GR.skin );
     public static Touchpad          hudMover         = new Touchpad( 1, GR.skin );
     public static Image             hudWeaponCharger = new Image( GR.skin, "mover-knob" );
-    public static TextButton        hudReady         = new TextButton( "Start Wave!", GR.skin );
-    public static Image             hudAllyPlacer    = new Image( IconType.TINTA.getAsDrawable( GR.skin, 60f, 60f ) );
+    public static TextButton        hudReady         = new TextButton( "Start Wave!", GR.skin, "arial" );
+    public static Image             hudAllyPlacer    = new Image( GR.skin, "allyPlacer" );
 
     private static Group            tuGroup          = new Group();
     private static TextButton       tuBackBut1       = new TextButton( "Bk", GR.skin );
     private static TextButton       tuBackBut2       = new TextButton( "Bk", GR.skin );
-    private static TextButton       tuBasicBut       = new TextButton( "BASIC", GR.skin );
+    private static TextButton       tuBasicBut       = new TextButton( "BASIC", GR.skin, "arial" );
     private static ImageButton      tuMiniGunBut     = new ImageButton( IconType.SAGETI.getAsDrawable( GR.skin, 70, 70 ) );
     private static ImageButton      tuCannonBut      = new ImageButton( IconType.TUN.getAsDrawable( GR.skin, 70, 70 ) );
-    public static Label             tuMoneyMeter     = new Label( "Money ----", GR.skin );
+    public static Label             tuMoneyMeter     = new Label( "Money ----", GR.skin, "clover", Color.YELLOW );
     private static CircularGroup    tuTowerCircG;
 
     private static Table            optTab           = new Table();
@@ -61,9 +61,9 @@ public class GameStageMaker {
     private static Label            optFOVmeter      = new Label( "Camera FOV 60", GR.skin );
 
     private static Table            pauseTab         = new Table( GR.skin );
-    private static TextButton       pauseResumeBut   = new TextButton( "Resume play", GR.skin );
-    private static TextButton       pauseOptBut      = new TextButton( "Options", GR.skin );
-    private static TextButton       pauseMMenuBut    = new TextButton( "Main menu", GR.skin );
+    private static TextButton       pauseResumeBut   = new TextButton( "Resume play", GR.skin, "arial" );
+    private static TextButton       pauseOptBut      = new TextButton( "Options", GR.skin, "arial" );
+    private static TextButton       pauseMMenuBut    = new TextButton( "Main menu", GR.skin, "arial" );
 
     public static float             ASAtimer         = 0;
     public static boolean           showASA          = false;
@@ -130,9 +130,9 @@ public class GameStageMaker {
     public static void resizeStage(int width, int height) {
         fps.setPosition( gp.stage.getWidth() /2, gp.stage.getHeight() -fps.getHeight() );
         hudAllyPlacer.setPosition( gp.stage.getWidth() *0.25f, 0 );
-        hudReady.setPosition( 0, gp.stage.getHeight() /2 );
+        hudReady.setPosition( gp.stage.getWidth() /2, 0 );
         hudTowerBut.setPosition( gp.stage.getWidth() -hudTowerBut.getWidth(), 0 );
-        hudViataTurn.setFontScale( 0.6f );
+        hudViataTurn.setFontScale( 0.8f );
         hudViataTurn.setPosition( 10 *Vars.densitate, gp.stage.getHeight() -hudViataTurn.getHeight() -10 *Vars.densitate );
         hudPauseBut.setPosition( gp.stage.getWidth() -hudPauseBut.getWidth(), gp.stage.getHeight() -hudPauseBut.getHeight() );
         hudMover.setPosition( gp.stage.getWidth() *0.02f, gp.stage.getWidth() *0.02f );
@@ -157,6 +157,8 @@ public class GameStageMaker {
     private static void createHUD() {
 
         // gp.fps.setScale( Vars.densitate );
+
+        hudAllyPlacer.setScale( 1.25f );
 
         hudMover.addAction( Actions.alpha( Vars.tPadMinAlpha ) );
 
@@ -278,11 +280,12 @@ public class GameStageMaker {
         tuTowerCircG = new CircularGroup( gp.shape );
         tuTowerCircG.setDraggable( true );
 
-        tuMoneyMeter.setColor( Color.DARK_GRAY );
 
         tuTowerCircG.addActor( tuBasicBut );
         tuTowerCircG.addActor( tuMiniGunBut );
         tuTowerCircG.addActor( tuCannonBut );
+
+        tuMoneyMeter.setFontScale( 0.7f );
 
         tuGroup.addActor( tuMoneyMeter );
         tuGroup.addActor( tuBackBut1 );
@@ -405,7 +408,7 @@ public class GameStageMaker {
 
         pauseTab.setFillParent( true );
         pauseTab.setBackground( "pix30" );
-        pauseTab.add( "PAUSE", "big-green" ).padBottom( gp.stage.getHeight() *0.1f );
+        pauseTab.add( "PAUSE", "clover", Color.GREEN ).padBottom( gp.stage.getHeight() *0.1f );
         pauseTab.row();
         pauseTab.add( pauseResumeBut ).padBottom( gp.stage.getHeight() *0.07f );
         pauseTab.row();

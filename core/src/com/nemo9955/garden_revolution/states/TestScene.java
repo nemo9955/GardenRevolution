@@ -6,18 +6,17 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
-import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
@@ -39,7 +38,7 @@ public class TestScene extends CustomAdapter implements Screen {
         viewport.setUnitsPerPixel( rap /Vars.densitate );
         stage = new Stage( viewport );
 
-        back = new TextButton( "back", (Skin) GR.manager.get( Assets.SKIN_JSON.path() ) );
+        back = new TextButton( "Back", GR.skin, "demon" );
         back.addListener( new ChangeListener() {
 
             @Override
@@ -52,11 +51,13 @@ public class TestScene extends CustomAdapter implements Screen {
         Table tab = new Table( GR.skin );
         tab.setFillParent( true );
 
-        tab.defaults().pad( 30 );
+        tab.defaults();
 
-        tab.add( "Elev: Mogoi Adrian" ).row();
-        tab.add( "Profesor: Tomulesct Vasilica" ).row();
-        tab.add( "Colegiul National \"Ecaterina Teodoroiu\"" ).row();
+        tab.add( "Elev: Mogoi Adrian", "arial", Color.BLACK ).padBottom( 40 ).row();
+        tab.add( "Profesor:", "arial", Color.BLACK ).row();
+        tab.add( "Tomulesct Vasilica", "arial", Color.BLACK ).row();
+        tab.add( "Colegiul National", "arial", Color.BLACK ).padTop( 40 ).row();
+        tab.add( "\"Ecaterina Teodoroiu\"", "arial", Color.BLACK ).row();
 
         img = new Image( Garden_Revolution.getBG() );
         stage.addActor( img );
