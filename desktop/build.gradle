@@ -22,7 +22,7 @@ task dist(type: Jar) {
  
     destinationDir = file"/home/nemo9955/CodeStation"
     
-    archiveName = "GRev " +".jar"
+  //  archiveName = "GRev " +".jar"
     
     manifest {
         attributes 'Main-Class': project.mainClassName

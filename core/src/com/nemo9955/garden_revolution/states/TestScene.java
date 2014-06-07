@@ -55,7 +55,7 @@ public class TestScene extends CustomAdapter implements Screen {
 
         tab.add( "Elev: Mogoi Adrian", "arial", Color.BLACK ).padBottom( 40 ).row();
         tab.add( "Profesor:", "arial", Color.BLACK ).row();
-        tab.add( "Tomulesct Vasilica", "arial", Color.BLACK ).row();
+        tab.add( "Tomulescu Vasilica", "arial", Color.BLACK ).row();
         tab.add( "Colegiul National", "arial", Color.BLACK ).padTop( 40 ).row();
         tab.add( "\"Ecaterina Teodoroiu\"", "arial", Color.BLACK ).row();
 
