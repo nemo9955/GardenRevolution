@@ -8,177 +8,173 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-
 public class CustomAdapter implements InputProcessor, GestureListener, ControllerListener {
 
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
+	@Override
+	public boolean touchDown( float x, float y, int pointer, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
+	@Override
+	public boolean tap( float x, float y, int count, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean longPress(float x, float y) {
+	@Override
+	public boolean longPress( float x, float y ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
+	@Override
+	public boolean fling( float velocityX, float velocityY, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
+	@Override
+	public boolean pan( float x, float y, float deltaX, float deltaY ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
+	@Override
+	public boolean panStop( float x, float y, int pointer, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
+	@Override
+	public boolean zoom( float initialDistance, float distance ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+	@Override
+	public boolean pinch( Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2 ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean keyDown(int keycode) {
+	@Override
+	public boolean keyDown( int keycode ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean keyUp(int keycode) {
+	@Override
+	public boolean keyUp( int keycode ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean keyTyped(char character) {
+	@Override
+	public boolean keyTyped( char character ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+	@Override
+	public boolean touchDown( int screenX, int screenY, int pointer, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+	@Override
+	public boolean touchUp( int screenX, int screenY, int pointer, int button ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
+	@Override
+	public boolean touchDragged( int screenX, int screenY, int pointer ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
+	@Override
+	public boolean mouseMoved( int screenX, int screenY ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
-    @Override
-    public boolean scrolled(int amount) {
+	@Override
+	public boolean scrolled( int amount ) {
 
-        return false;
+		return false;
 
-    }
+	}
 
+	@Override
+	public void connected( Controller controller ) {}
 
-    @Override
-    public void connected(Controller controller) {
-    }
+	@Override
+	public void disconnected( Controller controller ) {}
 
-    @Override
-    public void disconnected(Controller controller) {
-    }
+	@Override
+	public boolean buttonDown( Controller controller, int buttonCode ) {
 
-    @Override
-    public boolean buttonDown(Controller controller, int buttonCode) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean buttonUp( Controller controller, int buttonCode ) {
 
-    @Override
-    public boolean buttonUp(Controller controller, int buttonCode) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean axisMoved( Controller controller, int axisCode, float value ) {
 
-    @Override
-    public boolean axisMoved(Controller controller, int axisCode, float value) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean povMoved( Controller controller, int povCode, PovDirection value ) {
 
-    @Override
-    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean xSliderMoved( Controller controller, int sliderCode, boolean value ) {
 
-    @Override
-    public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean ySliderMoved( Controller controller, int sliderCode, boolean value ) {
 
-    @Override
-    public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
+		return false;
 
-        return false;
+	}
 
-    }
+	@Override
+	public boolean accelerometerMoved( Controller controller, int accelerometerCode, Vector3 value ) {
 
-    @Override
-    public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
+		return false;
 
-        return false;
-
-    }
+	}
 
 }

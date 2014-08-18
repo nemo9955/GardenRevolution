@@ -10,88 +10,79 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.Garden_Revolution;
-
 
 public class SplashScreen implements Screen {
 
-    public Garden_Revolution game;
+	private SpriteBatch	batch;
+	private Texture		loader;
 
-    private SpriteBatch      batch;
-    private Texture          loader;
+	private Texture		bara;
+	private Sprite		fundal;
 
-    private Texture          bara;
-    private Sprite           fundal;
+	private BitmapFont	font;
+	private String		mesaje[]	= { "Fertilizing the enemy.", "Feeding the Queen.", "Planting new vegetables." };
+	private String		mesaj;
+	private TextBounds	mesMar		= new TextBounds();
 
-    private BitmapFont       font;
-    private String           mesaje[] = { "Fertilizing the enemy.", "Feeding the Queen.", "Planting new vegetables." };
-    private String           mesaj;
-    private TextBounds       mesMar   = new TextBounds();
+	public SplashScreen() {
+		batch = new SpriteBatch();
 
+		bara = new Texture("imagini/fundale/loading_bar.png");
+		bara.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-    public SplashScreen(Garden_Revolution game) {
-        this.game = game;
-        batch = new SpriteBatch();
+		loader = new Texture("imagini/fundale/loading_fundal.png");
+		loader.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		fundal = new Sprite(loader);
+		fundal.setPosition(Gdx.graphics.getWidth() / 2 - (fundal.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (fundal.getHeight() / 2));
 
-        bara = new Texture( "imagini/fundale/loading_bar.png" );
-        bara.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
+		font = new BitmapFont(Gdx.files.internal("fonts/arial_32.fnt"));
+		mesaj = mesaje[MathUtils.random(mesaje.length - 1)];
+		mesMar = font.getBounds(mesaj, mesMar);
+	}
 
-        loader = new Texture( "imagini/fundale/loading_fundal.png" );
-        loader.setFilter( Texture.TextureFilter.Linear, Texture.TextureFilter.Linear );
-        fundal = new Sprite( loader );
-        fundal.setPosition( Gdx.graphics.getWidth() /2 - ( fundal.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( fundal.getHeight() /2 ) );
+	@Override
+	public void show() {}
 
-        font = new BitmapFont( Gdx.files.internal( "fonts/arial_32.fnt" ) );
-        mesaj = mesaje[MathUtils.random( mesaje.length -1 )];
-        mesMar = font.getBounds( mesaj, mesMar );
-    }
+	@Override
+	public void render( float delta ) {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    @Override
-    public void show() {
-    }
+		// if ( Garden_Revolution.manager.getProgress() <0.8f )
+		if ( GR.manager.update() ) {
+			GR.game.postLoading();
+			GR.game.setScreen(MenuController.instance);
+		}
+		font.setScale(0.8f);
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT );
+		batch.begin();
+		fundal.draw(batch);
+		batch.draw(bara, Gdx.graphics.getWidth() / 2 - (bara.getWidth() / 2), Gdx.graphics.getHeight() / 2 - (bara.getHeight() / 2), GR.manager.getProgress() * bara.getWidth(), bara.getHeight() + 5);
+		font.draw(batch, String.format("%d%% Completed", (int) (GR.manager.getProgress() * 100)), Gdx.graphics.getWidth() / 2 - 95, Gdx.graphics.getHeight() / 2 + 12);
+		font.draw(batch, mesaj, Gdx.graphics.getWidth() / 2 - (mesMar.width / 2), mesMar.height * 2);
+		batch.end();
+	}
 
-        // if ( Garden_Revolution.manager.getProgress() <0.8f )
-        if ( GR.manager.update() ) {
-            game.postLoading();
-            game.setScreen( GR.menu );
-        }
-        font.setScale( 0.8f );
+	@Override
+	public void resize( int width, int height ) {}
 
-        batch.begin();
-        fundal.draw( batch );
-        batch.draw( bara, Gdx.graphics.getWidth() /2 - ( bara.getWidth() /2 ), Gdx.graphics.getHeight() /2 - ( bara.getHeight() /2 ), GR.manager.getProgress() *bara.getWidth(), bara.getHeight() +5 );
-        font.draw( batch, String.format( "%d%% Completed", (int) ( GR.manager.getProgress() *100 ) ), Gdx.graphics.getWidth() /2 -95, Gdx.graphics.getHeight() /2 +12 );
-        font.draw( batch, mesaj, Gdx.graphics.getWidth() /2 - ( mesMar.width /2 ), mesMar.height *2 );
-        batch.end();
-    }
+	@Override
+	public void hide() {
+		dispose();
+	}
 
-    @Override
-    public void resize(int width, int height) {
-    }
+	@Override
+	public void pause() {}
 
-    @Override
-    public void hide() {
-    }
+	@Override
+	public void resume() {}
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-        loader.dispose();
-        bara.dispose();
-        fundal.getTexture().dispose();
-        font.dispose();
-        batch.dispose();
-    }
+	@Override
+	public void dispose() {
+		loader.dispose();
+		bara.dispose();
+		fundal.getTexture().dispose();
+		font.dispose();
+		batch.dispose();
+	}
 
 }

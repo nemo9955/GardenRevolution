@@ -8,18 +8,22 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 
 public class DesktopLauncher {
 
-    public static void main(String[] args) {
-        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = GR.TITLU +" " +GR.VERSIUNE;
-        cfg.resizable = true;
-        cfg.width = 800;
-        cfg.height = 500;
+	public static void main( String[] args ) {
+		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		cfg.title = GR.TITLU + " " + GR.VERSIUNE;
+		cfg.resizable = true;
+		cfg.width = 800;
+		cfg.height = 500;
+		cfg.foregroundFPS = 1000;
+		// cfg.overrideDensity = 160;
 
-        try {
-            new LwjglApplication( new Garden_Revolution(), cfg );
-        }
-        catch (Exception e) {
-            Gdx.input.setCursorCatched( false );
-        }
-    }
+		try {
+			new LwjglApplication(new Garden_Revolution(), cfg);
+		}
+		catch ( Exception e ) {
+		}
+		finally {
+			Gdx.input.setCursorCatched(false);
+		}
+	}
 }

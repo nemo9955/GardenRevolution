@@ -18,177 +18,173 @@ import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
-
 public class Tower implements Disposable {
 
-    private WorldWrapper         world;
-    private Array<BoundingBox>   coliders         = new Array<BoundingBox>( false, 1 );
+	private WorldWrapper			world;
+	private Array<BoundingBox>		coliders			= new Array<BoundingBox>(false, 1);
 
-    private Array<ModelInstance> parts            = new Array<ModelInstance>( false, 1 );
-    public final Vector3         poz              = new Vector3();
-    public TowerType             type;
+	private Array<ModelInstance>	parts				= new Array<ModelInstance>(false, 1);
+	public final Vector3			poz					= new Vector3();
+	public TowerType				type;
 
-    private Weapon               weapon;
-    public final Vector3         place            = new Vector3();
-    private final Vector3        direction        = new Vector3();
-    public final Ray             ray              = new Ray( place, direction );
-    public byte                  ID;
+	private Weapon					weapon;
+	public final Vector3			place				= new Vector3();
+	private final Vector3			direction			= new Vector3();
+	public final Ray				ray					= new Ray(place, direction);
+	public byte						ID;
 
-    public String                ocupier          = null;
-    public boolean               isClientPlayerIn = false;
+	public String					ocupier				= null;
+	public boolean					isClientPlayerIn	= false;
 
-    public boolean               isFiringHold     = false;
-    public long                  fireChargedTime  = 0;
-    public float                 charge           = 0;
+	public boolean					isFiringHold		= false;
+	public long						fireChargedTime		= 0;
+	public float					charge				= 0;
 
-    private Decal                pointer          = Decal.newDecal( 2, 2, Garden_Revolution.getPackTexture( "pointer-2" ), true );
+	private Decal					pointer				= Decal.newDecal(2, 2, Garden_Revolution.getPackTexture("pointer-2"), true);
 
+	public Tower(TowerType type, WorldWrapper world, Vector3 poz, int ID) {
+		this.ID = (byte) ID;
+		this.poz.set(poz);
+		this.world = world;
+		weapon = new Weapon(WeaponType.NONE, place);
 
-    public Tower(TowerType type, WorldWrapper world, Vector3 poz, int ID) {
-        this.ID = (byte) ID;
-        this.poz.set( poz );
-        this.world = world;
-        weapon = new Weapon( WeaponType.NONE, place );
+		upgradeTower(type);
 
-        upgradeTower( type );
+		// pointer.setPosition( poz.x, poz.y +5f, poz.z );
+		// place.set( poz ).add( 0, 10, 0 );
+		direction.set(-1, 0, 0);
+	}
 
+	public boolean fireWeapon() {
+		if ( hasWeapon() )
+			return weapon.fire(world, ray, charge);
+		return false;
+	}
 
-        // pointer.setPosition( poz.x, poz.y +5f, poz.z );
-        // place.set( poz ).add( 0, 10, 0 );
-        direction.set( -1, 0, 0 );
-    }
+	public boolean changeWeapon( WeaponType toChange ) {
+		if ( weapon.type == toChange )
+			return false;
+		world.getDef().addMoney(weapon.type.value);
+		weapon.changeWeapon(toChange);
+		world.getDef().addMoney(-weapon.type.cost);
+		return true;
+	}
 
-    public boolean fireWeapon() {
-        if ( hasWeapon() )
-            return weapon.fire( world, ray, charge );
-        return false;
-    }
+	public boolean upgradeTower( TowerType upgrade ) {
+		if ( type != null )
+			if ( type.rank >= upgrade.rank )
+				return false;
+		type = upgrade;
+		parts.clear();
 
-    public boolean changeWeapon(WeaponType toChange) {
-        if ( weapon.type ==toChange )
-            return false;
-        world.getDef().addMoney( weapon.type.value );
-        weapon.changeWeapon( toChange );
-        world.getDef().addMoney( -weapon.type.cost );
-        return true;
-    }
+		Array<Node> remove = new Array<Node>(false, 1);
 
-    public boolean upgradeTower(TowerType upgrade) {
-        if ( type !=null )
-            if ( type.rank >=upgrade.rank )
-                return false;
-        type = upgrade;
-        parts.clear();
+		world.getDef().removeColiders(getTowerColiders());
+		getTowerColiders().clear();
 
-        Array<Node> remove = new Array<Node>( false, 1 );
+		ModelInstance model = new ModelInstance(upgrade.getModel(), poz);
+		for (int i = 0; i < model.nodes.size; i++) {
+			String id = model.nodes.get(i).id;
 
-        world.getDef().removeColiders( getTowerColiders() );
-        getTowerColiders().clear();
+			if ( id.startsWith("arma") ) {
+				place.set(model.nodes.get(i).translation).add(poz);
+				ray.set(place, direction);
+			} else if ( id.startsWith("colide") ) {
+				BoundingBox box = new BoundingBox();
+				model.getNode(id).calculateBoundingBox(box);
+				box.set(box.min.add(poz), box.max.add(poz));
+				addToTowerColiders(box);
+				remove.add(model.nodes.get(i));
+			}
+		}
+		model.nodes.removeAll(remove, false);
+		parts.add(model);
 
-        ModelInstance model = new ModelInstance( upgrade.getModel(), poz );
-        for (int i = 0 ; i <model.nodes.size ; i ++ ) {
-            String id = model.nodes.get( i ).id;
+		pointer.setPosition(place.x, place.y + 10f, place.z);
 
-            if ( id.startsWith( "arma" ) ) {
-                place.set( model.nodes.get( i ).translation ).add( poz );
-                ray.set( place, direction );
-            }
-            else if ( id.startsWith( "colide" ) ) {
-                BoundingBox box = new BoundingBox();
-                model.getNode( id ).calculateBoundingBox( box );
-                box.set( box.min.add( poz ), box.max.add( poz ) );
-                addToTowerColiders( box );
-                remove.add( model.nodes.get( i ) );
-            }
-        }
-        model.nodes.removeAll( remove, false );
-        parts.add( model );
+		weapon.poz.set(place);
 
-        pointer.setPosition( place.x, place.y +10f, place.z );
+		return true;
+	}
 
-        weapon.poz.set( place );
+	public void update( float delta ) {
 
-        return true;
-    }
+		if ( ocupier != null && isFiringHold )
+			fireWeapon();
 
-    public void update(float delta) {
+		if ( hasWeapon() && isClientPlayerIn )
+			weapon.type.updateWeaponTargeting(this, true);
+	}
 
-        if ( ocupier !=null &&isFiringHold )
-            fireWeapon();
+	public void render( ModelBatch modelBatch, Environment light, DecalBatch decalBatch ) {
+		for (ModelInstance model : parts)
+			modelBatch.render(model, light);
+		if ( hasWeapon() )// TODO add a showTargeting boolean
+			weapon.render(modelBatch, light, decalBatch, isClientPlayerIn);
+		if ( ocupier != null && world.isMultiplayer() )
+			decalBatch.add(pointer);
+	}
 
-        if ( hasWeapon() &&isClientPlayerIn )
-            weapon.type.updateWeaponTargeting( this, true );
-    }
+	public Weapon getWeapon() {
+		return weapon;
+	}
 
-    public void render(ModelBatch modelBatch, Environment light, DecalBatch decalBatch) {
-        for (ModelInstance model : parts )
-            modelBatch.render( model, light );
-        if ( hasWeapon() )// TODO add a showTargeting boolean
-            weapon.render( modelBatch, light, decalBatch, isClientPlayerIn );
-        if ( ocupier !=null &&world.isMultiplayer() )
-            decalBatch.add( pointer );
-    }
+	public void setArma( Weapon weapon ) {
+		this.weapon = weapon;
+	}
 
-    public Weapon getWeapon() {
-        return weapon;
-    }
+	public boolean hasWeapon() {
+		return weapon.type != WeaponType.NONE;
+	}
 
-    public void setArma(Weapon weapon) {
-        this.weapon = weapon;
-    }
+	public boolean intersectsRay( Ray ray ) {
+		for (BoundingBox box : getTowerColiders())
+			if ( Intersector.intersectRayBoundsFast(ray, box) )
+				return true;
+		return false;
+	}
 
-    public boolean hasWeapon() {
-        return weapon.type !=WeaponType.NONE;
-    }
+	@Override
+	public void dispose() {
+		if ( hasWeapon() )
+			weapon.dispose();
+	}
 
-    public boolean intersectsRay(Ray ray) {
-        for (BoundingBox box : getTowerColiders() )
-            if ( Intersector.intersectRayBoundsFast( ray, box ) )
-                return true;
-        return false;
-    }
+	public Array<BoundingBox> getTowerColiders() {
+		return coliders;
+	}
 
-    @Override
-    public void dispose() {
-        if ( hasWeapon() )
-            weapon.dispose();
-    }
+	public BoundingBox addToTowerColiders( BoundingBox box ) {
+		coliders.add(box);
+		world.getDef().addToColide(box);
+		return box;
+	}
 
-    public Array<BoundingBox> getTowerColiders() {
-        return coliders;
-    }
+	public void setFiringHold( boolean isFiring ) {
+		world.getDef().setTowerFireHold(this, isFiring);
+	}
 
-    public BoundingBox addToTowerColiders(BoundingBox box) {
-        coliders.add( box );
-        world.getDef().addToColide( box );
-        return box;
-    }
+	public boolean isWeaponType( FireType ft ) {
+		if ( getWeapon() != null )
+			if ( getWeapon().type.getFireType() == ft )
+				return true;
+		return false;
+	}
 
-    public void setFiringHold(boolean isFiring) {
-        world.getDef().setTowerFireHold( this, isFiring );
-    }
+	public Vector3 getDirection() {
+		return direction;
+	}
 
-    public boolean isWeaponType(FireType ft) {
-        if ( getWeapon() !=null )
-            if ( getWeapon().type.getFireType() ==ft )
-                return true;
-        return false;
-    }
+	public void setDirection( Vector3 dir ) {
+		setDirection(dir.x, dir.y, dir.z);
+	}
 
-    public Vector3 getDirection() {
-        return direction;
-    }
+	public void setDirection( float x, float y, float z ) {
+		direction.set(x, y, z);
+		ray.set(place, direction);
 
-    public void setDirection(Vector3 dir) {
-        setDirection( dir.x, dir.y, dir.z );
-    }
-
-    public void setDirection(float x, float y, float z) {
-        direction.set( x, y, z );
-        ray.set( place, direction );
-
-        if ( hasWeapon() &&isClientPlayerIn )
-            weapon.type.updateWeaponTargeting( this, false );
-    }
+		if ( hasWeapon() && isClientPlayerIn )
+			weapon.type.updateWeaponTargeting(this, false);
+	}
 
 }

@@ -1,7 +1,6 @@
 package com.nemo9955.garden_revolution;
 
 import aurelienribon.tweenengine.Tween;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -15,101 +14,89 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.nemo9955.garden_revolution.states.Credits;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
-import com.nemo9955.garden_revolution.states.Menu;
-import com.nemo9955.garden_revolution.states.MultyplayerSelector;
+import com.nemo9955.garden_revolution.states.MainMenu;
+import com.nemo9955.garden_revolution.states.MenuController;
+import com.nemo9955.garden_revolution.states.Multyplayer;
 import com.nemo9955.garden_revolution.states.Options;
 import com.nemo9955.garden_revolution.states.SplashScreen;
-import com.nemo9955.garden_revolution.states.TestScene;
 import com.nemo9955.garden_revolution.utility.Assets;
-import com.nemo9955.garden_revolution.utility.CustomStyles;
 import com.nemo9955.garden_revolution.utility.Func;
+import com.nemo9955.garden_revolution.utility.stage.CustomStyles;
 import com.nemo9955.garden_revolution.utility.tween.FontTween;
 import com.nemo9955.garden_revolution.utility.tween.SpriteTween;
 
 public class Garden_Revolution extends Game {
 
+	@Override
+	public void create() {
+		GR.game = this;
+		GR.manager = new AssetManager();
 
-    @Override
-    public void create() {
+		TextureParameter param = new TextureParameter();
+		param.minFilter = TextureFilter.Linear;
+		param.magFilter = TextureFilter.Linear;
 
-        GR.manager = new AssetManager();
+		for (Assets aset : Assets.values()) {
+			try {
+				if ( aset.getAstClass() == Texture.class )
+					GR.manager.load(aset.getAstPath(), Texture.class, param);
+				else
+					GR.manager.load(aset.getAstPath(), aset.getAstClass());
+			}
+			catch ( Exception e ) {
+				System.out.println("problema la incarcarea assetului : " + aset.name());
+			}
+		}
 
-        TextureParameter param = new TextureParameter();
-        param.minFilter = TextureFilter.Linear;
-        param.magFilter = TextureFilter.Linear;
+		this.setScreen(new SplashScreen());
 
-        for (Assets aset : Assets.values() ) {
-            try {
-                if ( aset.type() ==Texture.class )
-                    GR.manager.load( aset.path(), Texture.class, param );
-                else
-                    GR.manager.load( aset.path(), aset.type() );
-            }
-            catch (Exception e) {
-                System.out.println( "problema la incarcarea assetului : " +aset.name() );
-            }
-        }
+	}
 
-        GR.manager.load( "imagini/fundale/gr_background.png", Texture.class, param );
+	public void postLoading() {
+		GR.skin = GR.manager.get(Assets.SKIN_JSON.getAstPath(), Skin.class);
 
+		CustomStyles.makeStyles();
 
-        GR.splash = new SplashScreen( this );
-        setScreen( GR.splash );
+		if ( Func.isAndroid() )
+			Gdx.input.setCatchBackKey(true);
 
-    }
+		Tween.registerAccessor(Sprite.class, new SpriteTween());
+		Tween.registerAccessor(BitmapFont.class, new FontTween());
+		Texture.setAssetManager(GR.manager);
 
-    public void postLoading() {
-        GR.skin = GR.manager.get( Assets.SKIN_JSON.path(), Skin.class );
+		Pixmap pixmap = new Pixmap(Gdx.files.internal("imagini/elemente/cursor.png"));
+		Gdx.input.setCursorImage(pixmap, 1, 1);
 
-        CustomStyles.makeStyles();
+		GR.gameplay = new Gameplay();
+		GR.options = new Options();
+		GR.menu = new MainMenu();
+		GR.credits = new Credits();
+		GR.selecter = new LevelSelector();
+		GR.multyplayer = new Multyplayer();
 
-        if ( Func.isAndroid() )
-            Gdx.input.setCatchBackKey( true );
+		Func.makePropTouch(MenuController.instance.stage.getRoot());
 
-        Tween.registerAccessor( Sprite.class, new SpriteTween() );
-        Tween.registerAccessor( BitmapFont.class, new FontTween() );
-        Texture.setAssetManager( GR.manager );
+	}
 
-        Pixmap pixmap = new Pixmap( Gdx.files.internal( "imagini/elemente/cursor.png" ) );
-        Gdx.input.setCursorImage( pixmap, 1, 1 );
+	public static Model getModel( Assets model ) {
+		return GR.manager.get(model.getAstPath(), Model.class);
+	}
 
-        GR.multyplayer = new MultyplayerSelector();
-        GR.options = new Options();
-        GR.test = new TestScene();
-        GR.gameplay = new Gameplay();
-        GR.menu = new Menu();
-        GR.selecter = new LevelSelector();
+	public static AtlasRegion getPackTexture( String name ) {
+		return GR.manager.get(Assets.ELEMENTS_PACK.getAstPath(), TextureAtlas.class).findRegion(name);
+	}
 
-        GR.game = this;
-    }
+	@Override
+	public void dispose() {
+		GR.manager.dispose();
+		CustomStyles.dispose();
 
-    public static Model getModel(Assets model) {
-        return GR.manager.get( model.path(), Model.class );
-    }
+		GR.gameplay.dispose();
+		MenuController.instance.dispose();
 
-    public static AtlasRegion getPackTexture(String name) {
-        return GR.manager.get( Assets.ELEMENTS_PACK.path(), TextureAtlas.class ).findRegion( name );
-    }
-
-    public static Texture getBG() {
-        return GR.manager.get( Assets.BACKGROUNG.path(), Texture.class );
-    }
-
-    @Override
-    public void dispose() {
-        GR.manager.dispose();
-        CustomStyles.dispose();
-
-        GR.gameplay.dispose();
-        GR.menu.dispose();
-        GR.selecter.dispose();
-        GR.splash.dispose();
-        GR.test.dispose();
-        GR.options.dispose();
-        GR.multyplayer.dispose();
-
-        System.out.println( "Toate resursele au fost eliminate cu succes !" );
-    }
+		System.out.println("Toate resursele au fost eliminate cu succes !");
+	}
 }

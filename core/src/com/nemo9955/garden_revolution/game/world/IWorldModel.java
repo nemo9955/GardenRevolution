@@ -14,47 +14,46 @@ import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 
-
 public interface IWorldModel {
 
-    public StartingServerInfo getWorldInfo(StartingServerInfo out);
+	public StartingServerInfo getWorldInfo( StartingServerInfo out );
 
-    public FightZone addFightZone(Vector3 poz);
+	public FightZone addFightZone( Vector3 poz );
 
-    public BoundingBox addToColide(BoundingBox box);
+	public BoundingBox addToColide( BoundingBox box );
 
-    public void removeColiders(Array<BoundingBox> box);
+	public void removeColiders( Array<BoundingBox> box );
 
-    public void addLife(int amount);
+	public void addLife( int amount );
 
-    public void setLife(int life);
+	public void setLife( int life );
 
-    public void addMoney(int money);
+	public void addMoney( int money );
 
-    public void setMoney(int money);
+	public void setMoney( int money );
 
-    public void setCanWaveStart(boolean canWaveStart);
+	public void setCanWaveStart( boolean canWaveStart );
 
-    public void reset();
+	public void reset();
 
-    public boolean upgradeTower(Tower tower, TowerType upgrade);
+	public boolean upgradeTower( Tower tower, TowerType upgrade );
 
-    public boolean changeWeapon(Tower tower, WeaponType newWeapon);
+	public boolean changeWeapon( Tower tower, WeaponType newWeapon );
 
-    public boolean canChangeTowers(byte current, byte next, String name);
+	public boolean canChangeTowers( byte current, byte next, String name );
 
-    public void fireFromTower(Tower tower);
+	public void fireFromTower( Tower tower );
 
-    public void setTowerFireHold(Tower tower, boolean hold);
+	public void setTowerFireHold( Tower tower, boolean hold );
 
-    public Enemy addFoe(EnemyType type, Vector3 poz);
+	public Enemy addFoe( EnemyType type, Vector3 poz );
 
-    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path);
+	public Enemy addFoe( EnemyType type, CatmullRomSpline<Vector3> path );
 
-    public Ally addAlly(Vector3 duty, AllyType type);
+	public Ally addAlly( Vector3 duty, AllyType type );
 
-    public void enemyKilled(Enemy enemy);
+	public void enemyKilled( Enemy enemy );
 
-    public void allyKilled(Ally ally);
+	public void allyKilled( Ally ally );
 
 }

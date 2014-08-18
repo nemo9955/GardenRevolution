@@ -15,150 +15,142 @@ import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 
-
 public class WorldSP implements IWorldModel {
 
-    private WorldBase world;
+	private WorldBase	world;
 
+	public void init( WorldBase world ) {
+		this.world = world;
+	}
 
-    public void init(WorldBase world) {
-        this.world = world;
-    }
+	@Override
+	public FightZone addFightZone( Vector3 poz ) {
+		return addFightZone(poz);
+	}
 
-    @Override
-    public FightZone addFightZone(Vector3 poz) {
-        return addFightZone( poz );
-    }
+	@Override
+	public BoundingBox addToColide( BoundingBox box ) {
+		return world.addToColide(box);
+	}
 
+	@Override
+	public void addLife( int amount ) {
+		world.addLife(amount);
+	}
 
-    @Override
-    public BoundingBox addToColide(BoundingBox box) {
-        return world.addToColide( box );
-    }
+	@Override
+	public boolean changeWeapon( Tower tower, WeaponType newWeapon ) {
+		return world.changeWeapon(tower, newWeapon);
+	}
 
-    @Override
-    public void addLife(int amount) {
-        world.addLife( amount );
-    }
+	@Override
+	public StartingServerInfo getWorldInfo( StartingServerInfo out ) {
+		return world.getWorldInfo(out);
+	}
 
-    @Override
-    public boolean changeWeapon(Tower tower, WeaponType newWeapon) {
-        return world.changeWeapon( tower, newWeapon );
-    }
+	@Override
+	public void removeColiders( Array<BoundingBox> box ) {
+		world.removeColiders(box);
+	}
 
+	@Override
+	public void setCanWaveStart( boolean canWaveStart ) {
+		world.setCanWaveStart(canWaveStart);
+	}
 
-    @Override
-    public StartingServerInfo getWorldInfo(StartingServerInfo out) {
-        return world.getWorldInfo( out );
-    }
+	@Override
+	public void setLife( int viata ) {
+		world.setLife(viata);
+	}
 
-    @Override
-    public void removeColiders(Array<BoundingBox> box) {
-        world.removeColiders( box );
-    }
+	@Override
+	public void setMoney( int money ) {
+		world.setMoney(money);
+	}
 
+	@Override
+	public void addMoney( int money ) {
+		world.addMoney(money);
+	}
 
-    @Override
-    public void setCanWaveStart(boolean canWaveStart) {
-        world.setCanWaveStart( canWaveStart );
-    }
+	@Override
+	public boolean upgradeTower( Tower tower, TowerType upgrade ) {
+		return world.upgradeTower(tower, upgrade);
+	}
 
+	@Override
+	public boolean canChangeTowers( byte current, byte next, String name ) {
+		return world.canChangeTowers(current, next, name);
+	}
 
-    @Override
-    public void setLife(int viata) {
-        world.setLife( viata );
-    }
+	public boolean changePlayerTower( Player player, byte next ) {// /////////////////////////////////////////
+		Tower nxt = world.getTowers()[next];
 
+		if ( nxt.ocupier == null || next == 0 ) {
+			player.getTower().ocupier = null;
+			nxt.ocupier = player.name;
+			player.setTower(nxt);
+			return true;
+		}
+		return false;
+	}
 
-    @Override
-    public void setMoney(int money) {
-        world.setMoney( money );
-    }
+	@Override
+	public void fireFromTower( Tower tower ) {
+		world.fireFromTower(tower);
+	}
 
-    @Override
-    public void addMoney(int money) {
-        world.addMoney( money );
-    }
+	@Override
+	public void setTowerFireHold( Tower tower, boolean hold ) {
+		world.setTowerFireHold(tower, hold);
+	}
 
-    @Override
-    public boolean upgradeTower(Tower tower, TowerType upgrade) {
-        return world.upgradeTower( tower, upgrade );
-    }
+	@Override
+	public void reset() {
+		if ( world != null )
+			world.reset();
+	}
 
-    @Override
-    public boolean canChangeTowers(byte current, byte next, String name) {
-        return world.canChangeTowers( current, next, name );
-    }
+	@Override
+	public Enemy addFoe( EnemyType type, Vector3 poz ) {
+		return world.addFoe(type, poz);
+	}
 
-    public boolean changePlayerTower(Player player, byte next) {// /////////////////////////////////////////
-        Tower nxt = world.getTowers()[next];
+	@Override
+	public Enemy addFoe( EnemyType type, CatmullRomSpline<Vector3> path ) {
+		return world.addFoe(type, path);
+	}
 
-        if ( nxt.ocupier ==null ||next ==0 ) {
-            player.getTower().ocupier = null;
-            nxt.ocupier = player.name;
-            player.setTower( nxt );
-            return true;
-        }
-        return false;
-    }
+	@Override
+	public Ally addAlly( Vector3 duty, AllyType type ) {
+		return world.addAlly(duty, type);
+	}
 
-    @Override
-    public void fireFromTower(Tower tower) {
-        world.fireFromTower( tower );
-    }
+	@Override
+	public void enemyKilled( Enemy enemy ) {
+		world.getEnemyPool().free(enemy);
+		world.getEnemy().removeValue(enemy, false);
+	}
 
-    @Override
-    public void setTowerFireHold(Tower tower, boolean hold) {
-        world.setTowerFireHold( tower, hold );
-    }
+	@Override
+	public void allyKilled( Ally ally ) {
+		world.getAliatPool().free(ally);
+		world.getAlly().removeValue(ally, false);
+		if ( ally.zone != null )
+			ally.zone.removeAlly(ally);
+	}
 
-    @Override
-    public void reset() {
-        if ( world !=null )
-            world.reset();
-    }
+	public void killAlly( short ID ) {
+		for (Ally aly : world.getAlly())
+			if ( aly.ID == ID )
+				allyKilled(aly);
 
-    @Override
-    public Enemy addFoe(EnemyType type, Vector3 poz) {
-        return world.addFoe( type, poz );
-    }
+	}
 
-    @Override
-    public Enemy addFoe(EnemyType type, CatmullRomSpline<Vector3> path) {
-        return world.addFoe( type, path );
-    }
-
-    @Override
-    public Ally addAlly(Vector3 duty, AllyType type) {
-        return world.addAlly( duty, type );
-    }
-
-    @Override
-    public void enemyKilled(Enemy enemy) {
-        world.getEnemyPool().free( enemy );
-        world.getEnemy().removeValue( enemy, false );
-    }
-
-    @Override
-    public void allyKilled(Ally ally) {
-        world.getAliatPool().free( ally );
-        world.getAlly().removeValue( ally, false );
-        if ( ally.zone !=null )
-            ally.zone.removeAlly( ally );
-    }
-
-    public void killAlly(short ID) {
-        for (Ally aly : world.getAlly() )
-            if ( aly.ID ==ID )
-                allyKilled( aly );
-
-    }
-
-    public void killEnemy(short ID) {
-        for (Enemy enmy : world.getEnemy() )
-            if ( enmy.ID ==ID )
-                enemyKilled( enmy );
-    }
-
+	public void killEnemy( short ID ) {
+		for (Enemy enmy : world.getEnemy())
+			if ( enmy.ID == ID )
+				enemyKilled(enmy);
+	}
 
 }
