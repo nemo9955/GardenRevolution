@@ -29,7 +29,7 @@ public class Player {
 	{
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
-		cam.far = 300f;
+		cam.far = 350f;
 		cam.update();
 	}
 

@@ -48,6 +48,7 @@ import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.game.Player;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
+import com.nemo9955.garden_revolution.game.world.Skybox;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
@@ -86,6 +87,8 @@ public class Gameplay extends CustomAdapter implements Screen {
 	public WorldWrapper			world			= new WorldWrapper();
 	public Player				player			= new Player();
 
+	private Skybox				skybox;
+
 	public Gameplay() {
 
 		gestures = new GestureDetector(this);
@@ -116,12 +119,15 @@ public class Gameplay extends CustomAdapter implements Screen {
 		camGRStr = new CameraGroupStrategy(player.getCamera());
 		decalBatch = new DecalBatch(camGRStr);
 
+		skybox = new Skybox(decalBatch, Assets.CLOUDS1);
+		skybox.setSize(250);
+
 	}
 
 	@Override
 	public void render( float delta ) {
 
-		Gdx.gl.glClearColor(.1f, .5f, .9f, 1);
+		Gdx.gl.glClearColor(Vars.skyColor.r, Vars.skyColor.g, Vars.skyColor.b, Vars.skyColor.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
@@ -144,6 +150,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 		shape.setProjectionMatrix(player.getCamera().combined);
 		shape.begin(ShapeType.Line);
 
+		skybox.render(delta, player.getCamera().position);
 		world.getWorld().render(modelBatch, decalBatch);
 		if ( showASA )
 			decalBatch.add(allySpawnArea);

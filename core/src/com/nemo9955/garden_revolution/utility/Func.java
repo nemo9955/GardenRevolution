@@ -182,4 +182,5 @@ public class Func {
 				makePropTouch((Group) act);
 		}
 	}
+
 }

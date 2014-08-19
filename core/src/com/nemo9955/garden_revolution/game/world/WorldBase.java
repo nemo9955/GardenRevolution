@@ -60,7 +60,7 @@ public class WorldBase implements Disposable {
 	private boolean								canWaveStart	= false;
 	private Waves								waves;
 	private String								mapName;
-	private Environment							lights			= new Environment();
+	private Environment							environment		= new Environment();
 	private WorldWrapper						superior;
 
 	{
@@ -70,15 +70,16 @@ public class WorldBase implements Disposable {
 		float amb = 1f;
 		float intensity = 800f;
 		float height = 10f;
-		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, amb, amb, amb, 1f));
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, amb, amb, amb, 1f));
+		environment.set(new ColorAttribute(ColorAttribute.Fog, .1f, .5f, .9f, 1f));
 
-		lights.add(new PointLight().set(Color.BLACK, new Vector3(0, height * 5, 0), intensity / 2f));
-		lights.add(new PointLight().set(Color.BLUE, new Vector3(15.292713f, height, -29.423798f), intensity));
-		lights.add(new PointLight().set(Color.RED, new Vector3(10.024132f, height, 40.54626f), intensity / 2));
-		lights.add(new PointLight().set(Color.DARK_GRAY, new Vector3(-14.920635f, height, 0.18914032f), intensity));
-		lights.add(new PointLight().set(Color.GREEN, new Vector3(52.817417f, height * 3, -0.45362854f), intensity));
-		lights.add(new PointLight().set(Color.CYAN, new Vector3(-13.099552f, height * 2, -15.360998f), intensity));
-		lights.add(new PointLight().set(Color.WHITE, new Vector3(-16.840088f, height, -17.439095f), intensity));
+		environment.add(new PointLight().set(Color.BLACK, new Vector3(0, height * 5, 0), intensity / 2f));
+		environment.add(new PointLight().set(Color.BLUE, new Vector3(15.292713f, height, -29.423798f), intensity));
+		environment.add(new PointLight().set(Color.RED, new Vector3(10.024132f, height, 40.54626f), intensity / 2));
+		environment.add(new PointLight().set(Color.DARK_GRAY, new Vector3(-14.920635f, height, 0.18914032f), intensity));
+		environment.add(new PointLight().set(Color.GREEN, new Vector3(52.817417f, height * 3, -0.45362854f), intensity));
+		environment.add(new PointLight().set(Color.CYAN, new Vector3(-13.099552f, height * 2, -15.360998f), intensity));
+		environment.add(new PointLight().set(Color.WHITE, new Vector3(-16.840088f, height, -17.439095f), intensity));
 
 		// environment.set( ColorAttribute.createAmbient( 1f, 1f, 1f, 1f ) );
 		// envir.add( new DirectionalLight().set( Color.WHITE, new Vector3( 1,
@@ -174,19 +175,20 @@ public class WorldBase implements Disposable {
 
 	public void render( ModelBatch modelBatch, DecalBatch decalBatch ) {
 		for (ModelInstance e : mediu)
-			modelBatch.render(e, lights);
+			modelBatch.render(e, environment);
 
 		for (Enemy e : getEnemy())
-			e.render(modelBatch, lights, decalBatch);
+			e.render(modelBatch, environment, decalBatch);
 
 		for (Ally e : getAlly())
-			e.render(modelBatch, lights, decalBatch);
+			e.render(modelBatch, environment, decalBatch);
 
 		for (Shot e : getShot())
-			e.render(modelBatch, lights, decalBatch);
+			e.render(modelBatch, environment, decalBatch);
 
 		for (Tower tower : towers)
-			tower.render(modelBatch, lights, decalBatch);
+			tower.render(modelBatch, environment, decalBatch);
+
 	}
 
 	public void renderDebug( PerspectiveCamera cam, ShapeRenderer shape ) {
@@ -267,15 +269,15 @@ public class WorldBase implements Disposable {
 			// node.rotation.idt();
 			// instance.calculateTransforms();
 
+			System.out.println(id);
+
 			if ( id.startsWith("turn") ) {
 				sect = id.split("_");
 				int no = Integer.parseInt(sect[1]) - 1;
 				towers[no + 1] = new Tower(TowerType.FUNDATION, superior, scena.nodes.get(i).translation, no + 1);
 			} else if ( id.startsWith("path") ) {
 				sect = id.split("_");
-				int pat = Integer.parseInt(sect[1]) - 1;// TODO get rid of the
-														// -1 so the paths can
-														// start from 0
+				int pat = Integer.parseInt(sect[1]) - 1;// TODO get rid of the -1 so the paths can start from 0
 				int pct = Integer.parseInt(sect[2]);
 				cp.get(pat).add(new IndexedObject<Vector3>(scena.nodes.get(i).translation, pct));
 			} else if ( id.startsWith("colider") ) {
@@ -289,6 +291,8 @@ public class WorldBase implements Disposable {
 				mediu.add(instance);
 			} else if ( id.startsWith("camera") ) {
 				overview.set(scena.nodes.get(i).translation);
+			} else if ( id == "Sphere" || id == "Icosphere" ) {
+				System.out.println("DING !!!!!!!!");
 			} else {
 				mediu.add(instance);
 			}
@@ -493,7 +497,7 @@ public class WorldBase implements Disposable {
 	}
 
 	public Environment getEnvironment1() {
-		return lights;
+		return environment;
 	}
 
 	public Array<FightZone> getFightZones() {

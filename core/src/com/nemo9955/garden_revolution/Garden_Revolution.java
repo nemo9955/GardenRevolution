@@ -4,10 +4,8 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -35,19 +33,15 @@ public class Garden_Revolution extends Game {
 		GR.game = this;
 		GR.manager = new AssetManager();
 
-		TextureParameter param = new TextureParameter();
-		param.minFilter = TextureFilter.Linear;
-		param.magFilter = TextureFilter.Linear;
+		Gdx.app.setLogLevel(0);
 
 		for (Assets aset : Assets.values()) {
 			try {
-				if ( aset.getAstClass() == Texture.class )
-					GR.manager.load(aset.getAstPath(), Texture.class, param);
-				else
-					GR.manager.load(aset.getAstPath(), aset.getAstClass());
+				aset.getAstSpecial().loadSpecial(aset);
 			}
 			catch ( Exception e ) {
-				System.out.println("problema la incarcarea assetului : " + aset.name());
+				System.out.println("problema la incarcarea assetului : " + aset.name() + " : \n");
+				e.printStackTrace();
 			}
 		}
 

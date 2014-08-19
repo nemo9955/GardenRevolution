@@ -1,6 +1,10 @@
 package com.nemo9955.garden_revolution.utility;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Vars {
+
+	public static Color			skyColor			= new Color(0.01568f, 0.5254f, 0.8431f, 1f);
 
 	// modul de miscare a camerei
 	public static boolean		moveByTouch			= false;
