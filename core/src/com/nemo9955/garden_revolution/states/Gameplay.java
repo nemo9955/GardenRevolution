@@ -150,7 +150,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 		shape.setProjectionMatrix(player.getCamera().combined);
 		shape.begin(ShapeType.Line);
 
-		skybox.render(delta, player.getCamera().position);
+		// skybox.render(delta, player.getCamera().position);
 		world.getWorld().render(modelBatch, decalBatch);
 		if ( showASA )
 			decalBatch.add(allySpawnArea);

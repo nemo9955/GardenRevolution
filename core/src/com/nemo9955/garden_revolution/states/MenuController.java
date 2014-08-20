@@ -109,6 +109,7 @@ public class MenuController extends CustomAdapter implements Screen {
 		pointer = new StageActorPointer(stage);
 
 		sb = new Skybox(Assets.CLOUDS1, cam);
+		sb.setSize(40);
 
 	}
 
@@ -125,7 +126,7 @@ public class MenuController extends CustomAdapter implements Screen {
 		mst.update();
 		stage.act();
 
-		sb.render(delta, cam.position);
+		// sb.render(delta, cam.position);
 
 		modelBatch.begin(cam);
 		modelBatch.render(menu, environment);
