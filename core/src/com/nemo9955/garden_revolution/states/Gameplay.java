@@ -52,7 +52,6 @@ import com.nemo9955.garden_revolution.game.world.Skybox;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.GameClient;
 import com.nemo9955.garden_revolution.net.Host;
-import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 import com.nemo9955.garden_revolution.utility.Assets;
 import com.nemo9955.garden_revolution.utility.CustomAdapter;
@@ -82,9 +81,6 @@ public class Gameplay extends CustomAdapter implements Screen {
 	private Vector2				presDown		= new Vector2();
 	public Stage				stage;
 
-	public MultiplayerComponent	mp				= null;
-
-	public WorldWrapper			world			= new WorldWrapper();
 	public Player				player			= new Player();
 
 	private Skybox				skybox;
@@ -141,7 +137,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 				hudMover.addAction(Actions.alpha(touchPadTimmer));
 		}
 
-		if ( updWorld || mp != null )
+		if ( updWorld || GR.mp != null )
 			updateTheGame(delta);
 		else
 			gestures.cancel();
@@ -151,11 +147,11 @@ public class Gameplay extends CustomAdapter implements Screen {
 		shape.begin(ShapeType.Line);
 
 		// skybox.render(delta, player.getCamera().position);
-		world.getWorld().render(modelBatch, decalBatch);
+		WorldWrapper.instance.getWorld().render(modelBatch, decalBatch);
 		if ( showASA )
 			decalBatch.add(allySpawnArea);
 		if ( Vars.showDebug && !Gdx.input.isKeyPressed(Keys.F9) )
-			world.getWorld().renderDebug(player.getCamera(), shape);
+			WorldWrapper.instance.getWorld().renderDebug(player.getCamera(), shape);
 		modelBatch.end();
 		shape.end();
 		decalBatch.flush();
@@ -184,11 +180,11 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 		if ( showASA && !Gdx.input.isTouched() ) {
 			Func.intersectLinePlane(GR.ray1.set(player.getCamera().position, player.getCamera().direction), GR.temp4);
-			world.getWorld().getOnPath(GR.temp4, ASAonPath, 150);
+			WorldWrapper.instance.getWorld().getOnPath(GR.temp4, ASAonPath, 150);
 			allySpawnArea.setPosition(ASAonPath.x, 0.2f, ASAonPath.z);
 		}
 
-		world.getWorld().update(delta);
+		WorldWrapper.instance.getWorld().update(delta);
 	}
 
 	public void preInit() {
@@ -203,12 +199,12 @@ public class Gameplay extends CustomAdapter implements Screen {
 	public void postInit( WorldWrapper newWorld ) {
 		updWorld = true;
 
-		world = newWorld;
+		WorldWrapper.instance = newWorld;
 
-		player.reset(world);
+		player.reset(WorldWrapper.instance);
 
 		// player.getCamera().position.set( world.getWorld().getOverview() );
-		player.setTower(world.getWorld().getTowers()[0]);
+		player.setTower(WorldWrapper.instance.getWorld().getTowers()[0]);
 		player.getCamera().lookAt(Vector3.Zero);
 		player.getCamera().update();
 
@@ -217,29 +213,27 @@ public class Gameplay extends CustomAdapter implements Screen {
 	public Gameplay initAsSinglePlayer( FileHandle nivel ) {
 		Gdx.graphics.setTitle(GR.TITLU + " " + GR.VERSIUNE);
 		preInit();
-		postInit(world.init(nivel));
+		postInit(WorldWrapper.instance.init(nivel, false));
 		return this;
 	}
 
 	public Gameplay initAsHost( FileHandle nivel ) {
-		Gdx.graphics.setTitle("[H] " + GR.TITLU + " " + GR.VERSIUNE);
+		GR.mp = new Host();
+
 		preInit();
-
-		mp = new Host(this);
-		postInit(world.init(nivel, mp));
-
+		postInit(WorldWrapper.instance.init(nivel, true));
 		hudReady.setText("Ready!");
-		// showMessage( "Created as HOST" );
+		Gdx.graphics.setTitle("[H] " + GR.TITLU + " " + GR.VERSIUNE);
 		return this;
 	}
 
 	public Gameplay initAsClient( String ip ) {
-		Gdx.graphics.setTitle("[C] " + GR.TITLU + " " + GR.VERSIUNE);
-		preInit();
-		mp = new GameClient(this, ip);
+		GR.mp = new GameClient(ip);
 
-		mp.sendTCP(new StartingServerInfo());
+		preInit();
 		hudReady.setText("Ready!");
+		GR.mp.sendTCP(new StartingServerInfo());
+		Gdx.graphics.setTitle("[C] " + GR.TITLU + " " + GR.VERSIUNE);
 		return this;
 	}
 
@@ -295,9 +289,9 @@ public class Gameplay extends CustomAdapter implements Screen {
 
 		if ( hudWeaponCharger.isVisible() ) {
 			hudWeaponCharger.setVisible(false);
-			if ( world.getWorld().getTowerHitByRay(player.getCamera().getPickRay(screenX, screenY)) == null || player.getTower().charge > 0.4f ) {
+			if ( WorldWrapper.instance.getWorld().getTowerHitByRay(player.getCamera().getPickRay(screenX, screenY)) == null || player.getTower().charge > 0.4f ) {
 				player.getTower().getWeapon().type.updateWeaponTargeting(player.getTower(), false);
-				world.getDef().fireFromTower(player.getTower());
+				WorldWrapper.instance.getDef().fireFromTower(player.getTower());
 				player.getTower().charge = 0;
 				return true;
 			} else {
@@ -343,7 +337,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 	public boolean keyDown( int keycode ) {
 		switch ( keycode ) {
 			case Keys.R :
-				world.getDef().setMoney(1000);
+				WorldWrapper.instance.getDef().setMoney(1000);
 				break;
 			case Keys.W :
 				movey = 2f;
@@ -379,7 +373,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 			// world.getWorld().initEnv();
 			// break;
 			case Keys.H :
-				mp.sendTCP("a random message");
+				GR.mp.sendTCP("a random message");
 				break;
 			case Keys.ESCAPE :
 			case Keys.BACK :
@@ -490,7 +484,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 			if ( hudWeaponCharger.isVisible() ) {
 				hudWeaponCharger.setVisible(false);
 				// player.getTower().fireWeapon( world.getDef(), charge );
-				world.getDef().fireFromTower(player.getTower());
+				WorldWrapper.instance.getDef().fireFromTower(player.getTower());
 				player.getTower().fireChargedTime = 0;
 				player.getTower().charge = 0;
 			}
@@ -533,7 +527,7 @@ public class Gameplay extends CustomAdapter implements Screen {
 		ASAonPath.y = 0;
 		for (int i = 0; i < 3; i++) {
 			GR.temp4.set(MathUtils.random(-5, 5), 0, MathUtils.random(-5, 5));
-			world.getDef().addAlly(GR.temp4.add(ASAonPath), AllyType.SOLDIER);
+			WorldWrapper.instance.getDef().addAlly(GR.temp4.add(ASAonPath), AllyType.SOLDIER);
 		}
 	}
 
@@ -581,9 +575,9 @@ public class Gameplay extends CustomAdapter implements Screen {
 			Controllers.removeListener(this);
 		Gdx.input.setInputProcessor(null);
 
-		if ( mp != null ) {
-			mp.stop();
-			mp = null;
+		if ( GR.mp != null ) {
+			GR.mp.stop();
+			GR.mp = null;
 		}
 
 	}
@@ -599,17 +593,17 @@ public class Gameplay extends CustomAdapter implements Screen {
 	@Override
 	public void dispose() {
 
-		if ( mp != null ) {
-			mp.stop();
-			mp = null;
+		if ( GR.mp != null ) {
+			GR.mp.stop();
+			GR.mp = null;
 		}
 		if ( modelBatch != null )
 			modelBatch.dispose();
 		if ( stage != null )
 			stage.dispose();
-		if ( world != null ) {
-			world.getDef().reset();
-			world.getWorld().dispose();
+		if ( WorldWrapper.instance != null ) {
+			WorldWrapper.instance.getDef().reset();
+			WorldWrapper.instance.getWorld().dispose();
 		}
 		if ( shape != null )
 			shape.dispose();

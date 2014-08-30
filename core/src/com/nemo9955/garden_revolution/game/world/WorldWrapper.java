@@ -1,37 +1,30 @@
 package com.nemo9955.garden_revolution.game.world;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
 
 public class WorldWrapper {
 
-	private WorldBase	world		= new WorldBase();
+	public static WorldWrapper	instance	= new WorldWrapper();
 
-	private WorldSP		spWorld		= new WorldSP();
-	private WorldMP		mpWorld		= new WorldMP();
-	private IWorldModel	defWorld	= spWorld;
+	private WorldBase			world		= new WorldBase();
 
-	public WorldWrapper init( FileHandle location ) {
-		spWorld.init(world);
-		defWorld = spWorld;
-		world.init(location, this);
+	private WorldSP				spWorld		= new WorldSP();
+	private WorldMP				mpWorld		= new WorldMP();
+	private IWorldModel			defWorld	= spWorld;
+
+	// host / singleplayer
+	public WorldWrapper init( FileHandle location, boolean multiplayer ) {
+		if ( multiplayer )
+			defWorld = mpWorld;
+		getWorld().init(location);
 		return this;
 	}
 
-	public WorldWrapper init( FileHandle location, MultiplayerComponent mp ) {
-		mpWorld.init(world, mp);
-		spWorld.init(world);
+	// client
+	public WorldWrapper init( StartingServerInfo serverInfo ) {
 		defWorld = mpWorld;
-		world.init(location, this);
-		return this;
-	}
-
-	public WorldWrapper init( StartingServerInfo serverInfo, MultiplayerComponent mp ) {
-		mpWorld.init(world, mp);
-		spWorld.init(world);
-		defWorld = mpWorld;
-		world.init(serverInfo, this);
+		getWorld().init(serverInfo);
 		return this;
 	}
 
@@ -52,11 +45,11 @@ public class WorldWrapper {
 	}
 
 	public boolean isMultiplayer() {
-		return defWorld == mpWorld;
+		return defWorld == spWorld;
 	}
 
 	public boolean isSinglelayer() {
-		return defWorld == spWorld;
+		return defWorld == mpWorld;
 	}
 
 }

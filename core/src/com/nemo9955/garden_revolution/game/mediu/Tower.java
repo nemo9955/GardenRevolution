@@ -64,9 +64,9 @@ public class Tower implements Disposable {
 	public boolean changeWeapon( WeaponType toChange ) {
 		if ( weapon.type == toChange )
 			return false;
-		world.getDef().addMoney(weapon.type.value);
+		world.getSgPl().addMoney(weapon.type.value);
 		weapon.changeWeapon(toChange);
-		world.getDef().addMoney(-weapon.type.cost);
+		world.getSgPl().addMoney(-weapon.type.cost);
 		return true;
 	}
 

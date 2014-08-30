@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.nemo9955.garden_revolution.game.enumTypes.ShotType;
 import com.nemo9955.garden_revolution.game.world.WorldBase;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 public class Shot extends Entity {
 
@@ -51,15 +52,15 @@ public class Shot extends Entity {
 			setDead(true);
 		}
 
-		for (BoundingBox col : world.getWorld().getColide())
+		for (BoundingBox col : WorldWrapper.instance.getWorld().getColide())
 			if ( col.intersects(box) )
 				setDead(true);
 
-		type.hitActivity(this, world);
+		type.hitActivity(this, WorldWrapper.instance);
 
 		if ( isDead() ) {
-			world.getWorld().getShotPool().free(this);
-			world.getWorld().getShot().removeValue(this, false);
+			WorldWrapper.instance.getWorld().getShotPool().free(this);
+			WorldWrapper.instance.getWorld().getShot().removeValue(this, false);
 		}
 	}
 

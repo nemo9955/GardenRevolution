@@ -75,7 +75,7 @@ public class Multyplayer implements State<MenuController> {
 						if ( isHost.isChecked() )
 							startAsHost();
 						else
-							startAsClient(ipInput.getMessageText());
+							startAsClient(ipInput.getText());
 					}
 					catch ( Exception e ) {
 						showMessage(e.getMessage());
@@ -149,7 +149,7 @@ public class Multyplayer implements State<MenuController> {
 
 	@Override
 	public void enter( MenuController entity ) {
-		ipInput.setText("");
+		ipInput.setText("188.173.17.234");
 		table.setVisible(true);
 	}
 

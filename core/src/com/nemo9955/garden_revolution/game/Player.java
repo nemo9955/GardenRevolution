@@ -15,7 +15,7 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
 import com.nemo9955.garden_revolution.game.world.WorldWrapper;
-import com.nemo9955.garden_revolution.net.packets.PSender;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
 import com.nemo9955.garden_revolution.utility.Func;
 
 public class Player {
@@ -75,7 +75,6 @@ public class Player {
 							world.getDef().addFoe(EnemyType.getRandomEnemy(), GR.temp2);
 						}
 				}
-
 				if ( Gdx.input.isKeyPressed(Keys.F8) )
 					for (int i = 0; i < 5; i++) {
 						GR.temp2.set(MathUtils.random(-5, 5), 0, MathUtils.random(-5, 5));
@@ -105,9 +104,9 @@ public class Player {
 		if ( isInATower() ) {
 			tower.setDirection(cam.direction);
 
-			if ( GR.gameplay.mp != null && System.currentTimeMillis() - dirTime > 100 ) {
+			if ( GR.mp != null && System.currentTimeMillis() - dirTime > 100 ) {
 				dirTime = System.currentTimeMillis();
-				GR.gameplay.mp.sendTCP(PSender.getTDC(tower.ID, cam.direction));
+				GR.mp.sendTCP(TowerDirectionChange.getI(tower.ID, cam.direction));
 				// System.out.println( "Sending directional info : " +tower.ID
 				// +" " +cam.direction );
 			}

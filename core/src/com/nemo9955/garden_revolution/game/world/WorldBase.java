@@ -61,7 +61,6 @@ public class WorldBase implements Disposable {
 	private Waves								waves;
 	private String								mapName;
 	private Environment							environment		= new Environment();
-	private WorldWrapper						superior;
 
 	{
 		// public void initEnv() {
@@ -90,16 +89,15 @@ public class WorldBase implements Disposable {
 		// 1, 0 ) ) );
 	}
 
-	public void init( FileHandle location, WorldWrapper superior ) {
+	public void init( FileHandle location ) {
 		reset();
-		this.superior = superior;
 		mapName = location.path();
 		populateWorld(location);
 		readData(location);
 	}
 
-	public void init( StartingServerInfo info, WorldWrapper superior ) {
-		init(Gdx.files.internal(info.path), superior);
+	public void init( StartingServerInfo info ) {
+		init(Gdx.files.internal(info.path));
 
 		for (String str : info.turnuri) {
 			String[] separ = str.split(Vars.stringSeparator);
@@ -149,7 +147,7 @@ public class WorldBase implements Disposable {
 
 	public void update( float delta ) {
 
-		if ( canWaveStart() && (superior.isSinglelayer() || GR.gameplay.mp.isHost()) )
+		if ( canWaveStart() && (WorldWrapper.instance.isSinglelayer() || GR.mp.isHost()) )
 			if ( !waves.finishedWaves() )
 				waves.update(delta);
 			else {
@@ -269,12 +267,12 @@ public class WorldBase implements Disposable {
 			// node.rotation.idt();
 			// instance.calculateTransforms();
 
-			System.out.println(id);
+			// System.out.println(id);
 
 			if ( id.startsWith("turn") ) {
 				sect = id.split("_");
 				int no = Integer.parseInt(sect[1]) - 1;
-				towers[no + 1] = new Tower(TowerType.FUNDATION, superior, scena.nodes.get(i).translation, no + 1);
+				towers[no + 1] = new Tower(TowerType.FUNDATION, WorldWrapper.instance, scena.nodes.get(i).translation, no + 1);
 			} else if ( id.startsWith("path") ) {
 				sect = id.split("_");
 				int pat = Integer.parseInt(sect[1]) - 1;// TODO get rid of the -1 so the paths can start from 0
@@ -320,7 +318,7 @@ public class WorldBase implements Disposable {
 		// ModelInstance baza = new ModelInstance( tmpModel, overview );
 		// baza.transform.setToTranslation( overview );
 		// baza.calculateTransforms();
-		towers[0] = new Tower(TowerType.VIEWPOINT, superior, overview, 0);
+		towers[0] = new Tower(TowerType.VIEWPOINT, WorldWrapper.instance, overview, 0);
 	}
 
 	private void readData( FileHandle location ) {
@@ -332,7 +330,7 @@ public class WorldBase implements Disposable {
 		catch ( Exception e ) {
 			e.printStackTrace();
 		}
-		waves = new Waves(superior);
+		waves = new Waves(WorldWrapper.instance);
 
 		setLife(map.getInt("viata", 100));
 
@@ -470,7 +468,7 @@ public class WorldBase implements Disposable {
 
 											@Override
 											protected FightZone newObject() {
-												return new FightZone(superior);
+												return new FightZone(WorldWrapper.instance);
 											}
 										};
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.nemo9955.garden_revolution.net.MultiplayerComponent;
 import com.nemo9955.garden_revolution.states.Credits;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.LevelSelector;
@@ -20,16 +21,17 @@ public class GR {
 
 	public static Gameplay				gameplay;
 	public static Options				options;
-	public static MainMenu					menu;
-	public static Credits			credits;
+	public static MainMenu				menu;
+	public static Credits				credits;
 	public static LevelSelector			selecter;
-	public static Multyplayer	multyplayer;
+	public static Multyplayer			multyplayer;
 
 	public static Garden_Revolution		game;
 	public static AssetManager			manager;
 	public static final String			levelsLocation	= "harti/nivele/";
 	public static Skin					skin;
 	public static final TweenManager	tweeger			= new TweenManager();
+	public static MultiplayerComponent	mp				= null;
 
 	public static final Ray				ray1			= new Ray(new Vector3(), new Vector3());
 

@@ -8,23 +8,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 
 public abstract class Entity implements Poolable {
 
-	protected ModelInstance			model;
+	protected ModelInstance	model;
 
-	private boolean					dead;
-	public BoundingBox				box		= new BoundingBox();
-	public float					colRadius;
-	public boolean					isColCubic;
-
-	protected static WorldWrapper	world	= GR.gameplay.world;
+	private boolean			dead;
+	public BoundingBox		box	= new BoundingBox();
+	public float			colRadius;
+	public boolean			isColCubic;
 
 	// TODO get rid of these variables
-	public float					angle;
-	public Vector3					poz		= new Vector3();
+	public float			angle;
+	public Vector3			poz	= new Vector3();
 
 	public void init( Vector3 position ) {
 		init(position.x, position.y, position.z);

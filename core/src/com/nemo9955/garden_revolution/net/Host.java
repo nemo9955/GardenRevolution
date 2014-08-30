@@ -1,53 +1,36 @@
 package com.nemo9955.garden_revolution.net;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.nemo9955.garden_revolution.GR;
-import com.nemo9955.garden_revolution.game.entitati.Enemy;
-import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
-import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
-import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
-import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
-import com.nemo9955.garden_revolution.game.enumTypes.WeaponType.FireType;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
-import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldLife;
-import com.nemo9955.garden_revolution.net.packets.Packets.ChangeWorldMoney;
-import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
-import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireCharged;
-import com.nemo9955.garden_revolution.net.packets.Packets.PlayerFireHold;
-import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
-import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedPacket;
-import com.nemo9955.garden_revolution.net.packets.Packets.TowerDirectionChange;
-import com.nemo9955.garden_revolution.net.packets.Packets.WeaponChangedPacket;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
+import com.nemo9955.garden_revolution.net.packets.Packets.SuperPacket;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
-import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.stage.GameStageMaker;
 
 public class Host extends Listener implements MultiplayerComponent {
 
-	public Server			server;
-	private final Gameplay	gp;
-	public int				clientsReady	= 0;
+	public Server	server;
+	public int		clientsReady	= 0;
 
-	public Host(final Gameplay gp) {
-		this.gp = gp;
+	public Host() {
 		server = new Server();
 		Func.setSerializedClasses(server.getKryo());
 		server.start();
 		server.addListener(this);
 
 		try {
-			server.bind(Vars.TCPport, Vars.UDPport);
+			// server.bind(Vars.TCPport, Vars.UDPport);
+			server.bind(new InetSocketAddress(Func.getIpAddress(), Vars.TCPport), new InetSocketAddress(Func.getIpAddress(), Vars.UDPport));
 			Gdx.app.postRunnable(new Runnable() {
 
 				@Override
@@ -70,7 +53,7 @@ public class Host extends Listener implements MultiplayerComponent {
 
 	@Override
 	public void connected( final Connection connection ) {
-		gp.showMessage("[H]Someone connected");
+		GR.gameplay.showMessage("[H]Someone connected : " + connection.getID());
 	}
 
 	@Override
@@ -80,90 +63,11 @@ public class Host extends Listener implements MultiplayerComponent {
 			@Override
 			public void run() {
 				if ( obj instanceof String ) {
-					gp.showMessage("[H] : " + obj.toString());
-				} else if ( obj instanceof ChangeWorldLife ) {
-					ChangeWorldLife lf = (ChangeWorldLife) obj;
-					gp.world.getSgPl().setLife(lf.life);
-					server.sendToAllExceptTCP(connection.getID(), lf);
-				} else if ( obj instanceof ChangeWorldMoney ) {
-					ChangeWorldMoney mny = (ChangeWorldMoney) obj;
-					if ( mny.isSetMoney )
-						gp.world.getSgPl().setMoney(mny.money);
-					else
-						gp.world.getSgPl().addMoney(mny.money);
-					server.sendToAllExceptTCP(connection.getID(), mny);
-				} else if ( obj instanceof WorldAddEnemyOnPath ) {
-					WorldAddEnemyOnPath ent = (WorldAddEnemyOnPath) obj;
-					Enemy addFoe = gp.world.getSgPl().addFoe(EnemyType.values()[ent.ordinal], gp.world.getWorld().getPaths().get(ent.pathNo));
-					addFoe.offset.set(Func.getOffset(ent.ofsX), 0, Func.getOffset(ent.ofsZ));
-					addFoe.ID = ent.ID;
-					server.sendToAllExceptTCP(connection.getID(), ent);
-				} else if ( obj instanceof WorldAddEnemyOnPoz ) {
-					WorldAddEnemyOnPoz ent = (WorldAddEnemyOnPoz) obj;
-					Enemy addFoe = gp.world.getSgPl().addFoe(EnemyType.values()[ent.ordinal], GR.temp2.set(ent.x, ent.y, ent.z));
-					addFoe.offset.set(Func.getOffset(ent.ofsX), 0, Func.getOffset(ent.ofsZ));
-					addFoe.ID = ent.ID;
-					server.sendToAllExceptTCP(connection.getID(), ent);
-				} else if ( obj instanceof WorldAddAlly ) {
-					WorldAddAlly waa = (WorldAddAlly) obj;
-					gp.world.getSgPl().addAlly(GR.temp2.set(waa.x, waa.y, waa.z), AllyType.values()[waa.ordinal]).ID = waa.ID;
+					GR.gameplay.showMessage("[H] : " + obj.toString());
 
-					server.sendToAllExceptTCP(connection.getID(), waa);
-				} else if ( obj instanceof AllyKilled ) {
-					AllyKilled aly = (AllyKilled) obj;
-					gp.world.getSgPl().killAlly(aly.ID);
-					server.sendToAllExceptTCP(connection.getID(), aly);
-				} else if ( obj instanceof EnemyKilled ) {
-					EnemyKilled enmy = (EnemyKilled) obj;
-					gp.world.getSgPl().killEnemy(enmy.ID);
-					server.sendToAllExceptTCP(connection.getID(), enmy);
-				} else if ( obj instanceof StartingServerInfo ) {
-
-					if ( gp.world.getWorld().canWaveStart() ) {
-						connection.sendTCP(msNetGR.YouCannotConnect);
-						connection.close();
-					} else {
-						final StartingServerInfo srv = (StartingServerInfo) obj;
-						connection.sendTCP(gp.world.getDef().getWorldInfo(srv));
-						// gp.showMessage( "[H] sending map info to client " );
-					}
-				} else if ( obj instanceof TowerDirectionChange ) {
-					TowerDirectionChange tdr = (TowerDirectionChange) obj;
-					gp.world.getWorld().getTowers()[tdr.ID].setDirection(tdr.x, tdr.y, tdr.z);
-					// System.out.println( "[H] mod dir turn        " +tdr.ID
-					// +"        " +tdr.x +" " +tdr.y +" " +tdr.z );
-					server.sendToAllExceptTCP(connection.getID(), tdr);
-				} else if ( obj instanceof PlayerFireCharged ) {
-					PlayerFireCharged pfa = (PlayerFireCharged) obj;
-					Tower tower = gp.world.getWorld().getTowers()[pfa.towerID];
-					if ( tower.isWeaponType(FireType.FIRECHARGED) ) {
-						tower.charge = pfa.charge;
-						gp.world.getSgPl().fireFromTower(tower);
-					}
-					server.sendToAllExceptTCP(connection.getID(), pfa);
-				} else if ( obj instanceof PlayerFireHold ) {
-					PlayerFireHold pfh = (PlayerFireHold) obj;
-
-					Tower tower = gp.world.getWorld().getTowers()[pfh.towerID];
-					if ( tower.isWeaponType(FireType.FIREHOLD) )
-						gp.world.getSgPl().setTowerFireHold(tower, pfh.isFiring);
-					server.sendToAllExceptTCP(connection.getID(), pfh);
-				} else if ( obj instanceof PlayerChangesTower ) {
-					PlayerChangesTower plr = (PlayerChangesTower) obj;
-					if ( gp.world.getSgPl().canChangeTowers(plr.current, plr.next, plr.name) ) {
-						server.sendToAllExceptTCP(connection.getID(), plr);
-						connection.sendTCP(msNetGR.YouCanChangeTowers);
-					} else {
-						connection.sendTCP(msNetGR.YouCanNOT_ChangeTowers);
-					}
-				} else if ( obj instanceof WeaponChangedPacket ) {
-					WeaponChangedPacket weap = (WeaponChangedPacket) obj;
-					gp.world.getDef().changeWeapon(gp.world.getWorld().getTowers()[weap.towerID], WeaponType.values()[weap.eOrdinal]);
-					server.sendToAllExceptTCP(connection.getID(), weap);
-				} else if ( obj instanceof TowerChangedPacket ) {
-					TowerChangedPacket twr = (TowerChangedPacket) obj;
-					gp.world.getDef().upgradeTower(gp.world.getWorld().getTowers()[twr.towerID], TowerType.values()[twr.eOrdinal]);
-					server.sendToAllExceptTCP(connection.getID(), twr);
+				} else if ( obj instanceof SuperPacket ) {
+					SuperPacket sp = (SuperPacket) obj;
+					sp.doForHost(connection, obj);
 
 				} else if ( obj instanceof msNetGR ) {
 					final msNetGR message = (msNetGR) obj;
@@ -187,7 +91,7 @@ public class Host extends Listener implements MultiplayerComponent {
 	public void addToReady() {
 		clientsReady++;
 		if ( clientsReady == server.getConnections().length + 1 ) {
-			gp.world.getDef().setCanWaveStart(true);
+			WorldWrapper.instance.getDef().setCanWaveStart(true);
 			GameStageMaker.hudReady.setVisible(false);
 			server.sendToAllTCP(msNetGR.YouCanStartWaves);
 		}
@@ -195,7 +99,7 @@ public class Host extends Listener implements MultiplayerComponent {
 
 	@Override
 	public void sendTCP( final Object obj ) {
-		if ( precessRecived(obj) )
+		if ( processRecived(obj) )
 			return;
 
 		server.sendToAllTCP(obj);
@@ -203,21 +107,22 @@ public class Host extends Listener implements MultiplayerComponent {
 
 	@Override
 	public void sendUDP( final Object obj ) {
-		if ( precessRecived(obj) )
+		if ( processRecived(obj) )
 			return;
 
 		server.sendToAllUDP(obj);
 	}
 
-	private boolean precessRecived( final Object obj ) {
+	private boolean processRecived( final Object obj ) {
 
 		if ( obj instanceof PlayerChangesTower ) {
 			PlayerChangesTower plr = (PlayerChangesTower) obj;
-			Tower next = gp.world.getWorld().getTowers()[plr.next];
+			Tower next = WorldWrapper.instance.getWorld().getTowers()[plr.next];
 
-			if ( gp.world.getSgPl().changePlayerTower(gp.player, next.ID) ) {
+			if ( WorldWrapper.instance.getSgPl().changePlayerTower(GR.gameplay.player, next.ID) ) {
 				server.sendToAllTCP(plr);
 			}
+
 		} else if ( obj instanceof msNetGR )
 			switch ( (msNetGR) obj ) {
 				case IAmReady :
@@ -232,6 +137,16 @@ public class Host extends Listener implements MultiplayerComponent {
 	@Override
 	public boolean isHost() {
 		return true;
+	}
+
+	@Override
+	public Server getServer() {
+		return server;
+	}
+
+	@Override
+	public Client getClient() {
+		return null;
 	}
 
 }

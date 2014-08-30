@@ -13,23 +13,22 @@ import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
 import com.nemo9955.garden_revolution.game.mediu.Tower;
-import com.nemo9955.garden_revolution.net.MultiplayerComponent;
-import com.nemo9955.garden_revolution.net.packets.PSender;
+import com.nemo9955.garden_revolution.net.packets.Packets.AddAlly;
+import com.nemo9955.garden_revolution.net.packets.Packets.AddEnemyOnPath;
+import com.nemo9955.garden_revolution.net.packets.Packets.AddEnemyOnPoz;
+import com.nemo9955.garden_revolution.net.packets.Packets.AllyKilled;
+import com.nemo9955.garden_revolution.net.packets.Packets.EnemyKilled;
+import com.nemo9955.garden_revolution.net.packets.Packets.PlayerChangesTower;
 import com.nemo9955.garden_revolution.net.packets.Packets.StartingServerInfo;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddAlly;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPath;
-import com.nemo9955.garden_revolution.net.packets.Packets.WorldAddEnemyOnPoz;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerChangedWeapon;
+import com.nemo9955.garden_revolution.net.packets.Packets.TowerUpgrade;
+import com.nemo9955.garden_revolution.net.packets.Packets.WeaponFireCharged;
+import com.nemo9955.garden_revolution.net.packets.Packets.WeaponFireHold;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldChangeLife;
+import com.nemo9955.garden_revolution.net.packets.Packets.WorldChangeMoney;
 import com.nemo9955.garden_revolution.utility.Func;
 
 public class WorldMP implements IWorldModel {
-
-	private MultiplayerComponent	mp;
-	private WorldBase				world;
-
-	public void init( WorldBase world, MultiplayerComponent mp ) {
-		this.mp = mp;
-		this.world = world;
-	}
 
 	@Override
 	public FightZone addFightZone( Vector3 poz ) {
@@ -38,25 +37,25 @@ public class WorldMP implements IWorldModel {
 
 	@Override
 	public BoundingBox addToColide( BoundingBox box ) {
-		return world.addToColide(box);
+		return WorldWrapper.instance.getWorld().addToColide(box);
 	}
 
 	@Override
 	public void addLife( int amount ) {
-		setLife(world.getLife() + amount);
+		setLife(WorldWrapper.instance.getWorld().getLife() + amount);
 	}
 
 	@Override
 	public boolean canChangeTowers( byte current, byte next, String name ) {
-		mp.sendTCP(PSender.getPCT(current, next, name));
+		GR.mp.sendTCP(PlayerChangesTower.getI(current, next, name));
 		return false;
 	}
 
 	@Override
 	public boolean changeWeapon( Tower tower, WeaponType newWeapon ) {
 
-		if ( world.changeWeapon(tower, newWeapon) ) {
-			mp.sendTCP(PSender.getWCP(tower.ID, newWeapon.ordinal()));
+		if ( WorldWrapper.instance.getWorld().changeWeapon(tower, newWeapon) ) {
+			GR.mp.sendTCP(TowerChangedWeapon.getI(tower.ID, newWeapon.ordinal()));
 			return true;
 		}
 		return false;
@@ -64,41 +63,41 @@ public class WorldMP implements IWorldModel {
 
 	@Override
 	public StartingServerInfo getWorldInfo( StartingServerInfo out ) {
-		return world.getWorldInfo(out);
+		return WorldWrapper.instance.getWorld().getWorldInfo(out);
 	}
 
 	@Override
 	public void removeColiders( Array<BoundingBox> box ) {
-		world.removeColiders(box);
+		WorldWrapper.instance.getWorld().removeColiders(box);
 	}
 
 	@Override
 	public void setCanWaveStart( boolean canWaveStart ) {
-		world.setCanWaveStart(canWaveStart);
+		WorldWrapper.instance.getWorld().setCanWaveStart(canWaveStart);
 	}
 
 	@Override
 	public void setLife( int life ) {
-		world.setLife(life);
-		mp.sendTCP(PSender.getCWL(life));
+		WorldWrapper.instance.getWorld().setLife(life);
+		GR.mp.sendTCP(WorldChangeLife.getI(life));
 	}
 
 	@Override
 	public void addMoney( int money ) {
-		world.addMoney(money);
-		mp.sendTCP(PSender.getCWM(money, false));
+		WorldWrapper.instance.getWorld().addMoney(money);
+		GR.mp.sendTCP(WorldChangeMoney.getAddI(money));
 	}
 
 	@Override
 	public void setMoney( int money ) {
-		world.setMoney(money);
-		mp.sendTCP(PSender.getCWM(money, true));
+		WorldWrapper.instance.getWorld().setMoney(money);
+		GR.mp.sendTCP(WorldChangeMoney.getSetI(money));
 	}
 
 	@Override
 	public boolean upgradeTower( Tower tower, TowerType upgrade ) {
-		if ( world.upgradeTower(tower, upgrade) ) {
-			mp.sendTCP(PSender.getTCP(tower.ID, upgrade.ordinal()));
+		if ( WorldWrapper.instance.getWorld().upgradeTower(tower, upgrade) ) {
+			GR.mp.sendTCP(TowerUpgrade.getI(tower.ID, upgrade.ordinal()));
 			return true;
 		}
 		return false;
@@ -106,27 +105,27 @@ public class WorldMP implements IWorldModel {
 
 	@Override
 	public void fireFromTower( Tower tower ) {
-		if ( world.fireFromTower(tower) )
-			mp.sendTCP(PSender.getPFC(tower.ID, tower.charge));
+		if ( WorldWrapper.instance.getWorld().fireFromTower(tower) )
+			GR.mp.sendTCP(WeaponFireCharged.getI(tower.ID, tower.charge));
 	}
 
 	@Override
 	public void setTowerFireHold( Tower tower, boolean hold ) {
-		if ( world.setTowerFireHold(tower, hold) )
-			mp.sendTCP(PSender.getPFH(tower.ID, hold));
+		if ( WorldWrapper.instance.getWorld().setTowerFireHold(tower, hold) )
+			GR.mp.sendTCP(WeaponFireHold.getI(tower.ID, hold));
 	}
 
 	@Override
 	public void reset() {
-		world.reset();
+		WorldWrapper.instance.getWorld().reset();
 	}
 
 	@Override
 	public Enemy addFoe( EnemyType type, Vector3 poz ) {
 
-		WorldAddEnemyOnPoz ent = PSender.getEOnPox(type, Enemy.newGlobalID(), poz, GR.temp1.set(Func.getRandOffset(), 0, Func.getRandOffset()));
-		mp.sendTCP(ent);
-		Enemy addFoe = world.addFoe(EnemyType.values()[ent.ordinal], poz);
+		AddEnemyOnPoz ent = AddEnemyOnPoz.getI(type, Enemy.newGlobalID(), poz, GR.temp1.set(Func.getRandOffset(), 0, Func.getRandOffset()));
+		GR.mp.sendTCP(ent);
+		Enemy addFoe = WorldWrapper.instance.getWorld().addFoe(EnemyType.values()[ent.ordinal], poz);
 		addFoe.offset.set(Func.getOffset(ent.ofsX), 0, Func.getOffset(ent.ofsZ));
 		addFoe.ID = ent.ID;
 
@@ -136,10 +135,11 @@ public class WorldMP implements IWorldModel {
 	@Override
 	public Enemy addFoe( EnemyType type, CatmullRomSpline<Vector3> path ) {
 
-		WorldAddEnemyOnPath ent = PSender.getEOnPath(type, Enemy.newGlobalID(), (byte) world.getPaths().indexOf(path, false), GR.temp1.set(Func.getRandOffset(), 0, Func.getRandOffset()));
-		mp.sendTCP(ent);
+		AddEnemyOnPath ent = AddEnemyOnPath.getI(type, Enemy.newGlobalID(), (byte) WorldWrapper.instance.getWorld().getPaths().indexOf(path, false),
+				GR.temp1.set(Func.getRandOffset(), 0, Func.getRandOffset()));
+		GR.mp.sendTCP(ent);
 
-		Enemy addFoe = world.addFoe(EnemyType.values()[ent.ordinal], world.getPaths().get(ent.pathNo));
+		Enemy addFoe = WorldWrapper.instance.getWorld().addFoe(EnemyType.values()[ent.ordinal], WorldWrapper.instance.getWorld().getPaths().get(ent.pathNo));
 		addFoe.offset.set(Func.getOffset(ent.ofsX), 0, Func.getOffset(ent.ofsZ));
 		addFoe.ID = ent.ID;
 		return addFoe;
@@ -147,25 +147,25 @@ public class WorldMP implements IWorldModel {
 
 	@Override
 	public Ally addAlly( Vector3 duty, AllyType type ) {
-		WorldAddAlly addAl = PSender.getAddAl(type, Ally.newGlobalID(), duty);
-		mp.sendTCP(addAl);
-		Ally addAlly = world.addAlly(duty, type);
+		AddAlly addAl = AddAlly.getI(type, Ally.newGlobalID(), duty);
+		GR.mp.sendTCP(addAl);
+		Ally addAlly = WorldWrapper.instance.getWorld().addAlly(duty, type);
 		addAlly.ID = addAl.ID;
 		return addAlly;
 	}
 
 	@Override
 	public void enemyKilled( Enemy enemy ) {
-		mp.sendTCP(PSender.getEnmyyK(enemy.ID));
-		world.getEnemyPool().free(enemy);
-		world.getEnemy().removeValue(enemy, false);
+		GR.mp.sendTCP(EnemyKilled.getI(enemy.ID));
+		WorldWrapper.instance.getWorld().getEnemyPool().free(enemy);
+		WorldWrapper.instance.getWorld().getEnemy().removeValue(enemy, false);
 	}
 
 	@Override
 	public void allyKilled( Ally ally ) {
-		mp.sendTCP(PSender.getAllyK(ally.ID));
-		world.getAliatPool().free(ally);
-		world.getAlly().removeValue(ally, false);
+		GR.mp.sendTCP(AllyKilled.getI(ally.ID));
+		WorldWrapper.instance.getWorld().getAliatPool().free(ally);
+		WorldWrapper.instance.getWorld().getAlly().removeValue(ally, false);
 
 	}
 

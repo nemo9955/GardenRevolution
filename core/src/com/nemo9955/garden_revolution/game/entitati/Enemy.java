@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.EnemyType;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Func;
 import com.nemo9955.garden_revolution.utility.Vars;
 
@@ -44,7 +45,7 @@ public class Enemy extends LifeForm {
 		this.life = type.life;
 
 		offset.set(Func.getRandOffset(), 0, Func.getRandOffset());
-		this.path = world.getWorld().getClosestStartPath(poz);
+		this.path = WorldWrapper.instance.getWorld().getClosestStartPath(poz);
 		percent = -STEP;
 
 		lookAt(path.valueAt(flag, percent + STEP));
@@ -70,7 +71,7 @@ public class Enemy extends LifeForm {
 		if ( (Vars.updateUave || Gdx.input.isKeyPressed(Keys.F12)) )
 			advance(delta);
 		if ( isDead() )
-			world.getDef().enemyKilled(this);
+			WorldWrapper.instance.getDef().enemyKilled(this);
 	}
 
 	private void advance( float delta ) {
@@ -80,7 +81,7 @@ public class Enemy extends LifeForm {
 		} else if ( !isPaused() ) {
 			percent += STEP;
 			if ( percent >= 1 ) {
-				world.getDef().addLife(-type.strenght);
+				WorldWrapper.instance.getDef().addLife(-type.strenght);
 				setDead(true);
 			}
 			path.valueAt(flag, percent + STEP);
@@ -101,7 +102,7 @@ public class Enemy extends LifeForm {
 	@Override
 	public void setDead( boolean dead ) {
 		if ( dead )
-			world.getDef().addMoney(type.value);
+			WorldWrapper.instance.getDef().addMoney(type.value);
 		super.setDead(dead);
 	}
 

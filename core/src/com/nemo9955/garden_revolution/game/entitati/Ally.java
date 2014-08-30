@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.nemo9955.garden_revolution.game.enumTypes.AllyType;
 import com.nemo9955.garden_revolution.game.mediu.FightZone;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.utility.Vars;
 
 public class Ally extends LifeForm {
@@ -41,7 +42,7 @@ public class Ally extends LifeForm {
 			setDead(true);
 
 		if ( isDead() )
-			world.getDef().allyKilled(this);
+			WorldWrapper.instance.getDef().allyKilled(this);
 	}
 
 	private long	lastAtack	= 0;

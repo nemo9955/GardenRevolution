@@ -24,6 +24,7 @@ import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.Garden_Revolution;
 import com.nemo9955.garden_revolution.game.enumTypes.TowerType;
 import com.nemo9955.garden_revolution.game.enumTypes.WeaponType;
+import com.nemo9955.garden_revolution.game.world.WorldWrapper;
 import com.nemo9955.garden_revolution.net.packets.Packets.msNetGR;
 import com.nemo9955.garden_revolution.states.Gameplay;
 import com.nemo9955.garden_revolution.states.MenuController;
@@ -231,7 +232,7 @@ public class GameStageMaker {
 																tmp.add(hudAllyPlacer.getWidth() / 2, hudAllyPlacer.getHeight() / 2);
 																gp.stage.stageToScreenCoordinates(tmp);
 																Func.intersectLinePlane(gp.player.getCamera().getPickRay(tmp.x, tmp.y), GR.temp4);
-																gp.world.getWorld().getOnPath(GR.temp4, ASAonPath, 150);
+																WorldWrapper.instance.getWorld().getOnPath(GR.temp4, ASAonPath, 150);
 																allySpawnArea.setPosition(ASAonPath.x, 0.2f, ASAonPath.z);
 															}
 														};
@@ -264,9 +265,9 @@ public class GameStageMaker {
 																} else if ( hudReady.isPressed() ) {
 																	// singleplayer
 																	// part
-																	if ( gp.mp == null ) {
+																	if ( GR.mp == null ) {
 																		hudReady.setVisible(false);
-																		gp.world.getSgPl().setCanWaveStart(true);
+																		WorldWrapper.instance.getSgPl().setCanWaveStart(true);
 																	}
 																	// multyplayer
 																	// part
@@ -274,7 +275,7 @@ public class GameStageMaker {
 																		hudReady.setText("Waiting for others ...");
 																		hudReady.setTouchable(Touchable.disabled);
 
-																		gp.mp.sendTCP(msNetGR.IAmReady);
+																		GR.mp.sendTCP(msNetGR.IAmReady);
 
 																	}
 																	hudReady.pack();
