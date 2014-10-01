@@ -1,9 +1,9 @@
-package com.nemo;
+package com.nemo9955.garden_revolution.desktop;
 
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
-public class MakeImagePack {
+public class MakeTexturePack {
 
 	public static void main( String[] args ) {
 		// TexturePacker.

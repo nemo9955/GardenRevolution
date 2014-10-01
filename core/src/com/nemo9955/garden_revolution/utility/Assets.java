@@ -110,10 +110,11 @@ public enum Assets {
 		},
 		TEXTURE {
 
+			TextureParameter	param	= new TextureParameter();
+
 			@Override
 			public void loadSpecial( Assets aset ) {
 
-				TextureParameter param = new TextureParameter();
 				param.minFilter = TextureFilter.Linear;
 				param.magFilter = TextureFilter.Linear;
 				GR.manager.load(aset.getAstPath(), Texture.class, param);

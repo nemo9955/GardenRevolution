@@ -184,7 +184,7 @@ public class MenuController extends CustomAdapter implements Screen {
 	@Override
 	public void dispose() {
 		stage.dispose();
-
+		axes.model.dispose();
 	}
 
 	@Override
