@@ -35,7 +35,7 @@ public class FightZone implements Poolable {
 			if ( !enemy.isPaused() && box.contains(enemy.box) ) {
 				addEnemy(enemy);
 				enemy.setPaused(true);
-				enemy.flag.set(GR.temp3.set(box.getCenter()).add(GR.temp2.set(enemy.offset).scl(2f)));
+				enemy.flag.set(box.getCenter(GR.temp3).add(GR.temp2.set(enemy.offset).scl(2f)));
 			}
 
 		for (int i = 0; i < enemies.size; i++) {
@@ -111,7 +111,7 @@ public class FightZone implements Poolable {
 			GR.temp1.add(ally.duty);
 
 		for (int i = 0; i < 5; i++)
-			GR.temp1.add(box.getCenter());
+			GR.temp1.add(box.getCenter(GR.temp4));
 
 		GR.temp1.scl(1f / (allies.size + 5));
 		setPoz(GR.temp1);

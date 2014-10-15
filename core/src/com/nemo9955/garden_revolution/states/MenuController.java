@@ -71,7 +71,7 @@ public class MenuController extends CustomAdapter implements Screen {
 		 */
 
 		ModelBuilder mb = new ModelBuilder();
-		axes = new ModelInstance(mb.createXYZCoordinates(10, new Material(), Usage.Position | Usage.Normal | Usage.Color));
+		axes = new ModelInstance(mb.createXYZCoordinates(10, new Material(), Usage.Position | Usage.Normal | Usage.ColorUnpacked));
 
 		float amb = .5f;
 		float intensity = 1000f;

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.nemo9955.garden_revolution.GR;
 
 public abstract class Entity implements Poolable {
 
@@ -47,15 +48,18 @@ public abstract class Entity implements Poolable {
 	protected void setBox( float x, float y, float z ) {
 		model.calculateBoundingBox(box);
 		addPoz(box, x, y, z);
-		colRadius = box.getDimensions().len() / 2f;
+		colRadius = box.getDimensions(GR.temp4).len() / 2f;
 
 		isColCubic = true;
 
-		if ( Math.max(box.getDimensions().x, box.getDimensions().y) / Math.min(box.getDimensions().x, box.getDimensions().y) > maxRap )
+		if ( Math.max(box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).y)
+					/ Math.min(box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).y) > maxRap )
 			isColCubic = false;
-		if ( Math.max(box.getDimensions().x, box.getDimensions().z) / Math.min(box.getDimensions().x, box.getDimensions().z) > maxRap )
+		if ( Math.max(box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).z)
+					/ Math.min(box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).z) > maxRap )
 			isColCubic = false;
-		if ( Math.max(box.getDimensions().z, box.getDimensions().y) / Math.min(box.getDimensions().z, box.getDimensions().y) > maxRap )
+		if ( Math.max(box.getDimensions(GR.temp4).z, box.getDimensions(GR.temp4).y)
+					/ Math.min(box.getDimensions(GR.temp4).z, box.getDimensions(GR.temp4).y) > maxRap )
 			isColCubic = false;
 	}
 
@@ -71,7 +75,7 @@ public abstract class Entity implements Poolable {
 	// sphereInFrustum is more efficient than boundsInFrustum
 	protected boolean isEntVisible( ModelBatch modelBatch ) {
 		if ( isColCubic )
-			return modelBatch.getCamera().frustum.sphereInFrustum(box.getCenter(), colRadius);
+			return modelBatch.getCamera().frustum.sphereInFrustum(box.getCenter(GR.temp4), colRadius);
 		else
 			return modelBatch.getCamera().frustum.boundsInFrustum(box);
 	}

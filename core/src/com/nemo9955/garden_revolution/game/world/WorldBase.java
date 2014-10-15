@@ -193,12 +193,14 @@ public class WorldBase implements Disposable {
 
 		shape.setColor(1, 0.5f, 0, 1);
 		for (BoundingBox box : getColide())
-			shape.box(box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z);
+			shape.box(box.min.x, box.min.y, box.max.z, box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).y,
+						box.getDimensions(GR.temp4).z);
 
 		shape.setColor(0.7f, 0.8f, 0.4f, 1);
 		for (Tower tower : towers)
 			for (BoundingBox box : tower.getTowerColiders())
-				shape.box(box.min.x, box.min.y, box.max.z, box.getDimensions().x, box.getDimensions().y, box.getDimensions().z);
+				shape.box(box.min.x, box.min.y, box.max.z, box.getDimensions(GR.temp4).x, box.getDimensions(GR.temp4).y,
+							box.getDimensions(GR.temp4).z);
 
 		// shape.setColor( 1, 0, 0, 1 );
 		// for (Entity e : getEnemy() )
@@ -220,7 +222,8 @@ public class WorldBase implements Disposable {
 
 		shape.setColor(0, 0.5f, 0.5f, 1);
 		for (FightZone e : getFightZones())
-			shape.box(e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions().x, e.box.getDimensions().y, e.box.getDimensions().z);
+			shape.box(e.box.min.x, e.box.min.y, e.box.max.z, e.box.getDimensions(GR.temp4).x, e.box.getDimensions(GR.temp4).y,
+						e.box.getDimensions(GR.temp4).z);
 
 		int pts = getPaths().size;
 		for (int i = 0; i < pts; i++) {
