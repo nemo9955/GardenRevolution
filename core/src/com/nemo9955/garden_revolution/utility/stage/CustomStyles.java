@@ -13,11 +13,12 @@ import com.nemo9955.garden_revolution.Garden_Revolution;
 
 public class CustomStyles {
 
-	private static SplitPaneStyle			vineSplit	= new SplitPaneStyle(new TiledDrawable(Garden_Revolution.getPackTexture("vineVer")));
+	private static SplitPaneStyle vineSplit = new SplitPaneStyle(
+			new TiledDrawable(Garden_Revolution.getPackTexture("vineVer")));
 
-	private static SliderStyle				sliderST;
+	private static SliderStyle sliderST;
 
-	private static FreeTypeFontGenerator	gen;
+	// private static FreeTypeFontGenerator gen;
 
 	public static void makeStyles() {
 
@@ -26,20 +27,21 @@ public class CustomStyles {
 		sliderST.knob = new TextureRegionDrawable(Garden_Revolution.getPackTexture("knobST"));
 		sliderST.knobAfter = new TextureRegionDrawable(Garden_Revolution.getPackTexture("rightST"));
 		sliderST.knobBefore = new TextureRegionDrawable(Garden_Revolution.getPackTexture("leftST"));
-		
+
 		GR.skin.add("default-horizontal", sliderST, SliderStyle.class);
 		GR.skin.add("vine", vineSplit, SplitPaneStyle.class);
 
-		//TODO add this in the AssetManager
-		FreeTypeFontParameter fontPar = new FreeTypeFontParameter();
-		gen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/KBLuckyClover.ttf"));
-		fontPar.size = 50;
-		GR.skin.add("clover", gen.generateFont(fontPar), BitmapFont.class);
+		// TODO add this in the AssetManager
+		// FreeTypeFontParameter fontPar = new FreeTypeFontParameter();
+		// gen = new
+		// FreeTypeFontGenerator(Gdx.files.internal("fonts/KBLuckyClover.ttf"));
+		// fontPar.size = 50;
+		// GR.skin.add("clover", gen.generateFont(fontPar), BitmapFont.class);
 
 	}
 
 	public static void dispose() {
-		gen.dispose();
+		// gen.dispose();
 	}
 
 	/*

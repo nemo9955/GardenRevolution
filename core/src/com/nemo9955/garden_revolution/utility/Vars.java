@@ -25,7 +25,7 @@ public class Vars {
 
 	// pentru debuging
 	public static boolean		updateUave			= true;
-	public static boolean		showDebug			= false;
+	public static boolean		showDebug			= true;
 
 	// pentru controller
 	public static float			invertControllerX	= -1;

@@ -15,28 +15,49 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.nemo9955.garden_revolution.GR;
 import com.nemo9955.garden_revolution.utility.Vars;
 import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
 import com.nemo9955.garden_revolution.utility.Vars.CoButt;
 
+//import com.badlogic.gdx.ai.fsm.State;
+//import com.badlogic.gdx.ai.msg.Telegram;
+//import com.badlogic.gdx.controllers.Controller;
+//import com.badlogic.gdx.controllers.ControllerAdapter;
+//import com.badlogic.gdx.scenes.scene2d.Actor;
+//import com.badlogic.gdx.scenes.scene2d.InputEvent;
+//import com.badlogic.gdx.scenes.scene2d.InputListener;
+//import com.badlogic.gdx.scenes.scene2d.Touchable;
+//import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+//import com.badlogic.gdx.scenes.scene2d.ui.Label;
+//import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+//import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+//import com.badlogic.gdx.scenes.scene2d.ui.Table;
+//import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+//import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+//import com.nemo9955.garden_revolution.GR; 
+//import com.nemo9955.garden_revolution.utility.Vars;
+//import com.nemo9955.garden_revolution.utility.Vars.CoAxis;
+//import com.nemo9955.garden_revolution.utility.Vars.CoButt;
+
 public class Options extends ControllerAdapter implements State<MenuController> {
 
-	private TextButton	back;
+	private TextButton back;
 
-	private TextButton	current;
-	private boolean		butSelected	= false;
-	private String		remName;
+	private TextButton current;
+	private boolean butSelected = false;
+	private String remName;
 
-	private Label		opt;
-	private ScrollPane	pane;
+	private Label opt;
+	private ScrollPane pane;
 
 	public Options() {
 
 		back = new TextButton("Back", GR.skin, "demon");
 
 		final Table table = new Table(GR.skin);
-		opt = new Label("Options", GR.skin, "clover", "white");
+		opt = new Label("Options", GR.skin, "arial", "white");
 
 		final Slider contSensX = new Slider(1, 10, 0.1f, false, GR.skin) {
 
@@ -49,7 +70,7 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		contSensX.addListener(new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
+			public void changed(ChangeEvent event, Actor actor) {
 				Vars.multiplyControlletX = contSensX.getValue();
 				pane.cancel();
 			}
@@ -66,7 +87,7 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		contSensY.addListener(new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
+			public void changed(ChangeEvent event, Actor actor) {
 				Vars.multiplyControlletY = contSensY.getValue();
 				pane.cancel();
 			}
@@ -83,7 +104,7 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		camSensX.addListener(new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
+			public void changed(ChangeEvent event, Actor actor) {
 				Vars.modCamSpeedX = camSensX.getValue();
 				pane.cancel();
 			}
@@ -100,7 +121,7 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		camSensY.addListener(new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
+			public void changed(ChangeEvent event, Actor actor) {
 				Vars.modCamSpeedY = camSensY.getValue();
 				pane.cancel();
 			}
@@ -116,18 +137,18 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		ChangeListener invButtons = new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
-				if ( invMX.isPressed() )
+			public void changed(ChangeEvent event, Actor actor) {
+				if (invMX.isPressed())
 					Vars.invertDragX = (byte) (invMX.isChecked() ? -1 : 1);
-				else if ( invMY.isPressed() )
+				else if (invMY.isPressed())
 					Vars.invertDragY = (byte) (invMY.isChecked() ? -1 : 1);
-				else if ( invPX.isPressed() )
+				else if (invPX.isPressed())
 					Vars.invertPadX = (byte) (invPX.isChecked() ? -1 : 1);
-				else if ( invPY.isPressed() )
+				else if (invPY.isPressed())
 					Vars.invertPadY = (byte) (invPY.isChecked() ? -1 : 1);
-				else if ( invCX.isPressed() )
+				else if (invCX.isPressed())
 					Vars.invertControllerX = (byte) (invCX.isChecked() ? -1 : 1);
-				else if ( invCY.isPressed() )
+				else if (invCY.isPressed())
 					Vars.invertControllerY = (byte) (invCY.isChecked() ? -1 : 1);
 			}
 		};
@@ -169,7 +190,7 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		table.add("Controller Y sensivity").padBottom(verSim).colspan(2).row();
 		table.add(contSensY).padBottom(categ).colspan(2).row();
 
-		table.add("Controller Input", "clover", "white").padBottom(categ).colspan(2).row();
+		table.add("Controller Input", "arial", "white").padBottom(categ).colspan(2).row();
 
 		for (int i = 0; i < Vars.noButtons; i++) {
 			TextButton button = new TextButton("Button " + CoButt.values()[i].id, GR.skin, "arial");
@@ -200,29 +221,29 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		pane.addListener(new ChangeListener() {
 
 			@Override
-			public void changed( ChangeEvent event, Actor actor ) {
+			public void changed(ChangeEvent event, Actor actor) {
 
-				if ( back.equals(actor) )
+				if (back.equals(actor))
 					MenuController.instance.mst.revertToPreviousState();
 				// GR.game.setScreen(GR.menu);
 				// FIXME need to remake the conditions in the controller !!!
-				if ( actor.getUserObject() != null && actor.getUserObject().toString().contains("Controller") ) {
-					if ( butSelected && current != null ) {
+				if (actor.getUserObject() != null && actor.getUserObject().toString().contains("Controller")) {
+					if (butSelected && current != null) {
 						current.setText(remName);
 						current.invalidateHierarchy();
 					}
 
-					if ( current != null && current.equals(actor) && butSelected ) {
+					if (current != null && current.equals(actor) && butSelected) {
 						current.setText("None");
 						current.invalidateHierarchy();
 						butSelected = false;
 						current = null;
-					} else if ( current == null || !current.equals(actor) ) {
+					} else if (current == null || !current.equals(actor)) {
 						current = (TextButton) actor;
 						butSelected = true;
 						remName = current.getText().toString();
 
-						if ( current.getUserObject().toString().contains("Button") )
+						if (current.getUserObject().toString().contains("Button"))
 							current.setText("Press a button ...");
 						else
 							current.setText("Move an axis ...");
@@ -238,10 +259,10 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 		pane.addListener(new InputListener() {
 
 			@Override
-			public boolean touchDown( InputEvent event, float x, float y, int pointer, int button ) {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				Actor actor = MenuController.instance.stage.hit(x, y, true);
-				if ( !(actor.getUserObject() != null && actor.getUserObject().toString().contains("Controller")) )
-					if ( butSelected ) {
+				if (!(actor.getUserObject() != null && actor.getUserObject().toString().contains("Controller")))
+					if (butSelected) {
 						current.setText(remName);
 						current.invalidateHierarchy();
 						butSelected = false;
@@ -256,12 +277,12 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 	}
 
 	@Override
-	public boolean buttonDown( Controller controller, int buttonIndex ) {
+	public boolean buttonDown(Controller controller, int buttonIndex) {
 
-		if ( butSelected ) {
+		if (butSelected) {
 			String[] parts = current.getUserObject().toString().split(Vars.stringSeparator);
 
-			if ( parts[0].contains("Button") ) {
+			if (parts[0].contains("Button")) {
 				CoButt.values()[Integer.parseInt(parts[1])].id = buttonIndex;
 				current.setText("Button " + buttonIndex);
 				current.invalidateHierarchy();
@@ -275,11 +296,11 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 	}
 
 	@Override
-	public boolean axisMoved( Controller controller, int axisCode, float value ) {
-		if ( butSelected && Math.abs(value) > 0.2f ) {
+	public boolean axisMoved(Controller controller, int axisCode, float value) {
+		if (butSelected && Math.abs(value) > 0.2f) {
 			String[] parts = current.getUserObject().toString().split(Vars.stringSeparator);
 
-			if ( parts[0].contains("Axis") ) {
+			if (parts[0].contains("Axis")) {
 				CoAxis.values()[Integer.parseInt(parts[1])].id = axisCode;
 				current.setText("Axis " + axisCode);
 				current.invalidateHierarchy();
@@ -293,25 +314,25 @@ public class Options extends ControllerAdapter implements State<MenuController> 
 	}
 
 	@Override
-	public void enter( MenuController entity ) {
+	public void enter(MenuController entity) {
 		entity.pointer.setSelectedActor(opt);
 		pane.setVisible(true);
 		MenuController.instance.stage.setScrollFocus(pane);
 	}
 
 	@Override
-	public void update( MenuController entity ) {
+	public void update(MenuController entity) {
 
 	}
 
 	@Override
-	public void exit( MenuController entity ) {
+	public void exit(MenuController entity) {
 
 		pane.setVisible(false);
 	}
 
 	@Override
-	public boolean onMessage( MenuController entity, Telegram telegram ) {
+	public boolean onMessage(MenuController entity, Telegram telegram) {
 		return false;
 	}
 

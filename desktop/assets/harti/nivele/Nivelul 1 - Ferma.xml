@@ -1,0 +1,70 @@
+<Harta map="mapaaa.g3db" turnuri="6"  drumuri="3" viata="156" money="1000" >
+   
+    <wave index="1" delay="1" interval="1" >
+        <path nr="1" >
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+        </path>
+        
+        <path nr="2">
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="3">
+            <rosie amount="1"/>
+            <aluna amount="2"/>
+            <morcov amount="2"/>
+        </path>
+    </wave>
+
+    <wave index="2" delay="15" interval="2" >
+        <path nr="1" >
+            <rosie amount="5"/>
+        </path>
+        <path nr="3">
+            <rosie amount="1"/>
+            <aluna amount="8"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="2">
+            <morcov amount="7"/>
+        </path>
+    </wave>
+    
+    <wave index="3" delay="10" interval="3" >
+        <path nr="1" >
+            <rosie amount="5"/>
+            <aluna amount="3"/>
+        </path>
+        <path nr="3">
+            <rosie amount="10"/>
+            <aluna amount="4"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="2">
+            <aluna amount="2"/>
+            <morcov amount="3"/>
+        </path>
+    </wave>
+     
+    <wave index="4" delay="15" interval="2" >
+        <path nr="1" >
+            <rosie amount="5"/>
+            <aluna amount="3"/>
+            <morcov amount="5"/>
+        </path>
+        <path nr="3">
+            <rosie amount="2"/>
+            <aluna amount="10"/>
+            <morcov amount="2"/>
+        </path>
+        <path nr="2">
+            <aluna amount="15"/>
+            <morcov amount="2"/>
+            <morcov amount="3"/>
+            <morcov amount="2"/>
+        </path>
+    </wave>
+    
+</Harta>

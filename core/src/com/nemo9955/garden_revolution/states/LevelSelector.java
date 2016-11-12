@@ -66,7 +66,7 @@ public class LevelSelector extends ControllerAdapter implements State<MenuContro
 
 		back = new TextButton("Back", GR.skin);
 
-		table.add("Select a LEVEL", "clover", Color.MAROON).expand().top().row();
+		table.add("Select a LEVEL", "arial", Color.MAROON).expand().top().row();
 		table.add(start).expand().row();
 		table.add(multy).expand().row();
 		table.add(back).bottom().expand().right();

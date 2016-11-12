@@ -48,7 +48,7 @@ public class GameStageMaker {
 	private static TextButton		tuBasicBut			= new TextButton("BASIC", GR.skin, "arial");
 	private static ImageButton		tuMiniGunBut		= new ImageButton(IconType.SAGETI.getAsDrawable(GR.skin, 70, 70));
 	private static ImageButton		tuCannonBut			= new ImageButton(IconType.TUN.getAsDrawable(GR.skin, 70, 70));
-	public static Label				tuMoneyMeter		= new Label("Money ----", GR.skin, "clover", Color.YELLOW);
+	public static Label				tuMoneyMeter		= new Label("Money ----", GR.skin, "arial", Color.YELLOW);
 	private static CircularGroup	tuTowerCircG;
 
 	private static Table			optTab				= new Table();
@@ -409,7 +409,7 @@ public class GameStageMaker {
 
 		pauseTab.setFillParent(true);
 		pauseTab.setBackground("pix30");
-		pauseTab.add("PAUSE", "clover", Color.GREEN).padBottom(gp.stage.getHeight() * 0.1f);
+		pauseTab.add("PAUSE", "arial", Color.GREEN).padBottom(gp.stage.getHeight() * 0.1f);
 		pauseTab.row();
 		pauseTab.add(pauseResumeBut).padBottom(gp.stage.getHeight() * 0.07f);
 		pauseTab.row();
